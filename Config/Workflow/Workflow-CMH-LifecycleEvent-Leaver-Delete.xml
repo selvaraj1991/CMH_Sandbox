@@ -1,0 +1,401 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Workflow PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<Workflow explicitTransitions="true" libraries="Identity,IdentityRequest" name="CMH-LifecycleEvent-Leaver-Delete" type="IdentityLifecycle">
+  <Variable input="true" name="trigger">
+    <Description>The IdentityTrigger</Description>
+  </Variable>
+  <Variable input="true" name="event">
+    <Description>The IdentityChangeEvent</Description>
+  </Variable>
+  <Variable input="true" name="identityName">
+    <Description>The name of the identity.</Description>
+  </Variable>
+  <Variable initializer="script:(identityDisplayName != void) ? identityDisplayName : resolveDisplayName(identityName)" input="true" name="identityDisplayName">
+    <Description>    
+       The displayName of the identity being updated.  
+       Query for this using a projection query and fall back to the name.    
+	</Description>
+  </Variable>
+  <Variable initializer="string:AccountsRequest" input="true" name="flow">
+    <Description>What type of LCM flow is this</Description>
+  </Variable>
+  <Variable name="plan" type="sailpoint.object.ProvisioningPlan">
+    <Description>The provisioning plan which is built during the workflow.  
+	</Description>
+  </Variable>
+  <Variable initializer="string:LCM" input="true" name="source">
+    <Description>  
+       String version of sailpoint.object.Source to indicate  
+       where the request originated.  Defaults to LCM.  
+	</Description>
+  </Variable>
+  <Variable initializer="string:true" input="true" name="trace">
+    <Description>  
+       Used for debugging this workflow and when set to true trace  
+       will be sent to stdout.  
+    </Description>
+  </Variable>
+  <Variable name="project" type="ProvisioningProject">
+    <Description>  
+		ProvisioningProject which is just a compiled version of the ProvisioningPlan.  
+	</Description>
+  </Variable>
+  <Variable name="isDebugEnabled" type="boolean">
+  	<Script>
+  		<Source>
+  		<![CDATA[
+  			import org.apache.log4j.Logger;
+  			
+  			Logger log = Logger.getLogger("CMH-LifecycleEvent-Leaver-Delete");
+  			
+  			if(log.isDebugEnabled()){
+  				return true;
+  			}
+  			return false;
+  		]]>
+  		</Source>
+  	</Script>
+  </Variable>
+  <Variable name="employeeId">
+  	<Script>
+  		<Source>
+  		<![CDATA[
+  			import sailpoint.object.Identity;
+  			
+  			String employeeId = null;
+  			if(identityName!=null){
+  				Identity iden = context.getObjectByName(Identity.class,identityName);
+  				employeeId = iden.getStringAttribute("employeeId");
+  			}
+  			return employeeId;
+  		]]>
+  		</Source>
+  	</Script>
+  </Variable>
+  <Variable name="assignmentType">
+  	<Script>
+  		<Source>
+  		<![CDATA[
+  			import sailpoint.object.Identity;
+  			
+  			String assignmentType = null;
+  			if(identityName!=null){
+  				Identity iden = context.getObjectByName(Identity.class,identityName);
+  				assignmentType = iden.getStringAttribute("assignmentType");
+  			}
+  			return assignmentType;
+  		]]>
+  		</Source>
+  	</Script>
+  </Variable>
+  <Variable name="emailRequired">
+  	<Script>
+  		<Source>
+  		<![CDATA[
+  			import sailpoint.object.Identity;
+  			
+  			String emailRequired = null;
+  			if(identityName!=null){
+  				Identity iden = context.getObjectByName(Identity.class,identityName);
+  				emailRequired = iden.getStringAttribute("mailReqd");
+  			}
+  			return emailRequired;
+  		]]>
+  		</Source>
+  	</Script>
+  </Variable>
+  <Variable name="validationErrors" type="java.util.List"/>
+  <Variable name="connectedApps" type="java.util.List"/>
+  <Variable name="disConnectedApps" type="java.util.List"/>
+  <Variable name="snowTicketId"/>
+  <RuleLibraries>
+	<Reference class="sailpoint.object.Rule" name="CMH-AD-Generic-Rulelibrary"/>
+  </RuleLibraries>
+  <Description>  
+      Delete the accounts after 30 days of Termination
+  </Description>
+  <Step icon="Start" name="Start" posX="28" posY="10" wait="1">
+  	<Script>
+  		<Source>
+  		<![CDATA[
+  			import org.apache.log4j.Logger;
+  			
+  			Logger log = Logger.getLogger("CMH-LifecycleEvent-Leaver-Delete");
+  			if(isDebugEnabled){
+  				log.debug("Starting the Leaver Deprovisioning Workflow for the user "+identityName+" with the employee ID : "+employeeId);
+  			}
+  		]]>
+  		</Source>
+  	</Script>
+    <Transition to="Validate Data"/>
+  </Step>
+  <Step icon="Task" name="Validate Data" resultVariable="validationErrors">
+  	<Script>
+  		<Source>
+  		<![CDATA[
+  			import org.apache.log4j.Logger;
+  			import sailpoint.object.Custom;
+  			import sailpoint.tools.Util;
+  			
+  			Logger log = Logger.getLogger("CMH-LifecycleEvent-Leaver-Delete");
+  			
+  			List errorList = new ArrayList(); 
+  			Custom custom = context.getObjectByName(Custom.class,"CMH-Leaver-Custom-Object");
+  			if(custom==null || custom.getList("connectedApplications")==null){
+  				errorList.add("CMH-LifecycleEvent-Leaver-Delete:Custom Object => CMH-Leaver-Custom-Object  is not configured properly");
+  			}
+  			  						
+  			if(!Util.isEmpty(errorList))
+  			{
+  				log.error("CMH-LifecycleEvent-Leaver-Delete: Errors Found :"+Util.listToCsv(errorList));
+  			}else if(isDebugEnabled){
+  				log.debug("CMH-LifecycleEvent-Leaver-Delete: Validation Successful");
+  			}
+  			
+  			return errorList;
+  		]]>
+  		</Source>
+  	</Script>
+  	<Transition to="Get Connected Apps">
+  		<Script>
+  			<Source>
+  			<![CDATA[
+  				import sailpoint.tools.Util;
+  				if(Util.isEmpty(validationErrors)){
+					return true;
+				}
+				return false;
+  			]]>
+  			</Source>
+  		</Script>
+  	</Transition>
+  	<Transition to="Stop"/>
+  </Step>
+  <Step icon="Task" name="Get Connected Apps" resultVariable="connectedApps">
+  	<Script>
+  		<Source>
+  		<![CDATA[
+  			import org.apache.log4j.Logger;
+  			
+  			Logger log = Logger.getLogger("CMH-LifecycleEvent-Leaver-Delete");
+  			List connectedApps = getAppsToDelete(identityName,"CMH-Leaver-Custom-Object","connectedApplications");
+  			if(connectedApps==null || connectedApps.size()<=0){
+  				log.info("CMH-LifecycleEvent-Leaver-Delete: There are no connected Apps associated with the user");
+  			}
+  			else if(isDebugEnabled){
+  				log.debug("CMH-LifecycleEvent-Leaver-Delete: List of Connected Apps to be deleted: "+connectedApps.toString());
+  			}
+  			return connectedApps;
+  		]]>
+  		</Source>
+  	</Script>
+  	<Transition to="Get Disconnected Apps"/>
+  </Step>
+  <Step icon="Task" name="Get Disconnected Apps" resultVariable="disConnectedApps">
+  	<Script>
+  		<Source>
+  		<![CDATA[
+  			import org.apache.log4j.Logger;
+  			
+  			Logger log = Logger.getLogger("CMH-LifecycleEvent-Leaver-Delete");
+  			List disConnectedApps = getAppsToDelete(identityName,"CMH-Leaver-Custom-Object","disConnectedApplications");
+  			if(disConnectedApps==null || disConnectedApps.size()<=0){
+  				log.info("CMH-LifecycleEvent-Leaver-Delete: There are no disconnected Apps associated with the user");
+  			}
+  			else if(isDebugEnabled){
+  				log.debug("CMH-LifecycleEvent-Leaver-Delete: List of disConnected Apps to be deleted: "+disConnectedApps.toString());
+  			}
+  			return disConnectedApps;
+  		]]>
+  		</Source>
+  	</Script>
+  	<Transition to="Deprovision Connected Apps"/>
+  </Step>
+  <Step icon="Task" name="Deprovision Connected Apps" condition="script:connectedApps!=null &amp;&amp; connectedApps.size()>0" resultVariable="plan">
+  <Script>
+  	<Source>
+  		<![CDATA[
+  			import org.apache.log4j.Logger;
+  			import sailpoint.api.IdentityService;
+  			import sailpoint.object.Application;
+  			import sailpoint.object.Identity;
+  			import sailpoint.object.Link;
+  			import sailpoint.object.ProvisioningPlan;
+  			import sailpoint.object.ProvisioningPlan.AccountRequest;
+  			
+  			Logger log = Logger.getLogger("CMH-LifecycleEvent-Leaver-Delete");
+  			
+  			if(isDebugEnabled){
+  				log.debug("CMH-LifecycleEvent-Leaver-Delete: Building Provisioning Plan for deleting the accounts of User: "+identityName);
+  			}
+  			
+  			ProvisioningPlan plan = new ProvisioningPlan();
+  			List accountRequests = new ArrayList();
+  			Identity iden = context.getObjectByName(Identity.class,identityName);
+  			for(String appName:connectedApps){
+	  			Application app = context.getObjectByName(Application.class,appName);
+	  			if(iden!=null && app!=null){
+	  				IdentityService iser = new IdentityService(context);
+	  				List appLinks = iser.getLinks(iden,app);
+	  				for(Link appLink:appLinks){
+	  					if(appLink!=null){
+	  						AccountRequest acctReq = new AccountRequest();
+	  						acctReq.setApplication(appName);
+	  						acctReq.setOperation(ProvisioningPlan.AccountRequest.Operation.Delete);
+	  						acctReq.setNativeIdentity(appLink.getNativeIdentity());
+	  						accountRequests.add(acctReq);
+	  					}
+	  				}
+	  			}
+	  		}
+	  		plan.setAccountRequests(accountRequests);
+  			plan.setIdentity(iden);
+  			
+  			if(isDebugEnabled){
+  				log.debug("CMH-LifecycleEvent-Leaver-Delete: Plan created for the user successfully: "+plan.toXml());
+  			}
+  			
+  			return plan;
+  		]]>
+  	</Source>
+  </Script>
+  <Transition to="Compile Project">
+  	<Script>
+  		<Source>
+  		<![CDATA[
+  			if(plan!=null && plan.getAccountRequests()!=null && plan.getAccountRequests().size()>0){
+  				return true;
+  			}
+  			return false;
+  		]]>
+  		</Source>
+  	</Script>
+  </Transition>
+  <Transition to="Deprovision disconnected Apps"/>
+  </Step>
+  <Step action="call:compileProvisioningProject" icon="Task" name="Compile Project" posX="406" posY="10" resultVariable="project">
+    <Arg name="identityName" value="ref:identityName"/>
+    <Arg name="plan" value="ref:plan"/>
+    <Arg name="requester" value="string:spadmin"/>
+    <Arg name="source" value="ref:source"/>
+    <Arg name="optimisticProvisioning" value="string:false"/>
+    <Arg name="requireCreateTemplates" value="string:false"/>
+    <Arg name="noLocking" value="true"/>
+    <Arg name="noApplicationTemplates" value="string:true"/>
+                 If you need to pass in provisioner options like "noFiltering"  
+                 or "noRoleDeprovisioning" you must pass them as explicit  
+                 arguments to the call.  
+                 The evaluation options "requester" and "source" are commonly  
+                 set here.               
+                 You can also pass things into the Template and Field scripts by  
+                 defining Args in this step.</Description>
+    <Transition to="Create Identity Request"/>
+  </Step>
+  <Step action="call:createIdentityRequest" icon="Task" name="Create Identity Request" posX="841" posY="239">
+    <Arg name="project" value="ref:project"/>
+    <Arg name="source" value="ref:source"/>
+    <Arg name="priority" value="string:Normal"/>
+    <Arg name="identityName" value="ref:identityName"/>
+    <Arg name="flow" value="ref:flow"/>
+    <Return name="identityRequestId" to="identityRequestId"/>
+    <Transition to="Provision"/>
+  </Step>
+  <Step action="call:provisionProject" icon="Provision" name="Provision" posX="682" posY="10">
+    <Arg name="background" value="false"/>
+    <Arg name="project" value="ref:project"/>
+    <Transition to="Complete Identity Request"/>
+  </Step>
+  <Step action="call:completeIdentityRequest" icon="Task" name="Complete Identity Request" posX="953" posY="94" resultVariable="identityRequest">
+	<Arg name="project" value="ref:project"/>
+	<Arg name="autoVerify" value="false"/>
+	<Arg name="identityRequestId" value="ref:identityRequestId"/>
+	<Transition to="Deprovision disconnected Apps"/>
+  </Step>
+  <Step icon="Task" name="Deprovision disconnected Apps" resultVariable="snowTicketId">
+  	<Script>
+  		<Source>
+  		<![CDATA[
+  			import org.apache.log4j.Logger;
+  			
+  			//method to generate service now ticket
+  			Logger log = Logger.getLogger("CMH-LifecycleEvent-Leaver-Delete");
+  			
+  			if(isDebugEnabled){
+  				log.debug("CMH-LifecycleEvent-Leaver-Delete: Generating service now ticket for disconnected applications");
+  			}
+  			
+  			String snowId = generateSnowTicket(identityName, "CMH-Service-Ticket-Configuration-Object", disConnectedApps);
+  			
+  			return snowId;
+  		]]>
+  		</Source>
+  	</Script>
+  	<Transition to="Stop"/>
+  </Step>
+  <Step icon="Task" catches="complete" name="Check Status" resultVariable="validationErrors">
+  	<Script>
+  		<Source>
+  		<![CDATA[
+  			import java.text.SimpleDateFormat;
+  			import org.apache.log4j.Logger;
+  			import sailpoint.object.AuditEvent;
+  			import sailpoint.object.Identity;
+			import sailpoint.server.Auditor;
+  			import sailpoint.tools.Message;
+  			import sailpoint.tools.Util;
+  			
+  			Logger log = Logger.getLogger("CMH-LifecycleEvent-Leaver-Delete");
+  			
+  			if(isDebugEnabled){
+  				log.debug("CMH-LifecycleEvent-Leaver-Delete: Check Status step : Checking for errors");
+  			}
+  			
+  			if(wfcontext.getRootWorkflowCase().getMessages()!=null && wfcontext.getRootWorkflowCase().getMessagesByType(Message.Type.Error)!=null){
+  				List errorMessagesList = wfcontext.getRootWorkflowCase().getMessagesByType(Message.Type.Error);
+  				String errorMessage = Util.listToCsv(errorMessagesList);
+  				if(validationErrors==null){
+  					validationErrors = new ArrayList();
+  				}
+  				validationErrors.add(errorMessage);
+  				
+  				if(isDebugEnabled){
+	  				log.debug("CMH-LifecycleEvent-Leaver-Delete: Check Status step : Errors Found : "+Util.listToCsv(validationErrors));
+	  			}
+  			}
+  			
+  			if(Util.isEmpty(validationErrors)){
+  				Identity iden = context.getObjectByName(Identity.class,identityName);
+  				if(iden!=null){
+  					iden.setAttribute("deletionStatus","deleted");
+  					context.saveObject(iden);
+  				}
+  			}
+  			
+  			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy - hh:mm:ss");
+			Date currentDate = new Date();
+  			AuditEvent ae = new AuditEvent();
+  			ae.setAction("Leaver-Delete");
+  			ae.setSource("LCM");
+  			ae.setTarget(identityName+" ("+employeeId+")");
+  			ae.setString3(sdf.format(currentDate));
+  			ae.setCreated(currentDate);
+  			if(Util.isEmpty(validationErrors)){
+  				ae.setString1("Leaver Delete Process Completed succesfully");
+  			}else{
+  				ae.setString1("Leaver Delete Process failed due to errors");
+  				ae.setString2(Util.listToCsv(validationErrors));
+  			}
+  			Auditor.log(ae);
+  			
+  			if(isDebugEnabled){
+  				log.debug("CMH-LifecycleEvent-Leaver-Delete: Check Status step : Audit Event Generated");
+  			}
+  			
+  			context.commitTransaction();
+  			return validationErrors;	 
+  		]]>
+  		</Source>
+  	</Script>
+  </Step>
+  <Step icon="Stop" name="Stop" posX="784" posY="10"/>
+</Workflow>
