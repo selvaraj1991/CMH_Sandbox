@@ -282,6 +282,7 @@
     <Arg name="requireCreateTemplates" value="string:false"/>
     <Arg name="noLocking" value="true"/>
     <Arg name="noApplicationTemplates" value="string:true"/>
+    <Description>Compile the provisioning plan into a provisioning project.  
                  If you need to pass in provisioner options like "noFiltering"  
                  or "noRoleDeprovisioning" you must pass them as explicit  
                  arguments to the call.  
