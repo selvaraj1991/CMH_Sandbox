@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE sailpoint PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<sailpoint><Rule language="beanshell" name="CMH-Infor-Post-Iteration-Rule">
+  <Description>This rule is used to update the timestamp of the task</Description>
+  <Source><![CDATA[
+  import sailpoint.object.Application;
+  import sailpoint.object.Custom;
+  
+  Custom custom = context.getObjectByName(Custom.class,"CMH-Infor-Incremental-Aggregation-Custom-Object");
+  String lastRunTimeStamp = null;
+  Application app = null;
+  String appName = null;
+  String sqlQuery = null;
+  String whereClause = null;
+  if(custom!=null){
+	lastRunTimeStamp = (String)custom.get("lastRunTimeStamp");
+	if(lastRunTimeStamp!=null){
+		appName = (String)custom.get("applicationName");
+		if(appName!=null){
+			app = context.getObjectByName(Application.class,appName);
+			sqlQuery = (String)app.getAttributeValue("SQL");
+			if(sqlQuery!=null){
+	       		whereClause = "where DateEmployeeRecordCreated>=" + "'" +lastRunTimeStamp+"'"+" or DateEmployeeRecordUpdated>="+ "'" +lastRunTimeStamp+ "'";
+				if(sqlQuery.indexOf("where")>0){
+					sqlQuery = sqlQuery.substring(0,sqlQuery.indexOf("where")).trim();
+				}
+				sqlQuery = sqlQuery + " " + whereClause;
+	      		app.setAttribute("SQL",sqlQuery);
+				context.saveObject(app);
+				context.commitTransaction();
+			}
+		}
+	}
+  }
+  ]]></Source>
+</Rule>
+</sailpoint>

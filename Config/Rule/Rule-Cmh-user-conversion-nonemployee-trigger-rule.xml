@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Rule PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<Rule language="beanshell" name="CMH-User-Conversion-NonEmployee-Trigger-Rule" type="IdentityTrigger">
+  <Description>This rule can be used for Certification Events that use rule triggers. The previousIdentity and newIdentity hold snapshots of the identity before the update has occurred and the state of the identity after the update, respectively.</Description>
+  <Signature returnType="boolean">
+    <Inputs>
+      <Argument type="previousIdentity">
+        <Description>
+The identity before the refresh/aggregation (this will be null when an
+          identity is created).
+</Description>
+      </Argument>
+      <Argument type="newIdentity">
+        <Description>
+The identity after the refresh/aggregation (this will be null when an
+          identity is deleted).
+</Description>
+      </Argument>
+    </Inputs>
+    <Returns>
+      <Argument type="result">
+        <Description>
+A boolean describing the result of the rule.
+</Description>
+      </Argument>
+    </Returns>
+  </Signature>
+  <Source><![CDATA[
+    import org.apache.log4j.Logger;
+    import sailpoint.object.Identity;
+    import sailpoint.tools.Util;
+    
+    Logger log = Logger.getLogger("cmh.authsource.rules");
+    log.info("Entering CMH-User-Conversion-NonEmployee-Trigger-Rule");
+    boolean isConversion = false;
+    if(null != previousIdentity && null != newIdentity) {
+       String prevUserType =previousIdentity.getStringAttribute("userType");
+       String newUserType = newIdentity.getStringAttribute("userType");
+       if(Util.nullSafeCaseInsensitiveEq(prevUserType,"NONEMPLOYEE") &&  Util.nullSafeCaseInsensitiveEq(newUserType,"NONEMPLOYEE")){
+           String prevAssignmentType = previousIdentity.getStringAttribute("assignmentType");
+	       String newAssignmentType = newIdentity.getStringAttribute("assignmentType");
+	       String prevIdentityStatus = previousIdentity.getStringAttribute("status");
+	       String newIdentityStatus = newIdentity.getStringAttribute("status");
+	       if( Util.nullSafeCaseInsensitiveEq(prevIdentityStatus,"ACTIVE") &&  
+	           Util.nullSafeCaseInsensitiveEq(newIdentityStatus,"ACTIVE") && 
+	           !Util.nullSafeCaseInsensitiveEq(prevAssignmentType, newAssignmentType) && 
+	           Util.isNullOrEmpty(newIdentity.getStringAttribute("otherEmpId"))){
+		         isConversion=true;      
+		       
+		     }
+	     }
+    }
+    log.info("isConversion :"+isConversion);
+    log.info("Exiting CMH-User-Conversion-NonEmployee-Trigger-Rule");
+    return isConversion;
+  ]]></Source>
+</Rule>

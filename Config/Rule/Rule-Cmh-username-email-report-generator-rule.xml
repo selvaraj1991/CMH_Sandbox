@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Rule PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<Rule language="beanshell" name="CMH-Username-Email-Report-Generator-Rule">
+  <Description>Generating CSV for Infor Team containing username and email</Description>
+  <ReferencedRules>
+    <Reference class="sailpoint.object.Rule" name="CMH-AD-Generic-Rulelibrary"/>
+  </ReferencedRules>
+  <Source><![CDATA[  
+
+    import java.io.FileWriter;
+	import java.io.IOException;
+	import java.text.DateFormat;
+	import java.text.ParseException;
+	import java.text.SimpleDateFormat;
+	import java.util.ArrayList;
+	import java.util.Calendar;
+	import java.util.Date;
+	import java.util.HashMap;
+	import java.util.Iterator;
+	import java.util.List;
+	import java.util.Map;
+	import org.apache.log4j.Logger;
+	import sailpoint.object.Attributes;
+	import sailpoint.object.Custom;
+	import sailpoint.object.Filter;
+	import sailpoint.object.Identity;
+	import sailpoint.object.QueryOptions;
+	import sailpoint.tools.GeneralException;
+	
+	Logger log = Logger.getLogger("cmh.authsource.rules");
+	
+	public Date getCustomObjectTimestamp(String customObjectName, String customName) {
+		log.debug("Entering getCustomObject(String customObjectName, StringcustomName)");
+		Date date = null;
+		if (null != customObjectName) {
+			log.debug("customObjectName :"+customObjectName);
+			Custom custom = null;
+			try {
+				custom = context.getObject(Custom.class, customName);
+				log.info(custom);
+			} catch (GeneralException e) {
+				log.error("Error: "+e.getMessage());
+			}
+			if (null != custom) {
+				log.debug("If custom not null");
+				Attributes attr = custom.getAttributes();
+				date = (Date) attr.get(customObjectName);
+			}
+		}
+		log.debug("Exiting getCustomObject(String customObjectName, String customName)");
+		return date;
+	}
+	public void updateCustomTimeStamp(Date lastTimeStamp) {
+	    log.debug("Entering updateCustomTimeStamp(Date lastTimeStamp)");
+		if (null != lastTimeStamp) {
+			Custom custom = null;
+			try {
+				custom = context.getObjectByName(Custom.class, "Last Generated Timestamp Report");
+				String lock = custom.getLock();
+				custom.setLock(lock);
+				custom.put("Timestamp", lastTimeStamp);
+				context.saveObject(custom);
+				context.commitTransaction();
+				
+			} catch (GeneralException e) {
+				
+				log.error(e.getMessage());
+			}
+		} else {
+			log.error("lastTimeStamp is null");
+		}
+       log.debug("Exiting updateCustomTimeStamp(Date lastTimeStamp)");
+	}
+
+	public Date getDateTime() {
+	    log.debug("Entering getDateTime()");
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss a");
+		Date today = null;
+		try {
+			today = sdf.parse(sdf.format(new Date()));
+		} catch (ParseException e) {
+			log.error("Error: "+e.getMessage());			
+		}
+		log.info("today " + today);
+		log.debug("Exiting getDateTime()");
+		return today;
+	}
+
+ 	public boolean generateReport(Date startTime, Date endTime) {
+    log.debug("Entering generateReport(Date startTime, Date endTime)");
+		Date today = null;
+		List list = new ArrayList();
+		FileWriter fileWriter = null;
+		String neW_LINE_SEPARATOR = "\n";
+		String coMMA_DELIMITER = ",";
+		boolean isSuccess = false;
+		QueryOptions qo = new QueryOptions();
+		Filter f1 = Filter.ge("created", startTime);
+		Filter f2 = Filter.lt("created", endTime);
+		Filter f3 = Filter.and(f1, f2);
+		qo.addFilter(f3);
+		Iterator itr = null;
+
+		try {
+			itr = context.search(Identity.class, qo);
+			if (itr != null && itr.hasNext()) {
+				while (itr.hasNext()) {
+					Identity user = (Identity) itr.next();
+					Map map = new HashMap();
+					map.put("Username", user.getName());
+					map.put("Email", user.getEmail());
+					map.put("FirstName", user.getFirstname());
+					map.put("LastName", user.getLastname());
+					map.put("EmployeeType", user.getStringAttribute("userType"));
+					map.put("EmployeeID", user.getStringAttribute("employeeId"));
+					list.add(map);
+				}
+			} else {
+				isSuccess = true;
+        log.debug("Exiting generateReport(Date startTime, Date endTime)");
+				return isSuccess;
+			}
+		} catch (GeneralException e) {
+			log.error("Error: " + e.getMessage());
+		} finally {
+			if (null != itr) {
+				sailpoint.tools.Util.flushIterator(itr);
+			}
+    }
+			if (null != list && !list.isEmpty()) {
+				DateFormat currentDateFormatWithTime = new SimpleDateFormat("yyyy-MM-dd hh.mm.ss a");
+				String strCurrentDateTime = currentDateFormatWithTime.format(endTime);
+				String filename = "UsernameEmailDetails" + strCurrentDateTime + ".csv";
+				String FILE_HEADER = "Username,Email,EmployeeID,FirstName,LastName,EmployeeType";
+				Map map = null;
+				String filepath = getCustomObject("filepath","CMH-FilePath");
+        if(null !=filepath) {
+           try {
+                fileWriter = new FileWriter(filepath + filename);
+                fileWriter.append(FILE_HEADER.toString());
+                fileWriter.append(neW_LINE_SEPARATOR);
+                for (int i = 0; i < list.size(); i++) {
+                     map = (Map) list.get(i);
+                     log.info(map);
+                    fileWriter.append(map.get("Username").toString());
+                    fileWriter.append(coMMA_DELIMITER);
+                    if (null != (map.get("Email"))) {
+                      fileWriter.append(map.get("Email").toString());
+                    } else {
+                      fileWriter.append("NULL");
+                    }
+                    fileWriter.append(coMMA_DELIMITER);
+                    fileWriter.append(map.get("EmployeeID").toString());
+                    fileWriter.append(coMMA_DELIMITER);
+                    fileWriter.append(map.get("FirstName").toString());
+                    fileWriter.append(coMMA_DELIMITER);
+                    fileWriter.append(map.get("LastName").toString());
+                    fileWriter.append(coMMA_DELIMITER);
+                    fileWriter.append(map.get("EmployeeType").toString());
+                    fileWriter.append(neW_LINE_SEPARATOR);
+                  
+                }
+                log.debug("CSV file was created successfully !!!");
+                isSuccess = true;
+            } catch (IOException e) {
+              log.error("Error in CsvFileWriter !!!");
+              log.error("Error: " + e.getMessage());
+            }
+            try {
+              if (null != fileWriter) {
+                fileWriter.flush();
+                fileWriter.close();
+              }
+            } catch (IOException e) {
+              log.error("Error while flushing/closing fileWriter !!!");
+              log.error("Error: " + e.getMessage());
+            }
+        } else {
+           log.error("Filepath is not present in custom object");
+        }
+			}else {
+				isSuccess = false;
+			}
+    log.debug("Exiting generateReport(Date startTime, Date endTime)");
+		return isSuccess;
+	  }
+     
+    log.debug("Entering CMH-Username-Email-Report-Generator-Rule");	
+	  Date lastTimeStamp = getCustomObjectTimestamp("Timestamp", "Last Generated Timestamp Report");
+		Date startTime = null;
+		Date endTime = null;
+		if (null == lastTimeStamp) {
+			  Date date = getDateTime();
+        if (null != date) {
+          Calendar calendar = Calendar.getInstance();
+          calendar.setTime(date);
+          calendar.add(Calendar.DATE, -1);
+          startTime = calendar.getTime();
+          endTime = date;
+			  }
+		} else {
+			log.info("lastTimeStamp :" + lastTimeStamp);
+			startTime = lastTimeStamp;
+			endTime = getDateTime();
+		}
+		if (null != startTime && null != endTime) {
+        log.debug("startTime :" + startTime);
+        log.debug("endTime :" + endTime);
+        boolean success = generateReport(startTime, endTime);
+        if (success) {
+          lastTimeStamp = endTime;
+          updateCustomTimeStamp(lastTimeStamp);
+          log.debug("Exiting CMH-Username-Email-Report-Generator-Rule");	
+          return "success";
+        } else {
+            log.debug("Exiting CMH-Username-Email-Report-Generator-Rule");	
+          return "Failed";
+        }
+		}
+ ]]></Source>
+</Rule>

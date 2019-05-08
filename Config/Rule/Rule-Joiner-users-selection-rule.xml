@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Rule PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<Rule language="beanshell" name="Joiner-Users-Selection-Rule" type="IdentitySelector">
+  <Description>This rule is used to select an Identity that is related to the given Identity</Description>
+  <Signature returnType="boolean">
+    <Inputs>
+      <Argument name="log">
+        <Description>
+          The log object associated with the SailPointContext.
+        </Description>
+      </Argument>
+      <Argument name="context">
+        <Description>
+          A sailpoint.api.SailPointContext object that can be used to query the database if necessary.
+        </Description>
+      </Argument>
+      <Argument name="identity" type="Identity">
+        <Description>
+          The identity.
+        </Description>
+      </Argument>
+      <Argument name="roleName" type="String">
+        <Description>
+          The name of the sailpoint.object.Bundle (role) that is being selected for the Identity. 
+          If roles are not applicable to this Identity selection, this value will be void.
+        </Description>
+      </Argument>
+    </Inputs>
+    <Returns>
+      <Argument name="success">
+        <Description>
+            True if the selection was successful; false otherwise.
+        </Description>
+      </Argument>
+    </Returns>
+  </Signature>
+  <Source><![CDATA[
+  
+    import org.apache.commons.lang.StringUtils; 
+    import sailpoint.object.Identity;
+    import sailpoint.object.Filter;
+    import sailpoint.object.QueryOptions;
+    import java.util.Iterator; 
+    import org.apache.log4j.Logger;
+  
+     Logger log = Logger.getLogger("cmh.authsource.rules");
+     public boolean checkOldEmployeeIdUserStatus(String oldEmployeeId) {
+        log.debug("Entering checkOldEmployeeIdUserStatus(String oldEmployeeId)");
+        boolean isStatus = false;
+        if(!StringUtils.isBlank(oldEmployeeId)) {
+           Filter f = Filter.eq("employeeId",oldEmployeeId);
+           QueryOptions q0 = new QueryOptions();
+           q0.add(f);
+           Iterator itr = context.search(Identity.class,q0);
+           if(null !=itr && itr.hasNext()) {
+              Identity identity = (Identity)itr.next();
+              String status =identity.getStringAttribute("status");
+              if(!StringUtils.isBlank(status) && StringUtils.equalsIgnoreCase(status,"Active")) {
+                 isStatus= true;
+              }else {
+                 isStatus = false;
+              }
+            }  
+          }
+          log.debug("isStatus :"+isStatus);
+          log.debug("Exiting checkOldEmployeeIdUserStatus(String oldEmployeeId)");
+          return isStatus;
+        }
+        
+     log.debug("Entering Joiner-Users-Selection-Rule");
+     boolean success = false;
+     if(null !=identity) {
+       String status = identity.getStringAttribute("status");
+       log.debug("status : "+status);
+       if(!StringUtils.isBlank(status) && StringUtils.equalsIgnoreCase("Active",status)) {
+           String oldEmpId = identity.getStringAttribute("otherEmpId");
+           if(!StringUtils.isBlank(oldEmpId) && checkOldEmployeeIdUserStatus(oldEmpId)){
+              success = true;
+           }else if(StringUtils.isBlank(oldEmpId)) {
+              success = true;
+           }else {
+              success= false;
+           }
+        }
+     }
+     log.debug("success : "+success);
+     log.debug("Exiting Joiner-Users-Selection-Rule");
+     return success;
+  ]]></Source>
+</Rule>
