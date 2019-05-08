@@ -325,7 +325,7 @@
   				log.debug("CMH-LifecycleEvent-Leaver-Delete: Generating service now ticket for disconnected applications");
   			}
   			
-  			String snowId = generateSnowTicket(identityName, "CMH-Service-Ticket-Configuration-Object", disConnectedApps);
+  			String snowId = generateSnowTicket(identityName, "CMH-Service-Ticket-Configuration-Object", disConnectedApps, "Delete");
   			
   			return snowId;
   		]]>
@@ -370,23 +370,24 @@
   					iden.setAttribute("deletionStatus","deleted");
   					context.saveObject(iden);
   				}
-  			}
+  			} 			
   			
-  			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy - hh:mm:ss");
-			Date currentDate = new Date();
-  			AuditEvent ae = new AuditEvent();
-  			ae.setAction("Leaver-Delete");
-  			ae.setSource("LCM");
-  			ae.setTarget(identityName+" ("+employeeId+")");
-  			ae.setString3(sdf.format(currentDate));
-  			ae.setCreated(currentDate);
+  			String action = null;
+  			String target = identityName;
+  			String attrName = "Employee ID";
+  			String attrVal = employeeId;
+  			Map strMap = new HashMap();
   			if(Util.isEmpty(validationErrors)){
-  				ae.setString1("Leaver Delete Process Completed succesfully");
+  				action = "Leaver-Delete-Success";
+  				strMap.put("setString1","Leaver Delete Process Completed succesfully");
+  				strMap.put("setString2","AD and other accounts are deleted from the user");
   			}else{
-  				ae.setString1("Leaver Delete Process failed due to errors");
-  				ae.setString2(Util.listToCsv(validationErrors));
+  				action = "Leaver-Delete-Failure";
+  				strMap.put("setString1","Leaver Delete Process failed due to errors");
+  				strMap.put("setString2",Util.listToCsv(validationErrors));
   			}
-  			Auditor.log(ae);
+  			auditWrite(action,source,target,attrName,attrVal,strMap);
+  			
   			
   			if(isDebugEnabled){
   				log.debug("CMH-LifecycleEvent-Leaver-Delete: Check Status step : Audit Event Generated");

@@ -1,0 +1,533 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE Workflow PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<Workflow explicitTransitions="true" name="CMH-Immediate-Termination-Workflow" libraries="Identity,IdentityRequest" type="LCM">
+  <Variable initializer="true" input="true" name="trace"/>
+  <Variable name="plan" type="sailpoint.object.ProvisioningPlan">
+    <Description>The provisioning plan which is built during the workflow.  
+	</Description>
+  </Variable>
+  <Variable name="project" type="ProvisioningProject">
+    <Description>  
+		ProvisioningProject which is just a compiled version of the ProvisioningPlan.  
+	</Description>
+  </Variable>
+  <Variable name="identityRequestId">
+    <Description>
+		The Identity Request Id we get back from the request.
+	</Description>
+  </Variable>
+  <Variable input="true" name="terminatingUserId"/>
+  <Variable name="validationErrors" type="java.util.List"/>
+  <Variable name="isDebugEnabled" type="boolean">
+    <Script>
+      <Source>
+      <![CDATA[
+  			import org.apache.log4j.Logger;
+  			Logger log = Logger.getLogger("CMH_ImmediateTerminationLog");
+  			if(log.isDebugEnabled()){
+  				return true;
+  			}
+  			return false;
+  		]]>
+  		</Source>
+    </Script>
+  </Variable>
+  <Variable name="inforAppName">
+  	<Script>
+  		<Source>
+  		<![CDATA[
+  			import sailpoint.object.Custom;
+  			Custom custom = context.getObjectByName(Custom.class,"CMH-Custom-Object-Infor-Application");
+  			String inforName = null;
+  			if(custom!=null){
+  				inforName = custom.get("hrApplicationName");
+  			}
+  			return inforName;
+  		]]>
+  		</Source>
+  	</Script>
+  </Variable>
+  <Variable initializer="script:new Integer(1);" name="numberOfDays" type="Integer">
+    <Description>Number of days after which deletion date has to be set</Description>
+  </Variable>
+  <Variable name="identityName"/>
+  <Variable name="userOnLegalHold"/>
+  <Variable name="employeeId"/>
+  <Variable name="adAppName">
+  	<Script>
+  		<Source>
+  		<![CDATA[
+  			import sailpoint.object.Custom;
+  			
+  			Custom custom = context.getObjectByName(Custom.class,"CMH-Custom-Object-AD-Application");
+  			String appName = null;
+  			if(custom!=null){
+  				appName = custom.getString("applicationName");
+  			}
+  			return appName;
+  		]]>
+  		</Source>
+  	</Script>
+  </Variable>
+  <Variable name="terminatedOU">
+  	<Script>
+  		<Source>
+  		<![CDATA[
+  			import sailpoint.object.Custom;
+  			
+  			Custom custom = context.getObjectByName(Custom.class,"CMH-Custom-Object-AD-Application");
+  			String disabledOU = null;
+  			if(custom!=null){
+  				disabledOU = custom.getString("disabledOU");
+  			}
+  			return disabledOU;
+  		]]>
+  		</Source>
+  	</Script>
+  </Variable>
+  <Variable name="disConnectedApps" type="java.util.List"/>
+  <RuleLibraries>
+	<Reference class="sailpoint.object.Rule" name="CMH-AD-Generic-Rulelibrary"/>
+  </RuleLibraries>
+  <Description>This workflow is used to immediately disabling a user identity, disable AD account, generate ServiceNow ticket for unmanaged accounts.</Description>
+  <Step icon="Start" name="Start" posX="28" posY="10">
+    <Transition to="Get Identity for Termination"/>
+  </Step>
+  <Step icon="Provision" name="Get Identity for Termination" posX="94" posY="115">
+    <Approval name="Identity for Termination" owner="ref:launcher" return="terminatingUserId">
+      <Arg name="workItemDescription" value="string:Immediate Termination"/>
+      <Arg name="workItemForm" value="string:CMH-Immediate-Termination-Form"/>
+    </Approval>
+    <Transition to="Retrieve Identity Info"/>
+  </Step>
+  <Step icon="Task" name="Retrieve Identity Info">
+  	<Script>
+  		<Source>
+  		<![CDATA[
+  			import org.apache.log4j.Logger;
+  			import sailpoint.object.Identity;
+  			
+  			Logger log = Logger.getLogger("CMH_ImmediateTerminationLog");	
+  			String userName = null;
+  			String employeeId = null;
+  			String userOnLegalHold = null;
+  			log.debug("CMH-Immediate-Termination-Process-Workflow:User selected :"+terminatingUserId);
+  			if(terminatingUserId!=null){
+				Identity iden = context.getObjectById(Identity.class,terminatingUserId);
+            	userName = iden.getName();
+            	if(userName!=null){
+            		wfcontext.getRootWorkflowCase().put("identityName",userName);
+            	}
+            	employeeId = iden.getStringAttribute("employeeId");
+            	if(employeeId!=null){
+            		wfcontext.getWorkflowCase().put("employeeId",employeeId);
+            	}
+            	userOnLegalHold = iden.getStringAttribute("userOnLegalHold");
+            	wfcontext.getWorkflowCase().put("userOnLegalHold",userOnLegalHold);
+          	}
+        ]]>
+  		</Source>
+  	</Script>
+  	<Transition to="Validate Data"/>
+  </Step>
+  <Step icon="Task" name="Validate Data" resultVariable="validationErrors">
+  	<Script>
+  		<Source>
+  		<![CDATA[
+  			import org.apache.log4j.Logger;
+  			import sailpoint.tools.Util;
+  			
+  			Logger log = Logger.getLogger("CMH_ImmediateTerminationLog");
+  			log.debug("CMH-Immediate-Termination-Process-Workflow: Validating the Data");
+  			List errorList = new ArrayList();
+  			if(adAppName==null || terminatedOU==null){
+  				log.error("CMH-Immediate-Termination-Process-Workflow: Custom object not configured properly");
+  				errorList.add("CMH-Immediate-Termination-Process-Workflow: Custom object not configured properly");
+  			}
+  			if(identityName==null){
+  				log.error("CMH-Immediate-Termination-Process-Workflow: identityName is null");
+  				errorList.add("CMH-Immediate-Termination-Process-Workflow: identityName is null");
+  			}
+  			if(employeeId==null){
+  				log.error("CMH-Immediate-Termination-Process-Workflow: employeeId is null");
+  				errorList.add("CMH-Immediate-Termination-Process-Workflow: employeeId is null");
+  			}
+  			return errorList;
+  		]]>
+  		</Source>
+  	</Script>
+  	<Transition to="Update Identity">
+  		<Script>
+  			<Source>
+  			<![CDATA[
+  				import org.apache.log4j.Logger;
+  				Logger log = Logger.getLogger("CMH_ImmediateTerminationLog");
+  				if(validationErrors==null || validationErrors.size()<=0){
+  					log.debug("CMH-Immediate-Termination-Process-Workflow: No Validation Errors");
+  					return true;
+  				}
+  				log.debug("CMH-Immediate-Termination-Process-Workflow: There is a Validation Errors");
+  				return false;
+  			]]>
+  			</Source>
+  		</Script>
+  	</Transition>
+  	<Transition to="Stop"/>
+  </Step>
+  <Step name="Update Identity" posX="371" posY="9" resultVariable="validationErrors">
+    <Script>
+      <Source>
+      <![CDATA[
+      	import java.text.DateFormat;
+  		import java.text.SimpleDateFormat;
+        import org.apache.log4j.Logger;
+        import sailpoint.api.IdentityService;
+        import sailpoint.object.Application;
+        import sailpoint.object.Identity;
+        import sailpoint.object.Link;
+        import sailpoint.tools.GeneralException;
+        import sailpoint.tools.Util;
+              
+       	Logger log = Logger.getLogger("CMH_ImmediateTerminationLog");
+
+        if (isDebugEnabled) {
+			log.debug("CMH-Immediate-Termination: Updating Identity Attributes for "+ employeeId);
+        }
+
+        if (validationErrors == null) {
+			validationErrors = new ArrayList();
+        }
+        
+		Identity user = (Identity) context.getObjectByName(Identity.class,identityName);         	
+	    if (user != null) {
+	    	try {
+				String dateFormat = "MM/dd/yyyy";
+	
+               	DateFormat terminationDateFormat = new SimpleDateFormat(dateFormat);
+               	Date currentDate = new Date();
+               	String terminationDate = terminationDateFormat.format(currentDate);
+               	
+                Date deletionDate = Util.incrementDateByDays(currentDate,numberOfDays);
+                DateFormat deletionDateFormat = new SimpleDateFormat(dateFormat);
+               	String deletionDateStr = deletionDateFormat.format(deletionDate);
+               	
+               	if(Util.isNotNullOrEmpty(inforAppName)){
+               		Application inforApp = context.getObjectByName(Application.class,inforAppName);
+               		if(inforApp!=null){
+	               		IdentityService iser = new IdentityService(context);
+		  				List appLinks = iser.getLinks(user,inforApp);
+		  				if(appLinks!=null && appLinks.size()>0){
+		  					Link inforLink = appLinks.get(0);
+		  					if(inforLink!=null){
+		  						inforLink.setAttribute("RelationshipStatus","TERMINATED");
+		  						inforLink.setAttribute("TerminationDate",terminationDate);
+		  						context.saveObject(inforLink);
+		  					}
+		  				}
+		  			}
+               	}
+               	
+               	user.setInactive(true);
+                user.setAttribute("status","TERMINATED");
+                user.setAttribute("terminationDate", terminationDate);
+                user.setAttribute("deletionDate", deletionDateStr);
+                context.saveObject(user);
+                context.commitTransaction();	
+			} catch (GeneralException e) {
+	            log.error("Error in updating identity attributes "+ e.getMessage());
+	        }
+        }
+
+        if (isDebugEnabled) {
+          	log.debug("CMH-Immediate-Termination: Updating Identity Attributes for "+ employeeId + " completed");
+        }
+        return validationErrors;
+        
+     ]]>
+     </Source>
+    </Script>
+    <Transition to="Get Disconnected Apps"/>
+  </Step>
+  <Step icon="Task" name="Get Disconnected Apps" resultVariable="disConnectedApps">
+  	<Script>
+  		<Source>
+  		<![CDATA[
+  			import org.apache.log4j.Logger;
+  			
+  			Logger log = Logger.getLogger("CMH_ImmediateTerminationLog");
+  			List disConnectedApps = getAppsToDelete(identityName,"CMH-Leaver-Custom-Object","disConnectedApplications");
+  			if(disConnectedApps==null || disConnectedApps.size()<=0){
+  				log.info("CMH-LifeycycleEvent-Leaver-Delete: There are no disconnected Apps associated with the user");
+  			}
+  			else if(isDebugEnabled){
+  				log.debug("CMH-LifeycycleEvent-Leaver-Delete: List of disConnected Apps to be deleted: "+disConnectedApps.toString());
+  			}
+  			return disConnectedApps;
+  		]]>
+  		</Source>
+  	</Script>
+  	<Transition to="Disable Accounts"/>
+  </Step>
+  <Step name="Disable Accounts" posX="521" posY="3" resultVariable="plan">
+    <Script>
+      <Source>
+      <![CDATA[
+      	import org.apache.log4j.Logger;
+      	import sailpoint.api.IdentityService;
+		import sailpoint.object.Application;
+		import sailpoint.object.Attributes;
+        import sailpoint.object.Custom;
+        import sailpoint.object.Identity;
+        import sailpoint.object.Link;
+        import sailpoint.object.ProvisioningPlan;
+        import sailpoint.tools.GeneralException;
+        import sailpoint.object.ProvisioningPlan.AccountRequest;
+        import sailpoint.object.ProvisioningPlan.AttributeRequest;
+           
+        Logger log = Logger.getLogger("CMH_ImmediateTerminationLog");
+		
+        if (isDebugEnabled) {
+        	log.debug("CMH-Immediate-Termination: Disable AD Account for "+ employeeId + " started");
+        }
+
+        if (validationErrors == null) {
+          	validationErrors = new ArrayList();
+        }
+        
+        ProvisioningPlan adPlan = new ProvisioningPlan();
+		
+		Identity user = context.getObjectByName(Identity.class,identityName);
+		log.debug("CMH-Immediate-Termination: identityName :"+identityName);
+        if (null != user) {
+        	try {
+              	Application app = context.getObjectByName(Application.class,adAppName);
+                List accountRequests = new ArrayList();
+				
+				log.debug("CMH-Immediate-Termination: adAppName :"+adAppName);
+                if (app != null) {
+               		IdentityService idnService = new IdentityService(context);
+               		List adLinks = idnService.getLinks(user, app);
+               		for (Link adLink : adLinks) {
+                  		if (adLink != null) {
+                    		AccountRequest acctReq = new AccountRequest();
+                    		acctReq.setApplication(adAppName);
+                    		acctReq.setOperation(ProvisioningPlan.AccountRequest.Operation.Disable);
+                    		acctReq.setNativeIdentity(adLink.getNativeIdentity());
+							accountRequests.add(acctReq);
+							
+							AccountRequest modAcctReq = new AccountRequest();
+                    		modAcctReq.setApplication(adAppName);
+                    		modAcctReq.setOperation(ProvisioningPlan.AccountRequest.Operation.Modify);
+                    		modAcctReq.setNativeIdentity(adLink.getNativeIdentity());
+                    		modAcctReq.add(new AttributeRequest("IIQDisabled",ProvisioningPlan.Operation.Set,true));
+                    		modAcctReq.add(new AttributeRequest("pwdLastSet",ProvisioningPlan.Operation.Set,true));
+                     		if(userOnLegalHold==null || userOnLegalHold.equalsIgnoreCase("NO")){
+								modAcctReq.add(new AttributeRequest("AC_NewParent",ProvisioningPlan.Operation.Set,terminatedOU));
+                      		}else
+							modAcctReq.add(new AttributeRequest("mailNickname",ProvisioningPlan.Operation.Set,""));
+							accountRequests.add(modAcctReq);
+                    	}
+                  	}
+                  	adPlan.setAccountRequests(accountRequests);
+                }
+                adPlan.setIdentity(user);
+            } catch (GeneralException e) {
+            	String errMsg = "Error in Disabling User Accounts:"+ e.getMessage();
+              	log.error(errMsg);
+              	validationErrors.add(errMsg);
+            }
+		} 
+
+        if (isDebugEnabled) {
+          log.debug("CMH-Immediate-Termination: Plan for disabling the AD account is generated "+adPlan.toXml());
+        }
+        return adPlan;
+    ]]>
+    </Source>
+    </Script>
+    <Transition to="Compile Project">
+      <Script>
+        <Source>
+  		<![CDATA[
+  			if(plan.getAccountRequests()!=null && plan.getAccountRequests().size()>0){
+  				return true;
+  			}
+  			return false;
+  		]]>
+  		</Source>
+      </Script>
+    </Transition>
+    <Transition to="Create ServieNow Ticket"/>
+  </Step>
+  <Step action="call:compileProvisioningProject" icon="Task" name="Compile Project" posX="429" posY="150" resultVariable="project">
+    <Arg name="requester" value="string:spadmin"/>
+    <Arg name="requireCreateTemplates" value="string:false"/>
+    <Arg name="identityName" value="ref:identityName"/>
+    <Arg name="noLocking" value="true"/>
+    <Arg name="noApplicationTemplates" value="string:true"/>
+    <Arg name="source" value="ref:source"/>
+    <Arg name="optimisticProvisioning" value="string:false"/>
+    <Arg name="plan" value="ref:plan"/>
+    <Description>Compile the provisioning plan into a provisioning project.  
+                 If you need to pass in provisioner options like "noFiltering"  
+                 or "noRoleDeprovisioning" you must pass them as explicit  
+                 arguments to the call.  
+                 The evaluation options "requester" and "source" are commonly  
+                 set here.               
+                 You can also pass things into the Template and Field scripts by  
+                 defining Args in this step.</Description>
+    <Transition to="Create Identity Request"/>
+  </Step>
+  <Step action="call:createIdentityRequest" icon="Task" name="Create Identity Request" posX="593" posY="267">
+    <Arg name="identityName" value="1002"/>
+    <Arg name="project" value="ref:project"/>
+    <Arg name="source" value="ref:source"/>
+    <Arg name="priority" value="string:Normal"/>
+    <Arg name="flow" value="ref:flow"/>
+    <Return name="identityRequestId" to="identityRequestId"/>
+    <Transition to="Provision"/>
+  </Step>
+  <Step action="call:provisionProject" icon="Provision" name="Provision" posX="1082" posY="239">
+    <Arg name="background" value="false"/>
+    <Arg name="project" value="ref:project"/>
+    <Transition to="Complete Identity Request"/>
+  </Step>
+  <Step action="call:completeIdentityRequest" icon="Task" name="Complete Identity Request" posX="1069" posY="30" resultVariable="identityRequest">
+    <Arg name="autoVerify" value="false"/>
+    <Arg name="project" value="ref:project"/>
+    <Arg name="identityRequestId" value="ref:identityRequestId"/>
+    <Transition to="Create ServieNow Ticket">
+    	<Script>
+    		<Source>
+    		<![CDATA[
+    			import sailpoint.tools.Message;
+    			
+    			if(validationErrors==null || validationErrors.size()<=0){
+    				return true;
+    			}else if(wfcontext.getRootWorkflowCase().getMessages()==null || wfcontext.getRootWorkflowCase().getMessagesByType(Message.Type.Error)==null){
+    				return true;
+    			}
+    			return false;
+    		]]>
+    		</Source>
+    	</Script>
+    </Transition>
+    <Transition to="Stop"/>
+  </Step>
+  <Step name="Create ServieNow Ticket" posX="877">
+    <Script>
+      <Source>
+      <![CDATA[
+        import org.apache.log4j.Logger;
+  			
+		//method to generate service now ticket
+		Logger log = Logger.getLogger("CMH_ImmediateTerminationLog");
+		
+		if(isDebugEnabled){
+			log.debug("CMH-Immediate-Termination: Generating service now ticket for disconnected applications");
+		}
+		
+		String snowId = generateSnowTicket(identityName, "CMH-Service-Ticket-Configuration-Object", disConnectedApps,"Disable");
+		
+		log.debug("CMH-Immediate-Termination: Service Now ID :  "+snowId);
+		
+		//return snowId;
+    	]]>    
+    	</Source>
+    </Script>
+    <Transition to="Do Target Aggregation"/>
+  </Step>
+  <Step name="Do Target Aggregation" resultVariable="validationErrors">
+  	<Script>
+  		<Source>
+  		<![CDATA[
+  			import sailpoint.api.IdentityService;
+			import sailpoint.object.Application;
+			import sailpoint.object.Identity;
+			import sailpoint.object.Link;
+			import sailpoint.tools.Util;
+		
+			if(validationErrors==null){
+				validationErrors = new ArrayList();
+			}
+			Identity iden = context.getObjectByName(Identity.class,identityName);
+			Application app = context.getObjectByName(Application.class,adAppName);
+			if (iden!=null && app != null) {
+				IdentityService idnService = new IdentityService(context);
+               	List adLinks = idnService.getLinks(iden, app);
+           		for (Link adLink : adLinks) {
+           			if(adLink!=null){
+	           			String nativeIdentity = adLink.getNativeIdentity();
+	           			if(Util.isNotNullOrEmpty(nativeIdentity)){
+	           				String[] parts=nativeIdentity.split(",");
+	           				if(parts!=null){
+	           					String value=parts[0];
+	           					if(Util.isNotNullOrEmpty(value)){
+	           						String finalOU = value+","+terminatedOU;
+	           						validationErrors.addAll(doTargetedAggregation(finalOU,adAppName,identityName));
+	           					}
+	           				}
+	           			}
+           			}
+              	}
+            }
+            return validationErrors;
+  		]]>
+  		</Source>
+  	</Script>
+  	<Transition to="Stop"/>
+  </Step>
+  <Step catches="complete" icon="Catches" name="Check Status" posX="778" posY="180" resultVariable="validationErrors">
+    <Script>
+      <Source>
+      <![CDATA[
+       		import java.text.SimpleDateFormat;
+  			import org.apache.log4j.Logger;
+  			import sailpoint.object.AuditEvent;
+			import sailpoint.server.Auditor;
+  			import sailpoint.tools.Message;
+  			import sailpoint.tools.Util;
+  			
+  			Logger log = Logger.getLogger("CMH_ImmediateTerminationLog");
+  		
+  			log.debug("CMH_ImmediateTermination: Check Status step : Checking for errors");
+  			
+  			
+  			if(wfcontext.getRootWorkflowCase().getMessages()!=null && wfcontext.getRootWorkflowCase().getMessagesByType(Message.Type.Error)!=null){
+  				List errorMessagesList = wfcontext.getRootWorkflowCase().getMessagesByType(Message.Type.Error);
+  				String errorMessage = Util.listToCsv(errorMessagesList);
+  				if(validationErrors==null){
+  					validationErrors = new ArrayList();
+  				}
+  				validationErrors.add(errorMessage);
+  				log.error("CMH_ImmediateTermination: Check Status step : Errors Found : "+Util.listToCsv(validationErrors));	
+  			}
+  			
+  			String action = null;
+  			String source = "UI";
+  			String target = identityName;
+  			String attrName = "Employee ID";
+  			String attrVal = employeeId;
+  			Map strMap = new HashMap();
+  			if(Util.isEmpty(validationErrors)){
+  				action = "ImmediateTermination-Success";
+  				strMap.put("setString1","Immediate Termination Completed succesfully");
+  				strMap.put("setString2","AD/Exchange accounts Disabled and Service now ticket raised for unmanaged accounts successfully");
+  			}else{
+  				action = "ImmediateTermination-Failure";
+  				strMap.put("setString1","Immediate Termination failed due to errors");
+  				strMap.put("setString2",Util.listToCsv(validationErrors));
+  			}
+  			auditWrite(action,source,target,attrName,attrVal,strMap);
+  			
+  			log.debug("CMH_ImmediateTermination: Check Status step : Audit Event Generated");
+  			
+  			context.commitTransaction();
+  			return validationErrors;	 
+    ]]>    
+    </Source>
+    </Script>
+    <Transition to="Stop"/>
+  </Step>
+  <Step icon="Stop" name="Stop" posX="732" posY="53"/>
+</Workflow>

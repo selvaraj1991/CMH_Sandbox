@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Workflow PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<Workflow explicitTransitions="true" name="CMH-Link-AD-Account-Workflow" type="Subprocess">
+  <Variable input="true" name="oldIdentityName"/>
+  <Variable input="true" name="newIdentityName"/>
+  <Variable input="true" name="appName"/>
+  <Variable input="true" name="trace">
+    <Description>
+		Used for debugging this workflow and when set to true trace
+		will be sent to stdout.
+	</Description>
+  </Variable>
+  <Variable name="isDebugEnabled" type="boolean">
+  	<Script>
+  		<Source>
+  		<![CDATA[
+  			import org.apache.log4j.Logger;
+  			Logger log = Logger.getLogger("CMH-LifecycleEvent-User-Conversion");
+  			if(log.isDebugEnabled()){
+  				return true;
+  			}
+  			return false;
+  		]]>
+  		</Source>
+  	</Script>
+  </Variable>
+  <Step icon="Start" name="Start" posX="28" posY="10">
+    <Transition to="Link Account"/>
+  </Step>
+  <Step icon="Task" name="Link Account" posX="58" posY="10">
+    <Script>
+      <Source><![CDATA[
+		
+			import org.apache.log4j.Logger;  
+			import sailpoint.api.IdentityService;
+			import sailpoint.api.Provisioner;
+			import sailpoint.object.Application;
+			import sailpoint.object.Identity;
+			import sailpoint.object.Link;
+			import sailpoint.object.ProvisioningPlan;
+			import sailpoint.object.ProvisioningPlan.AccountRequest;
+			import sailpoint.object.ProvisioningPlan.AttributeRequest;
+			
+			
+			Logger log = Logger.getLogger("CMH-LifecycleEvent-User-Conversion");
+			
+			if(isDebugEnabled){
+				log.debug("CMH-Link-AD-Account: Building the plan to link the AD application account from User: "+oldIdentityName+" To User: "+newIdentityName);
+			}
+			
+			Identity srcObj = context.getObjectByName(Identity.class, oldIdentityName);  
+
+			Identity tgtObj = context.getObjectByName(Identity.class, newIdentityName);
+			  
+			Application appObj = context.getObjectByName(Application.class, appName);   
+			
+			ProvisioningPlan plan = new ProvisioningPlan();
+			List accountRequests = new ArrayList();
+			if(srcObj!=null && appObj!=null && tgtObj!=null){
+				IdentityService ids = new IdentityService(context);  
+				List adLinks = ids.getLinks(srcObj, appObj);
+				if(adLinks!=null && adLinks.size()>0){
+					for(Link li:adLinks){
+						AccountRequest account = new AccountRequest();
+						account.setOperation(ProvisioningPlan.AccountRequest.Operation.Modify);  
+						account.setApplication(ProvisioningPlan.APP_IIQ);  
+						
+						AttributeRequest req = new AttributeRequest();
+						req.setName(ProvisioningPlan.ATT_IIQ_LINKS);
+						req.setOperation(ProvisioningPlan.Operation.Add);
+						req.put(ProvisioningPlan.ARG_SOURCE_IDENTITY, li.getIdentity().getName());
+						req.setValue(li.getId());
+						
+						account.add(req);
+						accountRequests.add(account);
+					}
+				}
+			}
+			plan.setAccountRequests(accountRequests);
+			plan.setIdentity(tgtObj);  
+			plan.addRequester(context.getObjectByName(Identity.class, "spadmin"));  
+			plan.setSource(sailpoint.object.Source.LCM);    
+			
+			if(isDebugEnabled){
+				log.debug("CMH-Link-AD-Account: Plan has been generated successfully "+plan.toXml());
+			} 
+ 
+			Provisioner provisioner = new Provisioner(context);  
+			provisioner.setAssigner("spadmin");
+			provisioner.compile(plan);  
+			provisioner.execute();
+			
+			if(isDebugEnabled){
+				log.debug("CMH-Link-AD-Account:Plan is compiled and executed");
+			}
+		
+		]]></Source>
+    </Script>
+    <Transition to="Stop"/>
+  </Step>
+  <Step icon="Stop" name="Stop" posX="28" posY="10"/>
+</Workflow>

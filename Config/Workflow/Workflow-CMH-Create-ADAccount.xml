@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Workflow PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<Workflow explicitTransitions="true" libraries="Identity,IdentityRequest" name="CMH-Create-AD-Account-Workflow" type="Subprocess">
+  <Variable input="true" name="identityName"/>
+  <Variable input="true" name="adAppName"/>
+  <Variable input="true" name="source"/>
+  <Variable input="true" name="flow"/>
+  <Variable output="true" name="validationErrors" type="java.util.List"/>
+  <Variable name="plan" type="ProvisioningPlan"/>
+  <Variable name="project" type="ProvisioningProject"/>
+  <Variable name="identityRequestId"/>
+  <Variable name="isDebugEnabled" type="boolean">
+  	<Script>
+  		<Source>
+  		<![CDATA[
+  			import org.apache.log4j.Logger;
+  			Logger log = Logger.getLogger("CMH-LifecycleEvent-User-Conversion");
+  			if(log.isDebugEnabled()){
+  				return true;
+  			}
+  			return false;
+  		]]>
+  		</Source>
+  	</Script>
+  </Variable>
+  <Step icon="Start" name="Start" posX="28" posY="10">
+    <Transition to="Validate Data"/>
+  </Step>
+  <Step icon="Task" name="Validate Data" resultVariable="validationErrors">
+  	<Script>
+  		<Source>
+  		<![CDATA[
+  			import sailpoint.tools.Util;
+  			
+  			if(validationErrors==null){
+  				validationErrors = new ArrayList();
+  			}
+  			if(Util.isNullOrEmpty(identityName)){
+  				validationErrors.add("CMH-Create-AD-Account-Workflow: identityName is null, not referenced properly from the parent workflow");
+  			}
+  			if(Util.isNullOrEmpty(adAppName)){
+  				validationErrors.add("CMH-Create-AD-Account-Workflow: adAppName is null, not referenced properly from the parent workflow");
+  			}
+  			return validationErrors;
+  		]]>
+  		</Source>
+  	</Script>
+  	<Transition to="Build Plan for AD"/>
+  </Step>
+  <Step icon="Task" name="Build Plan for AD" posX="58" posY="10" resultVariable="plan">
+    <Script>
+      <Source><![CDATA[
+      	import org.apache.log4j.Logger;
+		import sailpoint.object.Identity;
+		import sailpoint.object.ProvisioningPlan;
+		import sailpoint.object.ProvisioningPlan.AccountRequest;
+		
+		Logger log = Logger.getLogger("CMH-LifecycleEvent-User-Conversion");
+		
+		log.info("CMH-Create-AD-Account-Workflow: Building Plan to create AD account");
+		
+		List acctReqs = new ArrayList();
+		Identity iden = context.getObjectByName(Identity.class, identityName);
+		
+		ProvisioningPlan adPlan = new ProvisioningPlan();
+		AccountRequest acctReq = new AccountRequest();
+		acctReq.setApplication(adAppName);
+		acctReq.setOperation(AccountRequest.Operation.Create);
+		acctReqs.add(acctReq);
+		adPlan.setAccountRequests(acctReqs);
+		adPlan.setIdentity(iden);
+		
+		log.info("CMH-Create-AD-Account-Workflow: Plan is generated to create AD account");
+		
+		return adPlan;
+		]]>
+		</Source>
+    </Script>
+    <Transition to="Compile Project"/>
+  </Step>
+  <Step action="call:compileProvisioningProject" icon="Task" name="Compile Project" posX="406" posY="10" resultVariable="project">
+    <Arg name="identityName" value="ref:identityName"/>
+    <Arg name="plan" value="ref:plan"/>
+    <Arg name="requester" value="string:spadmin"/>
+    <Arg name="source" value="ref:source"/>
+    <Arg name="optimisticProvisioning" value="string:false"/>
+    <Arg name="requireCreateTemplates" value="string:true"/>
+    <Arg name="noLocking" value="true"/>
+    <Arg name="noApplicationTemplates" value="string:false"/>
+    <Transition to="Create Identity Request"/>
+  </Step>
+  <Step action="call:createIdentityRequest" icon="Task" name="Create Identity Request" posX="841" posY="239">
+    <Arg name="project" value="ref:project"/>
+    <Arg name="source" value="ref:source"/>
+    <Arg name="priority" value="string:Normal"/>
+    <Arg name="identityName" value="ref:identityName"/>
+    <Arg name="flow" value="ref:flow"/>
+    <Return name="identityRequestId" to="identityRequestId"/>
+    <Transition to="Provision"/>
+  </Step>
+  <Step action="call:provisionProject" icon="Provision" name="Provision" posX="682" posY="10">
+    <Arg name="background" value="false"/>
+    <Arg name="project" value="ref:project"/>
+    <Transition to="Complete Identity Request"/>
+  </Step>
+  <Step action="call:completeIdentityRequest" icon="Task" name="Complete Identity Request" posX="953" posY="94" resultVariable="identityRequest">
+	<Arg name="project" value="ref:project"/>
+	<Arg name="autoVerify" value="false"/>
+	<Arg name="identityRequestId" value="ref:identityRequestId"/>
+	<Transition to="Stop"/>
+  </Step>
+  <Step icon="Stop" name="Stop" posX="28" posY="10"/>
+</Workflow>

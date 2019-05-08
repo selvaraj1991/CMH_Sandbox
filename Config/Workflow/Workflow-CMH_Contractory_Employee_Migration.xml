@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE Workflow PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<Workflow explicitTransitions="true" name="CMH-Contractor-To-Employee-Migration" libraries="Identity,IdentityRequest" type="IdentityLifecycle">
+<Variable initializer="true" input="true" name="trace">
+	<Description>
+		Used for debugging the workflow
+	</Description>
+</Variable>
+<Variable input="true" name="trigger">
+    <Description>The IdentityTrigger</Description>
+</Variable>
+<Variable initializer="string:false" name="transient">
+	<Description>
+		Transient workflows leave no TaskResult trace of their execution
+	</Description>
+</Variable>
+<Variable input="true" name="identityName">
+	<Description>The name of the identity.</Description>
+</Variable>
+<Variable initializer="script:(identityDisplayName != void) ? identityDisplayName : resolveDisplayName(identityName)" input="true" name="identityDisplayName">
+	<Description>
+		The displayName of the identity being updated.
+		Query for this using a projection query and fall back to the name.
+	</Description>
+</Variable>
+
+</Workflow>

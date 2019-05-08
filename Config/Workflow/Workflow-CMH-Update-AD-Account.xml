@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Workflow PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<Workflow explicitTransitions="true" libraries="Identity,IdentityRequest" name="CMH-Update-AD-Account-Workflow" type="Subprocess">
+  <Variable input="true" name="identityName"/>
+  <Variable input="true" name="adAppName"/>
+  <Variable input="true" name="source"/>
+  <Variable input="true" name="flow"/>
+  <Variable input="true" name="newUserOU"/>
+  <Variable input="true" name="userStatus"/>
+  <Variable input="true" name="employeeId"/>
+  <Variable input="true" name="assignmentType"/>
+  <Variable input="true" name="emailRequired"/>
+  <Variable input="true" name="isADdisabled" type="boolean"/>
+  <Variable input="true" name="eMail"/>
+  <Variable output="true" name="validationErrors" type="java.util.List"/>
+  <Variable name="plan" type="ProvisioningPlan"/>
+  <Variable name="project" type="ProvisioningProject"/>
+  <Variable name="identityRequestId"/>
+  <Variable name="isDebugEnabled" type="boolean">
+  	<Script>
+  		<Source>
+  		<![CDATA[
+  			import org.apache.log4j.Logger;
+  			Logger log = Logger.getLogger("CMH-LifecycleEvent-User-Conversion");
+  			if(log.isDebugEnabled()){
+  				return true;
+  			}
+  			return false;
+  		]]>
+  		</Source>
+  	</Script>
+  </Variable>
+  <Step icon="Start" name="Start" posX="28" posY="10">
+    <Transition to="Validate Data"/>
+  </Step>
+  <Step icon="Task" name="Validate Data" resultVariable="validationErrors">
+  	<Script>
+  		<Source>
+  		<![CDATA[
+  			import sailpoint.tools.Util;
+  			
+  			if(validationErrors==null){
+  				validationErrors = new ArrayList();
+  			}
+  			if(Util.isNullOrEmpty(identityName)){
+  				validationErrors.add("CMH-Update-AD-Account-Workflow: identityName is null, not referenced properly from the parent workflow");
+  			}
+  			if(Util.isNullOrEmpty(adAppName)){
+  				validationErrors.add("CMH-Update-AD-Account-Workflow: adAppName is null, not referenced properly from the parent workflow");
+  			}
+  			if(Util.isNullOrEmpty(newUserOU)){
+  				validationErrors.add("CMH-Update-AD-Account-Workflow: newUserOU is null, not referenced properly from the parent workflow");
+  			}
+  			if(Util.isNullOrEmpty(userStatus)){
+  				validationErrors.add("CMH-Update-AD-Account-Workflow: userStatus is null, not referenced properly from the parent workflow");
+  			}
+  			if(Util.isNullOrEmpty(assignmentType)){
+  				validationErrors.add("CMH-Update-AD-Account-Workflow: assignmentType is null, not referenced properly from the parent workflow");
+  			}
+  			if(Util.nullSafeCaseInsensitiveEq(assignmentType,"EMPLOYEE") && Util.isNullOrEmpty(eMail)){
+  				validationErrors.add("CMH-Update-AD-Account-Workflow: The email for the user is not configured, hence cannot proceed with user conversion for the user "+identityName);
+  			}else if(Util.nullSafeCaseInsensitiveEq(emailRequired,"YES") && Util.isNullOrEmpty(eMail)){
+  				validationErrors.add("CMH-Update-AD-Account-Workflow: The email for the user is not configured, hence cannot proceed with user conversion for the user "+identityName);
+  			}
+  			return validationErrors;
+  		]]>
+  		</Source>
+  	</Script>
+  	<Transition to="Update AD Account"/>
+  </Step>
+  <Step icon="Task" name="Update AD Account" posX="58" posY="10" resultVariable="plan">
+    <Script>
+      <Source><![CDATA[
+		
+			import org.apache.log4j.Logger;
+  			import sailpoint.api.IdentityService;
+  			import sailpoint.object.Application;
+  			import sailpoint.object.Identity;
+  			import sailpoint.object.Link;
+  			import sailpoint.object.ProvisioningPlan;
+  			import sailpoint.object.ProvisioningPlan.AccountRequest;
+  			import sailpoint.object.ProvisioningPlan.AttributeRequest;
+  			import sailpoint.tools.Util;
+  			
+  			Logger log = Logger.getLogger("CMH-LifecycleEvent-User-Conversion");
+  			
+  			if(isDebugEnabled){
+  				log.debug("CMH-LifecycleEvent-User-Conversion: Building Provisioning Plan for enabling the AD account of User: "+identityName);
+  			}
+  			
+  			ProvisioningPlan adPlan = new ProvisioningPlan();
+  			List accountRequests = new ArrayList();
+  			Identity iden = context.getObjectByName(Identity.class,identityName);
+  			Application app = context.getObjectByName(Application.class,adAppName);
+  			if(iden!=null && app!=null){
+  				IdentityService iser = new IdentityService(context);
+  				List adLinks = iser.getLinks(iden,app);
+  				if(adLinks!=null && adLinks.size()>0){
+	  				for(Link adLink:adLinks){
+	  					if(adLink!=null){
+	  						AccountRequest acctReq = new AccountRequest();
+	  						if(Util.nullSafeCaseInsensitiveEq(userStatus,"ACTIVE") && isADdisabled){
+		  						acctReq.setApplication(adAppName);
+		  						acctReq.setOperation(ProvisioningPlan.AccountRequest.Operation.Enable);
+		  						acctReq.setNativeIdentity(adLink.getNativeIdentity());
+		  						accountRequests.add(acctReq);
+	  						}else if(Util.nullSafeCaseInsensitiveEq(userStatus,"PREHIRE") && !isADdisabled){
+	  							acctReq.setApplication(adAppName);
+		  						acctReq.setOperation(ProvisioningPlan.AccountRequest.Operation.Disable);
+		  						acctReq.setNativeIdentity(adLink.getNativeIdentity());
+		  						accountRequests.add(acctReq);
+	  						}
+	  						
+	  						AccountRequest acctReqMod = new AccountRequest();
+	  						acctReqMod.setApplication(adAppName);
+	  						acctReqMod.setOperation(ProvisioningPlan.AccountRequest.Operation.Modify);
+	  						acctReqMod.setNativeIdentity(adLink.getNativeIdentity());
+	  						acctReqMod.add(new AttributeRequest("AC_NewParent",newUserOU));
+	  						if(Util.nullSafeCaseInsensitiveEq(userStatus,"ACTIVE")){
+	  							acctReqMod.add(new AttributeRequest("IIQDisabled",ProvisioningPlan.Operation.Set,false));
+	  						}
+	  						
+  							if(Util.nullSafeCaseInsensitiveEq(assignmentType,"EMPLOYEE") || Util.nullSafeCaseInsensitiveEq(emailRequired,"Yes")){
+  								acctReqMod.add(new AttributeRequest("mail",ProvisioningPlan.Operation.Set,eMail));
+  							}
+	  						
+	  						acctReqMod.add(new AttributeRequest("employeeType",ProvisioningPlan.Operation.Set,assignmentType));
+	  						acctReqMod.add(new AttributeRequest("employeeNumber",ProvisioningPlan.Operation.Set,employeeId));
+	  						accountRequests.add(acctReqMod);
+	  					}
+	  				}
+	  			}
+  				adPlan.setAccountRequests(accountRequests);
+  			}
+  			adPlan.setIdentity(iden);
+  			
+  			if(isDebugEnabled){
+  				log.debug("CMH-LifecycleEvent-User-Conversion: Plan created for the user successfully: "+adPlan.toXml());
+  			}
+  			return adPlan;
+		
+		]]></Source>
+    </Script>
+    <Transition to="Compile Project"/>
+  </Step>
+  <Step action="call:compileProvisioningProject" icon="Task" name="Compile Project" posX="406" posY="10" resultVariable="project">
+    <Arg name="identityName" value="ref:identityName"/>
+    <Arg name="plan" value="ref:plan"/>
+    <Arg name="requester" value="string:spadmin"/>
+    <Arg name="source" value="ref:source"/>
+    <Arg name="optimisticProvisioning" value="string:false"/>
+    <Arg name="requireCreateTemplates" value="string:false"/>
+    <Arg name="noLocking" value="true"/>
+    <Arg name="noApplicationTemplates" value="string:true"/>
+    <Description>Compile the provisioning plan into a provisioning project.  
+                 If you need to pass in provisioner options like "noFiltering"  
+                 or "noRoleDeprovisioning" you must pass them as explicit  
+                 arguments to the call.  
+                 The evaluation options "requester" and "source" are commonly  
+                 set here.               
+                 You can also pass things into the Template and Field scripts by  
+                 defining Args in this step.</Description>
+    <Transition to="Create Identity Request"/>
+  </Step>
+  <Step action="call:createIdentityRequest" icon="Task" name="Create Identity Request" posX="841" posY="239">
+    <Arg name="project" value="ref:project"/>
+    <Arg name="source" value="ref:source"/>
+    <Arg name="priority" value="string:Normal"/>
+    <Arg name="identityName" value="ref:identityName"/>
+    <Arg name="flow" value="ref:flow"/>
+    <Return name="identityRequestId" to="identityRequestId"/>
+    <Transition to="Provision"/>
+  </Step>
+  <Step action="call:provisionProject" icon="Provision" name="Provision" posX="682" posY="10">
+    <Arg name="background" value="false"/>
+    <Arg name="project" value="ref:project"/>
+    <Transition to="Complete Identity Request"/>
+  </Step>
+  <Step action="call:completeIdentityRequest" icon="Task" name="Complete Identity Request" posX="953" posY="94" resultVariable="identityRequest">
+	<Arg name="project" value="ref:project"/>
+	<Arg name="autoVerify" value="false"/>
+	<Arg name="identityRequestId" value="ref:identityRequestId"/>
+	<Transition to="Stop"/>
+  </Step>
+  <Step icon="Stop" name="Stop" posX="28" posY="10"/>
+</Workflow>
