@@ -156,7 +156,7 @@
   		]]>
   		</Source>
   	</Script>
-  	<Transition to="Get Connected Apps">
+  	<Transition to="Update Identity">
   		<Script>
   			<Source>
   			<![CDATA[
@@ -171,6 +171,21 @@
   	</Transition>
   	<Transition to="Stop"/>
   </Step>
+  <Step icon="Task" name="Update Identity">
+  	<Script>
+  		<Source>
+  		<![CDATA[
+  			import sailpoint.object.Identity;
+  			Identity iden = context.getObjectByName(Identity.class,identityName);
+			if(iden!=null){
+				iden.setAttribute("deletionStatus","deleted");
+				context.saveObject(iden);
+			}
+  		]]>
+  		</Source>
+  	</Script>
+  	<Transition to="Get Connected Apps"/>
+  </Step>
   <Step icon="Task" name="Get Connected Apps" resultVariable="connectedApps">
   	<Script>
   		<Source>
@@ -178,7 +193,7 @@
   			import org.apache.log4j.Logger;
   			
   			Logger log = Logger.getLogger("CMH-LifecycleEvent-Leaver-Delete");
-  			List connectedApps = getAppsToDelete(identityName,"CMH-Leaver-Custom-Object","connectedApplications");
+  			List connectedApps = getAppsToProcess(identityName,"CMH-Leaver-Custom-Object","connectedApplications");
   			if(connectedApps==null || connectedApps.size()<=0){
   				log.info("CMH-LifecycleEvent-Leaver-Delete: There are no connected Apps associated with the user");
   			}
@@ -198,7 +213,7 @@
   			import org.apache.log4j.Logger;
   			
   			Logger log = Logger.getLogger("CMH-LifecycleEvent-Leaver-Delete");
-  			List disConnectedApps = getAppsToDelete(identityName,"CMH-Leaver-Custom-Object","disConnectedApplications");
+  			List disConnectedApps = getAppsToProcess(identityName,"CMH-Leaver-Custom-Object","disConnectedApplications");
   			if(disConnectedApps==null || disConnectedApps.size()<=0){
   				log.info("CMH-LifecycleEvent-Leaver-Delete: There are no disconnected Apps associated with the user");
   			}
@@ -364,10 +379,10 @@
 	  			}
   			}
   			
-  			if(Util.isEmpty(validationErrors)){
+  			if(!Util.isEmpty(validationErrors)){
   				Identity iden = context.getObjectByName(Identity.class,identityName);
   				if(iden!=null){
-  					iden.setAttribute("deletionStatus","deleted");
+  					iden.removeAttribute("deletionStatus");
   					context.saveObject(iden);
   				}
   			} 			

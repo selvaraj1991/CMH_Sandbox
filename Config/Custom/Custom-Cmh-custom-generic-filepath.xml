@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Custom PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<Custom name="CMH-Custom-Generic-Filepath">
+  <Attributes>
+    <Map>
+      <entry key="filepath" value="/home/labuser/Installables/"/>
+      <entry key="reportpath" value="/home/labuser/Report/"/>
+    </Map>
+  </Attributes>
+</Custom>

@@ -172,7 +172,7 @@
 		} finally {
 			sailpoint.tools.Util.flushIterator(userItr);
 		}
-	} else if(StringUtils.isBlank(username)){
+	} else {
 		log.info("CMH-User-Creation-Rule: Creating a new user by generating username & email from firstname & lastname of the user");
 		String finalUsername =null;
 		String genUsername = userNameGenerator(firstName,lastName,middInitial,employeeId);	//Generate a username based on firstname,lastname, middleInitial		

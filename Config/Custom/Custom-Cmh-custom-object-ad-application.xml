@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Custom PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<Custom name="CMH-Custom-Object-AD-Application">
+  <Attributes>
+    <Map>
+      <entry key="O365License">
+        <value>
+          <List>
+            <String>O365Group1</String>
+            <String>O365Group2</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="applicationName" value="Active Directory"/>
+      <entry key="disabledOU" value="OU=Disabled,OU=Users Managed,DC=cmhAd,DC=com"/>
+      <entry key="activEmployeeOU" value="OU=Legal Hold,OU=Users,OU=Users Managed,DC=cmhAd,DC=com"/>
+      <entry key="inactivEmployeeOU" value="OU=Disabled Users,OU=Legal Hold,OU=Users,OU=Users Managed,DC=cmhAd,DC=com"/>
+      <entry key="nonEmployeeOU" value="OU=Legal Hold,OU=Contractors and Temps,OU=Users Managed,DC=cmhAd,DC=com"/>
+    </Map>
+  </Attributes>
+</Custom>

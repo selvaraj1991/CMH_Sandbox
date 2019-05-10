@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE Custom PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<Custom name="CMH-Service-Ticket-Configuration-Object">
+  <Attributes>
+    <Map>
+      <entry key="serviceNowRequestURL" value="https://dev55056.service-now.com/api/now/table/sc_request"/>
+      <entry key="serviceNowUserName" value="aileen.mottern"/>
+      <entry key="serviceNowUserPassword" value="1:ACP:Mo8T1RDQRnOeDur3MsH7TumC7HLAFSB8njMtGd0tc+s="/>
+    </Map>
+  </Attributes>
+</Custom>

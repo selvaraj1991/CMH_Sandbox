@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE Custom PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<Custom name="CMH-User-Role-Mapping-Custom-Object">
+  <Attributes>
+    <Map>
+      <entry key="BOARDMEMBER" value="Board Members Business Role"/>
+      <entry key="COMMUNITYDENTASSIST" value="Community Physicians Business Role"/>
+      <entry key="COMMUNITYPHYSICIAN" value="Community Physicians Business Role"/>
+      <entry key="COMMUNITYPROVIDEROTH" value="Community Physicians Business Role"/>
+      <entry key="CONTRACTAAANDNA" value="Contractor and Temps Business Role"/>
+      <entry key="CONTRACTCCTRANSPORT" value="Contractor and Temps Business Role"/>
+      <entry key="CONTRACTCODER" value="Coder Business Role"/>
+      <entry key="CONTRACTEEWELLCNTR" value="Contractor and Temps Business Role"/>
+      <entry key="CONTRACTEQUIPTECH" value="Contractor and Temps Business Role"/>
+      <entry key="CONTRACTFACILITIES" value="Contractor and Temps Business Role"/>
+      <entry key="CONTRACTPHYSICIAN" value="Contractor and Temps Business Role"/>
+      <entry key="CONTRACTWORKER" value="Contractor and Temps Business Role"/>
+      <entry key="CONTRACTWORKEROS" value="Contractor and Temps Business Role"/>
+      <entry key="CONTRACTWORKERST" value="Contractor and Temps Business Role"/>
+      <entry key="EMERITUSFACULTY" value="Honorary Business Role"/>
+      <entry key="EMPLOYEE" value="Employee Business Role"/>
+      <entry key="FELLOWFLOAT" value="Residents Business Role"/>
+      <entry key="FINANCECONTRACTOR" value="Contractor and Temps Business Role"/>
+      <entry key="FOODVENDNOTSODEXHO" value="Contractor and Temps Business Role"/>
+      <entry key="FOODVENDSODEXHO" value="Food Vendor Sodexo Business Role"/>
+      <entry key="FOUNDATIONBOARD" value="Board Members Business Role"/>
+      <entry key="HONORARYSTAFF" value="Honorary Business Role"/>
+      <entry key="INSTRUCTORTRNGCNTR" value="Contractor and Temps Business Role"/>
+      <entry key="INTLOBSERVER" value="Residents Business Role"/>
+      <entry key="IRBMEMBER" value="IRB Business Role"/>
+      <entry key="OFFSITEISCONTRACTOR" value="Contractor and Temps Business Role"/>
+      <entry key="ORGANDONATIONORGREP" value="Contractor and Temps Business Role"/>
+      <entry key="RESEARCHFACULTY" value="Contractor and Temps Business Role"/>
+      <entry key="RESEARCHMONITOR" value="Research Monitor Business Role"/>
+      <entry key="RESIDENT" value="Residents Business Role"/>
+      <entry key="RESIDENTFLOAT" value="Residents Business Role"/>
+      <entry key="RESIDENTMEDPEDS" value="Residents Business Role"/>
+      <entry key="STUDENT" value="Students and Interns Business Role"/>
+      <entry key="STUDENTMEDICAL" value="Students and Interns Business Role"/>
+      <entry key="STUDENTMSNLDSHP" value="Student Nurses Business Role"/>
+      <entry key="STUDENTNURSE" value="Student Nurses Business Role"/>
+      <entry key="STUDENTNURSEAPRN" value="Student Nurses Business Role"/>
+      <entry key="STUDENTNURSECCCAP" value="Student Nurses Business Role"/>
+      <entry key="STUDENTNURSEINSTRUCT" value="Student Nurses Business Role"/>
+      <entry key="SUPPLYCHAINVENDOR" value="Contractor and Temps Business Role"/>
+      <entry key="TEMPWORKER" value="Contractor and Temps Business Role"/>
+      <entry key="TRAVELER" value="Traveler Business Role"/>
+      <entry key="VOLUNTEER" value="Volunteer Business Role"/>
+    </Map>
+  </Attributes>
+</Custom>

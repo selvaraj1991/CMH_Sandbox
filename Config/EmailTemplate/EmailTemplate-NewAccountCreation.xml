@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE EmailTemplate PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<EmailTemplate name="New Account Creation">
+  <Body>
+	<![CDATA[
+	<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	</head>
+	<body style="background:#FFF;margin:0;padding:0;text-align:left;">
+		<font face="calibri">
+  
+	<p>Hello $managername</p>
+	&amp;lt;p&gt;
+	A network login has been created for $identityName. Here are the details about this account :&amp;lt;br/&gt;&amp;lt;br/&gt;
+	&amp;lt;b&gt;User: $identityName&amp;lt;/b&gt;&amp;lt;br/&gt;
+	&amp;lt;b&gt;Username: $userName&amp;lt;/b&gt;&amp;lt;br/&gt;
+	&amp;lt;b&gt;Employee ID: $employeeId&amp;lt;/b&gt;&amp;lt;br/&gt;
+	&amp;lt;b&gt;User Type: $userType&amp;lt;/b&gt;&amp;lt;br/&gt;&amp;lt;br/&gt;
+	The initial temporary password is: First initial of user’s first name in lower case followed by first initial of user’s last name in lower case followed by month of user’s birthdate in MM format followed by day of user’s birthdate in DD format followed by last 4 digits of user’s employee number.&amp;lt;br/&gt;&amp;lt;br/&gt;
+	User will be prompted to reset the initial password.
+	If user has any issues with the new password and is unable to login, please contact the Service desk at xxxxxx for assistance.
+	DO NOT REPLY TO THIS EMAIL. THIS IS AN AUTOMATED MESSAGE.
+    If you have any questions, contact the IAM team at IAMAccountSupport@cmh.edu.
+	Thanks,&amp;lt;br/&gt; The Identity Management Team
+	&amp;lt;/p&gt;
+  
+  		&amp;lt;/font&gt;
+	&amp;lt;/body&gt;
+&amp;lt;/html&gt;
+ ]]>
+</Body>
+  <Description>
+    Email Template for New Account Creation.
+  </Description>
+  <Signature>
+    <Inputs>
+      <Argument name="Manager" type="string">
+        <Description>The manager display name.</Description>
+      </Argument>
+      <Argument name="identityName" type="string">
+        <Description>The users identity name.</Description>
+      </Argument>
+      <Argument name="userName" type="string">
+        <Description>The users username.</Description>
+      </Argument>
+      <Argument name="employeeId" type="string">
+        <Description>The users employeeId.</Description>
+      </Argument>
+      <Argument name="userType" type="string">
+        <Description>The users user type.</Description>
+      </Argument>
+    </Inputs>
+  </Signature>
+  <Subject>Network account created for $identityName</Subject>
+</EmailTemplate>

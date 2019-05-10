@@ -255,7 +255,7 @@
   			import org.apache.log4j.Logger;
   			
   			Logger log = Logger.getLogger("CMH_ImmediateTerminationLog");
-  			List disConnectedApps = getAppsToDelete(identityName,"CMH-Leaver-Custom-Object","disConnectedApplications");
+  			List disConnectedApps = getAppsToProcess(identityName,"CMH-Leaver-Custom-Object","disConnectedApplications");
   			if(disConnectedApps==null || disConnectedApps.size()<=0){
   				log.info("CMH-LifeycycleEvent-Leaver-Delete: There are no disconnected Apps associated with the user");
   			}

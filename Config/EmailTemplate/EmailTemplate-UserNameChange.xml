@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE EmailTemplate PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<EmailTemplate name="User Name Change">
+  <Body>
+  
+&lt;html&gt;
+	&lt;head&gt;
+		&lt;meta http-equiv="Content-Type" content="text/html; charset=UTF-8"&gt;
+	&lt;/head&gt;
+	&lt;body style="background:#FFF;margin:0;padding:0;text-align:left;"&gt;
+		&lt;font face="calibri"&gt;
+	&lt;p&gt;Hello $identityName,&lt;/p&gt;
+	&lt;p&gt;Your request for name change has been completed. Please follow the instructions below:&lt;br/&gt;&lt;br/&gt;
+	Restart your computer and login with your new username: &lt;b&gt;$userName&lt;/b&gt;&lt;br/&gt;
+	Your network password will remain the same.&lt;br/&gt;
+	Your new email address is: &lt;b&gt;$email&lt;/b&gt;&lt;br/&gt;
+	It may take an hour for your new email address to start working. However, your old email address will continue to work.&lt;br/&gt;
+	If you have a Cerner account, it has been updated to your new username as well. If you have been setup for Single-Sign-On (SSO), your password will remain the same as your network password. If you are not setup for SSO, you will need to contact the helpdesk for your password.&lt;br/&gt;&lt;br/&gt;
+	DO NOT REPLY TO THIS EMAIL. THIS IS AN AUTOMATED MESSAGE.&lt;br/&gt;
+	 If you have any questions, contact the IAM team at IAMAccountSupport@cmh.edu.&lt;br/&gt;&lt;/p&gt;
+	&lt;p&gt;Thanks,&lt;br/&gt; The Identity Management Team &lt;/p&gt;
+	 		&lt;/font&gt;
+	&lt;/body&gt;
+&lt;/html&gt;
+
+  </Body>
+  <Description>
+    Email Template for User Name Change.
+  </Description>
+  <Signature>
+    <Inputs>
+      <Argument name="identityName" type="string">
+        <Description>The users identity name.</Description>
+      </Argument>
+      <Argument name="userName" type="string">
+        <Description>The users username.</Description>
+      </Argument>
+      <Argument name="email" type="string">
+        <Description>The user's email.</Description>
+      </Argument>
+    </Inputs>
+  </Signature>
+  <Subject>Name change request completed for $identityName</Subject>
+</EmailTemplate>

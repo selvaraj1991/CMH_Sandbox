@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE Custom PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<Custom name="CMH-User-OU-Mapping-Custom-Object">
+  <Attributes>
+    <Map>
+      <entry key="BOARDMEMBER" value="OU=Board Members,OU=Users Managed,DC=cmhad,DC=com"/>
+      <entry key="COMMUNITYDENTASSIST" value="OU=Community Physicians,OU=Users Managed,DC=cmhad,DC=com"/>
+      <entry key="COMMUNITYPHYSICIAN" value="OU=Community Physicians,OU=Users Managed,DC=cmhad,DC=com"/>
+      <entry key="COMMUNITYPROVIDEROTH" value="OU=Community Physicians,OU=Users Managed,DC=CMH,DC=Interna"/>
+      <entry key="CONTRACTAAANDNA" value="OU=Contractors and Temps,OU=Users Managed,DC=cmhAd,DC=com"/>
+      <entry key="CONTRACTCCTRANSPORT" value="OU=Contractors and Temps,OU=Users Managed,DC=cmhad,DC=com"/>
+      <entry key="CONTRACTCODER" value="OU=Contractors and Temps,OU=Users Managed,dc=cmhAd,dc=com"/>
+      <entry key="CONTRACTEEWELLCNTR" value="OU=Contractors and Temps,OU=Users Managed,DC=CMH,DC=Interna"/>
+      <entry key="CONTRACTEQUIPTECH" value="OU=Contractors and Temps,OU=Users Managed,DC=cmhad,DC=com"/>
+      <entry key="CONTRACTFACILITIES" value="OU=Contractors and Temps,OU=Users Managed,DC=cmhad,DC=com"/>
+      <entry key="CONTRACTPHYSICIAN" value="OU=Contractors and Temps,OU=Users Managed,DC=cmhad,DC=com"/>
+      <entry key="CONTRACTWORKER" value="OU=Contractors and Temps,OU=Users Managed,DC=cmhad,DC=com"/>
+      <entry key="CONTRACTWORKEROS" value="OU=Contractors and Temps,OU=Users Managed,DC=cmhad,DC=com"/>
+      <entry key="CONTRACTWORKERST" value="OU=Contractors and Temps,OU=Users Managed,DC=cmhad,DC=com"/>
+      <entry key="EMERITUSFACULTY" value="OU=Honorary Providers,OU=Users Managed,DC=cmhad,DC=com"/>
+      <entry key="EMPLOYEE" value="OU=Users,OU=Users Managed,DC=cmhad,DC=com"/>
+      <entry key="FELLOWFLOAT" value="OU=Residents,OU=Users Managed,DC=cmhad,DC=com"/>
+      <entry key="FINANCECONTRACTOR" value="OU=Contractors and Temps,OU=Users Managed,DC=cmhad,DC=com"/>
+      <entry key="FOODVENDNOTSODEXHO" value="OU=Contractors and Temps,OU=Users Managed,DC=cmhad,DC=com"/>
+      <entry key="FOODVENDSODEXHO" value="OU=Sodexo,OU=Users Managed,DC=cmhad,DC=com"/>
+      <entry key="FOUNDATIONBOARD" value="OU=Board Members,OU=Users Managed,DC=cmhad,DC=com"/>
+      <entry key="HONORARYSTAFF" value="OU=Honorary Providers,OU=Users Managed,DC=cmhad,DC=com"/>
+      <entry key="INSTRUCTORTRNGCNTR" value="OU=Contractors and Temps,OU=Users Managed,DC=cmhad,DC=com"/>
+      <entry key="INTLOBSERVER" value="OU=Residents,OU=Users Managed,DC=cmhad,DC=com"/>
+      <entry key="IRBMEMBER" value="OU=IRB Members,OU=Users Managed,DC=cmhad,DC=com"/>
+      <entry key="OFFSITEISCONTRACTOR" value="OU=Contractors and Temps,OU=Users Managed,DC=cmhad,DC=com"/>
+      <entry key="ORGANDONATIONORGREP" value="OU=Contractors and Temps,OU=Users Managed,DC=cmhad,DC=com"/>
+      <entry key="RESEARCHFACULTY" value="OU=Contractors and Temps,OU=Users Managed,DC=cmhad,DC=com"/>
+      <entry key="RESEARCHMONITOR" value="OU=Monitors,OU=Users Managed,DC=cmhad,DC=com"/>
+      <entry key="RESIDENT" value="OU=Residents,OU=Users Managed,DC=cmhad,DC=com"/>
+      <entry key="RESIDENTFLOAT" value="OU=Residents,OU=Users Managed,DC=cmhad,DC=com"/>
+      <entry key="RESIDENTMEDPEDS" value="OU=Residents,OU=Users Managed,DC=cmhad,DC=com"/>
+      <entry key="STUDENT" value="OU=Students and Interns,OU=Users Managed,DC=cmhad,DC=com"/>
+      <entry key="STUDENTMEDICAL" value="OU=Students and Interns,OU=Users Managed,DC=cmhad,DC=com"/>
+      <entry key="STUDENTMSNLDSHP" value="OU=Student Nurses,OU=Users Managed,DC=cmhad,DC=com"/>
+      <entry key="STUDENTNURSE" value="OU=Student Nurses,OU=Users Managed,DC=cmhad,DC=com"/>
+      <entry key="STUDENTNURSEAPRN" value="OU=Student Nurses,OU=Users Managed,DC=cmhad,DC=com"/>
+      <entry key="STUDENTNURSECCCAP" value="OU=Student Nurses,OU=Users Managed,DC=cmhad,DC=com"/>
+      <entry key="STUDENTNURSEINSTRUCT" value="OU=Student Nurses,OU=Users Managed,DC=cmhad,DC=com"/>
+      <entry key="SUPPLYCHAINVENDOR" value="OU=Contractors and Temps,OU=Users Managed,DC=cmhad,DC=com"/>
+      <entry key="TEMPWORKER" value="OU=Contractors and Temps,OU=Users Managed,DC=cmhad,DC=com"/>
+      <entry key="TRAVELER" value="OU=Travelers,OU=Users Managed,DC=cmhad,DC=com"/>
+      <entry key="VOLUNTEER" value="OU=Volunteer Services,OU=Users Managed,DC=cmhad,DC=com"/>
+    </Map>
+  </Attributes>
+</Custom>

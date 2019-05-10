@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Custom PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<Custom name="CMH-Infor-Incremental-Aggregation-Custom-Object">
+  <Attributes>
+    <Map>
+	  <entry key="lastRunTimeStamp"/>
+	  <entry key="applicationName" value=""/>
+    </Map>
+  </Attributes>
+</Custom>
