@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Application PUBLIC "sailpoint.dtd" "sailpoint.dtd">
-<Application authoritative="true" connector="sailpoint.connector.JDBCConnector" featuresString="DISCOVER_SCHEMA, PROVISIONING, SYNC_PROVISIONING, DIRECT_PERMISSIONS, SEARCH, ENABLE, UNLOCK" icon="databaseIcon" name="Infor HR Database" profileClass="" type="JDBC">
+<Application authoritative="true" connector="sailpoint.connector.JDBCConnector" featuresString="DISCOVER_SCHEMA, PROVISIONING, SYNC_PROVISIONING, DIRECT_PERMISSIONS, SEARCH, ENABLE, UNLOCK" icon="databaseIcon" name="%%CMH-Infor-ApplicationName%%" profileClass="" type="JDBC">
   <AccountCorrelationConfig>
     <Reference class="sailpoint.object.CorrelationConfig" name="CMH-Infor-Correlation"/>
   </AccountCorrelationConfig>
@@ -58,7 +58,7 @@
         </value>
       </entry>
       <entry key="partitionStatements"/>
-      <entry key="password" value="1:ACP:peyoxBC/3w5swrsQMAPlOnofNaXkJ9k38OuEMUrnbns="/>
+      <entry key="password" value="%%CMH-Infor-Password%%"/>
       <entry key="provisionRule" value="globalRule"/>
       <entry key="sysDescriptions">
         <value>
@@ -69,7 +69,7 @@
       </entry>
       <entry key="templateApplication" value="JDBC Template"/>
       <entry key="testConnSQL" value="select * from users"/>
-      <entry key="url" value="jdbc:mysql://172.17.36.172:3306/AuthSource"/>
+      <entry key="url" value="%%CMH-Infor-URL%%"/>
       <entry key="useExecuteQuery">
         <value>
           <Boolean/>
@@ -105,7 +105,7 @@
           <Boolean/>
         </value>
       </entry>
-      <entry key="user" value="root"/>
+      <entry key="user" value="%%CMH-Infor-Username%%"/>
     </Map>
   </Attributes>
   <CreationRule>

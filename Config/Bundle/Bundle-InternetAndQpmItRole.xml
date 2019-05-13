@@ -25,14 +25,14 @@
   <Profiles>
     <Profile>
       <ApplicationRef>
-        <Reference class="sailpoint.object.Application" name="Active Directory"/>
+        <Reference class="sailpoint.object.Application" name="%%CMH-AD-ApplicationName%%"/>
       </ApplicationRef>
       <Constraints>
         <Filter operation="CONTAINS_ALL" property="memberOf">
           <Value>
             <List>
-              <String>CN=InternetOK,OU=Groups,OU=CMHUsers,DC=cmhAd,DC=com</String>
-              <String>CN=Quest Password Manager User Scope,OU=Groups,OU=CMHUsers,DC=cmhAd,DC=com</String>
+              <String>%%CMH-AD-InternetOK%%</String>
+              <String>%%CMH-AD-QPMUser%%</String>
             </List>
           </Value>
         </Filter>

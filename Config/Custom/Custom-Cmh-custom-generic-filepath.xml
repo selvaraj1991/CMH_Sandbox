@@ -3,8 +3,8 @@
 <Custom name="CMH-Custom-Generic-Filepath">
   <Attributes>
     <Map>
-      <entry key="filepath" value="/home/labuser/Installables/"/>
-      <entry key="reportpath" value="/home/labuser/Report/"/>
+      <entry key="filepath" value="%%CMH-Generic-FilePath%%"/>
+      <entry key="reportpath" value="%%CMH-Report-FilePath%%"/>
     </Map>
   </Attributes>
 </Custom>

@@ -1,9 +1,0 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<!DOCTYPE Custom PUBLIC "sailpoint.dtd" "sailpoint.dtd">
-<Custom name="CMH-Custom-Object-Infor-Application">
-  <Attributes>
-    <Map>
-      <entry key="hrApplicationName" value="AuthSource"/>
-    </Map>
-  </Attributes>
-</Custom>

@@ -3,49 +3,49 @@
 <Custom name="CMH-User-OU-Mapping-Custom-Object">
   <Attributes>
     <Map>
-      <entry key="BOARDMEMBER" value="OU=Board Members,OU=Users Managed,DC=CMH,DC=Internal"/>
-      <entry key="COMMUNITYDENTASSIST" value="OU=Community Physicians,OU=Users Managed,DC=CMH,DC=Internal"/>
-      <entry key="COMMUNITYPHYSICIAN" value="OU=Community Physicians,OU=Users Managed,DC=CMH,DC=Internal"/>
-      <entry key="COMMUNITYPROVIDEROTH" value="OU=Community Physicians,OU=Users Managed,DC=CMH,DC=Interna"/>
-      <entry key="CONTRACTAAANDNA" value="OU=Contractors and Temps,OU=Users Managed,DC=CMH,DC=Internal"/>
-      <entry key="CONTRACTCCTRANSPORT" value="OU=Contractors and Temps,OU=Users Managed,DC=CMH,DC=Internal"/>
-      <entry key="CONTRACTCODER" value="OU=Contractors and Temps,OU=Users Managed,DC=CMH,DC=Internal"/>
-      <entry key="CONTRACTEEWELLCNTR" value="OU=Contractors and Temps,OU=Users Managed,DC=CMH,DC=Interna"/>
-      <entry key="CONTRACTEQUIPTECH" value="OU=Contractors and Temps,OU=Users Managed,DC=CMH,DC=Internal"/>
-      <entry key="CONTRACTFACILITIES" value="OU=Contractors and Temps,OU=Users Managed,DC=CMH,DC=Internal"/>
-      <entry key="CONTRACTPHYSICIAN" value="OU=Contractors and Temps,OU=Users Managed,DC=CMH,DC=Internal"/>
-      <entry key="CONTRACTWORKER" value="OU=Contractors and Temps,OU=Users Managed,DC=CMH,DC=Internal"/>
-      <entry key="CONTRACTWORKEROS" value="OU=Contractors and Temps,OU=Users Managed,DC=CMH,DC=Internal"/>
-      <entry key="CONTRACTWORKERST" value="OU=Contractors and Temps,OU=Users Managed,DC=CMH,DC=Internal"/>
-      <entry key="EMERITUSFACULTY" value="OU=Honorary Providers,OU=Users Managed,DC=CMH,DC=Internal"/>
-      <entry key="EMPLOYEE" value="ou=Employees,ou=CMHUsers,dc=cmhAd,dc=com"/>
-      <entry key="FELLOWFLOAT" value="OU=Residents,OU=Users Managed,DC=CMH,DC=Internal"/>
-      <entry key="FINANCECONTRACTOR" value="OU=Contractors and Temps,OU=Users Managed,DC=CMH,DC=Internal"/>
-      <entry key="FOODVENDNOTSODEXHO" value="OU=Contractors and Temps,OU=Users Managed,DC=CMH,DC=Internal"/>
-      <entry key="FOODVENDSODEXHO" value="OU=Sodexo,OU=Users Managed,DC=CMH,DC=Internal"/>
-      <entry key="FOUNDATIONBOARD" value="OU=Board Members,OU=Users Managed,DC=CMH,DC=Internal"/>
-      <entry key="HONORARYSTAFF" value="OU=Honorary Providers,OU=Users Managed,DC=CMH,DC=Internal"/>
-      <entry key="INSTRUCTORTRNGCNTR" value="OU=Contractors and Temps,OU=Users Managed,DC=CMH,DC=Internal"/>
-      <entry key="INTLOBSERVER" value="OU=Residents,OU=Users Managed,DC=CMH,DC=Internal"/>
-      <entry key="IRBMEMBER" value="OU=IRB Members,OU=Users Managed,DC=CMH,DC=Internal"/>
-      <entry key="OFFSITEISCONTRACTOR" value="OU=Contractors and Temps,OU=Users Managed,DC=CMH,DC=Internal"/>
-      <entry key="ORGANDONATIONORGREP" value="OU=Contractors and Temps,OU=Users Managed,DC=CMH,DC=Internal"/>
-      <entry key="RESEARCHFACULTY" value="OU=Contractors and Temps,OU=Users Managed,DC=CMH,DC=Internal"/>
-      <entry key="RESEARCHMONITOR" value="OU=Monitors,OU=Users Managed,DC=CMH,DC=Internal"/>
-      <entry key="RESIDENT" value="OU=Residents,OU=Users Managed,DC=CMH,DC=Internal"/>
-      <entry key="RESIDENTFLOAT" value="OU=Residents,OU=Users Managed,DC=CMH,DC=Internal"/>
-      <entry key="RESIDENTMEDPEDS" value="OU=Residents,OU=Users Managed,DC=CMH,DC=Internal"/>
-      <entry key="STUDENT" value="OU=Students and Interns,OU=Users Managed,DC=CMH,DC=Internal"/>
-      <entry key="STUDENTMEDICAL" value="OU=Students and Interns,OU=Users Managed,DC=CMH,DC=Internal"/>
-      <entry key="STUDENTMSNLDSHP" value="OU=Student Nurses,OU=Users Managed,DC=CMH,DC=Internal"/>
-      <entry key="STUDENTNURSE" value="OU=Student Nurses,OU=Users Managed,DC=CMH,DC=Internal"/>
-      <entry key="STUDENTNURSEAPRN" value="OU=Student Nurses,OU=Users Managed,DC=CMH,DC=Internal"/>
-      <entry key="STUDENTNURSECCCAP" value="OU=Student Nurses,OU=Users Managed,DC=CMH,DC=Internal"/>
-      <entry key="STUDENTNURSEINSTRUCT" value="OU=Student Nurses,OU=Users Managed,DC=CMH,DC=Internal"/>
-      <entry key="SUPPLYCHAINVENDOR" value="OU=Contractors and Temps,OU=Users Managed,DC=CMH,DC=Internal"/>
-      <entry key="TEMPWORKER" value="OU=Contractors and Temps,OU=Users Managed,DC=CMH,DC=Internal"/>
-      <entry key="TRAVELER" value="OU=Travelers,OU=Users Managed,DC=CMH,DC=Internal"/>
-      <entry key="VOLUNTEER" value="OU=Volunteer Services,OU=Users Managed,DC=CMH,DC=Internal"/>
+      <entry key="BOARDMEMBER" value="%%CMH-AD-BoardMember-OU%%"/>
+      <entry key="COMMUNITYDENTASSIST" value="%%CMH-AD-CommunityPhysicians-OU%%"/>
+      <entry key="COMMUNITYPHYSICIAN" value="%%CMH-AD-CommunityPhysicians-OU%%"/>
+      <entry key="COMMUNITYPROVIDEROTH" value="%%CMH-AD-CommunityPhysicians-OU%%"/>
+      <entry key="CONTRACTAAANDNA" value="%%CMH-AD-Contractors-OU%%"/>
+      <entry key="CONTRACTCCTRANSPORT" value="%%CMH-AD-Contractors-OU%%"/>
+      <entry key="CONTRACTCODER" value="%%CMH-AD-Contractors-OU%%"/>
+      <entry key="CONTRACTEEWELLCNTR" value="%%CMH-AD-Contractors-OU%%"/>
+      <entry key="CONTRACTEQUIPTECH" value="%%CMH-AD-Contractors-OU%%"/>
+      <entry key="CONTRACTFACILITIES" value="%%CMH-AD-Contractors-OU%%"/>
+      <entry key="CONTRACTPHYSICIAN" value="%%CMH-AD-Contractors-OU%%"/>
+      <entry key="CONTRACTWORKER" value="%%CMH-AD-Contractors-OU%%"/>
+      <entry key="CONTRACTWORKEROS" value="%%CMH-AD-Contractors-OU%%"/>
+      <entry key="CONTRACTWORKERST" value="%%CMH-AD-Contractors-OU%%"/>
+      <entry key="EMERITUSFACULTY" value="%%CMH-AD-Honorary-Users-OU%%"/>
+      <entry key="EMPLOYEE" value="%%CMH-AD-Employees-OU%%"/>
+      <entry key="FELLOWFLOAT" value="%%CMH-AD-Residents-OU%%"/>
+      <entry key="FINANCECONTRACTOR" value="%%CMH-AD-Contractors-OU%%"/>
+      <entry key="FOODVENDNOTSODEXHO" value="%%CMH-AD-Contractors-OU%%"/>
+      <entry key="FOODVENDSODEXHO" value="%%CMH-AD-SodexoUser-OU%%"/>
+      <entry key="FOUNDATIONBOARD" value="%%CMH-AD-BoardMember-OU%%"/>
+      <entry key="HONORARYSTAFF" value="%%CMH-AD-Honorary-Users-OU%%"/>
+      <entry key="INSTRUCTORTRNGCNTR" value="%%CMH-AD-Contractors-OU%%"/>
+      <entry key="INTLOBSERVER" value="%%CMH-AD-Residents-OU%%"/>
+      <entry key="IRBMEMBER" value="%%CMH-AD-IRBMember-OU%%"/>
+      <entry key="OFFSITEISCONTRACTOR" value="%%CMH-AD-Contractors-OU%%"/>
+      <entry key="ORGANDONATIONORGREP" value="%%CMH-AD-Contractors-OU%%"/>
+      <entry key="RESEARCHFACULTY" value="%%CMH-AD-Contractors-OU%%"/>
+      <entry key="RESEARCHMONITOR" value="%%CMH-AD-RsrchMonitor-OU%%"/>
+      <entry key="RESIDENT" value="%%CMH-AD-Residents-OU%%"/>
+      <entry key="RESIDENTFLOAT" value="%%CMH-AD-Residents-OU%%"/>
+      <entry key="RESIDENTMEDPEDS" value="%%CMH-AD-Residents-OU%%"/>
+      <entry key="STUDENT" value="%%CMH-AD-StudentInterns-OU%%"/>
+      <entry key="STUDENTMEDICAL" value="%%CMH-AD-StudentInterns-OU%%"/>
+      <entry key="STUDENTMSNLDSHP" value="%%CMH-AD-StudentNurse-OU%%"/>
+      <entry key="STUDENTNURSE" value="%%CMH-AD-StudentNurse-OU%%"/>
+      <entry key="STUDENTNURSEAPRN" value="%%CMH-AD-StudentNurse-OU%%"/>
+      <entry key="STUDENTNURSECCCAP" value="%%CMH-AD-StudentNurse-OU%%"/>
+      <entry key="STUDENTNURSEINSTRUCT" value="%%CMH-AD-StudentNurse-OU%%"/>
+      <entry key="SUPPLYCHAINVENDOR" value="%%CMH-AD-Contractors-OU%%"/>
+      <entry key="TEMPWORKER" value="%%CMH-AD-Contractors-OU%%"/>
+      <entry key="TRAVELER" value="%%CMH-AD-Traveler-OU%%"/>
+      <entry key="VOLUNTEER" value="%%CMH-AD-Volunteer-OU%%"/>
     </Map>
   </Attributes>
 </Custom>

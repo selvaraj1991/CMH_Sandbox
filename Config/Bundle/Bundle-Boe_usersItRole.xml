@@ -25,13 +25,13 @@
   <Profiles>
     <Profile>
       <ApplicationRef>
-        <Reference class="sailpoint.object.Application" name="Active Directory"/>
+        <Reference class="sailpoint.object.Application" name="%%CMH-AD-ApplicationName%%"/>
       </ApplicationRef>
       <Constraints>
         <Filter operation="CONTAINS_ALL" property="memberOf">
           <Value>
             <List>
-              <String>CN= BOE_ALL_USERS,OU=Groups,OU=CMHUsers,DC=cmhAd,DC=com</String>
+              <String>%%CMH-AD-BOEUsers%%</String>
             </List>
           </Value>
         </Filter>

@@ -65,7 +65,7 @@
 	String workEmail = "WorkEmail";
 	String usrName = "Username";
 	String oldFormat = "_old";
-	String domain = "@cmhad.com";
+	String domain = "%%CMH-Mail-Domain%%";
 	
     String firstName = account.getStringAttribute("FirstName");
     if(Util.isNotNullOrEmpty(firstName)){

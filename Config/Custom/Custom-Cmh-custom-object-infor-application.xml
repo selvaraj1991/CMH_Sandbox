@@ -3,7 +3,7 @@
 <Custom name="CMH-Custom-Object-Infor-Application">
   <Attributes>
     <Map>
-      <entry key="hrApplicationName" value="AuthSource"/>
+      <entry key="hrApplicationName" value="%%CMH-Infor-ApplicationName%%"/>
     </Map>
   </Attributes>
 </Custom>

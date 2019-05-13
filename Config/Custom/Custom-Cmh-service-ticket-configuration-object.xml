@@ -3,9 +3,9 @@
 <Custom name="CMH-Service-Ticket-Configuration-Object">
   <Attributes>
     <Map>
-      <entry key="serviceNowRequestURL" value="https://dev55056.service-now.com/api/now/table/sc_request"/>
-      <entry key="serviceNowUserName" value="aileen.mottern"/>
-      <entry key="serviceNowUserPassword" value="1:ACP:Mo8T1RDQRnOeDur3MsH7TumC7HLAFSB8njMtGd0tc+s="/>
+      <entry key="serviceNowRequestURL" value="%%CMH-ServiceNowURL%%"/>
+      <entry key="serviceNowUserName" value="%%CMH-ServiceNowUser%%"/>
+      <entry key="serviceNowUserPassword" value="%%CMH-ServiceNowPassword%%"/>
     </Map>
   </Attributes>
 </Custom>

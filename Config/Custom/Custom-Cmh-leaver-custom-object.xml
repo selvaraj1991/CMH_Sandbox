@@ -7,7 +7,7 @@
 	  <entry key="connectedApplications">
         <value>
           <List>
-            <String>Active Directory</String>
+            <String>%%CMH-AD-ApplicationName%%</String>
           </List>
         </value>
       </entry>

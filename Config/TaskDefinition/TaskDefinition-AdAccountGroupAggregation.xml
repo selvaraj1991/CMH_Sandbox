@@ -8,7 +8,7 @@
       <entry key="TaskDefinition.runs" value="4"/>
       <entry key="TaskSchedule.host"/>
       <entry key="aggregationType" value="group"/>
-      <entry key="applications" value="Active Directory"/>
+      <entry key="applications" value="%%CMH-AD-ApplicationName%%"/>
       <entry key="checkDeleted" value="true"/>
       <entry key="deltaAggregation" value="false"/>
       <entry key="groupSchema"/>

@@ -7,7 +7,7 @@
       <entry key="TaskDefinition.runLengthTotal" value="1230"/>
       <entry key="TaskDefinition.runs" value="312"/>
       <entry key="TaskSchedule.host"/>
-      <entry key="applications" value="Infor HR Database"/>
+      <entry key="applications" value="%%CMH-Infor-ApplicationName%%"/>
       <entry key="checkDeleted" value="false"/>
       <entry key="checkHistory" value="true"/>
       <entry key="checkPolicies" value="false"/>

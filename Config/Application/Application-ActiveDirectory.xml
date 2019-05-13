@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Application PUBLIC "sailpoint.dtd" "sailpoint.dtd">
-<Application connector="sailpoint.connector.ADLDAPConnector" featuresString="PROVISIONING, SYNC_PROVISIONING, AUTHENTICATE, MANAGER_LOOKUP, SEARCH, UNSTRUCTURED_TARGETS, UNLOCK, ENABLE, PASSWORD, CURRENT_PASSWORD, ADDITIONAL_ACCOUNT_REQUEST, ACCOUNT_ONLY_REQUEST" icon="directory1Icon" name="Active Directory" profileClass="" type="Active Directory - Direct">
+<Application connector="sailpoint.connector.ADLDAPConnector" featuresString="PROVISIONING, SYNC_PROVISIONING, AUTHENTICATE, MANAGER_LOOKUP, SEARCH, UNSTRUCTURED_TARGETS, UNLOCK, ENABLE, PASSWORD, CURRENT_PASSWORD, ADDITIONAL_ACCOUNT_REQUEST, ACCOUNT_ONLY_REQUEST" icon="directory1Icon" name="%%CMH-AD-ApplicationName%%" profileClass="" type="Active Directory - Direct">
   <AccountCorrelationConfig>
     <Reference class="sailpoint.object.CorrelationConfig" name="CMH-AD-Correlation"/>
   </AccountCorrelationConfig>
   <Attributes>
     <Map>
-      <entry key="IQServiceHost" value="172.17.36.201"/>
-      <entry key="IQServicePort" value="5050"/>
+      <entry key="IQServiceHost" value="%%CMH-AD-IQServiceHost%%"/>
+      <entry key="IQServicePort" value="%%CMH-AD-IQServicePort%%"/>
       <entry key="acctAggregationEnd">
         <value>
           <Date>1557299282598</Date>
@@ -56,16 +56,16 @@
             <Map>
               <entry key="authenticationType" value="simple"/>
               <entry key="authorizationType" value="simple"/>
-              <entry key="domainDN" value="DC=cmhAd,DC=com"/>
+              <entry key="domainDN" value="%%CMH-AD-DomainDN%%"/>
               <entry key="domainIterateSearchFilter"/>
               <entry key="domainNetBiosName"/>
               <entry key="forestName" value="defaultName"/>
-              <entry key="password" value="1:ACP:EiHN41sXvz23hmFeNbQJlEr4NKfbbCqipBhZ0BCWS14="/>
-              <entry key="port" value="389"/>
+              <entry key="password" value="%%CMH-AD-Password%%"/>
+              <entry key="port" value="%%CMH-AD-Port%%"/>
               <entry key="servers">
                 <value>
                   <List>
-                    <String>172.17.36.201</String>
+                    <String>%%CMH-AD-IQServiceHost%%</String>
                   </List>
                 </value>
               </entry>
@@ -74,7 +74,7 @@
                   <Boolean/>
                 </value>
               </entry>
-              <entry key="user" value="CMHAD\Administrator"/>
+              <entry key="user" value="%%CMH-AD-Username%%"/>
             </Map>
           </List>
         </value>
@@ -91,25 +91,25 @@
               <entry key="ExchHost">
                 <value>
                   <List>
-                    <String>172.17.35.227</String>
+                    <String>%%CMH-AD-ExchHost%%</String>
                   </List>
                 </value>
               </entry>
               <entry key="accountForestList">
                 <value>
                   <List>
-                    <String>cmhAd.com</String>
+                    <String>%%CMH-AD-ExchAcctForest%%</String>
                   </List>
                 </value>
               </entry>
               <entry key="exchangeForest" value="defaultName"/>
-              <entry key="password" value="1:ACP:vJlOOX40cgyMEAxhiy9VRVDvPS1LMQ1YqmgMONUFK4s="/>
+              <entry key="password" value="%%CMH-AD-ExchPassword%%"/>
               <entry key="useTLS">
                 <value>
                   <Boolean/>
                 </value>
               </entry>
-              <entry key="user" value="cmhad\nshivanna"/>
+              <entry key="user" value="%%CMH-AD-ExchUsername%%"/>
             </Map>
           </List>
         </value>
@@ -121,20 +121,20 @@
               <entry key="authenticationType" value="simple"/>
               <entry key="authorizationType" value="simple"/>
               <entry key="forestName" value="defaultName"/>
-              <entry key="gcServer" value="172.17.36.201:3268"/>
+              <entry key="gcServer" value="%%CMH-AD-GCServer%%"/>
               <entry key="manageAllDomains">
                 <value>
                   <Boolean>true</Boolean>
                 </value>
               </entry>
-              <entry key="password" value="1:ACP:EiHN41sXvz23hmFeNbQJlEr4NKfbbCqipBhZ0BCWS14="/>
+              <entry key="password" value="%%CMH-AD-Password%%"/>
               <entry key="useGroupMembershipPreloading"/>
               <entry key="useSSL">
                 <value>
                   <Boolean/>
                 </value>
               </entry>
-              <entry key="user" value="CMHAD\Administrator"/>
+              <entry key="user" value="%%CMH-AD-Username%%"/>
             </Map>
           </List>
         </value>
@@ -144,7 +144,7 @@
           <List>
             <Map>
               <entry key="iterateSearchFilter"/>
-              <entry key="searchDN" value="OU=Users Managed,DC=cmhad,DC=com"/>
+              <entry key="searchDN" value="%%CMH-AD-GrpSearchDN%%"/>
               <entry key="searchScope" value="SUBTREE"/>
             </Map>
           </List>
@@ -178,7 +178,7 @@
               <entry key="groupMembershipSearchDN"/>
               <entry key="iterateSearchFilter"/>
               <entry key="primaryGroupSearchDN"/>
-              <entry key="searchDN" value="OU=Users Managed,DC=cmhad,DC=com"/>
+              <entry key="searchDN" value="%%CMH-AD-AcctSearchDN%%"/>
               <entry key="searchScope" value="SUBTREE"/>
             </Map>
           </List>
@@ -198,15 +198,6 @@
   <Owner>
     <Reference class="sailpoint.object.Identity" name="spadmin"/>
   </Owner>
-  <ProvisioningConfig>
-    <PlanInitializerScript>
-      <Source><![CDATA[
-        import org.apache.log4j.Logger;
-       	Logger log = Logger.getLogger("cmh.authsource.rules");
-				log.debug("=============Application Plan===================="+plan.toXml());
-     ]]></Source>
-    </PlanInitializerScript>
-  </ProvisioningConfig>
   <ProvisioningForms>
     <Form name="Account" objectType="account" type="Create">
       <Attributes>

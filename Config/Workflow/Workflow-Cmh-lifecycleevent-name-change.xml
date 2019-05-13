@@ -346,7 +346,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 				 identity.setDisplayName(finalUsername);
 				 identity.setAttribute("userName",finalUsername);
 				 if(hasEmail) {
-					identity.setAttribute("email",finalUsername + "@cmhad.com");
+					identity.setAttribute("email",finalUsername + "%%CMH-Mail-Domain%%");
 				  }
 				  context.saveObject(identity);
 				  context.commitTransaction();
@@ -458,7 +458,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 								hrLink.setDisplayName(newIdentityName);
 								hrLink.setAttribute("Username",newIdentityName);
 								if(hasEmail){
-									hrLink.setAttribute("WorkEmail",newIdentityName + "@cmhad.com");
+									hrLink.setAttribute("WorkEmail",newIdentityName + "%%CMH-Mail-Domain%%");
 								}
 								context.saveObject(hrLink);
 							}
@@ -506,7 +506,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 							 	accModify.add(new AttributeRequest("givenName",ProvisioningPlan.Operation.Set, identity.getLastname()));
 							 	
 							 	if(hasEmail) {
-							 	   accModify.add(new AttributeRequest("mail",ProvisioningPlan.Operation.Set,newIdentityName + "@cmhad.com"));
+							 	   accModify.add(new AttributeRequest("mail",ProvisioningPlan.Operation.Set,newIdentityName + "%%CMH-Mail-Domain%%"));
 							 	   //write code for exchange and o365
 							 	}
 							 	accountRequests.add(accModify);											 
