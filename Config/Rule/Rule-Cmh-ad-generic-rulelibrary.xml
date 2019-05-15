@@ -349,7 +349,7 @@
 				log.error("CMH-AD-Generic-Rulelibrary: Error checking username in Cerner : "+e.getMessage());
 			}
 
-			List arr = custom.getList("Username");
+			List arr = custom.getList("USERNAMES");
 			if (arr.contains(username)) {
 				 log.debug("CMH-AD-Generic-Rulelibrary : Exiting checkUsernameInCerner(String username)");
 				return true;
@@ -669,6 +669,92 @@
 			log.debug("CMH-AD-Generic-Rulelibrary : Exiting startDateCheck(String startDate): Date Valid? "+flag);
 			return flag;		
 		}
+       	 public List readFromCsv(String filePath) {
+	    log.debug("CMH-AD-Generic-Rulelibrary : Entering readFromCsv()");
+		List list = new ArrayList();
+		int count = 0;
+		int index = 0;
+		String line = "";
+		String cvsSplitBy = ",";
+		String[] cols = null;
+		//Change it to input parameter from task definitions
+		//String filePath = getCustomObject("filepath","CMH-Custom-Generic-Filepath");
+		if (Util.isNotNullOrEmpty(filePath)) { 
+			BufferedReader br = null;
+			try {
+				br = new BufferedReader(new FileReader(filePath));
+				while ((line = br.readLine()) != null) {
+					if (count == 0) {
+						cols = line.split(cvsSplitBy);
+						for (int i = 0; i < cols.length; i++) {
+							if (cols[i].equalsIgnoreCase("USERNAME")) {
+								index = i;
+								break;
+							} 
+						}
+						count++;
+						System.out.println("index: " + index);
 
+					} else {
+						cols = line.split(cvsSplitBy);
+					}
+					list.add(cols[index]);
+				}
+			} catch (FileNotFoundException e) {
+				log.error("CMH-AD-Generic-Rulelibrary : ERROR :"+e.getMessage());
+			} catch (IOException e) {
+				log.error("CMH-AD-Generic-Rulelibrary : ERROR :"+e.getMessage());
+			} catch (Exception e) {
+				log.error("CMH-AD-Generic-Rulelibrary : ERROR :"+e.getMessage());
+			} finally {
+				if (br != null) {
+					try {
+						 br.close();
+					} catch (IOException e) {
+						log.error("CMH-AD-Generic-Rulelibrary : ERROR :"+e.getMessage());
+					}
+				}
+			}
+						
+		}else {
+		   log.error("CMH-AD-Generic-Rulelibrary : ERROR : FilePath is NULL or Empty");
+		}
+		log.debug("CMH-AD-Generic-Rulelibrary : Exiting readFromCsv()");
+		return list;
+	}
+	
+	public boolean writeToCustomObject(List unameList , String customName) {
+	    log.debug("CMH-AD-Generic-Rulelibrary : Entering writeToCustomObject()");
+	    Custom custom = null;
+	    boolean flag = false;
+	    List finalList = new ArrayList();
+	    if( null != unameList && Util.isNotNullOrEmpty(customName)) {
+		    try {
+		         custom = context.getObjectByName(Custom.class,customName);
+				 if(null != custom) {
+					String lock = custom.getLock();
+					List list = custom.getAttributes().getList("USERNAMES");
+					if(null != list) {
+					   finalList.addAll(list);
+					   finalList.addAll(unameList);
+					}else {
+					   finalList.addAll(unameList);
+					}
+					if(finalList != null) {
+						custom.setLock(lock);
+						custom.put("USERNAMES",finalList);
+						context.saveObject(custom);
+						context.commitTransaction();
+						custom.remove(lock);
+						flag = true;	
+					 }
+				  } 
+			  } catch (GeneralException e) {
+				  log.error("CMH-AD-Generic-Rulelibrary :ERROR: "+e.getMessage());
+			  }
+		 }	
+		 log.debug("CMH-AD-Generic-Rulelibrary : Exiting writeToCustomObject()");
+		 return flag;		    	
+	 }
   ]]></Source>
 </Rule>
