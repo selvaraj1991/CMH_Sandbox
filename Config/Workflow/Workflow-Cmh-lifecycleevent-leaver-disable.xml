@@ -244,7 +244,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   			import org.apache.log4j.Logger;
   			
   			Logger log = Logger.getLogger("CMH-LifecycleEvent-Leaver-Disable");
-  			List connectedApps = getAppsToDelete(identityName,"CMH-Leaver-Custom-Object","connectedApplications");
+  			List connectedApps = getAppsToProcess(identityName,"CMH-Leaver-Custom-Object","connectedApplications");
   			if(connectedApps==null || connectedApps.size()<=0){
   				log.info("CMH-LifecycleEvent-Leaver-Disable: There are no connected Apps associated with the user");
   			}
@@ -264,7 +264,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   			import org.apache.log4j.Logger;
   			
   			Logger log = Logger.getLogger("CMH-LifecycleEvent-Leaver-Delete");
-  			List disConnectedApps = getAppsToDelete(identityName,"CMH-Leaver-Custom-Object","disConnectedApplications");
+  			List disConnectedApps = getAppsToProcess(identityName,"CMH-Leaver-Custom-Object","disConnectedApplications");
   			if(disConnectedApps==null || disConnectedApps.size()<=0){
   				log.info("CMH-LifecycleEvent-Leaver-Delete: There are no disconnected Apps associated with the user");
   			}
