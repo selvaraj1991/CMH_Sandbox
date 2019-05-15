@@ -393,7 +393,8 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 		        String email =null;
 		        Identity identity = context.getObjectByName(Identity.class, newIdentityName);
 		        if( null != identity) {
-	                Custom custom = null;
+                            email = identity.getEmail();
+	                    Custom custom = null;
 			    	try {
 						custom = context.getObjectByName(Custom.class, "CMH-NameChange-UsernameAndEmail");
 						if(null != custom) {
@@ -402,12 +403,8 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 							if(list == null) {
 								list = new ArrayList();
 							}
-							email = identity.getEmail();
-							if(Util.isNotNullOrEmpty(email)) {
-							   list.add(identity.getName()+","+email);
-							}else {
-							   list.add(identity.getName());
-							}
+							
+							list.add(identity.getName());
 							if(list != null) {
 								custom.setLock(lock);
 								custom.put("NOTEXPORTED",list );
