@@ -499,8 +499,8 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 								accModify.setNativeIdentity(adLink.getNativeIdentity());
 							 	accModify.add(new AttributeRequest("AC_NewName", newName));
 							 	accModify.add(new AttributeRequest("sAMAccountName",ProvisioningPlan.Operation.Set, newIdentityName));
-							 	accModify.add(new AttributeRequest("sn", ProvisioningPlan.Operation.Set,identity.getFirstname()));
-							 	accModify.add(new AttributeRequest("givenName",ProvisioningPlan.Operation.Set, identity.getLastname()));
+							 	accModify.add(new AttributeRequest("givenName", ProvisioningPlan.Operation.Set,identity.getFirstname()));
+							 	accModify.add(new AttributeRequest("sn",ProvisioningPlan.Operation.Set, identity.getLastname()));
 							 	
 							 	if(hasEmail) {
 							 	   accModify.add(new AttributeRequest("mail",ProvisioningPlan.Operation.Set,newIdentityName + "%%CMH-Mail-Domain%%"));
