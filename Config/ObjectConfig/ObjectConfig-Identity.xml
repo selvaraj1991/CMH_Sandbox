@@ -11,6 +11,13 @@
         <Reference class="sailpoint.object.Application" name="%%CMH-Infor-ApplicationName%%"/>
       </ApplicationRef>
     </AttributeSource>
+	<AttributeTargets>
+      <AttributeTarget name="givenName" provisionAllAccounts="true">
+        <ApplicationRef>
+          <Reference class="sailpoint.object.Application" name="%%CMH-AD-ApplicationName%%"/>
+        </ApplicationRef>
+      </AttributeTarget>
+	</AttributeTargets>
   </ObjectAttribute>
   <ObjectAttribute displayName="att_last_name" editMode="ReadOnly" name="lastname" standard="true" type="string">
     <AttributeSource name="LastName">
@@ -18,6 +25,13 @@
         <Reference class="sailpoint.object.Application" name="%%CMH-Infor-ApplicationName%%"/>
       </ApplicationRef>
     </AttributeSource>
+	<AttributeTargets>
+      <AttributeTarget name="sn" provisionAllAccounts="true">
+        <ApplicationRef>
+          <Reference class="sailpoint.object.Application" name="%%CMH-AD-ApplicationName%%"/>
+        </ApplicationRef>
+      </AttributeTarget>
+    </AttributeTargets>
   </ObjectAttribute>
   <ObjectAttribute displayName="Birth Month Day" editMode="ReadOnly" name="birthMonthDay" type="string">
     <AttributeSource name="BirthMonthDay">
@@ -272,6 +286,27 @@
         <Reference class="sailpoint.object.Application" name="%%CMH-Infor-ApplicationName%%"/>
       </ApplicationRef>
     </AttributeSource>
+    <AttributeTargets>
+      <AttributeTarget name="initials" provisionAllAccounts="true">
+        <ApplicationRef>
+          <Reference class="sailpoint.object.Application" name="%%CMH-AD-ApplicationName%%"/>
+        </ApplicationRef>
+      </AttributeTarget>
+    </AttributeTargets>
+  </ObjectAttribute>
+  <ObjectAttribute displayName="Preferred Email" editMode="ReadOnly" name="preferredEmail" type="string">
+    <AttributeSource name="PreferredEmail">
+      <ApplicationRef>
+        <Reference class="sailpoint.object.Application" name="%%CMH-Infor-ApplicationName%%"/>
+      </ApplicationRef>
+    </AttributeSource>
+	<AttributeTargets>
+      <AttributeTarget name="extensionAttribute1" provisionAllAccounts="true">
+        <ApplicationRef>
+          <Reference class="sailpoint.object.Application" name="%%CMH-AD-ApplicationName%%"/>
+        </ApplicationRef>
+      </AttributeTarget>
+    </AttributeTargets>
   </ObjectAttribute>
 </ObjectConfig>
 </ImportAction>

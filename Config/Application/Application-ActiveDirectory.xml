@@ -175,7 +175,7 @@
           <List>
             <Map>
               <entry key="groupMemberFilterString"/>
-              <entry key="groupMembershipSearchDN"/>
+              <entry key="groupMembershipSearchDN" value="%%CMH-AD-GrpSearchDN%%"/>
               <entry key="iterateSearchFilter"/>
               <entry key="primaryGroupSearchDN"/>
               <entry key="searchDN" value="%%CMH-AD-AcctSearchDN%%"/>
@@ -573,6 +573,9 @@
       </AttributeDefinition>
       <AttributeDefinition name="company" type="string">
         <Description>company</Description>
+      </AttributeDefinition>
+	  <AttributeDefinition name="extensionAttribute1" type="string">
+        <Description>Preferred Email</Description>
       </AttributeDefinition>
     </Schema>
     <Schema displayAttribute="sAMAccountName" featuresString="PROVISIONING, GROUPS_HAVE_MEMBERS" hierarchyAttribute="memberOf" identityAttribute="distinguishedName" instanceAttribute="" nativeObjectType="Group" objectType="group">
