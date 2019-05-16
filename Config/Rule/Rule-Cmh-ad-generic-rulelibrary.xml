@@ -154,7 +154,7 @@
 	 	
 	 	public boolean checkLength(String username) {
 		  log.debug("CMH-AD-Generic-Rulelibrary : Entering checkLength(String username)");
-			if (username.length() > 23){
+			if (username.length() > 20){
 				 log.debug("CMH-AD-Generic-Rulelibrary : Exiting checkLength(String username)");
 				return true;
 			}else {
@@ -261,8 +261,8 @@
 				temp = firstName.substring(0, 1).concat(lastName); // SMitra
 			}
 
-			if (Util.isNotNullOrEmpty(temp) && temp.length() > 20) {
-				uname = temp.substring(0, 20);
+			if (Util.isNotNullOrEmpty(temp) && temp.length() > 17) {
+				uname = temp.substring(0, 17);
 			} else {
 				uname = temp;
 			}
@@ -281,8 +281,8 @@
 		 
  		/**
  		 * User name creation validation check.
- 		 * Checking whether the generated user has length >20 and is not unique
- 		 * Trimming the username to 20 and generating new username by appdening digits
+ 		 * Checking whether the generated user has length >17 and is not unique
+ 		 * Trimming the username to 17 and generating new username by appdening digits
  		 * @param username the username
  		 * @param firstName the first name
  		 * @param lastName the last name
@@ -311,11 +311,11 @@
 							size = number.length();
 						}
 						int counter = size + size; 
-						temp = uname.substring(0, counter);
+						temp = uname.substring(0, uname.length()-counter); 
 						uname = temp;
 						
-					} else { // if substring does not have any digit and is of 20 characters
-						temp = uname.substring(0, 20);
+					} else { // if substring does not have any digit and is of 17 characters
+						temp = uname.substring(0, 17);
 						
 					}
 
@@ -340,21 +340,21 @@
 		 * @param username the username
 		 * @return true, if successful
 		 */
-		public boolean checkUsernameInCerner(String username) {
-	        log.debug("CMH-AD-Generic-Rulelibrary : Entering checkUsernameInCerner(String username)");
+		public boolean checkUsernameInCustomObject(String username, String customName) {
+	        log.debug("CMH-AD-Generic-Rulelibrary : Entering checkUsernameInCustomObject(String username)");
 			Custom custom = null;
 			try {
-				custom = context.getObject(Custom.class, "CMH-Cerner-Usernames");
+				custom = context.getObject(Custom.class, customName);
 			} catch (GeneralException e) {
 				log.error("CMH-AD-Generic-Rulelibrary: Error checking username in Cerner : "+e.getMessage());
 			}
 
 			List arr = custom.getList("USERNAMES");
 			if (arr.contains(username)) {
-				 log.debug("CMH-AD-Generic-Rulelibrary : Exiting checkUsernameInCerner(String username)");
+				 log.debug("CMH-AD-Generic-Rulelibrary : Exiting checkUsernameInCustomObject(String username)");
 				return true;
 			} else {
-				 log.debug("CMH-AD-Generic-Rulelibrary : Exiting checkUsernameInCerner(String username)");
+				 log.debug("CMH-AD-Generic-Rulelibrary : Exiting checkUsernameInCustomObject(String username)");
 				return false;
 			}       
 		}
@@ -376,8 +376,9 @@
 		    if (Util.isNotNullOrEmpty(username)) {
 					  uname = username;
 					  String temp = null;
-					boolean bflag = checkUsernameInCerner(uname);
-					if (bflag) {
+				boolean cernerFlag = checkUsernameInCustomObject(uname,"CMH-Cerner-Usernames");
+				boolean inforFlag = checkUsernameInCustomObject(uname,"CMH-Infor-Usernames");
+				if (cernerFlag || inforFlag) {
 						do {
 							Pattern pattern = Pattern.compile("-?\\d+");
 							Matcher matcher = pattern.matcher(uname);
@@ -385,17 +386,17 @@
 								String number = matcher.group();
 								if (Util.isNotNullOrEmpty(number)) {
 									int size = number.length();
-									temp = uname.substring(0, size);
+									temp = uname.substring(0, uname.length()-size);
 									int count = Integer.parseInt(number);
 									count++;
 									uname = temp.concat(Integer.toString(count));
+								} 
 								} else {
 									temp = uname + 1;
 									uname = temp;
 								}
 								userNameCreationValidationCheck(uname, firstname, lastname, middleInitial,empId);
-							}
-						} while (checkUsernameInCerner(username));
+						} while (checkUsernameInCustomObject(uname,"CMH-Cerner-Usernames") || checkUsernameInCustomObject(uname,"CMH-Infor-Usernames"));
 					}
 		      
 		    }
@@ -677,9 +678,7 @@
 		String line = "";
 		String cvsSplitBy = ",";
 		String[] cols = null;
-		//Change it to input parameter from task definitions
-		//String filePath = getCustomObject("filepath","CMH-Custom-Generic-Filepath");
-		if (Util.isNotNullOrEmpty(filePath)) { 
+		if (Util.isNotNullOrEmpty(filePath) && new File(filePath).exists()) {
 			BufferedReader br = null;
 			try {
 				br = new BufferedReader(new FileReader(filePath));
@@ -717,7 +716,7 @@
 			}
 						
 		}else {
-		   log.error("CMH-AD-Generic-Rulelibrary : ERROR : FilePath is NULL or Empty");
+		   throw new sailpoint.tools.GeneralException("CMH-AD-Generic-Rulelibrary :ERROR : File is not present on given location or file location is not proper");	
 		}
 		log.debug("CMH-AD-Generic-Rulelibrary : Exiting readFromCsv()");
 		return list;

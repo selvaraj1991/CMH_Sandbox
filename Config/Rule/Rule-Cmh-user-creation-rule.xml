@@ -111,8 +111,8 @@
     
     	log.info("CMH-User-Creation-Rule: User Conversion Case : Proceeding with updating existing user's name _old+timestamp and create the new user with same");
 		QueryOptions ops = new QueryOptions();
-		Filter f = Filter.eq("employeeId", oldemployeeId);
-		ops.addFilter(f);
+		Filter filter = Filter.eq("employeeId", oldemployeeId);
+		ops.addFilter(filter);
 		Iterator userItr = null;
 		try {
 			userItr = context.search(Identity.class, ops);
@@ -181,6 +181,7 @@
 		}
 		log.debug("CMH-User-Creation-Rule: Unique username : "+finalUsername);
 		if(null !=finalUsername) {
+		    finalUsername = finalUsername.toLowerCase();
 			identity.setName(finalUsername);
 			account.setAttribute(usrName, finalUsername);
 			account.setDisplayName(finalUsername);

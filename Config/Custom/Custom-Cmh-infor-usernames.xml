@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Custom PUBLIC "sailpoint.dtd" "sailpoint.dtd">
-<Custom name="CMH-Cerner-Usernames">
+<Custom name="CMH-Infor-Usernames">
   <Attributes>
     <Map>
       <entry key="USERNAMES">
