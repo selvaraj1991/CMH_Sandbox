@@ -3,7 +3,6 @@
 <Custom name="CMH-User-Role-Mapping-Custom-Object">
   <Attributes>
     <Map>
-      <entry key="CONTRACTEQUIPTECH" value="Contractor and Temps Role"/>
       <entry key="BOARDMEMBER" value="Board Members Business Role"/>
       <entry key="COMMUNITYDENTASSIST" value="Community Physicians Business Role"/>
       <entry key="COMMUNITYPHYSICIAN" value="Community Physicians Business Role"/>
