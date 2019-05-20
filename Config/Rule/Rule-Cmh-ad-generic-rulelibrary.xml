@@ -350,7 +350,7 @@
 			}
 
 			List arr = custom.getList("USERNAMES");
-			if(arr != null) {
+			if(!Util.isEmpty(arr)) {
 				if (arr.contains(username)) {
 					 log.debug("CMH-AD-Generic-Rulelibrary : Exiting checkUsernameInCustomObject(String username)");
 					return true;
