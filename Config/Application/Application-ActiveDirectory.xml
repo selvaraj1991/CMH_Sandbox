@@ -65,7 +65,7 @@
               <entry key="servers">
                 <value>
                   <List>
-                    <String>%%CMH-AD-IQServiceHost%%</String>
+                    <String>%%CMH-AD-Servers%%</String>
                   </List>
                 </value>
               </entry>
