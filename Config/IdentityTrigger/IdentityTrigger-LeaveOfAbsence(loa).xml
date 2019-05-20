@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE IdentityTrigger PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<IdentityTrigger attributeName="status" handler="sailpoint.api.WorkflowTriggerHandler" name="Leave Of Absence(LOA)" newValueFilter="LIMITED SCOPE" oldValueFilter="ACTIVE" type="AttributeChange">
+  <Description>User is on Leave of Absence, hence assign the security group to AD account</Description>
+  <Owner>
+    <Reference class="sailpoint.object.Identity" name="spadmin"/>
+  </Owner>
+  <HandlerParameters>
+    <Attributes>
+      <Map>
+        <entry key="workflow" value="CMH-LifeycycleEvent-LOA-Workflow"/>
+      </Map>
+    </Attributes>
+  </HandlerParameters>
+  <Selector>
+    <IdentitySelector>
+      <MatchExpression and="true">
+        <MatchTerm name="userType" type="Entitlement" value="EMPLOYEE"/>
+      </MatchExpression>
+    </IdentitySelector>
+  </Selector>
+</IdentityTrigger>
