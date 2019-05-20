@@ -350,13 +350,18 @@
 			}
 
 			List arr = custom.getList("USERNAMES");
-			if (arr.contains(username)) {
-				 log.debug("CMH-AD-Generic-Rulelibrary : Exiting checkUsernameInCustomObject(String username)");
-				return true;
-			} else {
-				 log.debug("CMH-AD-Generic-Rulelibrary : Exiting checkUsernameInCustomObject(String username)");
-				return false;
-			}       
+			if(arr != null) {
+				if (arr.contains(username)) {
+					 log.debug("CMH-AD-Generic-Rulelibrary : Exiting checkUsernameInCustomObject(String username)");
+					return true;
+				} else {
+					 log.debug("CMH-AD-Generic-Rulelibrary : Exiting checkUsernameInCustomObject(String username)");
+					return false;
+				}  
+		   } else {
+		      log.debug("CMH-AD-Generic-Rulelibrary : Exiting checkUsernameInCustomObject(String username)");
+              return false;
+           }         
 		}
 	    
     	/**
