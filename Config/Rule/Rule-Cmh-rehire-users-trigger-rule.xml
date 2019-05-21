@@ -32,35 +32,34 @@
         </Returns>
     </Signature>
     <Source><![CDATA[
-     import org.apache.log4j.Logger;
-	 import sailpoint.object.Identity;
-	 import sailpoint.tools.Util;
-	 
-	 Logger log = Logger.getLogger("cmh.authsource.rules"); 
-	 log.debug("Entering into CHM-Rehire-Users-Trigger-Rule");
-	 boolean rehired = false;
-	 if(null != previousIdentity && null != newIdentity) {
-	    String prevIdenStatus = previousIdentity.getStringAttribute("status");
-	    String newIdenStatus = newIdentity.getStringAttribute("status");
-	    log.debug("prevIdenStatus: "+prevIdenStatus+" newIdenStatus: "+newIdenStatus);
-	    String rehire = newIdentity.getStringAttribute("rehire");
-	    if(Util.nullSafeCaseInsensitiveEq("TERMINATED",prevIdenStatus) && Util.nullSafeCaseInsensitiveEq("PREHIRE",newIdenStatus)
-	        && Util.nullSafeCaseInsensitiveEq("YES",rehire)) {
-	        String startdate = newIdentity.getStringAttribute("startDate");
-	        boolean flag = startDateCheck(startdate);
-	        if(flag) {
-	            rehired = true;
-	        }else {
-	            rehired = false;
-	        }
-	    }else if(Util.nullSafeCaseInsensitiveEq("TERMINATED",prevIdenStatus) && Util.nullSafeCaseInsensitiveEq("ACTIVE",newIdenStatus)) {
-	            rehired = true;
-	    }else {
-	           rehired = false;
-	    }
-	    log.debug("rehired :"+rehired);
-	    log.debug("Exiting into CHM-Rehire-Users-Trigger-Rule");
-	 }
-	 return rehired;
+		import org.apache.log4j.Logger;
+		import sailpoint.object.Identity;
+		import sailpoint.tools.Util;
+
+		Logger log = Logger.getLogger("cmh.authsource.rules");
+		log.debug("Entering into CHM-Rehire-Users-Trigger-Rule");
+		boolean rehired = false;
+		if (null != previousIdentity && null != newIdentity) {
+			String prevIdenStatus = previousIdentity.getStringAttribute("status");
+			String newIdenStatus = newIdentity.getStringAttribute("status");
+			log.debug("prevIdenStatus: " + prevIdenStatus + " newIdenStatus: " + newIdenStatus);
+			String rehire = newIdentity.getStringAttribute("rehire");
+			if (Util.nullSafeCaseInsensitiveEq("TERMINATED", prevIdenStatus) && Util.nullSafeCaseInsensitiveEq("PREHIRE", newIdenStatus) && Util.nullSafeCaseInsensitiveEq("YES", rehire)) {
+				String startdate = newIdentity.getStringAttribute("startDate");
+				boolean flag = startDateCheck(startdate);
+				if (flag) {
+					rehired = true;
+				} else {
+					rehired = false;
+				}
+			} else if (Util.nullSafeCaseInsensitiveEq("TERMINATED", prevIdenStatus) && Util.nullSafeCaseInsensitiveEq("ACTIVE", newIdenStatus)) {
+				rehired = true;
+			} else {
+				rehired = false;
+			}
+			log.debug("rehired :" + rehired);
+			log.debug("Exiting into CHM-Rehire-Users-Trigger-Rule");
+		}
+		return rehired;
   ]]></Source>
 </Rule>
