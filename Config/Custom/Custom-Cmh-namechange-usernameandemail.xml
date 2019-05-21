@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Custom PUBLIC "sailpoint.dtd" "sailpoint.dtd">
 <Custom name="CMH-NameChange-UsernameAndEmail">
-  <Attributes>
-    <Map>
-      <entry key="NOTEXPORTED">
-        <value>
-          <List>
-            <String>KMWatson1</String>
-            <String>KMWatson1</String>
-          </List>
-        </value>
-      </entry>
-    </Map>
-  </Attributes>
+    <Attributes>
+        <Map>
+            <entry key="NOTEXPORTED">
+                <value>
+                    <List>
+                        <String>KMWatson1</String>
+                        <String>KMWatson1</String>
+                    </List>
+                </value>
+            </entry>
+        </Map>
+    </Attributes>
 </Custom>

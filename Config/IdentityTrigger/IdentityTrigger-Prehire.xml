@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE IdentityTrigger PUBLIC "sailpoint.dtd" "sailpoint.dtd">
-<IdentityTrigger attributeName="status" handler="sailpoint.api.WorkflowTriggerHandler" name="Prehire" newValueFilter="Active" oldValueFilter="Prehire" type="AttributeChange">
-  <Description>This event validates if the AD &amp; Exchange are provisioned using role based approach and sends out an email to user’s manager once the user becomes active</Description>
-  <Owner>
-    <Reference class="sailpoint.object.Identity" name="spadmin"/>
-  </Owner>
-  <HandlerParameters>
-    <Attributes>
-      <Map>
-        <entry key="workflow" value="CMH-LifeycycleEvent-Prehire"/>
-      </Map>
-    </Attributes>
-  </HandlerParameters>
+<IdentityTrigger attributeName="status" handler="sailpoint.api.WorkflowTriggerHandler" name="Prehire"
+                 newValueFilter="Active" oldValueFilter="Prehire" type="AttributeChange">
+    <Description>This event validates if the AD &amp; Exchange are provisioned using role based approach and sends out
+        an email to user’s manager once the user becomes active
+    </Description>
+    <Owner>
+        <Reference class="sailpoint.object.Identity" name="spadmin"/>
+    </Owner>
+    <HandlerParameters>
+        <Attributes>
+            <Map>
+                <entry key="workflow" value="CMH-LifeycycleEvent-Prehire"/>
+            </Map>
+        </Attributes>
+    </HandlerParameters>
 </IdentityTrigger>

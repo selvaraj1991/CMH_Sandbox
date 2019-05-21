@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE IdentityTrigger PUBLIC "sailpoint.dtd" "sailpoint.dtd">
-<IdentityTrigger attributeName="status" handler="sailpoint.api.WorkflowTriggerHandler" name="Leaver-Disable" newValueFilter="TERMINATED" oldValueFilter="ACTIVE" type="AttributeChange">
-  <Description>Disable all accounts when a user leaves.</Description>
-  <HandlerParameters>
-    <Attributes>
-      <Map>
-        <entry key="workflow" value="CMH-LifecycleEvent-Leaver-Disable"/>
-      </Map>
-    </Attributes>
-  </HandlerParameters>
-  <Selector>
-    <IdentitySelector>
-      <RuleRef>
-        <Reference class="sailpoint.object.Rule" name="CMH-Leaver-Disable-User-Selection-Rule"/>
-      </RuleRef>
-    </IdentitySelector>
-  </Selector>
+<IdentityTrigger attributeName="status" handler="sailpoint.api.WorkflowTriggerHandler" name="Leaver-Disable"
+                 newValueFilter="TERMINATED" oldValueFilter="ACTIVE" type="AttributeChange">
+    <Description>Disable all accounts when a user leaves.</Description>
+    <HandlerParameters>
+        <Attributes>
+            <Map>
+                <entry key="workflow" value="CMH-LifecycleEvent-Leaver-Disable"/>
+            </Map>
+        </Attributes>
+    </HandlerParameters>
+    <Selector>
+        <IdentitySelector>
+            <RuleRef>
+                <Reference class="sailpoint.object.Rule" name="CMH-Leaver-Disable-User-Selection-Rule"/>
+            </RuleRef>
+        </IdentitySelector>
+    </Selector>
 </IdentityTrigger>

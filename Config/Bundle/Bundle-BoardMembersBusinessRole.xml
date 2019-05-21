@@ -1,57 +1,57 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Bundle PUBLIC "sailpoint.dtd" "sailpoint.dtd">
 <Bundle displayName="Board Members Business Role" name="Board Members Business Role" type="business">
-  <Attributes>
-    <Map>
-      <entry key="accountSelectorRules"/>
-      <entry key="allowDuplicateAccounts" value="false"/>
-      <entry key="allowMultipleAssignments" value="false"/>
-      <entry key="mergeTemplates" value="false"/>
-      <entry key="sysDescriptions">
-        <value>
-          <Map>
-            <entry key="en_US"/>
-          </Map>
-        </value>
-      </entry>
-    </Map>
-  </Attributes>
-  <Inheritance>
-    <Reference class="sailpoint.object.Bundle" name="CMH User Roles"/>
-  </Inheritance>
-  <Owner>
-    <Reference class="sailpoint.object.Identity" name="spadmin"/>
-  </Owner>
-  <ProvisioningForms>
-    <Form name="CMH-AD-Account-Creation-Form">
-      <ApplicationRef>
-        <Reference class="sailpoint.object.Application" name="%%CMH-AD-ApplicationName%%"/>
-      </ApplicationRef>
-      <Attributes>
+    <Attributes>
         <Map>
-          <entry key="IIQTemplateOwnerDefinition">
-            <value>
-              <DynamicValue value="IIQRequester"/>
-            </value>
-          </entry>
-          <entry key="pageTitle" value="CMH-AD-Account-Creation-Form"/>
-          <entry key="title" value="CMH-AD-Account-Creation-Form"/>
+            <entry key="accountSelectorRules"/>
+            <entry key="allowDuplicateAccounts" value="false"/>
+            <entry key="allowMultipleAssignments" value="false"/>
+            <entry key="mergeTemplates" value="false"/>
+            <entry key="sysDescriptions">
+                <value>
+                    <Map>
+                        <entry key="en_US"/>
+                    </Map>
+                </value>
+            </entry>
         </Map>
-      </Attributes>
-      <Section label="account" name="account">
-        <Field displayName="sAMAccountName" name="sAMAccountName" type="string">
-          <Script>
-            <Source><![CDATA[return identity.getName();]]></Source>
-          </Script>
-        </Field>
-      </Section>
-    </Form>
-  </ProvisioningForms>
-  <Selector>
-    <IdentitySelector>
-      <RuleRef>
-        <Reference class="sailpoint.object.Rule" name="CMH-Role-Assignment-Rule"/>
-      </RuleRef>
-    </IdentitySelector>
-  </Selector>
+    </Attributes>
+    <Inheritance>
+        <Reference class="sailpoint.object.Bundle" name="CMH User Roles"/>
+    </Inheritance>
+    <Owner>
+        <Reference class="sailpoint.object.Identity" name="spadmin"/>
+    </Owner>
+    <ProvisioningForms>
+        <Form name="CMH-AD-Account-Creation-Form">
+            <ApplicationRef>
+                <Reference class="sailpoint.object.Application" name="%%CMH-AD-ApplicationName%%"/>
+            </ApplicationRef>
+            <Attributes>
+                <Map>
+                    <entry key="IIQTemplateOwnerDefinition">
+                        <value>
+                            <DynamicValue value="IIQRequester"/>
+                        </value>
+                    </entry>
+                    <entry key="pageTitle" value="CMH-AD-Account-Creation-Form"/>
+                    <entry key="title" value="CMH-AD-Account-Creation-Form"/>
+                </Map>
+            </Attributes>
+            <Section label="account" name="account">
+                <Field displayName="sAMAccountName" name="sAMAccountName" type="string">
+                    <Script>
+                        <Source><![CDATA[return identity.getName();]]></Source>
+                    </Script>
+                </Field>
+            </Section>
+        </Form>
+    </ProvisioningForms>
+    <Selector>
+        <IdentitySelector>
+            <RuleRef>
+                <Reference class="sailpoint.object.Rule" name="CMH-Role-Assignment-Rule"/>
+            </RuleRef>
+        </IdentitySelector>
+    </Selector>
 </Bundle>

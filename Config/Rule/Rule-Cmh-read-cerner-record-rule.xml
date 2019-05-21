@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Rule PUBLIC "sailpoint.dtd" "sailpoint.dtd">
 <Rule language="beanshell" name="CMH-Read-Cerner-Record-Rule">
-  <Description>This rule reads terminated user record from Infor csv file and puts in into custom object </Description>
-  <ReferencedRules>
-    <Reference class="sailpoint.object.Rule" name="CMH-AD-Generic-Rulelibrary"/>
-  </ReferencedRules>
-  <Source><![CDATA[  
+    <Description>This rule reads terminated user record from Infor csv file and puts in into custom object</Description>
+    <ReferencedRules>
+        <Reference class="sailpoint.object.Rule" name="CMH-AD-Generic-Rulelibrary"/>
+    </ReferencedRules>
+    <Source><![CDATA[
 
     
     import org.apache.log4j.Logger;

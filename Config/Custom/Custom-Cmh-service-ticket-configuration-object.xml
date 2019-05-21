@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Custom PUBLIC "sailpoint.dtd" "sailpoint.dtd">
 <Custom name="CMH-Service-Ticket-Configuration-Object">
-  <Attributes>
-    <Map>
-      <entry key="serviceNowRequestURL" value="%%CMH-ServiceNowURL%%"/>
-      <entry key="serviceNowUserName" value="%%CMH-ServiceNowUser%%"/>
-      <entry key="serviceNowUserPassword" value="%%CMH-ServiceNowPassword%%"/>
-    </Map>
-  </Attributes>
+    <Attributes>
+        <Map>
+            <entry key="serviceNowRequestURL" value="%%CMH-ServiceNowURL%%"/>
+            <entry key="serviceNowUserName" value="%%CMH-ServiceNowUser%%"/>
+            <entry key="serviceNowUserPassword" value="%%CMH-ServiceNowPassword%%"/>
+        </Map>
+    </Attributes>
 </Custom>

@@ -1,236 +1,240 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Rule PUBLIC "sailpoint.dtd" "sailpoint.dtd">
 <Rule language="beanshell" name="CMH-AD-Generic-Rulelibrary">
-  <Source><![CDATA[ 
-	import java.text.ParseException;
-	import java.text.SimpleDateFormat;
-	import org.apache.commons.codec.binary.Base64;
-	import org.apache.commons.lang.StringUtils;
-	import org.apache.log4j.Logger;
-	import sailpoint.api.Aggregator;
-	import sailpoint.api.ObjectUtil;
-	import sailpoint.connector.Connector;
-	import sailpoint.object.Application;
-	import sailpoint.object.Attributes;
-	import sailpoint.object.AuditEvent;
-	import sailpoint.object.Custom;
-	import sailpoint.object.Filter;
-	import sailpoint.object.Identity;
-	import sailpoint.object.Link;
-	import sailpoint.object.QueryOptions;
-	import sailpoint.object.ResourceObject;
-	import sailpoint.object.TaskResult;
-	import sailpoint.server.Auditor;
-	import sailpoint.tools.GeneralException;
-	import sailpoint.tools.Util;
-	import java.util.regex.Matcher;
-	import java.util.regex.Pattern;	
-	import org.apache.http.HttpEntity;
-	import org.apache.http.client.CredentialsProvider;
-	import org.apache.http.client.methods.CloseableHttpResponse;
-	import org.apache.http.client.methods.HttpPost;
-	import org.apache.http.entity.ByteArrayEntity;
-	import org.apache.http.impl.client.BasicCredentialsProvider;
-	import org.apache.http.impl.client.CloseableHttpClient;
-	import org.apache.http.impl.client.HttpClients;
-	import org.apache.http.util.EntityUtils;
-	import sailpoint.integration.JsonUtil;
-  
-  	Logger log = Logger.getLogger("cmh.authsource.rules");
-    
-        /**
-    	 * Generate primary group DN.
-    	 *
-    	 * @param userType the user type
-    	 * @return the string
-    	 */
-  	   	public String generatePrimaryGroupDN(String userType) {
+    <Source><![CDATA[
+		import java.text.ParseException;
+		import java.text.SimpleDateFormat;
+		import org.apache.commons.codec.binary.Base64;
+		import org.apache.commons.lang.StringUtils;
+		import org.apache.log4j.Logger;
+		import sailpoint.api.Aggregator;
+		import sailpoint.api.ObjectUtil;
+		import sailpoint.connector.Connector;
+		import sailpoint.object.Application;
+		import sailpoint.object.Attributes;
+		import sailpoint.object.AuditEvent;
+		import sailpoint.object.Custom;
+		import sailpoint.object.Filter;
+		import sailpoint.object.Identity;
+		import sailpoint.object.Link;
+		import sailpoint.object.QueryOptions;
+		import sailpoint.object.ResourceObject;
+		import sailpoint.object.TaskResult;
+		import sailpoint.server.Auditor;
+		import sailpoint.tools.GeneralException;
+		import sailpoint.tools.Util;
+		import java.util.regex.Matcher;
+		import java.util.regex.Pattern;
+		import org.apache.http.HttpEntity;
+		import org.apache.http.client.CredentialsProvider;
+		import org.apache.http.client.methods.CloseableHttpResponse;
+		import org.apache.http.client.methods.HttpPost;
+		import org.apache.http.entity.ByteArrayEntity;
+		import org.apache.http.impl.client.BasicCredentialsProvider;
+		import org.apache.http.impl.client.CloseableHttpClient;
+		import org.apache.http.impl.client.HttpClients;
+		import org.apache.http.util.EntityUtils;
+		import sailpoint.integration.JsonUtil;
+
+		Logger log = Logger.getLogger("cmh.authsource.rules");
+
+		/**
+				* Generate primary group DN.
+				*
+				* @param userType the user type
+				* @return the string
+				*/
+		public String generatePrimaryGroupDN(String userType) {
 			log.debug("CMH-AD-Generic-Rulelibrary : Entering generatePrimaryGroupDN(String userType)");
-			String finalDn = null;  
+			String finalDn = null;
 			if (Util.isNotNullOrEmpty(userType)) {
-				finalDn = getCustomObject(userType.toUpperCase(),"CMH-User-OU-Mapping-Custom-Object");
+				finalDn = getCustomObject(userType.toUpperCase(), "CMH-User-OU-Mapping-Custom-Object");
 			}
 			log.debug("CMH-AD-Generic-Rulelibrary : Exiting generatePrimaryGroupDN(String userType)");
 			return finalDn;
 		}
-		
-	    /**
-    	 * Generate account DN.
-    	 *
-    	 * @param username the username
-    	 * @param userType the user type
-    	 * @return the string
-    	 */
-    	
+
+		/**
+				 * Generate account DN.
+				 *
+				 * @param username the username
+				 * @param userType the user type
+				 * @return the string
+				 */
+
 		public String generateAccountDN(String username, String userType) {
 			log.debug("CMH-AD-Generic-Rulelibrary : Entering generateAccountDN(String username, String userType)");
 			String finalCn = null;
 			if (Util.isNotNullOrEmpty(userType) && Util.isNotNullOrEmpty(username)) {
-				String userOU = getCustomObject(userType.toUpperCase(),"CMH-User-OU-Mapping-Custom-Object");
+				String userOU = getCustomObject(userType.toUpperCase(), "CMH-User-OU-Mapping-Custom-Object");
 				if (Util.isNotNullOrEmpty(userOU)) {
-					finalCn = "cn="+username + "," + userOU;
+					finalCn = "cn=" + username + "," + userOU;
 				}
 			}
 			log.debug("CMH-AD-Generic-Rulelibrary : Exiting generateAccountDN(String username, String userType)");
 			return finalCn;
 		}
-	    
-	    /**
-    	 * Gets the custom object.
-    	 * Reading value from custom object
-    	 * @param customObjectName the custom object name
-    	 * @param customName the custom name
-    	 * @return the custom object
-    	 */
-    	
+
+		/**
+				 * Gets the custom object.
+				 * Reading value from custom object
+				 * @param customObjectName the custom object name
+				 * @param customName the custom name
+				 * @return the custom object
+				 */
+
 		public String getCustomObject(String customObjectName, String customName) {
 			log.info("CMH-AD-Generic-Rulelibrary : Entering getCustomObject(String customObjectName, String customName)");
 			String userOU = null;
 			if (Util.isNotNullOrEmpty(customObjectName)) {
-			    log.debug("CMH-AD-Generic-Rulelibrary : customObjectName :"+customObjectName);
-			    Custom custom = null;
+				log.debug("CMH-AD-Generic-Rulelibrary : customObjectName :" + customObjectName);
+				Custom custom = null;
 				try {
-					custom = context.getObject(Custom.class,customName);
-				} catch (GeneralException e) {
-					log.error("CMH-AD-Generic-Rulelibrary : Error: "+e.getMessage());
+					custom = context.getObject(Custom.class, customName);
+				} catch(GeneralException e) {
+					log.error("CMH-AD-Generic-Rulelibrary : Error: " + e.getMessage());
 				}
 				if (null != custom) {
-			       	userOU = custom.get(customObjectName);
-					log.debug("CMH-AD-Generic-Rulelibrary : userOU: "+userOU);
+					userOU = custom.get(customObjectName);
+					log.debug("CMH-AD-Generic-Rulelibrary : userOU: " + userOU);
 				}
 			}
 			log.info("CMH-AD-Generic-Rulelibrary : Exiting getCustomObject(String customObjectName, String customName)");
 			return userOU;
 		}
-		
+
 		/**
-		 * Generate user password.
-		 *
-		 * @param firstName the first name
-		 * @param lastName the last name
-		 * @param dob the dob
-		 * @param employeeId the employee id
-		 * @return the string
-		 */
-		
-		public String generateUserPassword(String firstName,String lastName,String dob,String employeeId) {
+				 * Generate user password.
+				 *
+				 * @param firstName the first name
+				 * @param lastName the last name
+				 * @param dob the dob
+				 * @param employeeId the employee id
+				 * @return the string
+				 */
+
+		public char[] generateUserPassword(String firstName, String lastName, String dob, String employeeId) {
 			log.debug("CMH-AD-Generic-Rulelibrary :Entering generateUserPassword(String firstName,String lastName,String dob,String employeeId)");
-		    String userPassword=null;
-		    
-	       	if(Util.isNotNullOrEmpty(dob)){
-	       		if(dob.contains("-")){
-	       			String[] parts = dob.split("-");
-	       			String splitDOB = null;
-	       			if(Util.isNotNullOrEmpty(parts[0])){
-	       				splitDOB = parts[0]; 
-	       			}
-	       			if(Util.isNotNullOrEmpty(parts[1])){
-	       				splitDOB = splitDOB.concat(parts[1]);
-	       			}
-	       			if(Util.isNotNullOrEmpty(splitDOB)){
-	       				String substr = null;
-	       				if(employeeId.length()>4) {
-						  substr = employeeId.substring(employeeId.length() - 4);
+			char[] userPassword = null;
+			if (Util.isNotNullOrEmpty(firstName)) {
+				firstName = firstName.toLowerCase();
+			}
+			if (Util.isNotNullOrEmpty(lastName)) {
+				lastName = lastName.toLowerCase();
+			}
+			if (Util.isNotNullOrEmpty(dob)) {
+				if (dob.contains("-")) {
+					String[] parts = dob.split("-");
+					String splitDOB = null;
+					if (Util.isNotNullOrEmpty(parts[0])) {
+						splitDOB = parts[0];
+					}
+					if (Util.isNotNullOrEmpty(splitDOB) && Util.isNotNullOrEmpty(parts[1])) {
+						splitDOB = splitDOB.concat(parts[1]);
+					}
+					if (Util.isNotNullOrEmpty(splitDOB)) {
+						String substr = null;
+						if (employeeId.length() > 4) {
+							substr = employeeId.substring(employeeId.length() - 4);
 						} else {
-						   substr=employeeId;
+							substr = employeeId;
 						}
-	       				userPassword = firstName.substring(0, 1).concat(lastName.substring(0, 1)).concat(splitDOB).concat(substr);
-	       			}
-	       		}
-	       	}
-	       	if(Util.isNotNullOrEmpty(userPassword)){
-	       		userPassword = userPassword.toLowerCase();
-	       	}
-	       	log.debug("CMH-AD-Generic-Rulelibrary : Exiting generateUserPassword(String firstName,String lastName,String dob,String employeeId)");
-	       	return userPassword;
-	    }
-	 	
-	 	/**
-	 	 * Check length.
-	 	 *
-	 	 * @param username the username
-	 	 * @return true, if successful
-	 	 */
-	 	
-	 	public boolean checkLength(String username) {
-		  log.debug("CMH-AD-Generic-Rulelibrary : Entering checkLength(String username)");
-			if (username.length() > 20){
-				 log.debug("CMH-AD-Generic-Rulelibrary : Exiting checkLength(String username)");
+						userPassword = (firstName.substring(0, 1).concat(lastName.substring(0, 1)).concat(splitDOB).concat(substr)).toCharArray();
+					}
+				}
+			}
+
+			log.debug("CMH-AD-Generic-Rulelibrary : Exiting generateUserPassword(String firstName,String lastName,String dob,String employeeId)");
+			return userPassword;
+		}
+
+		/**
+				 * Check length.
+				 *
+				 * @param username the username
+				 * @return true, if successful
+				 */
+
+		public boolean checkLength(String username) {
+			log.debug("CMH-AD-Generic-Rulelibrary : Entering checkLength(String username)");
+			if (username.length() > 20) {
+				log.debug("CMH-AD-Generic-Rulelibrary : Exiting checkLength(String username)");
 				return true;
-			}else {
-			    log.debug("CMH-AD-Generic-Rulelibrary : Exiting checkLength(String username)");
+			} else {
+				log.debug("CMH-AD-Generic-Rulelibrary : Exiting checkLength(String username)");
 				return false;
 			}
 		}
-	    
-    	/**
-    	 * Check unique.
-    	 *
-    	 * @param username the username
-    	 * @param firstName the first name
-    	 * @param lastName the last name
-    	 * @param middInitial the midd initial
-    	 * @param empId the emp id
-    	 * @return the int
-    	 */
-    	
-		public int checkUnique(String username,String firstName,String lastName,String middInitial,String empId) {
-		  log.debug("CMH-AD-Generic-Rulelibrary : Entering checkUnique(String username,String firstName,String lastName,String middInitial)");
-		  
-		  log.debug("CMH-AD-Generic-Rulelibrary : Check Unique Input parameters "+username+","+firstName+","+lastName+","+middInitial);
+
+		/**
+				 * Check unique.
+				 *
+				 * @param username the username
+				 * @param firstName the first name
+				 * @param lastName the last name
+				 * @param middInitial the midd initial
+				 * @param empId the emp id
+				 * @return the int
+				 */
+
+		public int checkUnique(String username, String firstName, String lastName, String middInitial, String empId) {
+			log.debug("CMH-AD-Generic-Rulelibrary : Entering checkUnique(String username,String firstName,String lastName,String middInitial)");
+
+			log.debug("CMH-AD-Generic-Rulelibrary : Check Unique Input parameters " + username + "," + firstName + "," + lastName + "," + middInitial);
 			int count = 0;
 			Filter fNameFilter = Filter.eq("firstname", firstName);
 			Filter lNameFilter = Filter.eq("lastname", lastName);
 			Filter uNameFilter = Filter.like("name", username, Filter.MatchMode.START);
-			Filter oldUserFilter = Filter.like("name", "_old",Filter.MatchMode.ANYWHERE);
-			Filter empIdFilter = Filter.eq("employeeId",empId);
+			Filter oldUserFilter = Filter.like("name", "_old", Filter.MatchMode.ANYWHERE);
+			Filter empIdFilter = Filter.eq("employeeId", empId);
 			Filter mNameFilter = null;
 			Filter nameFilter = null;
 			Filter finalFilter = null;
-			
-			if(Util.isNotNullOrEmpty(middInitial)){
-				mNameFilter = Filter.eq("middleInitial",middInitial);
+
+			if (Util.isNotNullOrEmpty(middInitial)) {
+				mNameFilter = Filter.eq("middleInitial", middInitial);
 				nameFilter = Filter.and(fNameFilter, lNameFilter, mNameFilter);
-			}else{
+			} else {
 				nameFilter = Filter.and(fNameFilter, lNameFilter);
 			}
 			//Forming the finalfilter
-			finalFilter = Filter.and(Filter.and(Filter.or(nameFilter,uNameFilter),Filter.not(oldUserFilter)),Filter.not(empIdFilter)); 
+			//finalFilter = Filter.and(Filter.and(Filter.or(nameFilter,uNameFilter),Filter.not(oldUserFilter)),Filter.not(empIdFilter));
+			finalFilter = Filter.and(lNameFilter, uNameFilter, Filter.not(oldUserFilter), Filter.not(empIdFilter));
 			QueryOptions qOps = new QueryOptions();
 			qOps.add(finalFilter);
-			log.info("CMH-AD-Generic-Rulelibrary : QueryOptions "+qOps);
+			log.info("CMH-AD-Generic-Rulelibrary : QueryOptions " + qOps);
 			try {
 				count = context.countObjects(Identity.class, qOps);
-				log.info("CMH-AD-Generic-Rulelibrary : Count of exisitng users with same name "+count);
-			} catch (GeneralException e) {
+				log.info("CMH-AD-Generic-Rulelibrary : Count of exisitng users with same name " + count);
+			} catch(GeneralException e) {
 				log.error(e.getMessage());
 			}
 			log.debug("CMH-AD-Generic-Rulelibrary : Exiting checkUnique(String username,String firstName,String lastName,String middInitial)");
 			return count;
 		}
-	     
-     	/**
-     	 * User name concat.
-     	 * Appending the username with count
-     	 * @param username the username
-     	 * @param count the count
-     	 * @return the string
-     	 */
-     	
+
+		/**
+				 * User name concat.
+				 * Appending the username with count
+				 * @param username the username
+				 * @param count the count
+				 * @return the string
+				 */
+
 		public String userNameConcat(String username, int count) {
-		    log.debug("CMH-AD-Generic-Rulelibrary :  Entering userNameConcat(String username, int count)");
+			log.debug("CMH-AD-Generic-Rulelibrary :  Entering userNameConcat(String username, int count)");
 			String userName = username.concat(Integer.toString(count));
 			log.debug("CMH-AD-Generic-Rulelibrary : Exiting userNameConcat(String username, int count)");
 			return userName;
 
 		}
-		 
- 		/**
- 		 * Generate time stamp.
- 		 *
- 		 * @return the string
- 		 */
- 		
+
+		/**
+				 * Generate time stamp.
+				 *
+				 * @return the string
+				 */
+
 		public String generateTimeStamp() {
 			log.debug("CMH-AD-Generic-Rulelibrary :Entering generateTimeStamp()");
 			Date date = new Date();
@@ -238,20 +242,20 @@
 			String strDate = formatter.format(date);
 			log.debug("CMH-AD-Generic-Rulelibrary : Exiting generateTimeStamp()");
 			return strDate;
-		} 
-		  
-  		/**
-  		 * User name generator.
-  		 *
-  		 * @param firstName the first name
-  		 * @param lastName the last name
-  		 * @param middInitial the midd initial
-  		 * @param empId the emp id
-  		 * @return the string
-  		 */
-  		
+		}
+
+		/**
+				 * User name generator.
+				 *
+				 * @param firstName the first name
+				 * @param lastName the last name
+				 * @param middInitial the midd initial
+				 * @param empId the emp id
+				 * @return the string
+				 */
+
 		public String userNameGenerator(String firstName, String lastName, String middInitial, String empId) {
-		    log.debug("CMH-AD-Generic-Rulelibrary : Entering userNameGenerator(String firstName, String lastName, String middInitial)");
+			log.debug("CMH-AD-Generic-Rulelibrary : Entering userNameGenerator(String firstName, String lastName, String middInitial)");
 			String uname = null;
 			String temp = null;
 			String finalUsername = null;
@@ -268,31 +272,30 @@
 			}
 			if (Util.isNotNullOrEmpty(uname)) {
 				int count = 0;
-				count = checkUnique(uname,firstName,lastName,middInitial,empId);
+				count = checkUnique(uname, firstName, lastName, middInitial, empId);
 				if (count > 0) {
 					temp = userNameConcat(uname, count);
 					uname = temp;
 				}
-				finalUsername = userNameCreationValidationCheck(uname,firstName,lastName,middInitial,empId);
+				finalUsername = userNameCreationValidationCheck(uname, firstName, lastName, middInitial, empId);
 			}
 			log.debug("CMH-AD-Generic-Rulelibrary : Exiting userNameGenerator(String firstName, String lastName, String middInitial)");
 			return finalUsername;
 		}
-		 
- 		/**
- 		 * User name creation validation check.
- 		 * Checking whether the generated user has length >17 and is not unique
- 		 * Trimming the username to 17 and generating new username by appdening digits
- 		 * @param username the username
- 		 * @param firstName the first name
- 		 * @param lastName the last name
- 		 * @param middInitial the midd initial
- 		 * @param empId the emp id
- 		 * @return the string
- 		 */
- 			
-		public String userNameCreationValidationCheck(String username, String firstName, String lastName,
-				String middInitial, String empId) {
+
+		/**
+				 * User name creation validation check.
+				 * Checking whether the generated user has length >17 and is not unique
+				 * Trimming the username to 17 and generating new username by appdening digits
+				 * @param username the username
+				 * @param firstName the first name
+				 * @param lastName the last name
+				 * @param middInitial the midd initial
+				 * @param empId the emp id
+				 * @return the string
+				 */
+
+		public String userNameCreationValidationCheck(String username, String firstName, String lastName, String middInitial, String empId) {
 			log.debug("CMH-AD-Generic-Rulelibrary : Entering userNameCreationValidationCheck(String username, String firstName, String lastName,String middInitial, String empId");
 			String uname = username;
 			String temp = null;
@@ -310,17 +313,17 @@
 						if (Util.isNotNullOrEmpty(number)) {
 							size = number.length();
 						}
-						int counter = size + size; 
-						temp = uname.substring(0, uname.length()-counter); 
+						int counter = size + size;
+						temp = uname.substring(0, uname.length() - counter);
 						uname = temp;
-						
+
 					} else { // if substring does not have any digit and is of 17 characters
 						temp = uname.substring(0, 17);
-						
+
 					}
 
-				} while (checkLength(uname));
-				count = checkUnique(uname,firstName,lastName,middInitial,empId);
+				} while ( checkLength ( uname ));
+				count = checkUnique(uname, firstName, lastName, middInitial, empId);
 				if (count > 0) {
 					count++;
 					temp = userNameConcat(uname, count);
@@ -330,435 +333,414 @@
 			} else {
 				finalUsername = uname;
 			}
-	        log.debug("CMH-AD-Generic-Rulelibrary : Exiting userNameCreationValidationCheck(String username, String firstName, String lastName,String middInitial, String empId");
+			log.debug("CMH-AD-Generic-Rulelibrary : Exiting userNameCreationValidationCheck(String username, String firstName, String lastName,String middInitial, String empId");
 			return finalUsername;
 		}
-		
+
 		/**
-		 * Check username in cerner.
-		 * Validating username against cerner custom object
-		 * @param username the username
-		 * @return true, if successful
-		 */
+				 * Check username in cerner.
+				 * Validating username against cerner custom object
+				 * @param username the username
+				 * @return true, if successful
+				 */
 		public boolean checkUsernameInCustomObject(String username, String customName) {
-	        log.debug("CMH-AD-Generic-Rulelibrary : Entering checkUsernameInCustomObject(String username)");
+			log.debug("CMH-AD-Generic-Rulelibrary : Entering checkUsernameInCustomObject(String username)");
 			Custom custom = null;
 			try {
 				custom = context.getObject(Custom.class, customName);
-			} catch (GeneralException e) {
-				log.error("CMH-AD-Generic-Rulelibrary: Error checking username in Cerner : "+e.getMessage());
+			} catch(GeneralException e) {
+				log.error("CMH-AD-Generic-Rulelibrary: Error checking username in Cerner : " + e.getMessage());
 			}
 
 			List arr = custom.getList("USERNAMES");
-			if(!Util.isEmpty(arr)) {
+			if (!Util.isEmpty(arr)) {
 				if (arr.contains(username)) {
-					 log.debug("CMH-AD-Generic-Rulelibrary : Exiting checkUsernameInCustomObject(String username)");
+					log.debug("CMH-AD-Generic-Rulelibrary : Exiting checkUsernameInCustomObject(String username)");
 					return true;
-				} else {
-					 log.debug("CMH-AD-Generic-Rulelibrary : Exiting checkUsernameInCustomObject(String username)");
-					return false;
-				}  
-		   } else {
-		      log.debug("CMH-AD-Generic-Rulelibrary : Exiting checkUsernameInCustomObject(String username)");
-              return false;
-           }         
+				}
+			}
+			log.debug("CMH-AD-Generic-Rulelibrary : Exiting checkUsernameInCustomObject(String username)");
+			return false;
 		}
-	    
-    	/**
-    	 * Final user name.
-    	 * If the username is exists in cerner , username is incremented and finalusername is generated
-    	 * @param username the username
-    	 * @param firstname the firstname
-    	 * @param lastname the lastname
-    	 * @param middleInitial the middle initial
-    	 * @param empId the emp id
-    	 * @return the string
-    	 */
-    	
-		public String finalUserName(String username, String firstname, String lastname, String middleInitial,String empId) {
-			log.debug("CMH-AD-Generic-Rulelibrary : Entering finalUserName(String username, String firstname, String lastname, String middleInitial,String empId)");
-			String uname= null;
-		    if (Util.isNotNullOrEmpty(username)) {
-					  uname = username;
-					  String temp = null;
-				boolean cernerFlag = checkUsernameInCustomObject(uname,"CMH-Cerner-Usernames");
-				boolean inforFlag = checkUsernameInCustomObject(uname,"CMH-Infor-Usernames");
-				if (cernerFlag || inforFlag) {
-						do {
-							Pattern pattern = Pattern.compile("-?\\d+");
-							Matcher matcher = pattern.matcher(uname);
-							if (matcher.find()) {
-								String number = matcher.group();
-								if (Util.isNotNullOrEmpty(number)) {
-									int size = number.length();
-									temp = uname.substring(0, uname.length()-size);
-									int count = Integer.parseInt(number);
-									count++;
-									uname = temp.concat(Integer.toString(count));
-								} 
-								} else {
-									temp = uname + 1;
-									uname = temp;
-								}
-								userNameCreationValidationCheck(uname, firstname, lastname, middleInitial,empId);
-						} while (checkUsernameInCustomObject(uname,"CMH-Cerner-Usernames") || checkUsernameInCustomObject(uname,"CMH-Infor-Usernames"));
-					}
-		      
-		    }
-		 log.debug("CMH-AD-Generic-Rulelibrary : Exiting finalUserName(String username, String firstname, String lastname, String middleInitial,String empId)");
-	     return uname;
-		}
-		
+
 		/**
-		 * Audit write.
-		 * This code is used for audit event generation
-		 * @param action the action
-		 * @param source the source
-		 * @param target the target
-		 * @param attributeName the attribute name
-		 * @param attributeValue the attribute value
-		 * @param map the map
-		 */
-		
-		public void auditWrite(String action,String source,String target,String attributeName,String attributeValue,Map map) {
-		log.debug("CMH-AD-Generic-Rulelibrary : Entering auditWrite(String action,String source,String target,String attributeName,String attributeValue,Map map)");
-			if(!StringUtils.isBlank(action) &&!StringUtils.isBlank(source) && !StringUtils.isBlank(target) &&
-	       !StringUtils.isBlank(attributeName) && !StringUtils.isBlank(attributeValue) && null != map) {
-	      		
-					AuditEvent event = new AuditEvent();
-		            log.debug("audit start");
-		            event.setAction(action);
-		            event.setCreated(new Date());
-		            event.setSource(source);
-		            event.setTarget(target);	
-		            event.setAttributeName(attributeName);
-		            event.setAttributeValue(attributeValue);
-		            if( null != map.get("setString1")) {
-		                event.setString1((String) map.get("setString1"));
-		            }else if(null != map.get("setString2")){
-		                  event.setString2((String) map.get("setString2"));
-		            }else if(null != map.get("setString3")){
-		                  event.setString3((String) map.get("setString3"));
-		            }else if(null != map.get("setString4")){
-		                  event.setString4((String) map.get("setString4"));
-		            }
-	            	Auditor.log(event);
-	            	log.debug("audit ends");
-	        		context.commitTransaction();
-	    		
-			}else {
-	     		log.error("CMH-AD-Generic-Rulelibrary : One of the required attribute is null [action,source,target,attributeName,attributeValue, setStringMap]");
+				 * Final user name.
+				 * If the username is exists in cerner , username is incremented and finalusername is generated
+				 * @param username the username
+				 * @param firstname the firstname
+				 * @param lastname the lastname
+				 * @param middleInitial the middle initial
+				 * @param empId the emp id
+				 * @return the string
+				 */
+
+		public String finalUserName(String username, String firstname, String lastname, String middleInitial, String empId) {
+			log.debug("CMH-AD-Generic-Rulelibrary : Entering finalUserName(String username, String firstname, String lastname, String middleInitial,String empId)");
+			String uname = null;
+			if (Util.isNotNullOrEmpty(username)) {
+				uname = username;
+				String temp = null;
+				boolean cernerFlag = checkUsernameInCustomObject(uname, "CMH-Cerner-Usernames");
+				boolean inforFlag = checkUsernameInCustomObject(uname, "CMH-Infor-Usernames");
+				if (cernerFlag || inforFlag) {
+					do {
+						Pattern pattern = Pattern.compile("-?\\d+");
+						Matcher matcher = pattern.matcher(uname);
+						if (matcher.find()) {
+							String number = matcher.group();
+							if (Util.isNotNullOrEmpty(number)) {
+								int size = number.length();
+								temp = uname.substring(0, uname.length() - size);
+								int count = Integer.parseInt(number);
+								count++;
+								uname = temp.concat(Integer.toString(count));
+							}
+						} else {
+							temp = uname + 1;
+							uname = temp;
+						}
+						userNameCreationValidationCheck(uname, firstname, lastname, middleInitial, empId);
+					} while ( checkUsernameInCustomObject ( uname , "CMH-Cerner-Usernames") || checkUsernameInCustomObject(uname, "CMH-Infor-Usernames"));
+				}
+
+			}
+			log.debug("CMH-AD-Generic-Rulelibrary : Exiting finalUserName(String username, String firstname, String lastname, String middleInitial,String empId)");
+			return uname;
+		}
+
+		/**
+				 * Audit write.
+				 * This code is used for audit event generation
+				 * @param action the action
+				 * @param source the source
+				 * @param target the target
+				 * @param attributeName the attribute name
+				 * @param attributeValue the attribute value
+				 * @param map the map
+				 */
+
+		public void auditWrite(String action, String source, String target, String attributeName, String attributeValue, Map map) {
+			log.debug("CMH-AD-Generic-Rulelibrary : Entering auditWrite(String action,String source,String target,String attributeName,String attributeValue,Map map)");
+			if (!StringUtils.isBlank(action) && !StringUtils.isBlank(source) && !StringUtils.isBlank(target) && !StringUtils.isBlank(attributeName) && !StringUtils.isBlank(attributeValue) && null != map) {
+
+				AuditEvent event = new AuditEvent();
+				log.debug("audit start");
+				event.setAction(action);
+				event.setCreated(new Date());
+				event.setSource(source);
+				event.setTarget(target);
+				event.setAttributeName(attributeName);
+				event.setAttributeValue(attributeValue);
+				if (null != map.get("setString1")) {
+					event.setString1((String) map.get("setString1"));
+				} else if (null != map.get("setString2")) {
+					event.setString2((String) map.get("setString2"));
+				} else if (null != map.get("setString3")) {
+					event.setString3((String) map.get("setString3"));
+				} else if (null != map.get("setString4")) {
+					event.setString4((String) map.get("setString4"));
+				}
+				Auditor.log(event);
+				log.debug("audit ends");
+				context.commitTransaction();
+
+			} else {
+				log.error("CMH-AD-Generic-Rulelibrary : One of the required attribute is null [action,source,target,attributeName,attributeValue, setStringMap]");
 			}
 			log.debug("CMH-AD-Generic-Rulelibrary : Exiting auditWrite(String action,String source,String target,String attributeName,String attributeValue,Map map)");
 		}
-		
-		
+
 		/**
-		 * Gets the apps to delete.
-		 *
-		 * @param identityName the identity name
-		 * @param customName the custom name
-		 * @param keyWord the key word
-		 * @return the apps to delete
-		 */
-		public List getAppsToProcess(String identityName, String customName, String keyWord){
-			Identity iden = context.getObjectByName(Identity.class,identityName);
-			Custom custom = context.getObjectByName(Custom.class,customName);
+				 * Gets the apps to delete.
+				 *
+				 * @param identityName the identity name
+				 * @param customName the custom name
+				 * @param keyWord the key word
+				 * @return the apps to delete
+				 */
+		public List getAppsToProcess(String identityName, String customName, String keyWord) {
+			Identity iden = context.getObjectByName(Identity.class, identityName);
+			Custom custom = context.getObjectByName(Custom.class, customName);
 			List appsToDelete = new ArrayList();
-			if(iden!=null && custom!=null){
+			if (iden != null && custom != null) {
 				List customAppsList = custom.getList(keyWord);
-				if(customAppsList!=null){
+				if (customAppsList != null) {
 					List idLinks = iden.getLinks();
-					if(idLinks!=null && idLinks.size()>0){
-						for(Link li:idLinks){
-							if(li!=null){
+					if (idLinks != null && idLinks.size() > 0) {
+						for (Link li: idLinks) {
+							if (li != null) {
 								String appName = li.getApplicationName();
-								if(!StringUtils.isBlank(appName) && customAppsList.contains(appName)){
+								if (!StringUtils.isBlank(appName) && customAppsList.contains(appName)) {
 									appsToDelete.add(appName);
 								}
 							}
 						}
 					}
-				}			
+				}
 			}
 			return appsToDelete;
 		}
-		
-		
+
 		/**
-		 * Generate snow ticket.
-		 * This code is used for service now ticket generation
-		 * @param identityName the identity name
-		 * @param customName the custom name
-		 * @param disconnectedApps the disconnected apps
-		 * @param operation the operation
-		 * @return the string
-		 */
-		
+				 * Generate snow ticket.
+				 * This code is used for service now ticket generation
+				 * @param identityName the identity name
+				 * @param customName the custom name
+				 * @param disconnectedApps the disconnected apps
+				 * @param operation the operation
+				 * @return the string
+				 */
+
 		public String generateSnowTicket(String identityName, String customName, List disconnectedApps, String operation) {
-	        String ticketNumber = null;
-	        Identity user = context.getObjectByName(Identity.class,identityName);
-	        Custom custom = context.getObjectByName(Custom.class,customName);
-	        if (user != null && custom!=null) {
-	        	        	
-	        	String description = null;
-	            String short_description = "User terminated - "+ user.getName();
-	            String serviceNowRequestURL =  custom.getString("serviceNowRequestURL");
-	            String serviceNowUserName = custom.getString("serviceNowUserName");
-	            String serviceNowUserPassword = custom.getString("serviceNowUserPassword");
-	            String assignmentGroup = custom.getString("assignment_group");
-	            String cmdbCi = custom.getString("cmdb_ci");
-	            
-	            StringBuilder str = new StringBuilder();
-	        	
-	        	
-	        	if(Util.nullSafeCaseInsensitiveEq(operation,"Delete") || Util.nullSafeCaseInsensitiveEq(operation,"Disable")) {
-	        		str = str.append("User").append(user.getName()).append("[")
-	               .append(user.getStringAttribute("employeeId"))
-	               .append("] terminated, please ").append(operation)
-	               .append("all the access from the user.");
-	        		if(!Util.isEmpty(disconnectedApps)){
-	        			str = str.append(operation).append("the user accounts from these applications : "+Util.listToCsv(disconnectedApps));
-	        		}
-	        	}else if(Util.nullSafeCaseInsensitiveEq(operation,"Enable")) {
-	        		str = str.append("User").append(user.getName()).append("[")
-	               .append(user.getStringAttribute("employeeId"))
-	               .append("] Rehired, please enalbe all the access for the user.");
-	        		if(!Util.isEmpty(disconnectedApps)){
-	        			str.append("Enable the user accounts from these applications : "+Util.listToCsv(disconnectedApps));
-	        		}
-	        	}
-	        	
-	        	description = str.toString();
-	            
-	            Map jsonMap = new HashMap();
-	            jsonMap.put("assignment_group", assignmentGroup);
-	            jsonMap.put("short_description", short_description);
-	            jsonMap.put("description", description);
-	            jsonMap.put("cmdb_ci", cmdbCi);
-	            
-	            
+			String ticketNumber = null;
+			Identity user = context.getObjectByName(Identity.class, identityName);
+			Custom custom = context.getObjectByName(Custom.class, customName);
+			if (user != null && custom != null) {
 
-	            JsonUtil jUtil = new JsonUtil();
-	            
-	            CredentialsProvider credsProvider = new BasicCredentialsProvider();
-	            CloseableHttpClient httpclient = HttpClients.custom().setDefaultCredentialsProvider(credsProvider).build();
-	       		try {
-	       			String jsonString = jUtil.render(jsonMap);
-		               if (Util.isNotNullOrEmpty(serviceNowRequestURL)
-		                   && Util.isNotNullOrEmpty(serviceNowUserName)
-		                   && Util.isNotNullOrEmpty(serviceNowUserPassword)) {
+				String description = null;
+				String short_description = "User " + operation + "d - " + user.getName();
+				String serviceNowRequestURL = custom.getString("serviceNowRequestURL");
+				String serviceNowUserName = custom.getString("serviceNowUserName");
+				String serviceNowUserPassword = custom.getString("serviceNowUserPassword");
+				String assignmentGroup = custom.getString("assignment_group");
+				String cmdbCi = custom.getString("cmdb_ci");
 
-		            	   HttpPost httpPost = new HttpPost(serviceNowRequestURL);
+				StringBuilder str = new StringBuilder();
 
-		            	   String decryptedPassword = context.decrypt(serviceNowUserPassword);
-		            	   String userCredentials = serviceNowUserName + ":"+ decryptedPassword;
+				if (Util.nullSafeCaseInsensitiveEq(operation, "Delete") || Util.nullSafeCaseInsensitiveEq(operation, "Disable")) {
+					str = str.append("User").append(user.getName()).append("[").append(user.getStringAttribute("employeeId")).append("] terminated, please ").append(operation).append("all the access from the user.");
+					if (!Util.isEmpty(disconnectedApps)) {
+						str = str.append(operation).append("the user accounts from these applications : " + Util.listToCsv(disconnectedApps));
+					}
+				} else if (Util.nullSafeCaseInsensitiveEq(operation, "Enable")) {
+					str = str.append("User").append(user.getName()).append("[").append(user.getStringAttribute("employeeId")).append("] Rehired, please enalbe all the access for the user.");
+					if (!Util.isEmpty(disconnectedApps)) {
+						str.append("Enable the user accounts from these applications : " + Util.listToCsv(disconnectedApps));
+					}
+				}
 
-		            	   Base64 base = new Base64();
+				description = str.toString();
 
-		            	   String encoding = base.encodeAsString(new String(userCredentials).getBytes());
-		            	   httpPost.setHeader("Accept", "application/json");
-		            	   httpPost.setHeader("Content-Type", "application/json");
-		            	   httpPost.setHeader("Authorization", "Basic " + encoding);
+				Map jsonMap = new HashMap();
+				jsonMap.put("assignment_group", assignmentGroup);
+				jsonMap.put("short_description", short_description);
+				jsonMap.put("description", description);
+				jsonMap.put("cmdb_ci", cmdbCi);
 
-		            	   HttpEntity entity = new ByteArrayEntity(jsonString.getBytes("utf-8"));
-		            	   httpPost.setEntity(entity);
-		            	   CloseableHttpResponse response = httpclient.execute(httpPost);
-		            	   try {
-		                       	String responseBody = EntityUtils.toString(response.getEntity());
-		                       	Map responseMap = (Map)jUtil.parse(responseBody);
-		                       	Map resultMap = (Map)responseMap.get("result");
-		                       	ticketNumber = (String)resultMap.get("number");
-		                       	if(Util.isNotNullOrEmpty(ticketNumber)) {
-		                       		if (log.isDebugEnabled()) {
-		                       			log.debug("CMH-LifecycleEvent-Leaver-Disable : Ticket Created"+ ticketNumber);
-		                       		}
-		                       	}
-		            	   } catch (Exception e) {
-		            		   log.error("CMH-AD-Generic-Rulelibrary : Error reading response " + e.getMessage());
-		            	   } finally {
-		            		   response.close();
-		            	   }
+				JsonUtil jUtil = new JsonUtil();
 
-		               }
-	       		} catch (Exception e) {
-	       			log.error("CMH-AD-Generic-Rulelibrary : Error creating service now ticket "+ e.getMessage());
-	       		} finally {
-	     			try{
-	                	httpclient.close();
-	                }catch(IOException e){
-	                	log.error("CMH-AD-Generic-Rulelibrary : Error closing the httpclient in service now ticket generation"+ e.getMessage());
-	                }
-	            }
-	       	}
-	        return ticketNumber;
-	    }
-	    
-	    
-	    /**
-    	 * Do targeted aggregation.
-    	 * This code performs single account aggregation
-    	 * @param nativeId the native id
-    	 * @param appName the app name
-    	 * @param identityName the identity name
-    	 * @return the list
-    	 */
-    	
-	    public List doTargetedAggregation(String nativeId, String appName, String identityName) {
+				CredentialsProvider credsProvider = new BasicCredentialsProvider();
+				CloseableHttpClient httpclient = HttpClients.custom().setDefaultCredentialsProvider(credsProvider).build();
+				try {
+					String jsonString = jUtil.render(jsonMap);
+					if (Util.isNotNullOrEmpty(serviceNowRequestURL) && Util.isNotNullOrEmpty(serviceNowUserName) && Util.isNotNullOrEmpty(serviceNowUserPassword)) {
+
+						HttpPost httpPost = new HttpPost(serviceNowRequestURL);
+
+						// String decryptedPassword = context.decrypt(serviceNowUserPassword);
+						String userCredentials = serviceNowUserName + ":" + context.decrypt(serviceNowUserPassword);
+
+						Base64 base = new Base64();
+
+						String encoding = base.encodeAsString(new String(userCredentials).getBytes());
+						httpPost.setHeader("Accept", "application/json");
+						httpPost.setHeader("Content-Type", "application/json");
+						httpPost.setHeader("Authorization", "Basic " + encoding);
+
+						HttpEntity entity = new ByteArrayEntity(jsonString.getBytes("utf-8"));
+						httpPost.setEntity(entity);
+						CloseableHttpResponse response = httpclient.execute(httpPost);
+						try {
+							String responseBody = EntityUtils.toString(response.getEntity());
+							Map responseMap = (Map) jUtil.parse(responseBody);
+							Map resultMap = (Map) responseMap.get("result");
+							ticketNumber = (String) resultMap.get("number");
+							if (Util.isNotNullOrEmpty(ticketNumber)) {
+								if (log.isDebugEnabled()) {
+									log.debug("CMH-LifecycleEvent-Leaver-Disable : Ticket Created" + ticketNumber);
+								}
+							}
+						} catch(Exception e) {
+							log.error("CMH-AD-Generic-Rulelibrary : Error reading response " + e.getMessage());
+						} finally {
+							response.close();
+						}
+
+					}
+				} catch(Exception e) {
+					log.error("CMH-AD-Generic-Rulelibrary : Error creating service now ticket " + e.getMessage());
+				} finally {
+					try {
+						httpclient.close();
+					} catch(IOException e) {
+						log.error("CMH-AD-Generic-Rulelibrary : Error closing the httpclient in service now ticket generation" + e.getMessage());
+					}
+				}
+			}
+			return ticketNumber;
+		}
+
+		/**
+				 * Do targeted aggregation.
+				 * This code performs single account aggregation
+				 * @param nativeId the native id
+				 * @param appName the app name
+				 * @param identityName the identity name
+				 * @return the list
+				 */
+
+		public List doTargetedAggregation(String nativeId, String appName, String identityName) {
 			Logger log = Logger.getLogger("SingleAccountAggregation");
 			Identity identity = null;
 			List errorMessages = new ArrayList();
 			log.debug("Enter doTargetedAggregation(): " + nativeId);
-			log.debug("Targeted Aggregation for appName: "+appName+" IdentityName: "+identityName);
-			try{
+			log.debug("Targeted Aggregation for appName: " + appName + " IdentityName: " + identityName);
+			try {
 				identity = context.getObjectByName(Identity.class, identityName);
 				Application app = context.getObjectByName(Application.class, appName);
 				Connector connector = sailpoint.connector.ConnectorFactory.getConnector(app, null);
 				ResourceObject rObj = connector.getObject("account", nativeId, null);
-				if(rObj != null)
-				{
+				if (rObj != null) {
 					Attributes argMap = new Attributes();
 					argMap.put("noOptimizeReaggregation", "true");
 					// Consturct an aggregator instance.
 					Aggregator agg = new Aggregator(context, argMap);
 					log.debug("Calling aggregate() method.");
-					if(ObjectUtil.isLocked(context, Identity.class,identityName))
-					{
-						ObjectUtil.unlockIdentity(context , identity);        
+					if (ObjectUtil.isLocked(context, Identity.class, identityName)) {
+						ObjectUtil.unlockIdentity(context, identity);
 					}
 					TaskResult taskResult = agg.aggregate(app, rObj);
-					if(taskResult.getErrors()!=null && taskResult.getErrors().size()>0){
+					if (taskResult.getErrors() != null && taskResult.getErrors().size() > 0) {
 						log.error("Single account Aggregation task failed");
-					}else{
+					} else {
 						log.debug("Single Account Aggregation is completed successfully");
 					}
 				}
-				else
-				{
+				else {
 					log.error("CMH-AD-Generic-Rulelibrary : Resource Object is null");
 					errorMessages.add("User object is not found");
 				}
-			} catch (Exception e){
+			} catch(Exception e) {
 				log.error("CMH-AD-Generic-Rulelibrary : Exception during targeted aggregation: " + e.getMessage());
 				errorMessages.add(e.getMessage());
 			}
 			log.debug("CMH-AD-Generic-Rulelibrary : Exit doTargetedAggregation");
-			return errorMessages;	
+			return errorMessages;
 		}
-		
-		
-		/**
-		 * Start date check.
-		 * Checking if startdate is <= 30 days of current day
-		 * @param startDate the start date
-		 * @return true, if successful
-		 */
-		
-		public boolean startDateCheck(String startDate) {
-	        log.debug("CMH-AD-Generic-Rulelibrary : Entering startDateCheck(String startDate)");
-			boolean flag = false;
-			if(null !=startDate) {
-				Date date1 = null;
-				try {
-	        		date1 = new SimpleDateFormat("MM/dd/yyyy").parse(startDate);
-	        	} catch (ParseException e) {
-					log.error("CMH-AD-Generic-Rulelibrary :startDateCheck : "+e.getMessage());
-				} 
-				Date date2 = new Date();
-	      		int days = Util.getDaysDifference(date1, date2);
-	     		if(days <=30){
-					flag= true;
-				}else {
-					flag=false;
-			   	}
-			}
-			log.debug("CMH-AD-Generic-Rulelibrary : Exiting startDateCheck(String startDate): Date Valid? "+flag);
-			return flag;		
-		}
-       	 public List readFromCsv(String filePath) {
-	    log.debug("CMH-AD-Generic-Rulelibrary : Entering readFromCsv()");
-		List list = new ArrayList();
-		int count = 0;
-		int index = 0;
-		String line = "";
-		String cvsSplitBy = ",";
-		String[] cols = null;
-		if (Util.isNotNullOrEmpty(filePath) && new File(filePath).exists()) {
-			BufferedReader br = null;
-			try {
-				br = new BufferedReader(new FileReader(filePath));
-				while ((line = br.readLine()) != null) {
-					if (count == 0) {
-						cols = line.split(cvsSplitBy);
-						for (int i = 0; i < cols.length; i++) {
-							if (cols[i].equalsIgnoreCase("USERNAME")) {
-								index = i;
-								break;
-							} 
-						}
-						count++;
-						System.out.println("index: " + index);
 
-					} else {
-						cols = line.split(cvsSplitBy);
-					}
-					list.add(cols[index]);
+		/**
+				 * Start date check.
+				 * Checking if startdate is <= 30 days of current day
+				 * @param startDate the start date
+				 * @return true, if successful
+				 */
+
+		public boolean startDateCheck(String startDate) {
+			log.debug("CMH-AD-Generic-Rulelibrary : Entering startDateCheck(String startDate)");
+			boolean flag = false;
+			if (null != startDate) {
+				Date userStartDate = null;
+				try {
+					userStartDate = new SimpleDateFormat("MM/dd/yyyy").parse(startDate);
+				} catch(ParseException e) {
+					log.error("CMH-AD-Generic-Rulelibrary :startDateCheck : " + e.getMessage());
 				}
-			} catch (FileNotFoundException e) {
-				log.error("CMH-AD-Generic-Rulelibrary : ERROR :"+e.getMessage());
-			} catch (IOException e) {
-				log.error("CMH-AD-Generic-Rulelibrary : ERROR :"+e.getMessage());
-			} catch (Exception e) {
-				log.error("CMH-AD-Generic-Rulelibrary : ERROR :"+e.getMessage());
-			} finally {
-				if (br != null) {
-					try {
-						 br.close();
-					} catch (IOException e) {
-						log.error("CMH-AD-Generic-Rulelibrary : ERROR :"+e.getMessage());
-					}
+				Date currentDate = new Date();
+				int days = Util.getDaysDifference(userStartDate, currentDate);
+				if (days <= 30) {
+					flag = true;
+				} else {
+					flag = false;
 				}
 			}
-						
-		}else {
-		   throw new sailpoint.tools.GeneralException("CMH-AD-Generic-Rulelibrary :ERROR : File is not present on given location or file location is not proper");	
+			log.debug("CMH-AD-Generic-Rulelibrary : Exiting startDateCheck(String startDate): Date Valid? " + flag);
+			return flag;
 		}
-		log.debug("CMH-AD-Generic-Rulelibrary : Exiting readFromCsv()");
-		return list;
-	}
-	
-	public boolean writeToCustomObject(List unameList , String customName) {
-	    log.debug("CMH-AD-Generic-Rulelibrary : Entering writeToCustomObject()");
-	    Custom custom = null;
-	    boolean flag = false;
-	    List finalList = new ArrayList();
-	    if( null != unameList && Util.isNotNullOrEmpty(customName)) {
-		    try {
-		         custom = context.getObjectByName(Custom.class,customName);
-				 if(null != custom) {
-					String lock = custom.getLock();
-					List list = custom.getAttributes().getList("USERNAMES");
-					if(null != list) {
-					   finalList.addAll(list);
-					   finalList.addAll(unameList);
-					}else {
-					   finalList.addAll(unameList);
+
+		public List readFromCsv(String filePath) {
+			log.debug("CMH-AD-Generic-Rulelibrary : Entering readFromCsv()");
+			List list = new ArrayList();
+			int count = 0;
+			int index = 0;
+			String line = "";
+			String cvsSplitBy = ",";
+			String[] cols = null;
+			if (Util.isNotNullOrEmpty(filePath) && new File(filePath).exists()) {
+				BufferedReader br = null;
+				try {
+					br = new BufferedReader(new FileReader(filePath));
+					while ((line = br.readLine()) != null) {
+						if (count == 0) {
+							cols = line.split(cvsSplitBy);
+							for (int i = 0; i < cols.length; i++) {
+								if (cols[i].equalsIgnoreCase("USERNAME")) {
+									index = i;
+									break;
+								}
+							}
+							count++;
+							System.out.println("index: " + index);
+
+						} else {
+							cols = line.split(cvsSplitBy);
+						}
+						list.add(cols[index]);
 					}
-					if(finalList != null) {
-						custom.setLock(lock);
-						custom.put("USERNAMES",finalList);
-						context.saveObject(custom);
-						context.commitTransaction();
-						custom.remove(lock);
-						flag = true;	
-					 }
-				  } 
-			  } catch (GeneralException e) {
-				  log.error("CMH-AD-Generic-Rulelibrary :ERROR: "+e.getMessage());
-			  }
-		 }	
-		 log.debug("CMH-AD-Generic-Rulelibrary : Exiting writeToCustomObject()");
-		 return flag;		    	
-	 }
+				} catch(FileNotFoundException e) {
+					log.error("CMH-AD-Generic-Rulelibrary : ERROR :" + e.getMessage());
+				} catch(IOException e) {
+					log.error("CMH-AD-Generic-Rulelibrary : ERROR :" + e.getMessage());
+				} catch(Exception e) {
+					log.error("CMH-AD-Generic-Rulelibrary : ERROR :" + e.getMessage());
+				} finally {
+					if (br != null) {
+						try {
+							br.close();
+						} catch(IOException e) {
+							log.error("CMH-AD-Generic-Rulelibrary : ERROR :" + e.getMessage());
+						}
+					}
+				}
+
+			} else {
+				throw new sailpoint.tools.GeneralException("CMH-AD-Generic-Rulelibrary :ERROR : File is not present on given location or file location is not proper");
+			}
+			log.debug("CMH-AD-Generic-Rulelibrary : Exiting readFromCsv()");
+			return list;
+		}
+
+		public boolean writeToCustomObject(List unameList, String customName) {
+			log.debug("CMH-AD-Generic-Rulelibrary : Entering writeToCustomObject()");
+			Custom custom = null;
+			boolean flag = false;
+			List finalList = new ArrayList();
+			if (null != unameList && Util.isNotNullOrEmpty(customName)) {
+				try {
+					custom = context.getObjectByName(Custom.class, customName);
+					if (null != custom) {
+						String lock = custom.getLock();
+						List list = custom.getAttributes().getList("USERNAMES");
+						if (null != list) {
+							finalList.addAll(list);
+							finalList.addAll(unameList);
+						} else {
+							finalList.addAll(unameList);
+						}
+						if (finalList != null) {
+							custom.setLock(lock);
+							custom.put("USERNAMES", finalList);
+							context.saveObject(custom);
+							context.commitTransaction();
+							custom.remove(lock);
+							flag = true;
+						}
+					}
+				} catch(GeneralException e) {
+					log.error("CMH-AD-Generic-Rulelibrary :ERROR: " + e.getMessage());
+				}
+			}
+			log.debug("CMH-AD-Generic-Rulelibrary : Exiting writeToCustomObject()");
+			return flag;
+		}
   ]]></Source>
 </Rule>

@@ -1,20 +1,21 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!DOCTYPE sailpoint PUBLIC "sailpoint.dtd" "sailpoint.dtd">
-<sailpoint><Rule language="beanshell" name="CMH-Infor-Pre-Iteration-Rule">
-  <Description>This rule is used to update the timestamp of the task</Description>
-  <Source><![CDATA[
-  import java.text.SimpleDateFormat;
-  import sailpoint.object.Custom;
-  
-  Custom custom = context.getObjectByName(Custom.class,"CMH-Infor-Incremental-Aggregation-Custom-Object");
-  String format = "yyyy-MM-dd hh:mm:ss";
-  SimpleDateFormat sdf = new SimpleDateFormat(format);
-  String newLastRunTimeStamp = sdf.format(new Date());
-  if(custom!=null){
-  	custom.put("lastRunTimeStamp",newLastRunTimeStamp);
-  	context.saveObject(custom);
-  	context.commitTransaction();
-  }
+<sailpoint>
+    <Rule language="beanshell" name="CMH-Infor-Pre-Iteration-Rule">
+        <Description>This rule is used to update the timestamp of the task</Description>
+        <Source><![CDATA[
+		import java.text.SimpleDateFormat;
+		import sailpoint.object.Custom;
+
+		Custom custom = context.getObjectByName(Custom.class,"CMH-Infor-Incremental-Aggregation-Custom-Object");
+		String format = "yyyy-MM-dd hh:mm:ss";
+		SimpleDateFormat sdf = new SimpleDateFormat(format);
+		String newLastRunTimeStamp = sdf.format(new Date());
+		if(custom!=null){
+			custom.put("lastRunTimeStamp",newLastRunTimeStamp);
+			context.saveObject(custom);
+			context.commitTransaction();
+		}
   ]]></Source>
-</Rule>
+    </Rule>
 </sailpoint>

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE EmailTemplate PUBLIC "sailpoint.dtd" "sailpoint.dtd">
 <EmailTemplate name="New Account Creation">
-  <Body>
-	<![CDATA[
+    <Body>
+        <![CDATA[
 	<html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -29,28 +29,28 @@
 	&amp;lt;/body&gt;
 &amp;lt;/html&gt;
  ]]>
-</Body>
-  <Description>
-    Email Template for New Account Creation.
-  </Description>
-  <Signature>
-    <Inputs>
-      <Argument name="Manager" type="string">
-        <Description>The manager display name.</Description>
-      </Argument>
-      <Argument name="identityName" type="string">
-        <Description>The users identity name.</Description>
-      </Argument>
-      <Argument name="userName" type="string">
-        <Description>The users username.</Description>
-      </Argument>
-      <Argument name="employeeId" type="string">
-        <Description>The users employeeId.</Description>
-      </Argument>
-      <Argument name="userType" type="string">
-        <Description>The users user type.</Description>
-      </Argument>
-    </Inputs>
-  </Signature>
-  <Subject>Network account created for $identityName</Subject>
+    </Body>
+    <Description>
+        Email Template for New Account Creation.
+    </Description>
+    <Signature>
+        <Inputs>
+            <Argument name="Manager" type="string">
+                <Description>The manager display name.</Description>
+            </Argument>
+            <Argument name="identityName" type="string">
+                <Description>The users identity name.</Description>
+            </Argument>
+            <Argument name="userName" type="string">
+                <Description>The users username.</Description>
+            </Argument>
+            <Argument name="employeeId" type="string">
+                <Description>The users employeeId.</Description>
+            </Argument>
+            <Argument name="userType" type="string">
+                <Description>The users user type.</Description>
+            </Argument>
+        </Inputs>
+    </Signature>
+    <Subject>Network account created for $identityName</Subject>
 </EmailTemplate>

@@ -1,34 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Rule PUBLIC "sailpoint.dtd" "sailpoint.dtd">
 <Rule language="beanshell" name="CMH-Rehire-Users-Trigger-Rule" type="IdentityTrigger">
-  <Description>This rule can be used for Certification Events that use rule triggers. The previousIdentity and newIdentity hold snapshots of the identity before the update has occurred and the state of the identity after the update, respectively.</Description>
-  <ReferencedRules>
-    <Reference class="sailpoint.object.Rule" name="CMH-AD-Generic-Rulelibrary"/>
-  </ReferencedRules>
-  <Signature returnType="boolean">
-    <Inputs>
-      <Argument type="previousIdentity">
-        <Description>
-		The identity before the refresh/aggregation (this will be null when an
-          identity is created).
-		</Description>
-      </Argument>
-      <Argument type="newIdentity">
-        <Description>
-		The identity after the refresh/aggregation (this will be null when an
-          identity is deleted).
-		</Description>
-      </Argument>
-    </Inputs>
-    <Returns>
-      <Argument type="result">
-        <Description>
-		A boolean describing the result of the rule.
-		</Description>
-      </Argument>
-    </Returns>
-  </Signature>
-  <Source><![CDATA[
+    <Description>This rule can be used for Certification Events that use rule triggers. The previousIdentity and
+        newIdentity hold snapshots of the identity before the update has occurred and the state of the identity after
+        the update, respectively.
+    </Description>
+    <ReferencedRules>
+        <Reference class="sailpoint.object.Rule" name="CMH-AD-Generic-Rulelibrary"/>
+    </ReferencedRules>
+    <Signature returnType="boolean">
+        <Inputs>
+            <Argument type="previousIdentity">
+                <Description>
+                    The identity before the refresh/aggregation (this will be null when an
+                    identity is created).
+                </Description>
+            </Argument>
+            <Argument type="newIdentity">
+                <Description>
+                    The identity after the refresh/aggregation (this will be null when an
+                    identity is deleted).
+                </Description>
+            </Argument>
+        </Inputs>
+        <Returns>
+            <Argument type="result">
+                <Description>
+                    A boolean describing the result of the rule.
+                </Description>
+            </Argument>
+        </Returns>
+    </Signature>
+    <Source><![CDATA[
      import org.apache.log4j.Logger;
 	 import sailpoint.object.Identity;
 	 import sailpoint.tools.Util;

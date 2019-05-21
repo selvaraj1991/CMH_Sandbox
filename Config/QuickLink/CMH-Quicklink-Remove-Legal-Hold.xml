@@ -1,14 +1,15 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!DOCTYPE QuickLink PUBLIC "sailpoint.dtd" "sailpoint.dtd">
-<QuickLink action="workflow" category="Custom" messageKey="CMH Remove Legal Hold"  name="CMH-Quicklink-Remove-Legal-Hold">
-  <Attributes>
-    <Map>
-      <entry key="workflowName" value="CMH-LegalHold-Remove-Workflow"/>
-    </Map>
-  </Attributes>
-  <QuickLinkOptions allowSelf="true" id="" modified="">
-    <DynamicScopeRef>
-      <Reference class="sailpoint.object.DynamicScope" id="" name="Everyone"/>
-    </DynamicScopeRef>
-  </QuickLinkOptions>
+<QuickLink action="workflow" category="Custom" messageKey="CMH Remove Legal Hold"
+           name="CMH-Quicklink-Remove-Legal-Hold">
+    <Attributes>
+        <Map>
+            <entry key="workflowName" value="CMH-LegalHold-Remove-Workflow"/>
+        </Map>
+    </Attributes>
+    <QuickLinkOptions allowSelf="true" id="" modified="">
+        <DynamicScopeRef>
+            <Reference class="sailpoint.object.DynamicScope" id="" name="Everyone"/>
+        </DynamicScopeRef>
+    </QuickLinkOptions>
 </QuickLink>

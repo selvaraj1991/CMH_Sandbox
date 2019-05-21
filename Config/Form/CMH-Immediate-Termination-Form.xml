@@ -1,16 +1,18 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!DOCTYPE Form PUBLIC "sailpoint.dtd" "sailpoint.dtd">
 <Form name="CMH-Immediate-Termination-Form" type="Workflow">
-	<Attributes>
-    	<Map>
-      		<entry key="pageTitle" value="Identity for Termination"/>
-    	</Map>
-  	</Attributes>
-  	<Description>Identity for Termination</Description>
-  	<Section name="Choose Identity">
-    	<Field displayName="Select Identity" filterString="inactive == false" postBack="true" name="terminatingUserId" required="true" type="sailpoint.object.Identity"/>
-    	<Field displayName="Do you want to terminate the user" name="terminateUserChkBox" required="true" type="boolean"/>
-  	</Section>
-  	<Button action="back" label="Cancel"/>
-  	<Button action="next" label="Submit"/>
+    <Attributes>
+        <Map>
+            <entry key="pageTitle" value="Identity for Termination"/>
+        </Map>
+    </Attributes>
+    <Description>Identity for Termination</Description>
+    <Section name="Choose Identity">
+        <Field displayName="Select Identity" filterString="inactive == false" postBack="true" name="terminatingUserId"
+               required="true" type="sailpoint.object.Identity"/>
+        <Field displayName="Do you want to terminate the user" name="terminateUserChkBox" required="true"
+               type="boolean"/>
+    </Section>
+    <Button action="back" label="Cancel"/>
+    <Button action="next" label="Submit"/>
 </Form>
