@@ -135,7 +135,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   		
   			import sailpoint.object.Custom;
   			
-  			Custom custom = context.getObjectByName(Custom.class,"CMH-Custom-Object-AD-Application");
+  			Custom custom = context.getObjectByName(Custom.class,"CMH-Custom-Object-Infor-Application");
   			String appName = null;
   			if(custom!=null){
   				appName = custom.getString("hrApplicationName");
@@ -214,17 +214,17 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
       <Source><![CDATA[
   		
   			import sailpoint.object.Identity;
+  			import sailpoint.tools.Util;
   			
   			String assignmentType = null;
   			if(identityName!=null){
   				Identity iden = context.getObjectByName(Identity.class,identityName);
   				assignmentType = iden.getStringAttribute("assignmentType");
   			}
-  			if(null != assignmentType) {
+  			if(Util.isNotNullOrEmpty(assignmentType)) {
                return assignmentType;
-            }else {
-               return null;
-  			}
+            }
+            return null;
  
   		
   		]]></Source>
@@ -337,7 +337,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 			  String finalUsername =null;
 			  String genUsername = userNameGenerator(firstName,lastName,middInitial,employeeId);	//Generate a username based on firstname,lastname, middleInitial
 		      log.debug("Generated Username "+genUsername);		
-			  if(null !=genUsername) {
+			  if(Util.isNotNullOrEmpty(genUsername)) {
 				 finalUsername=finalUserName(genUsername,firstName,lastName,middInitial,employeeId);	//Validate the generated username for the uniqueness
 			   }
 			  log.debug("CMH-LifecycleEvent-Name-Change: finalUsername : "+finalUsername);
