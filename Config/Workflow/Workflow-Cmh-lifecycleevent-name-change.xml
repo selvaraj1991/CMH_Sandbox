@@ -277,7 +277,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   			   "application name in custom object is missing");
   			}
   			if(Util.isNullOrEmpty(hrAppName)) {
-  			   errorList.add("The Custom Object is not configured properly with AD app name.Either Custom object or AD" +
+  			   errorList.add("The Custom Object is not configured properly with AD app name.Either Custom object or HR" +
   			   "application name in custom object is missing");
   			}
   			if(Util.isNullOrEmpty(managerName)) {
