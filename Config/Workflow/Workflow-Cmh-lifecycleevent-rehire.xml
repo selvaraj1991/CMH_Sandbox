@@ -98,13 +98,14 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
       <Source><![CDATA[
   		
   			import sailpoint.object.Identity;
+  			import sailpoint.tools.Util;
   			
   			String assignmentType = null;
   			if(identityName!=null){
   				Identity iden = context.getObjectByName(Identity.class,identityName);
   				assignmentType = iden.getStringAttribute("assignmentType");
   			}
-  			if(null != assignmentType) {
+  			if(Util.isNotNullOrEmpty(assignmentType)) {
                return assignmentType;
             }else {
                return null;
@@ -119,12 +120,12 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
       <Source><![CDATA[
   		 
   			import sailpoint.object.Identity;
-  			
+  			import sailpoint.tools.Util;
   			String email = null;
   			if(identityName!=null){
   				Identity iden = context.getObjectByName(Identity.class,identityName);
   				email= iden.getStringAttribute("email");
-  				if(null != email) {
+  				if(Util.isNotNullOrEmpty(email)) {
   				   return true;
   				}else {
   				   return false;
@@ -143,7 +144,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   			Custom custom = context.getObjectByName(Custom.class,"CMH-Custom-Object-AD-Application");
   			String appName = null;
   			if(custom!=null){
-  				appName = custom.getString("applicationName");
+  				appName = custom.getString("adApplication");
   			}
   			return appName;
   		
@@ -155,6 +156,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
       <Source><![CDATA[
   		
   			import sailpoint.object.Identity;
+  			import sailpoint.tools.Util;
   			
   			String assignmentType = null;
   			String enabledUserOU = null;
@@ -162,9 +164,9 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   				Identity iden = context.getObjectByName(Identity.class,identityName);
   				assignmentType = iden.getStringAttribute("assignmentType");
   			}
-  			if(null != assignmentType) {
+  			if(Util.isNotNullOrEmpty(assignmentType)) {
                 enabledUserOU = getCustomObject(assignmentType,"CMH-User-OU-Mapping-Custom-Object" );
-  			    if(enabledUserOU != null){
+  			    if(Util.isNotNullOrEmpty(enabledUserOU)){
   				   return enabledUserOU;
   			     }
   		     }
@@ -198,14 +200,14 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
       <Source><![CDATA[
   		
   			import sailpoint.object.Identity;
-  			import org.apache.commons.lang.StringUtils;
+  			import sailpoint.tools.Util;
   			
   			String toAddress = null;
   			if(identityName!=null){
   				Identity iden = context.getObjectByName(Identity.class,identityName);
   				if(iden != null && iden.getManager() != null){
   					String managerMail = iden.getManager().getEmail();
-  					if(!StringUtils.isBlank(managerMail)){
+  					if(Util.isNotNullOrEmpty(managerMail)){
   						toAddress = managerMail;
   					}
   				}
@@ -235,23 +237,29 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   </Variable>
   <Variable initializer="New Account Creation" input="true" name="managerEmailTemplate"/>
   <Variable name="validationErrors" type="java.util.List"/>
+   <Variable name="connectedApps" type="java.util.List"/>
+  <Variable name="disConnectedApps" type="java.util.List"/>
+  <Variable name="snowTicketId"/>
   <Variable name="password">
     <Description>user password</Description>
     <Script>
       <Source><![CDATA[
         
 		      import sailpoint.object.Identity;
+		      import sailpoint.tools.Util;
               Identity identity = context.getObject(Identity.class,identityName);
+              String passWord = null;
               if( null !=identity) {
                  String firstName = identity.getStringAttribute("firstname");
                  String lastName = identity.getStringAttribute("lastname");
 	             String dob = identity.getStringAttribute("birthMonthDay");
 	             String employeeId = identity.getStringAttribute("employeeId");
-	             String userPassword = generateUserPassword(firstName,lastName,dob,employeeId);
-	             if(null !=userPassword){
-                    return userPassword.toLowerCase();
+	             char[] userPass = generateUserPassword(firstName,lastName,dob,employeeId);
+                 if(null != userPass){
+                    passWord = (String) new String(userPass);             
                  }
               }
+			  return passWord;
 		]]></Source>
     </Script>
   </Variable>
@@ -303,7 +311,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 			  
       ]]></Source>
     </Script>
-    <Transition to="Check AD Application">
+    <Transition to="Get Connected Apps">
       <Script>
         <Source><![CDATA[
   			  
@@ -317,6 +325,41 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
       </Script>
     </Transition>
     <Transition to="end"/>
+  </Step>
+    <Step icon="Task" name="Get Connected Apps" resultVariable="connectedApps">
+    <Script>
+      <Source><![CDATA[
+  			import org.apache.log4j.Logger;
+  			
+  			Logger log = Logger.getLogger("CMH-LifecycleEvent-Rehire");
+  			List connectedApps = getAppsToProcess(identityName,"CMH-Leaver-Custom-Object","connectedApplications");
+  			if(connectedApps==null || connectedApps.size()<=0){
+  				log.info("CMH-LifecycleEvent-Rehire: There are no connected Apps associated with the user");
+  			}
+  			else if(isDebugEnabled){
+  				log.debug("CMH-LifecycleEvent-Rehire: List of Connected Apps to be deleted: "+connectedApps.toString());
+  			}
+  			return connectedApps;
+  		]]></Source>
+    </Script>
+    <Transition to="Get Disconnected Apps"/>
+  </Step>
+  <Step icon="Task" name="Get Disconnected Apps" resultVariable="disConnectedApps">
+    <Script>
+      <Source><![CDATA[
+  			import org.apache.log4j.Logger;
+  			Logger log = Logger.getLogger("CMH-LifecycleEvent-Leaver-Delete");
+  			List disConnectedApps = getAppsToProcess(identityName,"CMH-Leaver-Custom-Object","disConnectedApplications");
+  			if(disConnectedApps==null || disConnectedApps.size()<=0){
+  				log.info("CMH-LifecycleEvent-Leaver-Delete: There are no disconnected Apps associated with the user");
+  			}
+  			else if(isDebugEnabled){
+  				log.debug("CMH-LifecycleEvent-Leaver-Delete: List of disConnected Apps to be deleted: "+disConnectedApps.toString());
+  			}
+  			return disConnectedApps;
+  		]]></Source>
+    </Script>
+    <Transition to="Check AD Application"/>
   </Step>
   <Step icon="Task" name="Check AD Application" posX="28" posY="18">
     <Script>
@@ -674,30 +717,10 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
     </Transition>
     <Transition to="end"/>
   </Step>
-  <Step icon="Task" name="Create ServiceNow Ticket" resultVariable="validationErrors">
+  <Step icon="Task" name="Create ServiceNow Ticket" resultVariable="snowTicketId">
     <Script>
       <Source><![CDATA[
 			  
-			    import java.util.ArrayList;
-				import java.util.HashMap;
-				import java.util.List;
-				import java.util.Map;
-				import org.apache.commons.codec.binary.Base64;
-				import org.apache.http.client.CredentialsProvider;
-				import org.apache.http.client.methods.HttpPost;
-				import org.apache.http.entity.ByteArrayEntity;
-				import org.apache.http.impl.client.BasicCredentialsProvider;
-				import org.apache.http.impl.client.CloseableHttpClient;
-				import org.apache.http.client.methods.CloseableHttpResponse;
-				import org.apache.http.impl.client.HttpClients;
-				import org.apache.http.HttpEntity;
-				import org.apache.http.util.EntityUtils;
-				import org.apache.log4j.Logger;
-				import sailpoint.integration.JsonUtil;
-				import sailpoint.object.Attributes;
-				import sailpoint.object.Custom;
-				import sailpoint.object.Identity;
-				import sailpoint.tools.Util;
 				
 				Logger log = Logger.getLogger("CMH-LifecycleEvent-Rehire");
 
@@ -705,103 +728,11 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 		          log.debug("CMH-LifecycleEvent-Rehire: Creating ServiceNow Ticket on enablement of user");
 		        }
 	
-		        if (validationErrors == null) {
-		          validationErrors = new ArrayList();
-		        }
-		        Identity user = null;
-		        String ticketNumber = null;
-		        if (identityName != null) {
-		            user = (Identity) context.getObjectByName(Identity.class,identityName);
-	                if (user != null) {
-		                String description = "User "+ user.getName()
-		                + "["
-		                + user.getDisplayName()
-		                + "] rehire, please provide necessary access to the user.";
-		                String short_description = "User Enabled "+ user.getName();
-	
-			            Map jsonMap = new HashMap();
-			            jsonMap.put("assignment_group", "Disable User Group");
-			            jsonMap.put("short_description", short_description);
-			            jsonMap.put("description", description);
-			            jsonMap.put("cmdb_ci", "1cxxxaxxxx");
-	
-			            JsonUtil jUtil = new JsonUtil();
-			            String jsonString = jUtil.render(jsonMap);
-			            CredentialsProvider credsProvider = new BasicCredentialsProvider();
-			            CloseableHttpClient httpclient = HttpClients.custom()
-			                .setDefaultCredentialsProvider(credsProvider).build();
-		           		try {
-	
-						       Custom customObj = (Custom) context.getObjectByName(Custom.class, "ServiceNowDetails");
-						       Attributes customAttributes = customObj.getAttributes();
-			
-				               String serviceNowRequestURL = (String) customAttributes.get("serviceNowRequestURL");
-			
-				               String serviceNowUserName = (String) customAttributes.get("serviceNowUserName");
-			
-				               String serviceNowUserPassword = (String) customAttributes.get("serviceNowUserPassword");
-			
-				               if (serviceNowRequestURL != null
-				                   && !serviceNowRequestURL.isEmpty()
-				                   && serviceNowUserName != null
-				                   && !serviceNowUserName.isEmpty()
-				                   && serviceNowUserPassword != null
-				                   && !serviceNowUserPassword.isEmpty()) {
-			
-				                   HttpPost httpPost = new HttpPost(serviceNowRequestURL);
-			
-				                  String decryptedPassword = context.decrypt(serviceNowUserPassword);
-				                  String userCredentials = serviceNowUserName + ":"+ decryptedPassword;
-			
-				                  Base64 base = new Base64();
-			
-				                  String encoding = base.encodeAsString(new String(userCredentials).getBytes());
-			
-				                  httpPost.setHeader("Accept", "application/json");
-				                  httpPost.setHeader("Content-Type", "application/json");
-				                  httpPost.setHeader("Authorization", "Basic " + encoding);
-			
-				                  HttpEntity entity = new ByteArrayEntity(jsonString.getBytes("utf-8"));
-				                  httpPost.setEntity(entity);
-				                  CloseableHttpResponse response = httpclient.execute(httpPost);
-				                  try {
-				                       String responseBody = EntityUtils.toString(response.getEntity());
-						               Map responseMap = jUtil.parse(responseBody);
-						               Map resultMap = responseMap.get("result");
-						               ticketNumber = resultMap.get("number");
-						               if(Util.isNotNullOrEmpty(ticketNumber)) {
-						                  if (isDebugEnabled) {
-						                      log.debug("CMH-LifecycleEvent-Rehire : Ticket Created: "+ ticketNumber);
-						                   }else {
-						                     validationErrors.add("Ticket is null : Ticket not created");						                      
-						                   }
-						               }
-				                     } catch (Exception e) {
-		                                     log.error("Error reading response " + e.getMessage());
-		                                     validationErrors.add("Error reading response " + e.getMessage());
-				                     } finally {
-				                          response.close();
-				                     }
-			
-				              } else {
-				                validationErrors
-				                    .add("One of the attribute value is missing in Custom object [serviceNowRequestURL,serviceNowUserName,serviceNowUserPassword");
-				             }
-			
-		               } catch (Exception e) {
-	                           log.error("Error creating service now ticket "+ e.getMessage());
-	                           validationErrors.add("Error creating service now ticket "+ e.getMessage());
-		               } finally {
-		                      httpclient.close();
-		              }
-			       } else {
-		              log.error("User not found");
-		           }
-		        }
 		        if (isDebugEnabled) {
 		            log.debug("CMH-LifecycleEvent-Rehire: Exiting from Create ServieNow Ticket");
 		        }
-		        return validationErrors;
+		        String snowId = generateSnowTicket(identityName, "CMH-Service-Ticket-Configuration-Object", disConnectedApps,"ENABLE");
+		        return snowId;
       ]]></Source>
     </Script>
     <Transition to="Notify Manager">
@@ -809,7 +740,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
         <Source><![CDATA[
   		   
   				import sailpoint.tools.Util;
-  				if(Util.isEmpty(validationErrors) && Util.nullSafeCaseInsensitiveEq(status,"ACTIVE")){
+  				if(Util.nullSafeCaseInsensitiveEq(status,"ACTIVE")){
 					return true;
 				}
 				return false;
@@ -898,6 +829,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
     <Arg name="promoteAttributes" value="true"/>
     <Arg name="refreshRoleMetadata" value="true"/>
     <Arg name="refreshScorecard" value="true"/>
+    <Arg name="refreshIdentityEntitlements" value="true"/>
     <Arg name="synchronizeAttributes" value="true"/>
     <Transition to="end"/>
   </Step>

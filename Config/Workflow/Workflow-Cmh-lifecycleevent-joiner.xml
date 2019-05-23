@@ -179,7 +179,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   			Custom custom = context.getObjectByName(Custom.class,"CMH-Custom-Object-AD-Application");
   			String appName = null;
   			if(custom != null){
-  				appName = custom.getString("applicationName");
+  				appName = custom.getString("adApplication");
   			}
   			return appName;
   		
@@ -330,38 +330,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
     <Script>
       <Source><![CDATA[  
 	  
-         import sailpoint.object.ProvisioningPlan;  
-         import sailpoint.object.ProvisioningPlan.AccountRequest;  
-         import sailpoint.object.ProvisioningPlan.AttributeRequest;              
-         import java.util.List;  
-         import java.util.ArrayList;                          
-  
-         ProvisioningPlan plan = new ProvisioningPlan();            
-         Identity identityObject = context.getObjectByName(Identity.class, identityName);  
-         if (identityObject.getAttribute("department").equals("Accounting1")) {  
-             System.out.println("Department is Accounting1 ... Create plan.");                                         
-             List accreqs = new ArrayList();                                     
-          //create AD account  
-         AccountRequest acctReq = new AccountRequest();  
-         acctReq.setOperation(AccountRequest.Operation.Create);  
-         acctReq.setApplication("LDAP");  
-             // Set the bare minimum AD attributes to create an account              
-             //  
-        acctReq.add(new AttributeRequest("cn",identityName));  
-        acctReq.add(new AttributeRequest("dn","ou=People,dc=test,dc=com")); 
-		acctReq.add(new AttributeRequest("sn",identityObject.getStringAttribute("lastname"))); 
-        acctReq.add(new AttributeRequest("objectClass","inetOrgPerson"));  
-        acctReq.add(new AttributeRequest("IIQDisabled",false));  
-        acctReq.setNativeIdentity("cn=" + identityName + ",ou=People,dc=test,dc=com");  
-        accreqs.add(acctReq);  
-        plan.setAccountRequests(accreqs);  
-        plan.setIdentity(identityObject);  
-       
-             System.out.println("Plan = " + plan.toXml());  
-         } else {  
-             System.out.println("Contractor... NOP.");            
-         }  
-         return plan; 
+        //o365 yet to be implemented
        		 
       ]]></Source>
     </Script>

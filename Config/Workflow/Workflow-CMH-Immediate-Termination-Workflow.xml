@@ -62,7 +62,7 @@
   			Custom custom = context.getObjectByName(Custom.class,"CMH-Custom-Object-AD-Application");
   			String appName = null;
   			if(custom!=null){
-  				appName = custom.getString("applicationName");
+  				appName = custom.getString("adApplication");
   			}
   			return appName;
   		]]>

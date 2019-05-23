@@ -103,12 +103,13 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
       <Source><![CDATA[
   		 
   			import sailpoint.object.Identity;
+  			import sailpoint.tools.Util;
   			
   			String email = null;
   			if(identityName != null){
   				Identity iden = context.getObjectByName(Identity.class,identityName);
   				email= iden.getStringAttribute("email");
-  				if(null != email) {
+  				if(Util.isNotNullOrEmpty(email)) {
   				   return true;
   				}else {
   				   return false;
@@ -127,7 +128,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   			Custom custom = context.getObjectByName(Custom.class,"CMH-Custom-Object-AD-Application");
   			String appName = null;
   			if(custom != null){
-  				appName = custom.getString("applicationName");
+  				appName = custom.getString("adApplication");
   			}
   			return appName;
   		
@@ -295,15 +296,17 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   				iden.setAttribute("status","TERMINATED");
   				
   				Date today = new Date();
-		    	SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
-		    	Date deletetionDate =  Util.incrementDateByDays(today, numberOfDays);
-		    	String deleteDate = sdf.format(deletetionDate);
-		    	log.debug("CMH-LifecycleEvent-Leaver-Disable :deleteDate : "+deleteDate);
-		    	
-		    	iden.setAttribute("deletionDate",deleteDate);
-  				context.saveObject(iden);
-  				context.commitTransaction();
-  				
+  				String format = getCustomObject("leaverDeleteTimestamp","CMH-DateFormat");
+  				if(Util.isNotNullOrEmpty(format)) 
+			    	SimpleDateFormat sdf = new SimpleDateFormat(format);
+			    	Date deletetionDate =  Util.incrementDateByDays(today, numberOfDays);
+			    	String deleteDate = sdf.format(deletetionDate);
+			    	log.debug("CMH-LifecycleEvent-Leaver-Disable :deleteDate : "+deleteDate);
+			    	
+			    	iden.setAttribute("deletionDate",deleteDate);
+	  				context.saveObject(iden);
+	  				context.commitTransaction();
+  				}
   				if(isDebugEnabled){
   					log.debug("CMH-LifecycleEvent-Leaver-Disable: Identity status "+identityName+" disabled succesfully");
   				}

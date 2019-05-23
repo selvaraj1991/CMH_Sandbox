@@ -122,7 +122,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   			Custom custom = context.getObjectByName(Custom.class,"CMH-Custom-Object-AD-Application");
   			String appName = null;
   			if(custom!=null){
-  				appName = custom.getString("applicationName");
+  				appName = custom.getString("adApplication");
   			}
   			return appName;
   		
@@ -638,6 +638,17 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   			 return validationErrors;
       ]]></Source>
     </Script>
+    <Transition to="Refresh Identity"/>
+  </Step>
+      <Step action="call:refreshIdentity" icon="Task" name="Refresh Identity">
+    <Arg name="identityName" value="newIdentityName"/>
+    <Arg name="correlateEntitlements" value="true"/>
+    <Arg name="provision" value="true"/>
+    <Arg name="promoteAttributes" value="true"/>
+    <Arg name="refreshRoleMetadata" value="true"/>
+    <Arg name="refreshScorecard" value="true"/>
+    <Arg name="refreshIdentityEntitlements" value="true"/>
+    <Arg name="synchronizeAttributes" value="true"/>
     <Transition to="end"/>
   </Step>
   <Step catches="complete" icon="Catches" name="Check Status" posX="778" posY="180">
