@@ -4,6 +4,7 @@
   <Attributes>
     <Map>
       <entry key="userNameFileNameTimestamp" value="yyyy-MM-dd.hh.mm.ss.a"/>
+	  <entry key="userNameGenerationTimestamp" value= "yyyy-MM-dd hh:mm:ss a"/>
 	  <entry key="ruleLibraryGenerateTimestamp" value="ddMMMyyyy"/>
 	  <entry key="preIterationTimestamp" value="yyyy-MM-dd hh:mm:ss"/>
 	  <entry key="leaverDeleteTimestamp" value="MM/dd/yyyy"/> <!-- affects the leaver disable workflow as well-->
