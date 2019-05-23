@@ -153,12 +153,15 @@
 
 		public Date getDateTime() {
 			log.debug("CMH-Username-Email-Report-Generator-Rule : Entering getDateTime()");
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss a");
+			String format = getCustomObject("userNameGenerationTimestamp","CMH-DateFormat");
 			Date today = null;
-			try {
-				today = sdf.parse(sdf.format(new Date()));
-			} catch(ParseException e) {
-				log.error("CMH-Username-Email-Report-Generator-Rule : Error is  " + e.getMessage());
+			if(Util.isNotNullOrEmpty(format)) {
+				SimpleDateFormat sdf = new SimpleDateFormat(format);
+				try {
+					today = sdf.parse(sdf.format(new Date()));
+				} catch(ParseException e) {
+					log.error("CMH-Username-Email-Report-Generator-Rule : Error is  " + e.getMessage());
+				}
 			}
 			log.debug("CMH-Username-Email-Report-Generator-Rule : Exiting getDateTime()");
 			return today;
@@ -221,7 +224,7 @@
 			if (null != finalList && finalList.size() > 0) {
 			    String format = getCustomObject("userNameFileNameTimestamp","CMH-DateFormat");
 			    if(Util.isNotNullOrEmpty(format)) {
-					DateFormat currentDateFormatWithTime = new SimpleDateFormat("yyyy-MM-dd.hh.mm.ss.a");
+					DateFormat currentDateFormatWithTime = new SimpleDateFormat("format");
 					String strCurrentDateTime = currentDateFormatWithTime.format(endTime);
 					String filename = "UsernameEmailDetails" + strCurrentDateTime + ".csv";
 					String FILE_HEADER = "Username,Email,EmployeeID,FirstName,LastName,EmployeeType";
