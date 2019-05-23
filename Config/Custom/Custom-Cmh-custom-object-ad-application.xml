@@ -11,7 +11,7 @@
                     </List>
                 </value>
             </entry>
-            <entry key="applicationName" value="%%CMH-AD-ApplicationName%%"/>
+            <entry key="adApplication" value="%%CMH-AD-ApplicationName%%"/>
             <entry key="disabledOU" value="%%CMH-AD-DisabledOU%%"/>
             <entry key="activEmployeeOU" value="%%CMH-AD-ActiveUser-LegalHold%%"/>
             <entry key="inactivEmployeeOU" value="%%CMH-AD-InActiveUser-LegalHold%%"/>

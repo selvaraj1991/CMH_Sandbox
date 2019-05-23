@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE Custom PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<Custom name="CMH-DateFormat">
+  <Attributes>
+    <Map>
+      <entry key="userNameFileNameTimestamp" value="yyyy-MM-dd.hh.mm.ss.a"/>
+	  <entry key="ruleLibraryGenerateTimestamp" value="ddMMMyyyy"/>
+	  <entry key="preIterationTimestamp" value="yyyy-MM-dd hh:mm:ss"/>
+	  <entry key="leaverDeleteTimestamp" value="MM/dd/yyyy"/> <!-- affects the leaver disable workflow as well-->
+	  <entry key="conversionTimestamp" value="MM/dd/yyyy"/>
+	  <entry key="legalHoldTimestamp" value="yyyy-MM-dd hh:mm:ss.a"/> <!-- has to be updated -->
+   </Map>
+  </Attributes>
+</Custom>
+
