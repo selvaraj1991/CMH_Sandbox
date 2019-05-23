@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Rule PUBLIC "sailpoint.dtd" "sailpoint.dtd">
 <Rule language="beanshell" name="CMH-User-Name-Change-Trigger-Rule" type="IdentityTrigger">
-        <Description>
-    <Description>This rule can be used for Certification Events that use rule triggers. The previousIdentity and
+   <Description>This rule can be used for Certification Events that use rule triggers. The previousIdentity and
         newIdentity hold snapshots of the identity before the update has occurred and the state of the identity after
         the update, respectively.
     </Description>
@@ -36,6 +35,7 @@
 
 		Logger log = Logger.getLogger("cmh.authsource.rules");
 		log.debug("Entering CMH-User-Name-Change-Trigger-Rule");
+		//Filters out users for name change based on lastname or firstname change
 		boolean isNameChange = false;
 		if (null != previousIdentity && null != newIdentity) {
                 if( ! Util.nullSafeCaseInsensitiveEq(previousIdentity.getFirstname(),newIdentity.getFirstname()) ||

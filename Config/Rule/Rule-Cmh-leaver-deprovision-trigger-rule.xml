@@ -38,34 +38,45 @@
             </Argument>
         </Returns>
     </Signature>
+  <ReferencedRules>
+     <Reference class="sailpoint.object.Rule" name="CMH-AD-Generic-Rulelibrary"/>
+  </ReferencedRules>
     <Source>
         <![CDATA[
 		import java.text.ParseException;
 		import java.text.SimpleDateFormat;
+		import org.apache.log4j.Logger;
 		import sailpoint.tools.Util;
 		
-		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
-		if(newIdentity!=null){
-			String status = newIdentity.getStringAttribute("status");
-			String deletionStatus = newIdentity.getStringAttribute("deletionStatus");
-			String identityRetention = newIdentity.getStringAttribute("identityRetention");
-			if(Util.nullSafeCaseInsensitiveEq(status,"TERMINATED")){
-				String deletionDate = newIdentity.getStringAttribute("deletionDate");
-				if(Util.isNotNullOrEmpty(deletionDate)){
-					try{
-						Date delDate = sdf.parse(deletionDate);
-						Date currDate = new Date();
-						if(currDate.after(delDate) && 
-							!Util.nullSafeCaseInsensitiveEq(deletionStatus,"deleted") &&
-							!Util.nullSafeCaseInsensitiveEq(identityRetention,"YES")){
-							return true;
-						}
-					}catch(ParseException e){
-						log.error("CMH-Leaver-Deprovision-Trigger-Rule: Error while parsing the Date");
-					}				
+		Logger log = Logger.getLogger("cmh.authsource.rules");
+		log.debug("CMH-Leaver-Deprovision-Trigger-Rule: Entering");
+		//Filtering out the users having deletion status not deleted
+		String format = getCustomObject("leaverDeleteTimestamp","CMH-DateFormat");
+		if(Util.isNotNullOrEmpty(format)) {
+			SimpleDateFormat sdf = new SimpleDateFormat(format);
+			if(newIdentity!=null){
+				String status = newIdentity.getStringAttribute("status");
+				String deletionStatus = newIdentity.getStringAttribute("deletionStatus");
+				String identityRetention = newIdentity.getStringAttribute("identityRetention");
+				if(Util.nullSafeCaseInsensitiveEq(status,"TERMINATED")){
+					String deletionDate = newIdentity.getStringAttribute("deletionDate");
+					if(Util.isNotNullOrEmpty(deletionDate)){
+						try{
+							Date delDate = sdf.parse(deletionDate);
+							Date currDate = new Date();
+							if(currDate.after(delDate) && 
+								!Util.nullSafeCaseInsensitiveEq(deletionStatus,"deleted") &&
+								!Util.nullSafeCaseInsensitiveEq(identityRetention,"YES")){
+								return true;
+							}
+						}catch(ParseException e){
+							log.error("CMH-Leaver-Deprovision-Trigger-Rule: Error while parsing the Date");
+						}				
+					}
 				}
-			}
+		    }
 		}
+		log.debug("CMH-Leaver-Deprovision-Trigger-Rule: Exiting");
 		return false;
 		]]>
     </Source>

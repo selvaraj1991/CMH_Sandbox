@@ -12,6 +12,7 @@
 
 		Logger log = Logger.getLogger("cmh.authsource.rules");
 		log.debug("CMH-Read-Infor-Record-Rule: Entering");
+		//Reads csv file and writes to custom object
 		List list = null;
 		boolean isSuccess = false;
 		TaskDefinition taskDef = context.getObjectByName(TaskDefinition.class, "CMH Read Infor Username");

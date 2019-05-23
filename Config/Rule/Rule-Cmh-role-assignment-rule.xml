@@ -38,7 +38,7 @@
         </Returns>
     </Signature>
     <Source><![CDATA[
-		import java.util.Date;
+		
 		import java.util.Iterator;
 		import sailpoint.object.Filter;
 		import sailpoint.object.Identity;

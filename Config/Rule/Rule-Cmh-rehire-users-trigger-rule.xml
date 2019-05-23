@@ -38,6 +38,7 @@
 
 		Logger log = Logger.getLogger("cmh.authsource.rules");
 		log.debug("Entering into CHM-Rehire-Users-Trigger-Rule");
+		//Selecting the users for rehire based on status and rehire flag
 		boolean rehired = false;
 		if (null != previousIdentity && null != newIdentity) {
 			String prevIdenStatus = previousIdentity.getStringAttribute("status");
@@ -57,9 +58,9 @@
 			} else {
 				rehired = false;
 			}
-			log.debug("rehired :" + rehired);
-			log.debug("Exiting into CHM-Rehire-Users-Trigger-Rule");
+			log.debug("rehired :" + rehired);			
 		}
+		log.debug("Exiting into CHM-Rehire-Users-Trigger-Rule");
 		return rehired;
   ]]></Source>
 </Rule>

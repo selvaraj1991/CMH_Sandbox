@@ -29,7 +29,8 @@
 
 		Logger log = Logger.getLogger("cmh.authsource.rules");
 		String nameCustomObjName = "CMH-NameChange-UsernameAndEmail";
-
+        
+        //This method fetches the last timestamp of the this task 
 		public Date getCustomObjectTimestamp(String customObjectName, String customName) {
 			log.debug("CMH-Username-Email-Report-Generator-Rule :Entering getCustomObjectTimestamp(String customObjectName, StringcustomName)");
 			Date date = null;
@@ -41,7 +42,8 @@
 			log.debug("CMH-Username-Email-Report-Generator-Rule :Exiting getCustomObjectTimestamp(String customObjectName, String customName)");
 			return date;
 		}
-
+		
+        //Gets the list of usernames under nonexported tag from custom object
 		public List getCustomNameChangeData(String customName) {
 			log.debug("CMH-Username-Email-Report-Generator-Rule : Entering getCustomNameChangeData(StringcustomName)");
 			List uList = null;
@@ -62,6 +64,7 @@
 			}
 			return customObj;
 		}
+		//Generated the list of user mapped records
 		public List customUserDetail(String customName) {
 			log.info("CMH-Username-Email-Report-Generator-Rule : Entering into CustomUserDetail");
 			List arrList = getCustomNameChangeData(customName);
@@ -87,6 +90,8 @@
 			log.info("CMH-Username-Email-Report-Generator-Rule : Exiting into CustomUserDetail");
 			return dataList;
 		}
+		
+		//Gets the user list from nonexported tag,puts under exported and deletes list from nonexported
 		public void updateCustomNameChangeData(List dataList, String customName) {
 			log.debug("CMH-Username-Email-Report-Generator-Rule : Entering updateCustomNameChangeData(List dataList, String customName)");
 
@@ -123,6 +128,7 @@
 			log.debug("CMH-Username-Email-Report-Generator-Rule :Exiting updateCustomNameChangeData(List dataList, String customName)");
 		}
 
+        //Updating the last run timestamp to custom object
 		public void updateCustomTimeStamp(Date lastTimeStamp, String customName) {
 			log.debug("CMH-Username-Email-Report-Generator-Rule :Entering updateCustomTimeStamp(Date lastTimeStamp)");
 			if (null != lastTimeStamp) {
@@ -157,7 +163,7 @@
 			log.debug("CMH-Username-Email-Report-Generator-Rule : Exiting getDateTime()");
 			return today;
 		}
-
+        //searching the users created within specified timestamp , appending custom data and writing to data to csv file
 		public boolean generateReport(Date startTime, Date endTime) {
 			log.debug("CMH-Username-Email-Report-Generator-Rule : Entering generateReport(Date startTime, Date endTime)");
 			Date today = null;
@@ -213,56 +219,59 @@
 				finalList.addAll(list);
 			}
 			if (null != finalList && finalList.size() > 0) {
-				DateFormat currentDateFormatWithTime = new SimpleDateFormat("yyyy-MM-dd.hh.mm.ss.a");
-				String strCurrentDateTime = currentDateFormatWithTime.format(endTime);
-				String filename = "UsernameEmailDetails" + strCurrentDateTime + ".csv";
-				String FILE_HEADER = "Username,Email,EmployeeID,FirstName,LastName,EmployeeType";
-				Map map = null;
-				String filepath = getCustomObject("filepath", "CMH-Custom-Generic-Filepath");
-				if (null != filepath) {
-					try {
-						fileWriter = new FileWriter(filepath + filename);
-						fileWriter.append(FILE_HEADER.toString());
-						fileWriter.append(neW_LINE_SEPARATOR);
-						for (int i = 0; i < finalList.size(); i++) {
-							map = (Map) finalList.get(i);
-							log.info(map);
-							fileWriter.append(map.get("Username").toString());
-							fileWriter.append(coMMA_DELIMITER);
-							if (null != (map.get("Email"))) {
-								fileWriter.append(map.get("Email").toString());
-							} else {
-								fileWriter.append("NULL");
-							}
-							fileWriter.append(coMMA_DELIMITER);
-							fileWriter.append(map.get("EmployeeID").toString());
-							fileWriter.append(coMMA_DELIMITER);
-							fileWriter.append(map.get("FirstName").toString());
-							fileWriter.append(coMMA_DELIMITER);
-							fileWriter.append(map.get("LastName").toString());
-							fileWriter.append(coMMA_DELIMITER);
-							fileWriter.append(map.get("EmployeeType").toString());
+			    String format = getCustomObject("userNameFileNameTimestamp","CMH-DateFormat");
+			    if(Util.isNotNullOrEmpty(format)) {
+					DateFormat currentDateFormatWithTime = new SimpleDateFormat("yyyy-MM-dd.hh.mm.ss.a");
+					String strCurrentDateTime = currentDateFormatWithTime.format(endTime);
+					String filename = "UsernameEmailDetails" + strCurrentDateTime + ".csv";
+					String FILE_HEADER = "Username,Email,EmployeeID,FirstName,LastName,EmployeeType";
+					Map map = null;
+					String filepath = getCustomObject("filepath", "CMH-Custom-Generic-Filepath");
+					if (null != filepath) {
+						try {
+							fileWriter = new FileWriter(filepath + filename);
+							fileWriter.append(FILE_HEADER.toString());
 							fileWriter.append(neW_LINE_SEPARATOR);
-
+							for (int i = 0; i < finalList.size(); i++) {
+								map = (Map) finalList.get(i);
+								log.info(map);
+								fileWriter.append(map.get("Username").toString());
+								fileWriter.append(coMMA_DELIMITER);
+								if (null != (map.get("Email"))) {
+									fileWriter.append(map.get("Email").toString());
+								} else {
+									fileWriter.append("NULL");
+								}
+								fileWriter.append(coMMA_DELIMITER);
+								fileWriter.append(map.get("EmployeeID").toString());
+								fileWriter.append(coMMA_DELIMITER);
+								fileWriter.append(map.get("FirstName").toString());
+								fileWriter.append(coMMA_DELIMITER);
+								fileWriter.append(map.get("LastName").toString());
+								fileWriter.append(coMMA_DELIMITER);
+								fileWriter.append(map.get("EmployeeType").toString());
+								fileWriter.append(neW_LINE_SEPARATOR);
+	
+							}
+							log.debug("CMH-Username-Email-Report-Generator-Rule :CSV file was created successfully !!!");
+							isSuccess = true;
+						} catch(IOException e) {
+							log.error("CMH-Username-Email-Report-Generator-Rule :Error in CsvFileWriter !!!");
+							log.error("CMH-Username-Email-Report-Generator-Rule :Error: " + e.getMessage());
 						}
-						log.debug("CMH-Username-Email-Report-Generator-Rule :CSV file was created successfully !!!");
-						isSuccess = true;
-					} catch(IOException e) {
-						log.error("CMH-Username-Email-Report-Generator-Rule :Error in CsvFileWriter !!!");
-						log.error("CMH-Username-Email-Report-Generator-Rule :Error: " + e.getMessage());
-					}
-					try {
-						if (null != fileWriter) {
-							fileWriter.flush();
-							fileWriter.close();
+						try {
+							if (null != fileWriter) {
+								fileWriter.flush();
+								fileWriter.close();
+							}
+						} catch(IOException e) {
+							log.error("Error while flushing/closing fileWriter !!!");
+							log.error("Error: " + e.getMessage());
 						}
-					} catch(IOException e) {
-						log.error("Error while flushing/closing fileWriter !!!");
-						log.error("Error: " + e.getMessage());
+					} else {
+						log.error("CMH-Username-Email-Report-Generator-Rule :Filepath is not present in custom object or is NULL");
 					}
-				} else {
-					log.error("CMH-Username-Email-Report-Generator-Rule :Filepath is not present in custom object or is NULL");
-				}
+			    }
 			} else {
 				isSuccess = false;
 			}

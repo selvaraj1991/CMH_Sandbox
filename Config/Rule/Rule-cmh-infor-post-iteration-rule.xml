@@ -5,9 +5,13 @@
         <Description>This rule is used to update the timestamp of the task</Description>
         <Source>
             <![CDATA[
+            import org.apache.log4j.Logger;
             import sailpoint.object.Application;
             import sailpoint.object.Custom;
-
+            
+		    Logger log = Logger.getLogger("cmh.authsource.rules");
+		    log.debug("CMH-Infor-Post-Iteration-Rule: Entering");
+            //Updates the last run timestamp of the task in custom object
             Custom custom = context.getObjectByName(Custom.class,"CMH-Infor-Incremental-Aggregation-Custom-Object");
             String lastRunTimeStamp = null;
             Application app = null;
@@ -34,6 +38,7 @@
                 }
             }
             }
+            log.debug("CMH-Infor-Post-Iteration-Rule: Exiting");
             ]]>
         </Source>
     </Rule>

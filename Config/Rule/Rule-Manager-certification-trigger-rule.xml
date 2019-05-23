@@ -39,9 +39,17 @@
         </Returns>
     </Signature>
     <Source><![CDATA[
-  	if(previousIdentity.getManager().getName() != newIdentity.getManager().getName()){
+    import org.apache.log4j.Logger;  
+    import sailpoint.tools.Util;
+    
+    Logger log = Logger.getLogger("cmh.authsource.rules");
+    log.debug("Manager-Certification-Trigger-Rule: Entering");
+    //return true if there is change in manager
+    if(!Util.nullSafeCaseInsensitiveEq(previousIdentity.getManager().getName(),newIdentity.getManager().getName())){
+  		log.debug("Manager-Certification-Trigger-Rule: Exiting");
   		return true;
 	}
+	log.debug("Manager-Certification-Trigger-Rule: Exiting");
 	return false;
 	]]></Source>
 </Rule>

@@ -35,6 +35,7 @@
 
 		Logger log = Logger.getLogger("cmh.authsource.rules");
 		log.info("Entering CMH-User-Conversion-NonEmployee-Trigger-Rule");
+		//Filters users for conversion based on assignmentType change of user
 		boolean isConversion = false;
 		if (null != previousIdentity && null != newIdentity) {
 			String prevUserType = previousIdentity.getStringAttribute("userType");

@@ -96,9 +96,10 @@
     <Source><![CDATA[
   
         import org.apache.log4j.Logger;
-        Logger log = Logger.getLogger("cmh.authsource.rules");
         
+        Logger log = Logger.getLogger("cmh.authsource.rules");
         log.info("CMH-AD-GetIIQDisabledStatus: Entering");
+        //Generating IIQDisabled status based on user status
 		String status = identity.getStringAttribute("status");
 		boolean flag = false;
 		if (null != status && status.equalsIgnoreCase("Active")) {

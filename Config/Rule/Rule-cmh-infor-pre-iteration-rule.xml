@@ -1,21 +1,32 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!DOCTYPE sailpoint PUBLIC "sailpoint.dtd" "sailpoint.dtd">
 <sailpoint>
-    <Rule language="beanshell" name="CMH-Infor-Pre-Iteration-Rule">
-        <Description>This rule is used to update the timestamp of the task</Description>
+<Rule language="beanshell" name="CMH-Infor-Pre-Iteration-Rule">
+  <ReferencedRules>
+     <Reference class="sailpoint.object.Rule" name="CMH-AD-Generic-Rulelibrary"/>
+  </ReferencedRules>
+  <Description>This rule is used to update the timestamp of the task</Description>
         <Source><![CDATA[
 		import java.text.SimpleDateFormat;
+		import org.apache.log4j.Logger;
 		import sailpoint.object.Custom;
-
+		import sailpoint.tools.Util;
+		
+        Logger log = Logger.getLogger("cmh.authsource.rules");
+		log.debug("CMH-Infor-Pre-Iteration-Rule: Entering");
+		//updates the timestamp of the task in custom object
 		Custom custom = context.getObjectByName(Custom.class,"CMH-Infor-Incremental-Aggregation-Custom-Object");
-		String format = "yyyy-MM-dd hh:mm:ss";
-		SimpleDateFormat sdf = new SimpleDateFormat(format);
-		String newLastRunTimeStamp = sdf.format(new Date());
-		if(custom!=null){
-			custom.put("lastRunTimeStamp",newLastRunTimeStamp);
-			context.saveObject(custom);
-			context.commitTransaction();
+		String format = getCustomObject("preIterationTimestamp","CMH-DateFormat");
+		if(Util.isNotNullOrEmpty(format)) {
+			SimpleDateFormat sdf = new SimpleDateFormat(format);
+			String newLastRunTimeStamp = sdf.format(new Date());
+			if(custom!=null){
+				custom.put("lastRunTimeStamp",newLastRunTimeStamp);
+				context.saveObject(custom);
+				context.commitTransaction();
+		    }
 		}
+		log.debug("CMH-Infor-Pre-Iteration-Rule: Exiting");
   ]]></Source>
     </Rule>
 </sailpoint>
