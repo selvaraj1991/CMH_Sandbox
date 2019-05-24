@@ -86,10 +86,10 @@
   	</Script>
   </Variable>
   <Variable name="disConnectedApps" type="java.util.List"/>
+  <Description>This workflow is used to immediately disabling a user identity, disable AD account, generate ServiceNow ticket for unmanaged accounts.</Description>
   <RuleLibraries>
 	<Reference class="sailpoint.object.Rule" name="CMH-AD-Generic-Rulelibrary"/>
   </RuleLibraries>
-  <Description>This workflow is used to immediately disabling a user identity, disable AD account, generate ServiceNow ticket for unmanaged accounts.</Description>
   <Step icon="Start" name="Start" posX="28" posY="10">
     <Transition to="Get Identity for Termination"/>
   </Step>
