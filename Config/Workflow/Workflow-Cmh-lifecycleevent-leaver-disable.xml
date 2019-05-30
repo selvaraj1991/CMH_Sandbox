@@ -174,8 +174,21 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   <Variable name="connectedApps" type="java.util.List"/>
   <Variable name="disConnectedApps" type="java.util.List"/>
   <Variable name="snowTicketId"/>
-  <Variable initializer="script:new Integer(1);" name="numberOfDays" type="integer">
-    <Description>Number of days after which deletion date has to be set</Description>
+  <Variable name="numberOfDays" type="Integer">
+    <Description>Number of days after which accounts has to be deleted</Description>
+    <Script>
+    	<Source>
+    	<![CDATA[
+    		import sailpoint.object.Custom;
+    		Custom custom = context.getObjectByName(Custom.class,"CMH-Leaver-Custom-Object");
+    		int numberOfDays = 0;
+    		if(custom!=null){
+    			numberOfDays = custom.getInt("numberOfDaysToDelete");
+    		}
+    		return numberOfDays;
+    	]]>
+    	</Source>
+    </Script>
   </Variable>
   <RuleLibraries>
     <Reference class="sailpoint.object.Rule" name="CMH-AD-Generic-Rulelibrary"/>

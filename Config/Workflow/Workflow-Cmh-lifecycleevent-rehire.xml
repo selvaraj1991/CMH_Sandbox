@@ -237,7 +237,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   </Variable>
   <Variable initializer="New Account Creation" input="true" name="managerEmailTemplate"/>
   <Variable name="validationErrors" type="java.util.List"/>
-   <Variable name="connectedApps" type="java.util.List"/>
+  <Variable name="connectedApps" type="java.util.List"/>
   <Variable name="disConnectedApps" type="java.util.List"/>
   <Variable name="snowTicketId"/>
   <Variable name="password">

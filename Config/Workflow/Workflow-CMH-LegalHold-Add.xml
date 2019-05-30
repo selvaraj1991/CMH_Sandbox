@@ -52,18 +52,18 @@
   		</Source>
   	</Script>
   </Variable>
-  <Variable name="disabledOU">
+  <Variable name="LegalHold_Group">
   	<Script>
   		<Source>
   		<![CDATA[
   			import sailpoint.object.Custom;
   			
   			Custom custom = context.getObjectByName(Custom.class,"CMH-Custom-Object-AD-Application");
-  			String disabledOU = null;
+  			String legalHold = null;
   			if(custom!=null){
-  				disabledOU = custom.getString("disabledOU");
+  				legalHold = custom.getString("Legal-Hold-Group");
   			}
-  			return disabledOU;
+  			return legalHold;
   		]]>
   		</Source>
   	</Script>
@@ -126,21 +126,25 @@
   		<Source>
   		<![CDATA[
   			import org.apache.log4j.Logger;
-  			
+  			import sailpoint.tools.Util;
   			Logger log = Logger.getLogger("CMHLegalHold");
   			
   			List errorMessages = new ArrayList();
-			if(identityName==null){
+			if(Util.isNullOrEmpty(identityName)){
 				log.error("CMH-LegalHold-Add-Workflow: identityName is NULL");
 				errorMessages.add("CMH-LegalHold-Add-Workflow: identityName is NULL");
 			}
-			if(userType==null){
+			if(Util.isNullOrEmpty(userType)){
 				log.error("CMH-LegalHold-Add-Workflow: userType is NULL");
 				errorMessages.add("CMH-LegalHold-Add-Workflow: userType is NULL");
 			}
-			if(userStatus==null){
+			if(Util.isNullOrEmpty(userStatus)){
 				log.error("CMH-LegalHold-Add-Workflow: userStatus is NULL");
 				errorMessages.add("CMH-LegalHold-Add-Workflow: userStatus is NULL");
+			}
+			if(Util.isNullOrEmpty(LegalHold_Group)){
+				log.error("CMH-LegalHold-Add-Workflow: Custom object is not configured properly-Unable to get the LegalHold group");
+				errorMessages.add("CMH-LegalHold-Add-Workflow: Custom object is not configured properly-Unable to get the LegalHold group");
 			}
 			return errorMessages;
   		]]>
@@ -255,6 +259,7 @@
 							acctReq.setApplication(adAppName);
 							acctReq.setNativeIdentity(li.getNativeIdentity());
 							acctReq.add(new AttributeRequest("AC_NewParent",adOU));
+							acctReq.add(new AttributeRequest("memberOf",ProvisioningPlan.Operation.Add,LegalHold_Group));
 							accountRequests.add(acctReq);
 						}
 					}
@@ -346,6 +351,13 @@
   		]]>
   		</Source>
   	</Script>
+  	<Transition to="Refresh Identity"/>
+  </Step>
+  <Step action="call:refreshIdentity" icon="Task" name="Refresh Identity" posX="1299" posY="252">
+  	<Arg name="identityName" value="ref:identityName"/>
+  	<Arg name="correlateEntitlements" value="true"/>
+    <Arg name="refreshRoleMetadata" value="true"/>
+    <Arg name="refreshIdentityEntitlements" value="true"/>
   	<Transition to="Stop"/>
   </Step>
   <Step catches="complete" icon="Catches" name="Check Status" posX="778" posY="180">
