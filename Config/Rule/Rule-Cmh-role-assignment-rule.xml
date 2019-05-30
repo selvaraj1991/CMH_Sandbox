@@ -95,7 +95,8 @@
 
 		if (identity != null && identity.isCorrelated()) {
 			String status = identity.getStringAttribute("status");
-			if (!Util.nullSafeCaseInsensitiveEq(status, "Terminated")) {
+    String offboardStatus = identity.getStringAttribute("immediateOffboarder");
+    if(!Util.nullSafeCaseInsensitiveEq(status,"Terminated") && !Util.nullSafeCaseInsensitiveEq(offboardStatus,"YES") ){
 				String oldEmpId = identity.getStringAttribute("otherEmpId");
 				String isConversionProcessed = identity.getStringAttribute("isConversionProcessed");
 				if (Util.isNullOrEmpty(oldEmpId) || !isConversionCase(oldEmpId)) {

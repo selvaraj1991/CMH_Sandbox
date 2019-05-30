@@ -205,7 +205,7 @@
 			log.info("CMH-AD-Generic-Rulelibrary : QueryOptions " + qOps);
 			try {
 				count = context.countObjects(Identity.class, qOps);
-				log.info("CMH-AD-Generic-Rulelibrary : Count of exisitng users with same name " + count);
+				log.info("CMH-AD-Generic-Rulelibrary : Count of existing users with same name " + count);
 			} catch(GeneralException e) {
 				log.error(e.getMessage());
 			}
@@ -519,7 +519,7 @@
 						str = str.append(operation).append("the user accounts from these applications : " + Util.listToCsv(disconnectedApps));
 					}
 				} else if (Util.nullSafeCaseInsensitiveEq(operation, "Enable")) {
-					str = str.append("User").append(user.getName()).append("[").append(user.getStringAttribute("employeeId")).append("] Rehired, please enalbe all the access for the user.");
+					str = str.append("User").append(user.getName()).append("[").append(user.getStringAttribute("employeeId")).append("] Rehired, please enable all the access for the user.");
 					if (!Util.isEmpty(disconnectedApps)) {
 						str.append("Enable the user accounts from these applications : " + Util.listToCsv(disconnectedApps));
 					}
@@ -556,18 +556,26 @@
 						HttpEntity entity = new ByteArrayEntity(jsonString.getBytes("utf-8"));
 						httpPost.setEntity(entity);
 						CloseableHttpResponse response = httpclient.execute(httpPost);
-						try {
-							String responseBody = EntityUtils.toString(response.getEntity());
-							Map responseMap = (Map) jUtil.parse(responseBody);
-							Map resultMap = (Map) responseMap.get("result");
-							ticketNumber = (String) resultMap.get("number");
-							if (Util.isNotNullOrEmpty(ticketNumber)) {
-								log.debug("CMH-AD-Generic-Rulelibrary : Ticket Created" + ticketNumber);								
+						if(response != null){
+							try {
+								String responseBody = EntityUtils.toString(response.getEntity());
+								if(Util.isNotNullOrEmpty(responseBody)){
+									Map responseMap = (Map) jUtil.parse(responseBody);
+									if (responseMap !=null){
+										Map resultMap = (Map) responseMap.get("result");
+										if(resultMap !=null){
+											ticketNumber = (String) resultMap.get("number");
+											if (Util.isNotNullOrEmpty(ticketNumber)) {
+												log.debug("CMH-AD-Generic-Rulelibrary : Ticket Created" + ticketNumber);								
+											}
+										}
+									}
+								}
+							} catch(Exception e) {
+								log.error("CMH-AD-Generic-Rulelibrary : Error reading response " + e.getMessage());
+							} finally {
+								response.close();
 							}
-						} catch(Exception e) {
-							log.error("CMH-AD-Generic-Rulelibrary : Error reading response " + e.getMessage());
-						} finally {
-							response.close();
 						}
 
 					}
@@ -608,10 +616,12 @@
 				if (rObj != null) {
 					Attributes argMap = new Attributes();
 					argMap.put("noOptimizeReaggregation", "true");
-					// Consturct an aggregator instance.
+        argMap.put("correlateEntitlements","true");
+					// Construct an aggregator instance.
 					Aggregator agg = new Aggregator(context, argMap);
 					log.debug("Calling aggregate() method.");
 					if (ObjectUtil.isLocked(context, Identity.class, identityName)) {
+        {
 						ObjectUtil.unlockIdentity(context, identity);
 					}
 					TaskResult taskResult = agg.aggregate(app, rObj);

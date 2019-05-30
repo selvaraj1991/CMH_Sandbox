@@ -1,6 +1,6 @@
-<?xml version='1.0' encoding='UTF-8'?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Workflow PUBLIC "sailpoint.dtd" "sailpoint.dtd">
-<Workflow explicitTransitions="true" name="CMH-Immediate-Termination-Workflow" libraries="Identity,IdentityRequest" type="LCM">
+<Workflow explicitTransitions="true" libraries="Identity,IdentityRequest" name="CMH-Immediate-Termination-Workflow" type="LCM">
   <Variable initializer="true" input="true" name="trace"/>
   <Variable name="plan" type="sailpoint.object.ProvisioningPlan">
     <Description>The provisioning plan which is built during the workflow.  
@@ -231,6 +231,7 @@
                 user.setAttribute("status","TERMINATED");
                 user.setAttribute("terminationDate", terminationDate);
                 user.setAttribute("deletionDate", deletionDateStr);
+        user.setAttribute("immediateOffboarder","YES");
                 context.saveObject(user);
                 context.commitTransaction();	
 			} catch (GeneralException e) {
