@@ -41,11 +41,17 @@
 		//Selecting the users for rehire based on status and rehire flag
 		boolean rehired = false;
 		if (null != previousIdentity && null != newIdentity) {
+			    String prevOffboarder = previousIdentity.getStringAttribute("immediateOffboarder");
+			    String newOffboarder = newIdentity.getStringAttribute("immediateOffboarder");
+			    if(Util.nullSafeCaseInsensitiveEq(prevOffboarder,"YES") && Util.nullSafeCaseInsensitiveEq(newOffboarder,"YES")) {
+			        rehired = false;
+			    } else {
 			String prevIdenStatus = previousIdentity.getStringAttribute("status");
 			String newIdenStatus = newIdentity.getStringAttribute("status");
 			log.debug("prevIdenStatus: " + prevIdenStatus + " newIdenStatus: " + newIdenStatus);
 			String rehire = newIdentity.getStringAttribute("rehire");
-			if (Util.nullSafeCaseInsensitiveEq("TERMINATED", prevIdenStatus) && Util.nullSafeCaseInsensitiveEq("PREHIRE", newIdenStatus) && Util.nullSafeCaseInsensitiveEq("YES", rehire)) {
+					    if(Util.nullSafeCaseInsensitiveEq("TERMINATED",prevIdenStatus) && Util.nullSafeCaseInsensitiveEq("PREHIRE",newIdenStatus)
+					        && Util.nullSafeCaseInsensitiveEq("YES",rehire)) {
 				String startdate = newIdentity.getStringAttribute("startDate");
 				boolean flag = startDateCheck(startdate);
 				if (flag) {
@@ -59,8 +65,9 @@
 				rehired = false;
 			}
 			log.debug("rehired :" + rehired);			
+					    log.debug("Exiting into CMH-Rehire-Users-Trigger-Rule");
 		}
-		log.debug("Exiting into CHM-Rehire-Users-Trigger-Rule");
+			    }
 		return rehired;
   ]]></Source>
 </Rule>
