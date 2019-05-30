@@ -69,7 +69,7 @@
         }catch(Exception ex) {
             log.error("Error: "+ex.getMessage());
         }
-      // The  following if loop will Iterate the list of records retuned from context search and return the user list
+      // The  following if loop will Iterate the list of records returned from context search and return the user list
       if(identityIterator!=null) {		
           while(identityIterator.hasNext()) {		
 	              Identity identity= (Identity) identityIterator.next();
@@ -102,7 +102,7 @@
         return appList;
      }
 		//method to create a List with users details sorted as per Header
-    public static List getSortUsers(Map users)  {
+    public static List getSortUsers(Map users) {
         log.debug("Entering getSortUsers(Map users)");
         List appList = getHeader();
         List sortList = new ArrayList();
@@ -134,71 +134,64 @@
         }
             
 
-    //method to write the Comma separted values in a CSV file
-    public static void callMethod(List users)
-      {
+    //method to write the Comma separated values in a CSV file
+    public static void callMethod(List users){
         Custom custom = null;
         FileWriter writer = null;
-        if(users.isEmpty() != true)
-        {
-          custom = context.getObject(Custom.class,"CMH-Custom-Generic-Filepath");
-          log.debug("Entering callMethod(List users)"); 
-          Date date = new Date();  
-          String format = getCustomObject("legalHoldTimestamp","CMH-DateFormat");
-          if(Util.isNotNullOrEmpty(format)) {
-	          SimpleDateFormat formatter=new SimpleDateFormat(format);
-	          String strDate= formatter.format(date);
-	          String p = custom.get("filepath");
-	          log.debug("Report path from custom obj"+p);
-	          String path=p+"LegalHoldUsers"+strDate+".csv";
-	
-	          try
-	          {
-	              writer = new FileWriter(path);
-	              List values = new ArrayList();
-	              String s = "";
-	              String sp = "\n";
-	             if (count == 0)
-	              {
-	                values = getHeader();
-	                s =	getListAsCsvString(values);
-	                writer.write(s.toString());
-	                writer.append(sp.toString());
-	                count = 1;
-	              }
-	              for (Map user : users)
-	              {
-	                values = getSortUsers(user);
-	                s =	getListAsCsvString(values);
-	                writer.write(s.toString());
-	                writer.append(sp.toString());
-	             }
-	
-	          }//end of try
-	        catch (Exception e) 
-	          {
-	            log.error("Error in CsvFileWriter !!!");
-	            log.error("Rule Error: "+e.getMessage());
-	          } //end of catch
-	
-	        finally {
-	          try
-	          {
-	            writer.flush();
-	            writer.close();
-	          } 
-	          catch (IOException e)
-	          {
-	            log.error("Error while flushing/closing fileWriter !!!");
-	            log.error("Rule Error: "+e.getMessage());
-	          }
-	        }//end of finally   
-	      }//end of if
-	        else
-	        {
-	         log.debug("No users are on Legal Hold");
-	        }
-         }
+        if(users.isEmpty() != true){
+			  custom = context.getObject(Custom.class,"CMH-Custom-Generic-Filepath");
+			  if(custom != null) {
+				  log.debug("Entering callMethod(List users)"); 
+				  Date date = new Date();  
+				  String format = getCustomObject("legalHoldTimestamp","CMH-DateFormat");
+				  if(Util.isNotNullOrEmpty(format)) {
+					  SimpleDateFormat formatter=new SimpleDateFormat(format);
+					  String strDate= formatter.format(date);
+					  String p = custom.get("filepath");
+					  log.debug("Report path from custom obj"+p);
+					  String path=p+"LegalHoldUsers"+strDate+".csv";
+			
+					  try {
+						  writer = new FileWriter(path);
+						  List values = new ArrayList();
+						  String s = "";
+						  String sp = "\n";
+						  if (count == 0){
+							values = getHeader();
+							s =	getListAsCsvString(values);
+							writer.write(s.toString());
+							writer.append(sp.toString());
+							count = 1;
+						  }
+						  for (Map user : users){
+							values = getSortUsers(user);
+							s =	getListAsCsvString(values);
+							writer.write(s.toString());
+							writer.append(sp.toString());
+						 }
+			
+					  }//end of try
+					catch (Exception e) {
+						log.error("Error in CsvFileWriter !!!");
+						log.error("Rule Error: "+e.getMessage());
+					  } //end of catch
+			
+					finally {
+					  try {
+						writer.flush();
+						writer.close();
+					  } 
+					  catch (IOException e) {
+						log.error("Error while flushing/closing fileWriter !!!");
+						log.error("Rule Error: "+e.getMessage());
+					  }
+					}//end of finally   
+				  }//end of if
+					else {
+					 log.debug("No users are on Legal Hold");
+					}
+			 }
+		 }
       }
     private static int count = 0;
     List list = getLegalHoldUsers();

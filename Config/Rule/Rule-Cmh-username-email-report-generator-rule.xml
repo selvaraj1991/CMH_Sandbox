@@ -123,7 +123,7 @@
 					log.error(e.getMessage());
 				}
 			} else {
-				log.debug("CMH-Username-Email-Report-Generator-Rule: Custom dataList doesnt have any value");
+				log.debug("CMH-Username-Email-Report-Generator-Rule: Custom dataList does not have any value");
 			}
 			log.debug("CMH-Username-Email-Report-Generator-Rule :Exiting updateCustomNameChangeData(List dataList, String customName)");
 		}
