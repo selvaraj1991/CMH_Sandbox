@@ -241,6 +241,7 @@
 			import sailpoint.object.ProvisioningPlan.AccountRequest;
 			import sailpoint.object.ProvisioningPlan.AttributeRequest;
 			
+			Logger log = Logger.getLogger("CMHLegalHold");
 			if (isDebugEnabled) {
 				log.debug("CMH-LegalHold-Add-Workflow: Generating plan to move the user AD account to appropriate OU");
 			}
@@ -364,11 +365,8 @@
     <Script>
       <Source>
       <![CDATA[
-       		import java.text.SimpleDateFormat;
   			import org.apache.log4j.Logger;
-  			import sailpoint.object.AuditEvent;
   			import sailpoint.object.Identity;
-			import sailpoint.server.Auditor;
   			import sailpoint.tools.Message;
   			import sailpoint.tools.Util;
   			
@@ -383,13 +381,13 @@
   				log.error("CMH_ImmediateTermination: Check Status step : Errors Found : "+errorMessage);	
   			}else{
   				if(identityName!=null){
-				Identity iden = context.getObjectByName(Identity.class,identityName);
-				if(iden!=null){					
-					iden.setAttribute("identityRetention","YES");
-					context.saveObject(iden);
-					context.commitTransaction();
+					Identity iden = context.getObjectByName(Identity.class,identityName);
+					if(iden!=null){					
+						iden.setAttribute("identityRetention","YES");
+						context.saveObject(iden);
+						context.commitTransaction();
+					}
 				}
-			}
   			} 
     ]]>    
     </Source>

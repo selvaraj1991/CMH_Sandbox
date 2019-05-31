@@ -140,15 +140,15 @@
   			Logger log = Logger.getLogger("CMH_ImmediateTerminationLog");
   			log.debug("CMH-Immediate-Termination-Process-Workflow: Validating the Data");
   			List errorList = new ArrayList();
-  			if(adAppName==null || terminatedOU==null){
+  			if(Util.isNullOrEmpty(adAppName) || Util.isNullOrEmpty(terminatedOU)){
   				log.error("CMH-Immediate-Termination-Process-Workflow: Custom object not configured properly");
   				errorList.add("CMH-Immediate-Termination-Process-Workflow: Custom object not configured properly");
   			}
-  			if(identityName==null){
+  			if(Util.isNullOrEmpty(identityName)){
   				log.error("CMH-Immediate-Termination-Process-Workflow: identityName is null");
   				errorList.add("CMH-Immediate-Termination-Process-Workflow: identityName is null");
   			}
-  			if(employeeId==null){
+  			if(Util.isNullOrEmpty(employeeId)){
   				log.error("CMH-Immediate-Termination-Process-Workflow: employeeId is null");
   				errorList.add("CMH-Immediate-Termination-Process-Workflow: employeeId is null");
   			}
@@ -231,7 +231,7 @@
                 user.setAttribute("status","TERMINATED");
                 user.setAttribute("terminationDate", terminationDate);
                 user.setAttribute("deletionDate", deletionDateStr);
-        user.setAttribute("immediateOffboarder","YES");
+				user.setAttribute("immediateOffboarder","YES");
                 context.saveObject(user);
                 context.commitTransaction();	
 			} catch (GeneralException e) {
@@ -284,6 +284,7 @@
         import sailpoint.tools.GeneralException;
         import sailpoint.object.ProvisioningPlan.AccountRequest;
         import sailpoint.object.ProvisioningPlan.AttributeRequest;
+		import sailpoint.tools.Util;
            
         Logger log = Logger.getLogger("CMH_ImmediateTerminationLog");
 		
@@ -322,7 +323,7 @@
                     		modAcctReq.setNativeIdentity(adLink.getNativeIdentity());
                     		modAcctReq.add(new AttributeRequest("IIQDisabled",ProvisioningPlan.Operation.Set,true));
                     		modAcctReq.add(new AttributeRequest("pwdLastSet",ProvisioningPlan.Operation.Set,true));
-                     		if(userOnLegalHold==null || userOnLegalHold.equalsIgnoreCase("NO")){
+                     		if(Util.nullSafeCaseInsensitiveEq(userOnLegalHold,"NO")){
 								modAcctReq.add(new AttributeRequest("AC_NewParent",ProvisioningPlan.Operation.Set,terminatedOU));
                       		}else
 							modAcctReq.add(new AttributeRequest("mailNickname",ProvisioningPlan.Operation.Set,""));

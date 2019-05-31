@@ -257,6 +257,7 @@
 			import sailpoint.object.ProvisioningPlan.AccountRequest;
 			import sailpoint.object.ProvisioningPlan.AttributeRequest;
 			
+			Logger log = Logger.getLogger("CMHLegalHold");
 			if (isDebugEnabled) {
 				log.debug("CMH-LegalHold-Remove-Workflow: Generating plan to move the user AD account to appropriate OU");
 			}
@@ -380,11 +381,8 @@
     <Script>
       <Source>
       <![CDATA[
-       		import java.text.SimpleDateFormat;
   			import org.apache.log4j.Logger;
-  			import sailpoint.object.AuditEvent;
   			import sailpoint.object.Identity;
-			import sailpoint.server.Auditor;
   			import sailpoint.tools.Message;
   			import sailpoint.tools.Util;
   			
