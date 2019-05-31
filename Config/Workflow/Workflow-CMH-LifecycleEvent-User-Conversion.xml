@@ -70,7 +70,9 @@
   			String employeeId = null;
   			if(identityName!=null){
   				Identity iden = context.getObjectByName(Identity.class,identityName);
-  				employeeId = iden.getStringAttribute("employeeId");
+				if(iden!=null){
+					employeeId = iden.getStringAttribute("employeeId");
+				}
   			}
   			return employeeId;
   		
@@ -86,7 +88,9 @@
   			String assignmentType = null;
   			if(identityName!=null){
   				Identity iden = context.getObjectByName(Identity.class,identityName);
-  				assignmentType = iden.getStringAttribute("assignmentType");
+				if(iden!=null){
+					assignmentType = iden.getStringAttribute("assignmentType");
+				}
   			}
   			return assignmentType;
   		
@@ -102,7 +106,9 @@
   			String emailRequired = null;
   			if(identityName!=null){
   				Identity iden = context.getObjectByName(Identity.class,identityName);
-  				emailRequired = iden.getStringAttribute("mailReqd");
+				if(iden!=null){
+					emailRequired = iden.getStringAttribute("mailReqd");
+				}
   			}
   			return emailRequired;
   		
@@ -118,7 +124,9 @@
   			String email = null;
   			if(identityName!=null){
   				Identity iden = context.getObjectByName(Identity.class,identityName);
-  				email = iden.getStringAttribute("email");
+				if(iden!=null){
+					email = iden.getStringAttribute("email");
+				}
   			}
   			return email;
   		
@@ -134,7 +142,9 @@
   			String oldEmpId = null;
   			if(identityName!=null){
   				Identity iden = context.getObjectByName(Identity.class,identityName);
-  				oldEmpId = iden.getStringAttribute("otherEmpId");
+				if(iden!=null){
+					oldEmpId = iden.getStringAttribute("otherEmpId");
+				}
   			}
   			return oldEmpId;
   		
@@ -156,32 +166,12 @@
 				Iterator existingUsers = context.search(Identity.class,ops);
 				if(existingUsers!=null && existingUsers.hasNext()){
 					Identity iden = (Identity)existingUsers.next();
-					return iden.getName();
+					if(iden!=null){
+						return iden.getName();
+					}
 				}
   			}
   			return null;
-  		
-  		]]></Source>
-    </Script>
-  </Variable>
-  <Variable name="toAddress">
-    <Script>
-      <Source><![CDATA[
-  		
-  			import sailpoint.object.Identity;
-  			import org.apache.commons.lang.StringUtils;
-  			
-  			String toAddress = "admin@cmh.edu";
-  			if(identityName!=null){
-  				Identity iden = context.getObjectByName(Identity.class,identityName);
-  				if(iden!=null && iden.getManager()!=null){
-  					String managerMail = iden.getManager().getEmail();
-  					if(!StringUtils.isBlank(managerMail)){
-  						toAddress = managerMail;
-  					}
-  				}
-  			}
-  			return toAddress;
   		
   		]]></Source>
     </Script>
@@ -289,22 +279,6 @@
   		]]></Source>
     </Script>
   </Variable>
-  <Variable name="managerName">
-    <Script>
-      <Source><![CDATA[
-  		
-  			import sailpoint.object.Identity;
-  			
-  			String managerName=null;
-			Identity iden = context.getObjectByName(Identity.class,identityName);
-			if(iden!=null && iden.getManager()!=null){
-				managerName = iden.getManager().getFirstname()+" "+iden.getManager().getLastname();
-			}
-			return managerName;
-  		
-  		]]></Source>
-    </Script>
-  </Variable>
   <Variable name="userStatus">
     <Script>
       <Source><![CDATA[
@@ -314,7 +288,9 @@
   			String userStatus = null;
   			if(identityName!=null){
   				Identity iden = context.getObjectByName(Identity.class,identityName);
-  				userStatus = iden.getStringAttribute("status");
+				if(iden!=null){
+					userStatus = iden.getStringAttribute("status");
+				}
   			}
   			return userStatus;
   		
@@ -450,7 +426,6 @@
   			import sailpoint.object.Application;
   			import sailpoint.object.Identity;
   			import sailpoint.object.Link;
-  			import sailpoint.tools.Util;
   			
   			Logger log = Logger.getLogger("CMH-LifecycleEvent-User-Conversion");
   			
@@ -623,13 +598,10 @@
     <Transition to="Stop"/>
   </Step>
   <Step action="call:refreshIdentity" icon="Task" name="Refresh Identity" posX="1299" posY="252">
-    <Arg name="refreshRoleMetadata" value="true"/>
     <Arg name="identityName" value="ref:identityName"/>
-    <Arg name="refreshScorecard" value="true"/>
-    <Arg name="provision" value="true"/>
-    <Arg name="promoteAttributes" value="true"/>
     <Arg name="correlateEntitlements" value="true"/>
-    <Arg name="synchronizeAttributes" value="true"/>
+    <Arg name="refreshRoleMetadata" value="true"/>
+	<Arg name="refreshIdentityEntitlements" value="true"/>
     <Transition to="Stop"/>
   </Step>
   <Step name="Do Target Aggregation" posX="922" posY="334" resultVariable="validationErrors">
@@ -688,9 +660,7 @@
     <Transition to="Refresh Identity">
       <Script>
         <Source><![CDATA[
-			
-				import sailpoint.tools.Message;
-				
+							
 				if(validationErrors==null || validationErrors.size()<=0){
 					return true;
 				}
@@ -704,12 +674,8 @@
   <Step catches="complete" icon="Task" name="Check Status" posX="28" posY="10">
     <Script>
       <Source><![CDATA[
-  		
-  			import java.text.SimpleDateFormat;
   			import org.apache.log4j.Logger;
-  			import sailpoint.object.AuditEvent;
   			import sailpoint.object.Identity;
-			import sailpoint.server.Auditor;
   			import sailpoint.tools.Message;
   			import sailpoint.tools.Util;
   			

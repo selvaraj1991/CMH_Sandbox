@@ -136,6 +136,24 @@
   		</Source>
   	</Script>
   </Variable>
+  <Variable name="employeeId">
+    <Script>
+      <Source><![CDATA[
+  		
+  			import sailpoint.object.Identity;
+  			
+  			String employeeId = null;
+  			if(identityName!=null){
+  				Identity iden = context.getObjectByName(Identity.class,identityName);
+				if(iden!=null){
+					employeeId = iden.getStringAttribute("employeeId");
+				}
+  			}
+  			return employeeId;
+  		
+  		]]></Source>
+    </Script>
+  </Variable>
   <Variable name="snowTicketId"/>
   <Variable name="connectedApps" type="java.util.List"/>
   <Variable name="validationErrors" type="java.util.List"/>
@@ -166,6 +184,10 @@
 			if(Util.isNullOrEmpty(adAppName)){
 				log.error("CMH-LifeycycleEvent-Return-LOA-Workflow: adAppName is NULL : Custom object is not configured properly");
 				errorMessages.add("CMH-LifeycycleEvent-Return-LOA-Workflow: adAppName is NULL : Custom object is not configured properly");
+			}
+			if(Util.isNullOrEmpty(employeeId)){
+				log.error("CMH-LifeycycleEvent-Return-LOA-Workflow: employeeId is NULL");
+				errorMessages.add("CMH-LifeycycleEvent-Return-LOA-Workflow: employeeId is NULL");
 			}
 			return errorMessages;
   		]]>
@@ -251,6 +273,7 @@
 			import sailpoint.object.ProvisioningPlan.AttributeRequest;
 			import sailpoint.tools.Util;
 			
+			Logger log = Logger.getLogger("CmhReturnLoa");
 			if (isDebugEnabled) {
 				log.debug("CMH-LifeycycleEvent-Return-LOA-Workflow: Generating plan to move the user AD account to appropriate OU");
 			}
@@ -270,9 +293,7 @@
 									acctReq.setOperation(AccountRequest.Operation.Modify);
 									acctReq.setApplication(adAppName);
 									acctReq.setNativeIdentity(li.getNativeIdentity());
-									//acctReq.add(new AttributeRequest("AC_NewParent",LOA_OU));
 									acctReq.add(new AttributeRequest("memberOf",ProvisioningPlan.Operation.Remove,LOA_Group));
-									//acctReq.add(new AttributeRequest("mailNickname",""));
 									accountRequests.add(acctReq);
 								}else{
 									acctReq.setOperation(AccountRequest.Operation.Enable);
@@ -382,11 +403,7 @@
     <Script>
       <Source>
       <![CDATA[
-       		import java.text.SimpleDateFormat;
   			import org.apache.log4j.Logger;
-  			import sailpoint.object.AuditEvent;
-  			import sailpoint.object.Identity;
-			import sailpoint.server.Auditor;
   			import sailpoint.tools.Message;
   			import sailpoint.tools.Util;
   			
@@ -406,6 +423,21 @@
   			}else if(!Util.isEmpty(validationErrors)){
   				log.error("CMH-LifeycycleEvent-Return-LOA-Workflow: Check Status step : Errors Found : "+Util.listToCsv(validationErrors));
   			}
+			
+			String action = null;
+  			String target = identityName;
+  			String attrName = "Employee ID";
+  			String attrVal = employeeId;
+  			Map strMap = new HashMap();
+  			if(Util.isEmpty(validationErrors)){
+  				action = "Return-LOA-Success";
+  				strMap.put("setString1","Return from LOA Completed succesfully");
+  			}else{
+  				action = "Return-LOA-Failure";
+  				strMap.put("setString1","Return from LOA failed due to errors");
+  				strMap.put("setString2",Util.listToCsv(validationErrors));
+  			}
+  			auditWrite(action,source,target,attrName,attrVal,strMap);
     	]]>    
     	</Source>
     </Script>

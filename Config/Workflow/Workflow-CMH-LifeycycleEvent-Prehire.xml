@@ -70,7 +70,9 @@
   			String employeeId = null;
   			if(identityName!=null){
   				Identity iden = context.getObjectByName(Identity.class,identityName);
-  				employeeId = iden.getStringAttribute("employeeId");
+				if(iden!=null){
+					employeeId = iden.getStringAttribute("employeeId");
+				}
   			}
   			return employeeId;
   		]]>
@@ -86,7 +88,9 @@
   			String assignmentType = null;
   			if(identityName!=null){
   				Identity iden = context.getObjectByName(Identity.class,identityName);
-  				assignmentType = iden.getStringAttribute("assignmentType");
+				if(iden!=null){
+					assignmentType = iden.getStringAttribute("assignmentType");
+				}
   			}
   			return assignmentType;
   		]]>
@@ -102,7 +106,9 @@
   			String emailRequired = null;
   			if(identityName!=null){
   				Identity iden = context.getObjectByName(Identity.class,identityName);
-  				emailRequired = iden.getStringAttribute("mailReqd");
+				if(iden!=null){
+					emailRequired = iden.getStringAttribute("mailReqd");
+				}
   			}
   			return emailRequired;
   		]]>
@@ -339,18 +345,17 @@
   						acctReqGrp.add(new AttributeRequest("IIQDisabled",ProvisioningPlan.Operation.Set,false));
   						if(Util.isNotNullOrEmpty(assignmentType)){
   							if(Util.nullSafeCaseInsensitiveEq(assignmentType,"EMPLOYEE")){
-  								//acctReqGrp.add(new AttributeRequest("memberOf",ProvisioningPlan.Operation.Add,o365Licenses));
+  								//Provision o365Licenses
   							}else if(Util.nullSafeCaseInsensitiveEq(emailRequired,"Yes")){
-  								//acctReqGrp.add(new AttributeRequest("memberOf",ProvisioningPlan.Operation.Add,o365Licenses));
+  								//Provision o365Licenses
   							}
   						}
   						accountRequests.add(acctReqGrp);
   					}
   				}
-  				adPlan.setAccountRequests(accountRequests);
+				adPlan.setIdentity(iden);
   			}
-  			adPlan.setIdentity(iden);
-  			
+  			adPlan.setAccountRequests(accountRequests);
   			if(isDebugEnabled){
   				log.debug("CMH_LifecycleEvent_Prehire: Plan created for the user successfully: "+adPlan.toXml());
   			}
@@ -415,23 +420,17 @@
   <Step action="call:refreshIdentity" icon="Task" name="Refresh Identity">
   	<Arg name="identityName" value="ref:identityName"/>
   	<Arg name="correlateEntitlements" value="true"/>
-  	<Arg name="provision" value="true"/>
-  	<Arg name="promoteAttributes" value="true"/>
-  	<Arg name="refreshRoleMetadata" value="true"/>
-  	<Arg name="refreshScorecard" value="true"/>
-  	<Arg name="synchronizeAttributes" value="true"/>
+    <Arg name="refreshRoleMetadata" value="true"/>
+	<Arg name="refreshIdentityEntitlements" value="true"/>
   	<Transition to="Stop"/>
   </Step>
   <Step icon="Task" catches="complete" name="Check Status">
   	<Script>
   		<Source>
   		<![CDATA[
-  			import java.text.SimpleDateFormat;
   			import org.apache.log4j.Logger;
-  			import sailpoint.object.AuditEvent;
   			import sailpoint.object.EmailTemplate;
   			import sailpoint.object.EmailOptions;
-			import sailpoint.server.Auditor;
 			import sailpoint.tools.EmailException;
   			import sailpoint.tools.Message;
   			import sailpoint.tools.Util;
@@ -455,15 +454,17 @@
 	  			}
   			}
   			  			
-  			String action = "Prehire";
+  			String action = null;
   			String target = identityName;
   			String attrName = "Employee ID";
   			String attrVal = employeeId;
   			Map strMap = new HashMap();
   			if(Util.isEmpty(validationErrors)){
+				action = "Prehire-Success";
   				strMap.put("setString1","Prehire Completed succesfully");
   				strMap.put("setString2","AD account enabled successfully");
   			}else{
+				action = "Prehire-Failure";
   				strMap.put("setString1","Prehire failed due to errors");
   				strMap.put("setString2",Util.listToCsv(validationErrors));
   			}

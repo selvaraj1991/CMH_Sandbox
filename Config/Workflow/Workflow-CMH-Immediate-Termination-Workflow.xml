@@ -106,24 +106,29 @@
   		<![CDATA[
   			import org.apache.log4j.Logger;
   			import sailpoint.object.Identity;
+			import sailpoint.tools.Util;
   			
   			Logger log = Logger.getLogger("CMH_ImmediateTerminationLog");	
   			String userName = null;
   			String employeeId = null;
   			String userOnLegalHold = null;
-  			log.debug("CMH-Immediate-Termination-Process-Workflow:User selected :"+terminatingUserId);
   			if(terminatingUserId!=null){
 				Identity iden = context.getObjectById(Identity.class,terminatingUserId);
-            	userName = iden.getName();
-            	if(userName!=null){
-            		wfcontext.getRootWorkflowCase().put("identityName",userName);
-            	}
-            	employeeId = iden.getStringAttribute("employeeId");
-            	if(employeeId!=null){
-            		wfcontext.getWorkflowCase().put("employeeId",employeeId);
-            	}
-            	userOnLegalHold = iden.getStringAttribute("userOnLegalHold");
-            	wfcontext.getWorkflowCase().put("userOnLegalHold",userOnLegalHold);
+				if(iden!=null){
+					userName = iden.getName();
+					if(isDebugEnabled)	{
+						log.debug("CMH-Immediate-Termination-Process-Workflow:User selected :"+userName);
+					}
+					if(Util.isNotNullOrEmpty(userName)){
+						wfcontext.getRootWorkflowCase().put("identityName",userName);
+					}
+					employeeId = iden.getStringAttribute("employeeId");
+					if(Util.isNotNullOrEmpty(employeeId)){
+						wfcontext.getWorkflowCase().put("employeeId",employeeId);
+					}
+					userOnLegalHold = iden.getStringAttribute("userOnLegalHold");
+					wfcontext.getWorkflowCase().put("userOnLegalHold",userOnLegalHold);
+				}
           	}
         ]]>
   		</Source>
@@ -138,7 +143,9 @@
   			import sailpoint.tools.Util;
   			
   			Logger log = Logger.getLogger("CMH_ImmediateTerminationLog");
-  			log.debug("CMH-Immediate-Termination-Process-Workflow: Validating the Data");
+			if(isDebugEnabled)	{
+				log.debug("CMH-Immediate-Termination-Process-Workflow: Validating the Data");
+			}
   			List errorList = new ArrayList();
   			if(Util.isNullOrEmpty(adAppName) || Util.isNullOrEmpty(terminatedOU)){
   				log.error("CMH-Immediate-Termination-Process-Workflow: Custom object not configured properly");
@@ -163,10 +170,14 @@
   				import org.apache.log4j.Logger;
   				Logger log = Logger.getLogger("CMH_ImmediateTerminationLog");
   				if(validationErrors==null || validationErrors.size()<=0){
-  					log.debug("CMH-Immediate-Termination-Process-Workflow: No Validation Errors");
+					if(isDebugEnabled)	{
+						log.debug("CMH-Immediate-Termination-Process-Workflow: No Validation Errors");
+					}
   					return true;
   				}
-  				log.debug("CMH-Immediate-Termination-Process-Workflow: There is a Validation Errors");
+				if(isDebugEnabled)	{
+					log.debug("CMH-Immediate-Termination-Process-Workflow: There is a Validation Errors");
+				}
   				return false;
   			]]>
   			</Source>
@@ -299,37 +310,42 @@
         ProvisioningPlan adPlan = new ProvisioningPlan();
 		
 		Identity user = context.getObjectByName(Identity.class,identityName);
-		log.debug("CMH-Immediate-Termination: identityName :"+identityName);
+		if(isDebugEnabled)	{
+			log.debug("CMH-Immediate-Termination: identityName :"+identityName);
+		}
         if (null != user) {
         	try {
               	Application app = context.getObjectByName(Application.class,adAppName);
                 List accountRequests = new ArrayList();
-				
-				log.debug("CMH-Immediate-Termination: adAppName :"+adAppName);
+				if(isDebugEnabled)	{
+					log.debug("CMH-Immediate-Termination: adAppName :"+adAppName);
+				}
                 if (app != null) {
                		IdentityService idnService = new IdentityService(context);
                		List adLinks = idnService.getLinks(user, app);
-               		for (Link adLink : adLinks) {
-                  		if (adLink != null) {
-                    		AccountRequest acctReq = new AccountRequest();
-                    		acctReq.setApplication(adAppName);
-                    		acctReq.setOperation(ProvisioningPlan.AccountRequest.Operation.Disable);
-                    		acctReq.setNativeIdentity(adLink.getNativeIdentity());
-							accountRequests.add(acctReq);
-							
-							AccountRequest modAcctReq = new AccountRequest();
-                    		modAcctReq.setApplication(adAppName);
-                    		modAcctReq.setOperation(ProvisioningPlan.AccountRequest.Operation.Modify);
-                    		modAcctReq.setNativeIdentity(adLink.getNativeIdentity());
-                    		modAcctReq.add(new AttributeRequest("IIQDisabled",ProvisioningPlan.Operation.Set,true));
-                    		modAcctReq.add(new AttributeRequest("pwdLastSet",ProvisioningPlan.Operation.Set,true));
-                     		if(Util.nullSafeCaseInsensitiveEq(userOnLegalHold,"NO")){
-								modAcctReq.add(new AttributeRequest("AC_NewParent",ProvisioningPlan.Operation.Set,terminatedOU));
-                      		}else
-							modAcctReq.add(new AttributeRequest("mailNickname",ProvisioningPlan.Operation.Set,""));
-							accountRequests.add(modAcctReq);
-                    	}
-                  	}
+					if(adLinks!=null && adLinks.size()>0){
+						for (Link adLink : adLinks) {
+							if (adLink != null) {
+								AccountRequest acctReq = new AccountRequest();
+								acctReq.setApplication(adAppName);
+								acctReq.setOperation(ProvisioningPlan.AccountRequest.Operation.Disable);
+								acctReq.setNativeIdentity(adLink.getNativeIdentity());
+								accountRequests.add(acctReq);
+								
+								AccountRequest modAcctReq = new AccountRequest();
+								modAcctReq.setApplication(adAppName);
+								modAcctReq.setOperation(ProvisioningPlan.AccountRequest.Operation.Modify);
+								modAcctReq.setNativeIdentity(adLink.getNativeIdentity());
+								modAcctReq.add(new AttributeRequest("IIQDisabled",ProvisioningPlan.Operation.Set,true));
+								modAcctReq.add(new AttributeRequest("pwdLastSet",ProvisioningPlan.Operation.Set,true));
+								if(Util.nullSafeCaseInsensitiveEq(userOnLegalHold,"NO")){
+									modAcctReq.add(new AttributeRequest("AC_NewParent",ProvisioningPlan.Operation.Set,terminatedOU));
+								}else
+								modAcctReq.add(new AttributeRequest("mailNickname",ProvisioningPlan.Operation.Set,""));
+								accountRequests.add(modAcctReq);
+							}
+						}
+					}
                   	adPlan.setAccountRequests(accountRequests);
                 }
                 adPlan.setIdentity(user);
@@ -430,10 +446,10 @@
 		}
 		
 		String snowId = generateSnowTicket(identityName, "CMH-Service-Ticket-Configuration-Object", disConnectedApps,"Disable");
+		if(isDebugEnabled)	{
+			log.debug("CMH-Immediate-Termination: Service Now ID :  "+snowId);
+		}
 		
-		log.debug("CMH-Immediate-Termination: Service Now ID :  "+snowId);
-		
-		//return snowId;
     	]]>    
     	</Source>
     </Script>
@@ -457,21 +473,23 @@
 			if (iden!=null && app != null) {
 				IdentityService idnService = new IdentityService(context);
                	List adLinks = idnService.getLinks(iden, app);
-           		for (Link adLink : adLinks) {
-           			if(adLink!=null){
-	           			String nativeIdentity = adLink.getNativeIdentity();
-	           			if(Util.isNotNullOrEmpty(nativeIdentity)){
-	           				String[] parts=nativeIdentity.split(",");
-	           				if(parts!=null){
-	           					String value=parts[0];
-	           					if(Util.isNotNullOrEmpty(value)){
-	           						String finalOU = value+","+terminatedOU;
-	           						validationErrors.addAll(doTargetedAggregation(finalOU,adAppName,identityName));
-	           					}
-	           				}
-	           			}
-           			}
-              	}
+				if(adLinks!=null && adLinks.size()>0){
+					for (Link adLink : adLinks) {
+						if(adLink!=null){
+							String nativeIdentity = adLink.getNativeIdentity();
+							if(Util.isNotNullOrEmpty(nativeIdentity)){
+								String[] parts=nativeIdentity.split(",");
+								if(parts!=null){
+									String value=parts[0];
+									if(Util.isNotNullOrEmpty(value)){
+										String finalOU = value+","+terminatedOU;
+										validationErrors.addAll(doTargetedAggregation(finalOU,adAppName,identityName));
+									}
+								}
+							}
+						}
+					}
+				}
             }
             return validationErrors;
   		]]>
@@ -491,8 +509,10 @@
   			import sailpoint.tools.Util;
   			
   			Logger log = Logger.getLogger("CMH_ImmediateTerminationLog");
-  		
-  			log.debug("CMH_ImmediateTermination: Check Status step : Checking for errors");
+			
+			if(isDebugEnabled)	{
+				log.debug("CMH_ImmediateTermination: Check Status step : Checking for errors");
+			}
   			
   			
   			if(wfcontext.getRootWorkflowCase().getMessages()!=null && wfcontext.getRootWorkflowCase().getMessagesByType(Message.Type.Error)!=null){
@@ -522,7 +542,9 @@
   			}
   			auditWrite(action,source,target,attrName,attrVal,strMap);
   			
-  			log.debug("CMH_ImmediateTermination: Check Status step : Audit Event Generated");
+			if(isDebugEnabled)	{
+				log.debug("CMH_ImmediateTermination: Check Status step : Audit Event Generated");
+			}
   			
   			context.commitTransaction();
   			return validationErrors;	 

@@ -65,7 +65,9 @@
   			String employeeId = null;
   			if(identityName!=null){
   				Identity iden = context.getObjectByName(Identity.class,identityName);
-  				employeeId = iden.getStringAttribute("employeeId");
+				if(iden!=null){
+					employeeId = iden.getStringAttribute("employeeId");
+				}
   			}
   			return employeeId;
   		]]>
@@ -81,7 +83,9 @@
   			String assignmentType = null;
   			if(identityName!=null){
   				Identity iden = context.getObjectByName(Identity.class,identityName);
-  				assignmentType = iden.getStringAttribute("assignmentType");
+				if(iden!=null){
+					assignmentType = iden.getStringAttribute("assignmentType");
+				}
   			}
   			return assignmentType;
   		]]>
@@ -97,7 +101,9 @@
   			String emailRequired = null;
   			if(identityName!=null){
   				Identity iden = context.getObjectByName(Identity.class,identityName);
-  				emailRequired = iden.getStringAttribute("mailReqd");
+				if(iden!=null){
+					emailRequired = iden.getStringAttribute("mailReqd");
+				}
   			}
   			return emailRequired;
   		]]>
@@ -247,24 +253,28 @@
   			ProvisioningPlan plan = new ProvisioningPlan();
   			List accountRequests = new ArrayList();
   			Identity iden = context.getObjectByName(Identity.class,identityName);
-  			for(String appName:connectedApps){
-	  			Application app = context.getObjectByName(Application.class,appName);
-	  			if(iden!=null && app!=null){
-	  				IdentityService iser = new IdentityService(context);
-	  				List appLinks = iser.getLinks(iden,app);
-	  				for(Link appLink:appLinks){
-	  					if(appLink!=null){
-	  						AccountRequest acctReq = new AccountRequest();
-	  						acctReq.setApplication(appName);
-	  						acctReq.setOperation(ProvisioningPlan.AccountRequest.Operation.Delete);
-	  						acctReq.setNativeIdentity(appLink.getNativeIdentity());
-	  						accountRequests.add(acctReq);
-	  					}
-	  				}
-	  			}
-	  		}
+			if(iden!=null){
+				for(String appName:connectedApps){
+					Application app = context.getObjectByName(Application.class,appName);
+					if(app!=null){
+						IdentityService iser = new IdentityService(context);
+						List appLinks = iser.getLinks(iden,app);
+						if(appLinks!=null && appLinks.size()>0){
+							for(Link appLink:appLinks){
+								if(appLink!=null){
+									AccountRequest acctReq = new AccountRequest();
+									acctReq.setApplication(appName);
+									acctReq.setOperation(ProvisioningPlan.AccountRequest.Operation.Delete);
+									acctReq.setNativeIdentity(appLink.getNativeIdentity());
+									accountRequests.add(acctReq);
+								}
+							}
+						}
+					}
+				}
+				plan.setIdentity(iden);
+			}
 	  		plan.setAccountRequests(accountRequests);
-  			plan.setIdentity(iden);
   			
   			if(isDebugEnabled){
   				log.debug("CMH-LifecycleEvent-Leaver-Delete: Plan created for the user successfully: "+plan.toXml());

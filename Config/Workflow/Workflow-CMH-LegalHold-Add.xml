@@ -71,6 +71,7 @@
   <Variable name="identityName"/>
   <Variable name="userType"/>
   <Variable name="userStatus"/>
+  <Variable name="employeeId"/>
   <Variable name="adOU"/>
   <Variable name="adExists" type="boolean"/>
   <Variable name="validationErrors" type="java.util.List"/>
@@ -93,24 +94,30 @@
   		<![CDATA[
   			import org.apache.log4j.Logger;
   			import sailpoint.object.Identity;
+			import sailpoint.tools.Util;
   			
   			Logger log = Logger.getLogger("CMHLegalHold");
   			String identityName = null;
   			String userType = null;
   			String status = null;
+			String empId = null;
   			Identity iden = context.getObjectById(Identity.class, legalHoldIdentity);
   			if(iden!=null){
   				identityName = iden.getName();
-  				if(identityName!=null){
+  				if(Util.isNotNullOrEmpty(identityName)){
   					wfcontext.getRootWorkflowCase().put("identityName",identityName);
   				}
   				userType = iden.getStringAttribute("userType");
-				if(userType!=null){
+				if(Util.isNotNullOrEmpty(userType)){
 					wfcontext.getRootWorkflowCase().put("userType",userType);
 				}
 				status = iden.getStringAttribute("status");
-				if(status!=null){
+				if(Util.isNotNullOrEmpty(status)){
 					wfcontext.getRootWorkflowCase().put("userStatus",status);
+				}
+				empId = iden.getStringAttribute("employeeId");
+				if(Util.isNotNullOrEmpty(empId)){
+					wfcontext.getRootWorkflowCase().put("employeeId",empId);
 				}
   			}
   			if (isDebugEnabled) {
@@ -141,6 +148,10 @@
 			if(Util.isNullOrEmpty(userStatus)){
 				log.error("CMH-LegalHold-Add-Workflow: userStatus is NULL");
 				errorMessages.add("CMH-LegalHold-Add-Workflow: userStatus is NULL");
+			}
+			if(Util.isNullOrEmpty(employeeId)){
+				log.error("CMH-LegalHold-Add-Workflow: employeeId is NULL");
+				errorMessages.add("CMH-LegalHold-Add-Workflow: employeeId is NULL");
 			}
 			if(Util.isNullOrEmpty(LegalHold_Group)){
 				log.error("CMH-LegalHold-Add-Workflow: Custom object is not configured properly-Unable to get the LegalHold group");
@@ -218,7 +229,8 @@
     	<Script>
     		<Source>
     		<![CDATA[
-    			if(adOU!=null){
+				import sailpoint.tools.Util;
+    			if(Util.isNotNullOrEmpty(adOU)){
     				return true;
     			}
     			return false;
@@ -388,7 +400,23 @@
 						context.commitTransaction();
 					}
 				}
-  			} 
+  			}
+
+			String action = null;
+  			String source = "UI";
+  			String target = identityName;
+  			String attrName = "Employee ID";
+  			String attrVal = employeeId;
+  			Map strMap = new HashMap();
+  			if(Util.isEmpty(validationErrors)){
+  				action = "Legal-Hold-Success";
+  				strMap.put("setString1","Legal Hold Completed succesfully");
+  			}else{
+  				action = "Legal-Hold-Failure";
+  				strMap.put("setString1","Legal Hold failed due to errors");
+  				strMap.put("setString2",Util.listToCsv(validationErrors));
+  			}
+  			auditWrite(action,source,target,attrName,attrVal,strMap);
     ]]>    
     </Source>
     </Script>
