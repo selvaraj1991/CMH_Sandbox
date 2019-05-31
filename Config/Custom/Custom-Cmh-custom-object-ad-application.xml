@@ -16,6 +16,7 @@
             <entry key="activEmployeeOU" value="%%CMH-AD-ActiveUser-LegalHold%%"/>
             <entry key="inactivEmployeeOU" value="%%CMH-AD-InActiveUser-LegalHold%%"/>
             <entry key="nonEmployeeOU" value="%%CMH-AD-NonEmployee-LegalHold%%"/>
+			<entry key="OnLeave" value="%%CMH-OnLeave-Group%%"/>
 	    	<entry key="Legal-Hold-Group" value="%%CMH-LegalHold-Group%%"/>
       	    <entry key="CMH_Email_Enabled" value="%%CMH-Email-Enabled-Group%%"/>
         </Map>

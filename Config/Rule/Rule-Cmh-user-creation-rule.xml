@@ -1,56 +1,55 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Rule PUBLIC "sailpoint.dtd" "sailpoint.dtd">
 <Rule language="beanshell" name="CMH-User-Creation-Rule" type="IdentityCreation">
-    <Description>Identity creation rules are used to set attributes on new
-        Identity objects when they are created. New identities may be created
-        during the aggregation of application accounts, or optionally created
-        after pass-through authentication.
+  <Description>Identity creation rules are used to set attributes on new
+		Identity objects when they are created. New identities may be created
+		during the aggregation of application accounts, or optionally created
+		after pass-through authentication.
 
-        One common operation is to change the name property of the identity when
-        the default application name is complex (such as a directory DN).
+		One common operation is to change the name property of the identity when
+		the default application name is complex (such as a directory DN).
 
-        Another common operation is to assign a set of initial capabilities
-        based on the attributes pulled from the application account.
-    </Description>
-    <ReferencedRules>
-        <Reference class="sailpoint.object.Rule" name="CMH-AD-Generic-Rulelibrary"/>
-    </ReferencedRules>
-    <Signature returnType="void">
-        <Inputs>
-            <Argument name="log">
-                <Description>
-                    The log object associated with the SailPointContext.
-                </Description>
-            </Argument>
-            <Argument name="context">
-                <Description>
-                    A sailpoint.api.SailPointContext object that can be used to query
-                    the database if necessary.
-                </Description>
-            </Argument>
-            <Argument name="environment" type="Map">
-                <Description>
-                    Arguments passed to the aggregation task.
-                </Description>
-            </Argument>
-            <Argument name="application">
-                <Description>
-                    Application being aggregated.
-                </Description>
-            </Argument>
-            <Argument name="account" type="ResourceObject">
-                <Description>
-                    The resource account for the identity being created.
-                </Description>
-            </Argument>
-            <Argument name="identity" type="Identity">
-                <Description>
-                    The identity that is being created.
-                </Description>
-            </Argument>
-        </Inputs>
-    </Signature>
-    <Source><![CDATA[
+		Another common operation is to assign a set of initial capabilities
+		based on the attributes pulled from the application account.</Description>
+  <ReferencedRules>
+    <Reference class="sailpoint.object.Rule" name="CMH-AD-Generic-Rulelibrary"/>
+  </ReferencedRules>
+  <Signature returnType="void">
+    <Inputs>
+      <Argument name="log">
+        <Description>
+					The log object associated with the SailPointContext.
+				</Description>
+      </Argument>
+      <Argument name="context">
+        <Description>
+					A sailpoint.api.SailPointContext object that can be used to query
+					the database if necessary.
+				</Description>
+      </Argument>
+      <Argument name="environment" type="Map">
+        <Description>
+					Arguments passed to the aggregation task.
+				</Description>
+      </Argument>
+      <Argument name="application">
+        <Description>
+					Application being aggregated.
+				</Description>
+      </Argument>
+      <Argument name="account" type="ResourceObject">
+        <Description>
+					The resource account for the identity being created.
+				</Description>
+      </Argument>
+      <Argument name="identity" type="Identity">
+        <Description>
+					The identity that is being created.
+				</Description>
+      </Argument>
+    </Inputs>
+  </Signature>
+  <Source><![CDATA[
 	import org.apache.commons.lang.StringUtils;
 	import org.apache.log4j.Logger;
 	import sailpoint.api.IdentityService;
@@ -66,7 +65,29 @@
 	String workEmail = "WorkEmail";
 	String usrName = "Username";
 	String oldFormat = "_old";
-	String domain = "%%CMH-Mail-Domain%%";
+	String domain = "@cmhad.com";
+	
+	public void createNewUser(String firstName, String lastName, String middInitial, String employeeId, String userType, String mailRequired, String status){
+		log.info("CMH-User-Creation-Rule: Creating a new user by generating username & email from firstname & lastname of the user");
+		String finalUsername =null;
+		String genUsername = userNameGenerator(firstName,lastName,middInitial,employeeId);	//Generate a username based on firstname,lastname, middleInitial		
+		if(null !=genUsername) {
+			finalUsername=finalUserName(genUsername,firstName,lastName,middInitial,employeeId);	//Validate the generated username for the uniqueness
+		}
+		log.debug("CMH-User-Creation-Rule: Unique username : "+finalUsername);
+		if(null !=finalUsername) {
+		    finalUsername = finalUsername.toLowerCase();
+			identity.setName(finalUsername);
+			account.setAttribute(usrName, finalUsername);
+			account.setDisplayName(finalUsername);
+			if(Util.nullSafeCaseInsensitiveEq(userType,"Employee")){
+				account.setAttribute(workEmail, finalUsername + domain);
+			}else if (Util.nullSafeCaseInsensitiveEq(userType,"NonEmployee") && Util.nullSafeCaseInsensitiveEq(mailRequired,"Yes")) {
+				account.setAttribute(workEmail, finalUsername + domain);
+			}
+		}
+	}
+	
 	
     String firstName = account.getStringAttribute("FirstName");
     if(Util.isNotNullOrEmpty(firstName)){
@@ -119,53 +140,53 @@
 			userItr = context.search(Identity.class, ops);
 			if (userItr != null && userItr.hasNext()) {
 				Identity oldIden = (Identity) userItr.next();
-				String oldIdentityName = oldIden.getName();
-				String oldIdentityMail = oldIden.getEmail();
 				String oldIdentityStatus = oldIden.getStringAttribute("status");
-				if (Util.nullSafeCaseInsensitiveEq(oldIdentityName,username)) {
-					if(!Util.nullSafeCaseInsensitiveEq(oldIdentityStatus,"Terminated")){
-						oldIden.setAttribute("status","Terminated");
-						log.debug("CMH-User-Creation-Rule:Old User with employeeId"+oldemployeeId+" status updated to Terminated");
-					}
-					String timestamp = generateTimeStamp();
-					oldIden.setName(oldIdentityName + oldFormat + timestamp);
-					oldIden.setDisplayName(oldIdentityName + oldFormat + timestamp);
-					oldIden.setAttribute(usrName, oldIdentityName + oldFormat + timestamp);
-					oldIden.setInactive(true);
-					IdentityService identityService = new IdentityService(context);
-					List links = identityService.getLinks(oldIden,application);
-					if(links!=null && links.size()>0){
-						Link hrLink = links.get(0);
-						if(hrLink!=null){
-							log.debug("CMH-User-Creation-Rule: Updating old user's HR links display name");
-							hrLink.setDisplayName(oldIdentityName + oldFormat + timestamp);
-							hrLink.setAttribute(usrName,oldIdentityName + oldFormat + timestamp);
-							if(Util.isNotNullOrEmpty(oldIdentityMail)){
-								hrLink.setAttribute(workEmail,oldIdentityMail + oldFormat + timestamp);
+				if(Util.nullSafeCaseInsensitiveEq(oldIdentityStatus,"Terminated")){
+					String oldIdentityName = oldIden.getName();
+					String oldIdentityMail = oldIden.getEmail();
+					if (Util.nullSafeCaseInsensitiveEq(oldIdentityName,username)) {
+						String timestamp = generateTimeStamp();
+						oldIden.setName(oldIdentityName + oldFormat + timestamp);
+						oldIden.setDisplayName(oldIdentityName + oldFormat + timestamp);
+						oldIden.setAttribute(usrName, oldIdentityName + oldFormat + timestamp);
+						oldIden.setInactive(true);
+						IdentityService identityService = new IdentityService(context);
+						List links = identityService.getLinks(oldIden,application);
+						if(links!=null && links.size()>0){
+							Link hrLink = links.get(0);
+							if(hrLink!=null){
+								log.debug("CMH-User-Creation-Rule: Updating old user's HR links display name");
+								hrLink.setDisplayName(oldIdentityName + oldFormat + timestamp);
+								hrLink.setAttribute(usrName,oldIdentityName + oldFormat + timestamp);
+								if(Util.isNotNullOrEmpty(oldIdentityMail)){
+									hrLink.setAttribute(workEmail,oldIdentityMail + oldFormat + timestamp);
+								}
+								context.saveObject(hrLink);
 							}
-							context.saveObject(hrLink);
 						}
+						context.saveObject(oldIden);
+						context.commitTransaction();
+						log.debug("CMH-User-Creation-Rule:Old User object name updated to _old+timestamp");
+						identity.setName(oldIdentityName);//Creating new user with same user name
+						identity.setDisplayName(oldIdentityName);
+						if(Util.nullSafeCaseInsensitiveEq(userType,"NonEmployee") && Util.nullSafeCaseInsensitiveEq(mailRequired,"Yes")){
+							if (StringUtils.isBlank(email) && !StringUtils.isBlank(oldIdentityMail)) {
+								account.setAttribute(workEmail, oldIdentityMail);
+							} else if (StringUtils.isBlank(email) && StringUtils.isBlank(oldIdentityMail)){
+								account.setAttribute(workEmail, oldIdentityName + domain);
+							}
+						}else if(Util.nullSafeCaseInsensitiveEq(userType,"Employee")){
+							if (StringUtils.isBlank(email) && !StringUtils.isBlank(oldIdentityMail)) {
+								account.setAttribute(workEmail, oldIdentityMail);
+							} else if (StringUtils.isBlank(email) && StringUtils.isBlank(oldIdentityMail)){
+								account.setAttribute(workEmail, oldIdentityName + domain);
+							}						
+						}					
+						account.setAttribute(usrName, oldIdentityName);
+						account.setDisplayName(oldIdentityName);
 					}
-					context.saveObject(oldIden);
-					context.commitTransaction();
-					log.debug("CMH-User-Creation-Rule:Old User object name updated to _old+timestamp");
-					identity.setName(oldIdentityName);//Creating new user with same user name
-					identity.setDisplayName(oldIdentityName);
-					if(Util.nullSafeCaseInsensitiveEq(userType,"NonEmployee") && Util.nullSafeCaseInsensitiveEq(mailRequired,"Yes")){
-						if (StringUtils.isBlank(email) && !StringUtils.isBlank(oldIdentityMail)) {
-							account.setAttribute(workEmail, oldIdentityMail);
-						} else if (StringUtils.isBlank(email) && StringUtils.isBlank(oldIdentityMail)){
-							account.setAttribute(workEmail, oldIdentityName + domain);
-						}
-					}else if(Util.nullSafeCaseInsensitiveEq(userType,"Employee")){
-						if (StringUtils.isBlank(email) && !StringUtils.isBlank(oldIdentityMail)) {
-							account.setAttribute(workEmail, oldIdentityMail);
-						} else if (StringUtils.isBlank(email) && StringUtils.isBlank(oldIdentityMail)){
-							account.setAttribute(workEmail, oldIdentityName + domain);
-						}						
-					}					
-					account.setAttribute(usrName, oldIdentityName);
-					account.setDisplayName(oldIdentityName);
+				}else{
+					createNewUser(firstName,lastName,middInitial,employeeId,userType,mailRequired,status);
 				}
 			}
 		} catch (GeneralException e) {
@@ -174,28 +195,12 @@
 			sailpoint.tools.Util.flushIterator(userItr);
 		}
 	} else {
-		log.info("CMH-User-Creation-Rule: Creating a new user by generating username & email from firstname & lastname of the user");
-		String finalUsername =null;
-		String genUsername = userNameGenerator(firstName,lastName,middInitial,employeeId);	//Generate a username based on firstname,lastname, middleInitial		
-		if(null !=genUsername) {
-			finalUsername=finalUserName(genUsername,firstName,lastName,middInitial,employeeId);	//Validate the generated username for the uniqueness
-		}
-		log.debug("CMH-User-Creation-Rule: Unique username : "+finalUsername);
-		if(null !=finalUsername) {
-		    finalUsername = finalUsername.toLowerCase();
-			identity.setName(finalUsername);
-			account.setAttribute(usrName, finalUsername);
-			account.setDisplayName(finalUsername);
-			if(Util.nullSafeCaseInsensitiveEq(userType,"Employee")){
-				account.setAttribute(workEmail, finalUsername + domain);
-			}else if (Util.nullSafeCaseInsensitiveEq(userType,"NonEmployee") && Util.nullSafeCaseInsensitiveEq(mailRequired,"Yes")) {
-				account.setAttribute(workEmail, finalUsername + domain);
-			}
-		}
-		if (status.equalsIgnoreCase("PreHire")) {
-			log.info("CMH-User-Creation-Rule: Creating a new prehire user with inactive status");
-			identity.setInactive(true);
-		}
+		createNewUser(firstName,lastName,middInitial,employeeId,userType,mailRequired,status);
+	}
+	
+	if (status.equalsIgnoreCase("PreHire")) {
+		log.info("CMH-User-Creation-Rule: Creating a new prehire user with inactive status");
+		identity.setInactive(true);
 	}
 	]]></Source>
 </Rule>

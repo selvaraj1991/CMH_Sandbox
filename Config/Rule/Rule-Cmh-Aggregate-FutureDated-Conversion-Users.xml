@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Rule PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<Rule language="beanshell" name="CMH-Aggregate-FutureDated-Conversion-Users-Rule">
+  <Source><![CDATA[
+  	import java.text.SimpleDateFormat;
+  	import sailpoint.api.TaskManager;
+  	import sailpoint.object.Attributes;
+  	import sailpoint.object.Application;
+  	import sailpoint.object.Custom; 
+  	import sailpoint.object.Identity;
+  	import sailpoint.tools.Util;
+  	
+  	public boolean runAggregation(String usersStr){
+  		boolean status = false;
+  		String whereClause = "where Employee in ("+usersStr+")";
+  		String sqlQuery = null;
+  		Custom inforCustom = context.getObjectByName(Custom.class,"CMH-Custom-Object-Infor-Application");
+  		if(inforCustom!=null){
+	  		String inforAppName = inforCustom.getString("hrApplicationName");
+	  		if(Util.isNotNullOrEmpty(inforAppName)){
+	  			Application inforApp = context.getObjectByName(Application.class,inforAppName);
+	  			if(inforApp!=null){
+	  				sqlQuery = (String)inforApp.getAttributeValue("SQL");
+					if(Util.isNotNullOrEmpty(sqlQuery)){
+						if(sqlQuery.indexOf("where")>0){
+							sqlQuery = sqlQuery.substring(0,sqlQuery.indexOf("where")).trim();
+						}
+						sqlQuery = sqlQuery + " " + whereClause;
+			      		inforApp.setAttribute("SQL",sqlQuery);
+						context.saveObject(inforApp);
+						context.commitTransaction();
+						
+						try {  
+							TaskManager tm = new TaskManager(context);  
+							tm.run ("Infor HR Database Aggregation", new Attributes());
+							status = true;  
+						} catch (Exception e) {  
+							log.error("CMH-Aggregate-FutureDated-Conversion-Users-Rule: Error occured while running infor aggregation");   
+						}
+					}
+	  			}
+	  		}
+  		}
+  		return status;
+  	}
+  	
+  	public void updateCustomObject(String customObjName, List usersList){
+  		if(Util.isNotNullOrEmpty(customObjName)){
+  			Custom customObj = context.getObjectByName(Custom.class,customObjName);
+  			if(customObj!=null && !Util.isEmpty(usersList)){
+  				for(String empId : usersList){
+  					customObj.remove(empId);
+  				}
+  				context.saveObject(customObj);
+  				context.commitTransaction();
+  			}
+  		}
+  	}
+  	
+  	Custom stCustomObj = context.getObjectByName(Custom.class,"CMH-DateFormat");
+  	List usersList = null;
+  	String custObjName = "CMH-Custom-Future-Conversion-Users";
+  	if(stCustomObj!=null){
+  		String dateFormat = stCustomObj.getString("startDateFormat");
+  		if(Util.isNotNullOrEmpty(dateFormat)){
+  			SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
+  			Custom customObj = context.getObjectByName(Custom.class,custObjName);
+		  	if(customObj!=null){
+		  		Attributes attrs = customObj.getAttributes();
+		  		if(attrs!=null){
+			  		List empIds = attrs.getKeys();
+			  		if(!Util.isEmpty(empIds)){
+			  			usersList = new ArrayList();
+			  			for(String empId : empIds){
+			  				String sDate = customObj.getString(empId);
+			  				Date stDate = sdf.parse(sDate);
+			  				Date currDate = new Date();
+			  				if(!stDate.after(currDate)){
+			  					usersList.add(empId);
+			  				}
+			  			}
+			  		}
+			  		if(!Util.isEmpty(usersList)){
+			  			String usersStr = Util.listToCsv(usersList);
+			  			if(Util.isNotNullOrEmpty(usersStr)){
+			  				boolean status = runAggregation(usersStr);
+			  				if(status){
+			  					updateCustomObject(custObjName,usersList);
+			  				}	  				 
+			  			}
+			  		}
+		  		}
+		  	}
+  		}
+  	}
+  	
+  	return "Success";
+
+  	
+  ]]></Source>
+</Rule>

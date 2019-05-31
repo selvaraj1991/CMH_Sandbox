@@ -616,12 +616,11 @@
 				if (rObj != null) {
 					Attributes argMap = new Attributes();
 					argMap.put("noOptimizeReaggregation", "true");
-        argMap.put("correlateEntitlements","true");
+					argMap.put("correlateEntitlements","true");
 					// Construct an aggregator instance.
 					Aggregator agg = new Aggregator(context, argMap);
 					log.debug("Calling aggregate() method.");
 					if (ObjectUtil.isLocked(context, Identity.class, identityName)) {
-        {
 						ObjectUtil.unlockIdentity(context, identity);
 					}
 					TaskResult taskResult = agg.aggregate(app, rObj);

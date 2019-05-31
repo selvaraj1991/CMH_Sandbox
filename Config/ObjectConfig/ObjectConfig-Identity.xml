@@ -7,6 +7,7 @@
                              type="string"/>
             <ObjectAttribute displayName="Deletion Status" editMode="ReadOnly" extendedNumber="12" name="deletionStatus"
                              standard="true" type="string"/>
+			<ObjectAttribute displayName="Immediate Offboarder" editMode="ReadOnly" extendedNumber="17" name="immediateOffboarder" type="string"/>
             <ObjectAttribute displayName="att_first_name" editMode="ReadOnly" name="firstname" standard="true"
                              type="string">
                 <AttributeSource name="FirstName">

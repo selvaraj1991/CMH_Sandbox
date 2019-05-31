@@ -4,7 +4,7 @@
     <Attributes>
         <Map>
             <entry key="filepath" value="%%CMH-Generic-FilePath%%"/>
-            <entry key="reportpath" value="%%CMH-Report-FilePath%%"/>
+            <entry key="reportpath" value="%%CMH-Generic-FilePath%%"/>
         </Map>
     </Attributes>
 </Custom>
