@@ -51,7 +51,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   		
   			import org.apache.log4j.Logger;
   			
-  			Logger log = Logger.getLogger("CMH_LifecycleEvent_Prehire");
+  			Logger log = Logger.getLogger("CMH-LifecycleEvent-Leaver-Disable");
   			
   			if(log.isDebugEnabled()){
   				return true;
@@ -70,7 +70,9 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   			String employeeId = null;
   			if(identityName != null){
   				Identity iden = context.getObjectByName(Identity.class,identityName);
-  				employeeId = iden.getStringAttribute("employeeId");
+  				if(null != iden) {
+  				   employeeId = iden.getStringAttribute("employeeId");
+  				} 				
   			}
   			return employeeId;
   		  
@@ -82,18 +84,19 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
       <Source><![CDATA[
   		
   			import sailpoint.object.Identity;
-  			
+  			import sailpoint.tools.Util;
   			String assignmentType = null;
   			if(identityName != null){
   				Identity iden = context.getObjectByName(Identity.class,identityName);
-  				assignmentType = iden.getStringAttribute("assignmentType");
+  				if(null != iden) {
+  				   assignmentType = iden.getStringAttribute("assignmentType");
+  				}
   			}
-  			if(null != assignmentType) {
+  			if(Util.isNotNullOrEmpty(assignmentType)) {
                return assignmentType;
             }else {
                return null;
   			}
- 
   		
   		]]></Source>
     </Script>
@@ -108,7 +111,9 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   			String email = null;
   			if(identityName != null){
   				Identity iden = context.getObjectByName(Identity.class,identityName);
-  				email= iden.getStringAttribute("email");
+  				if(null != iden) {  
+  				   email= iden.getStringAttribute("email");
+  				}
   				if(Util.isNotNullOrEmpty(email)) {
   				   return true;
   				}else {
@@ -277,7 +282,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   		
   			import org.apache.log4j.Logger;
   			
-  			Logger log = Logger.getLogger("CMH-LifecycleEvent-Leaver-Delete");
+  			Logger log = Logger.getLogger("CMH-LifecycleEvent-Leaver-Disable");
   			List disConnectedApps = getAppsToProcess(identityName,"CMH-Leaver-Custom-Object","disConnectedApplications");
   			if(disConnectedApps==null || disConnectedApps.size()<=0){
   				log.info("CMH-LifecycleEvent-Leaver-Delete: There are no disconnected Apps associated with the user");
@@ -310,7 +315,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   				
   				Date today = new Date();
   				String format = getCustomObject("leaverDeleteTimestamp","CMH-DateFormat");
-  				if(Util.isNotNullOrEmpty(format)) 
+  				if(Util.isNotNullOrEmpty(format)) {
 			    	SimpleDateFormat sdf = new SimpleDateFormat(format);
 			    	Date deletetionDate =  Util.incrementDateByDays(today, numberOfDays);
 			    	String deleteDate = sdf.format(deletetionDate);
@@ -341,6 +346,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 	  			import sailpoint.object.ProvisioningPlan.AttributeRequest;
 	  			import sailpoint.tools.Util;
 			  	
+			  	Logger log = Logger.getLogger("CMH-LifecycleEvent-Leaver-Disable");
                 ProvisioningPlan adPlan = new ProvisioningPlan();
 				List accountRequests = new ArrayList();
 				Identity identity = context.getObjectByName(Identity.class, identityName);
@@ -350,27 +356,28 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 					if (identity != null && application != null) {
 						IdentityService ids = new IdentityService(context);
 						List appLink = ids.getLinks(identity, application);
-						for (Link adLink : appLink) {
-							if (null != adLink) {
-							    AccountRequest accrq = new AccountRequest();
-							    if(Util.nullSafeCaseInsensitiveEq(appName,adAppName)){
-									accrq.setApplication(appName);
-									accrq.setOperation(ProvisioningPlan.AccountRequest.Operation.Disable);
-									accrq.setNativeIdentity(adLink.getNativeIdentity());
-									accrq.add(new AttributeRequest("IIQDisabled", ProvisioningPlan.Operation.Set,true));
-									accrq.add(new AttributeRequest("AC_NewParent",disabledOU));
-									if (Util.nullSafeCaseInsensitiveEq(assignmentType, "EMPLOYEE")) {
-										//Exchange code change employee to has email yes or no;
-								    }	
-								} else {
-								    accrq.setApplication(appName);
-									accrq.setOperation(ProvisioningPlan.AccountRequest.Operation.Disable);
+						if( null != appLink ) {
+							for (Link adLink : appLink) {
+								if (null != adLink) {
+								    AccountRequest accrq = new AccountRequest();
+								    if(Util.nullSafeCaseInsensitiveEq(appName,adAppName)){
+										accrq.setApplication(appName);
+										accrq.setOperation(ProvisioningPlan.AccountRequest.Operation.Disable);
+										accrq.setNativeIdentity(adLink.getNativeIdentity());
+										accrq.add(new AttributeRequest("IIQDisabled", ProvisioningPlan.Operation.Set,true));
+										accrq.add(new AttributeRequest("AC_NewParent",disabledOU));
+										if (Util.nullSafeCaseInsensitiveEq(assignmentType, "EMPLOYEE")) {
+											//Exchange code change employee to has email yes or no;
+									    }	
+									} else {
+									    accrq.setApplication(appName);
+										accrq.setOperation(ProvisioningPlan.AccountRequest.Operation.Disable);
+									}
+								 accountRequests.add(accrq);
 								}
-							 accountRequests.add(accrq);
 							}
 						}
-						
-					}
+				    }
 				}
 				adPlan.setAccountRequests(accountRequests);
 			    adPlan.setIdentity(identity);
@@ -474,6 +481,8 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 	  			import sailpoint.object.ProvisioningPlan;
 	  			import sailpoint.tools.Util;
 			  	
+			  	Logger log = Logger.getLogger("CMH-LifecycleEvent-Leaver-Disable");
+			  	
 			  	if (isDebugEnabled) {
 		          log.debug("CMH-LifecycleEvent-Leaver-Disable: Single Account Aggregation");
 		        }
@@ -559,8 +568,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   			if(isDebugEnabled){
   			    log.debug("CMH-LifecycleEvent-Leaver-Disable: Check Status step : Audit Event Generated");
   			}
-  			//wfcontext.getWorkflowCase().put("validationErrors",validationErrors);
-		
+  			
 		]]></Source>
     </Script>
     <Transition to="end"/>
