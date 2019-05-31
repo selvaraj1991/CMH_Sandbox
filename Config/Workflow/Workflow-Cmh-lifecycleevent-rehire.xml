@@ -69,8 +69,10 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   			
   			String employeeId = null;
   			if(identityName!=null){
-  				Identity iden = context.getObjectByName(Identity.class,identityName);
-  				employeeId = iden.getStringAttribute("employeeId");
+  			   Identity iden = context.getObjectByName(Identity.class,identityName);
+  			   if(null != iden) {
+	  			  employeeId = iden.getStringAttribute("employeeId");
+	  			}
   			}
   			return employeeId;
   		  
@@ -85,8 +87,10 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   			
   			String status = null;
   			if(identityName!=null){
-  				Identity iden = context.getObjectByName(Identity.class,identityName);
-  				status = iden.getStringAttribute("status");
+  			   Identity iden = context.getObjectByName(Identity.class,identityName);
+  			   if(null != iden) {
+  				  status = iden.getStringAttribute("status");
+  			   }  
   			}
   			return status;
   		  
@@ -102,8 +106,10 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   			
   			String assignmentType = null;
   			if(identityName!=null){
-  				Identity iden = context.getObjectByName(Identity.class,identityName);
-  				assignmentType = iden.getStringAttribute("assignmentType");
+  			  Identity iden = context.getObjectByName(Identity.class,identityName);
+  			   if(null != iden) {  
+  				  assignmentType = iden.getStringAttribute("assignmentType");
+  			   }
   			}
   			if(Util.isNotNullOrEmpty(assignmentType)) {
                return assignmentType;
@@ -122,16 +128,17 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   			import sailpoint.object.Identity;
   			import sailpoint.tools.Util;
   			String email = null;
+  			boolean hasEmail = false;
   			if(identityName!=null){
   				Identity iden = context.getObjectByName(Identity.class,identityName);
-  				email= iden.getStringAttribute("email");
-  				if(Util.isNotNullOrEmpty(email)) {
-  				   return true;
-  				}else {
-  				   return false;
-  				}
+  				if(null != iden) {
+	  				email= iden.getStringAttribute("email");
+	  				if(Util.isNotNullOrEmpty(email)) {
+	  				   hasEmail =true;
+	  				}
+	  			}
   			}  						
-  		  
+  		   return hasEmail;
   		]]></Source>
     </Script>
   </Variable>
@@ -161,8 +168,10 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   			String assignmentType = null;
   			String enabledUserOU = null;
   			if(identityName != null){
-  				Identity iden = context.getObjectByName(Identity.class,identityName);
-  				assignmentType = iden.getStringAttribute("assignmentType");
+  			  Identity iden = context.getObjectByName(Identity.class,identityName);
+  			  if(null != iden) {  
+  				  assignmentType = iden.getStringAttribute("assignmentType");
+  				}
   			}
   			if(Util.isNotNullOrEmpty(assignmentType)) {
                 enabledUserOU = getCustomObject(assignmentType,"CMH-User-OU-Mapping-Custom-Object" );
@@ -187,7 +196,9 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   			String deletionStatus = null;
   			if(identityName != null){
   				Identity iden = context.getObjectByName(Identity.class,identityName);
-  				deletionStatus = iden.getStringAttribute("deletionStatus");
+  				if(null != iden) {  
+  				   deletionStatus = iden.getStringAttribute("deletionStatus");
+  				}
   			}
   			return deletionStatus;
   		  
@@ -485,6 +496,8 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 	  			import sailpoint.object.ProvisioningPlan.AttributeRequest;
 	  			import sailpoint.tools.Util;
 			  	
+			  	Logger log = Logger.getLogger("CMH-LifecycleEvent-Rehire");
+			  	
 			  	 if (validationErrors == null) {
 		          validationErrors = new ArrayList();
 		        }
@@ -495,35 +508,37 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 				if (identity != null && application != null) {
 					IdentityService ids = new IdentityService(context);
 					List appLink = ids.getLinks(identity, application);
-					for (Link adLink : appLink) {
-						if (null != adLink && adLink.isDisabled()) {
-						      String accLink = adLink.getNativeIdentity();
-						      String userOU = accLink.substring(accLink.indexOf(",")+1);
-							 if(!Util.nullSafeCaseInsensitiveEq(enabledUserOU,userOU)){
-							 	AccountRequest accModify = new AccountRequest();
-							 	accModify.setApplication(adAppName);
-							 	accModify.setOperation(ProvisioningPlan.AccountRequest.Operation.Modify);
-								accModify.setNativeIdentity(adLink.getNativeIdentity());
-							 	accModify.add(new AttributeRequest("AC_NewParent",enabledUserOU));
-							 	accModify.add(new AttributeRequest("pwdLastSet",true));
-							 	accModify.add(new AttributeRequest("employeeType",assignmentType));
-							 	Attributes attr = new Attributes();
-							 	attr.put("secret", true);
-							 	AttributeRequest pwdAttrReq = new AttributeRequest();
-							 	pwdAttrReq.setArgs(attr);
-				                pwdAttrReq.setName("password");
-				                pwdAttrReq.setOperation(ProvisioningPlan.Operation.Set);
-				                pwdAttrReq.setValue(password);
-							 	accModify.add(pwdAttrReq);
-							 	if (Util.nullSafeCaseInsensitiveEq(assignmentType, "EMPLOYEE")) {
-								//Exchange code change employee to has email yes or no and o365 code
-							    }
-							    accountRequests.add(accModify);
-							 }else {
-							     validationErrors.add("Old OU and New OU cannot be: RUN AD Aggregation");
-							 }					 
-						}
-					 }					
+					if(null != appLink) {
+						for (Link adLink : appLink) {
+							if (null != adLink && adLink.isDisabled()) {
+							      String accLink = adLink.getNativeIdentity();
+							      String userOU = accLink.substring(accLink.indexOf(",")+1);
+								 if(!Util.nullSafeCaseInsensitiveEq(enabledUserOU,userOU)){
+								 	AccountRequest accModify = new AccountRequest();
+								 	accModify.setApplication(adAppName);
+								 	accModify.setOperation(ProvisioningPlan.AccountRequest.Operation.Modify);
+									accModify.setNativeIdentity(adLink.getNativeIdentity());
+								 	accModify.add(new AttributeRequest("AC_NewParent",enabledUserOU));
+								 	accModify.add(new AttributeRequest("pwdLastSet",true));
+								 	accModify.add(new AttributeRequest("employeeType",assignmentType));
+								 	Attributes attr = new Attributes();
+								 	attr.put("secret", true);
+								 	AttributeRequest pwdAttrReq = new AttributeRequest();
+								 	pwdAttrReq.setArgs(attr);
+					                pwdAttrReq.setName("password");
+					                pwdAttrReq.setOperation(ProvisioningPlan.Operation.Set);
+					                pwdAttrReq.setValue(password);
+								 	accModify.add(pwdAttrReq);
+								 	if (Util.nullSafeCaseInsensitiveEq(assignmentType, "EMPLOYEE")) {
+									//Exchange code change employee to has email yes or no and o365 code
+								    }
+								    accountRequests.add(accModify);
+								 }else {
+								     validationErrors.add("Old OU and New OU cannot be: RUN AD Aggregation");
+								 }					 
+							}
+						 }	
+					  }				
 					adPlan.setAccountRequests(accountRequests);
 		          }
 			      adPlan.setIdentity(identity);
@@ -565,6 +580,8 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 	  			import sailpoint.object.ProvisioningPlan.AttributeRequest;
 	  			import sailpoint.tools.Util;
 			  	
+			  	Logger log = Logger.getLogger("CMH-LifecycleEvent-Rehire");
+			  	
 			  	 if (validationErrors == null) {
 		          validationErrors = new ArrayList();
 		        }
@@ -575,43 +592,45 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 				if (identity != null && application != null) {
 					IdentityService ids = new IdentityService(context);
 					List appLink = ids.getLinks(identity, application);
-					for (Link adLink : appLink) {
-						if (null != adLink && adLink.isDisabled()) {
-						      String accLink = adLink.getNativeIdentity();
-						      String userOU = accLink.substring(accLink.indexOf(",")+1);
-							 if(!Util.nullSafeCaseInsensitiveEq(enabledUserOU,userOU)){
-							    AccountRequest accrq = new AccountRequest();
-							    accrq.setApplication(adAppName);
-							    accrq.setOperation(ProvisioningPlan.AccountRequest.Operation.Enable);
-							    accrq.setNativeIdentity(adLink.getNativeIdentity());
-							    accountRequests.add(accrq);
-							    
-							 	AccountRequest accModify = new AccountRequest();
-							 	accModify.setApplication(adAppName);
-							 	accModify.setOperation(ProvisioningPlan.AccountRequest.Operation.Modify);
-								accModify.setNativeIdentity(adLink.getNativeIdentity());
-							 	accModify.add(new AttributeRequest("AC_NewParent",enabledUserOU));
-							 	accModify.add(new AttributeRequest("employeeType",assignmentType));
-							 	accModify.add(new AttributeRequest("pwdLastSet", true));
-							 	
-							 	Attributes attr = new Attributes();
-							 	attr.put("secret", true);
-							 	AttributeRequest pwdAttrReq = new AttributeRequest();
-							 	pwdAttrReq.setArgs(attr);
-				                pwdAttrReq.setName("password");
-				                pwdAttrReq.setOperation(ProvisioningPlan.Operation.Set);
-				                pwdAttrReq.setValue(password);
-				                accModify.add(pwdAttrReq);
-							 
-							 	if (Util.nullSafeCaseInsensitiveEq(assignmentType, "EMPLOYEE")) {
-								//Exchange code change employee to has email yes or no and o365 code
-							    }
-							    accountRequests.add(accModify);
-							 }	else {
-							     validationErrors.add("Old OU and New OU cannot be: RUN AD Aggregation");
-							 }					 
-						}
-					 }					
+					if(null != appLink) {
+						for (Link adLink : appLink) {
+							if (null != adLink && adLink.isDisabled()) {
+							      String accLink = adLink.getNativeIdentity();
+							      String userOU = accLink.substring(accLink.indexOf(",")+1);
+								 if(!Util.nullSafeCaseInsensitiveEq(enabledUserOU,userOU)){
+								    AccountRequest accrq = new AccountRequest();
+								    accrq.setApplication(adAppName);
+								    accrq.setOperation(ProvisioningPlan.AccountRequest.Operation.Enable);
+								    accrq.setNativeIdentity(adLink.getNativeIdentity());
+								    accountRequests.add(accrq);
+								    
+								 	AccountRequest accModify = new AccountRequest();
+								 	accModify.setApplication(adAppName);
+								 	accModify.setOperation(ProvisioningPlan.AccountRequest.Operation.Modify);
+									accModify.setNativeIdentity(adLink.getNativeIdentity());
+								 	accModify.add(new AttributeRequest("AC_NewParent",enabledUserOU));
+								 	accModify.add(new AttributeRequest("employeeType",assignmentType));
+								 	accModify.add(new AttributeRequest("pwdLastSet", true));
+								 	
+								 	Attributes attr = new Attributes();
+								 	attr.put("secret", true);
+								 	AttributeRequest pwdAttrReq = new AttributeRequest();
+								 	pwdAttrReq.setArgs(attr);
+					                pwdAttrReq.setName("password");
+					                pwdAttrReq.setOperation(ProvisioningPlan.Operation.Set);
+					                pwdAttrReq.setValue(password);
+					                accModify.add(pwdAttrReq);
+								 
+								 	if (Util.nullSafeCaseInsensitiveEq(assignmentType, "EMPLOYEE")) {
+									//Exchange code change employee to has email yes or no and o365 code
+								    }
+								    accountRequests.add(accModify);
+								 }	else {
+								     validationErrors.add("Old OU and New OU cannot be: RUN AD Aggregation");
+								 }					 
+							}
+						 }
+					  }					
 					adPlan.setAccountRequests(accountRequests);
 		          }
 			      adPlan.setIdentity(identity);
@@ -735,6 +754,8 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 	  			import sailpoint.object.Link;
 	  			import sailpoint.object.ProvisioningPlan;
 	  			import sailpoint.tools.Util;
+			  	
+			  	Logger log = Logger.getLogger("CMH-LifecycleEvent-Rehire");
 			  	
 			  	if (isDebugEnabled) {
 		          log.debug("CMH-LifecycleEvent-Leaver-Disable: Single Account Aggregation");

@@ -69,8 +69,10 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   			
   			String employeeId = null;
   			if(identityName!=null){
-  				Identity iden = context.getObjectByName(Identity.class,identityName);
-  				employeeId = iden.getStringAttribute("employeeId");
+  			   Identity iden = context.getObjectByName(Identity.class,identityName);
+  			   if(null != iden) {
+  				  employeeId = iden.getStringAttribute("employeeId");
+  				}
   			}
   			return employeeId;
   		  
@@ -85,11 +87,12 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   			
   			String email = null;
   			if(identityName!=null){
-  				Identity iden = context.getObjectByName(Identity.class,identityName);
-  				email= iden.getStringAttribute("email");
-  				return email;
+  			   Identity iden = context.getObjectByName(Identity.class,identityName);
+  			   if(null != iden) {
+  				  email= iden.getStringAttribute("email");
+  				} 				
   			}  						
-  		  
+  		    return email;
   		]]></Source>
     </Script>
   </Variable>
@@ -98,17 +101,19 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
       <Source><![CDATA[
   		 
   			import sailpoint.object.Identity;
-  			
+  			import sailpoint.tools.Util;
   			String email = null;
+  			boolean hasMail = false;
   			if(identityName!=null){
   				Identity iden = context.getObjectByName(Identity.class,identityName);
-  				email= iden.getStringAttribute("email");
-  				if(null != email) {
-  				   return true;
-  				}else {
-  				   return false;
-  				}
-  			}  						
+  				if(null != iden) {
+	  				email= iden.getStringAttribute("email");
+	  				if(Util.isNotNullOrEmpty(email)) {
+	  				   hasMail = true;
+	  				}
+  			    }
+  			} 
+  			return hasMail;			
   		  
   		]]></Source>
     </Script>
@@ -122,7 +127,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   			Custom custom = context.getObjectByName(Custom.class,"CMH-Custom-Object-AD-Application");
   			String appName = null;
   			if(custom!=null){
-  				appName = custom.getString("adApplication");
+  			   appName = custom.getString("adApplication");
   			}
   			return appName;
   		
@@ -218,8 +223,10 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   			
   			String assignmentType = null;
   			if(identityName!=null){
-  				Identity iden = context.getObjectByName(Identity.class,identityName);
-  				assignmentType = iden.getStringAttribute("assignmentType");
+  			   Identity iden = context.getObjectByName(Identity.class,identityName);
+  			   if( null != iden) {
+  				  assignmentType = iden.getStringAttribute("assignmentType");
+  			   }
   			}
   			if(Util.isNotNullOrEmpty(assignmentType)) {
                return assignmentType;
@@ -448,6 +455,8 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 		  			import sailpoint.object.Link;
 		  			import sailpoint.tools.Util;
   		           
+  		            Logger log = Logger.getLogger("CMH-LifecycleEvent-Name-Change");
+  		            
   		            Application application = context.getObjectByName(Application.class, hrAppName);
   		            Identity identity = context.getObjectByName(Identity.class, newIdentityName);
   		            if(null != application && null != identity) {
@@ -486,6 +495,8 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 	  			import sailpoint.object.ProvisioningPlan.AttributeRequest;
 	  			import sailpoint.tools.Util;
 			  	
+			  	Logger log = Logger.getLogger("CMH-LifecycleEvent-Name-Change");
+			  	
 			  	if (validationErrors == null) {
 		          validationErrors = new ArrayList();
 		        }
@@ -496,26 +507,28 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 				if (identity != null && application != null) {
 					IdentityService ids = new IdentityService(context);
 					List appLink = ids.getLinks(identity, application);
-					for (Link adLink : appLink) {
-						if (null != adLink) {
-						        String newName = "CN=".concat(newIdentityName);
-								AccountRequest accModify = new AccountRequest();
-							 	accModify.setApplication(adAppName);
-							 	accModify.setOperation(ProvisioningPlan.AccountRequest.Operation.Modify);
-								accModify.setNativeIdentity(adLink.getNativeIdentity());
-							 	accModify.add(new AttributeRequest("AC_NewName", newName));
-							 	accModify.add(new AttributeRequest("sAMAccountName",ProvisioningPlan.Operation.Set, newIdentityName));
-							 	accModify.add(new AttributeRequest("givenName", ProvisioningPlan.Operation.Set,identity.getFirstname()));
-							 	accModify.add(new AttributeRequest("sn",ProvisioningPlan.Operation.Set, identity.getLastname()));
-							 	
-							 	if(hasEmail) {
-							 	   accModify.add(new AttributeRequest("mail",ProvisioningPlan.Operation.Set,newIdentityName + "%%CMH-Mail-Domain%%"));
-							 	   //write code for exchange and o365
-							 	}
-							 	accountRequests.add(accModify);											 
+					if( null != appLink) {
+						for (Link adLink : appLink) {
+							if (null != adLink) {
+							        String newName = "CN=".concat(newIdentityName);
+									AccountRequest accModify = new AccountRequest();
+								 	accModify.setApplication(adAppName);
+								 	accModify.setOperation(ProvisioningPlan.AccountRequest.Operation.Modify);
+									accModify.setNativeIdentity(adLink.getNativeIdentity());
+								 	accModify.add(new AttributeRequest("AC_NewName", newName));
+								 	accModify.add(new AttributeRequest("sAMAccountName",ProvisioningPlan.Operation.Set, newIdentityName));
+								 	accModify.add(new AttributeRequest("givenName", ProvisioningPlan.Operation.Set,identity.getFirstname()));
+								 	accModify.add(new AttributeRequest("sn",ProvisioningPlan.Operation.Set, identity.getLastname()));
+								 	
+								 	if(hasEmail) {
+								 	   accModify.add(new AttributeRequest("mail",ProvisioningPlan.Operation.Set,newIdentityName + "%%CMH-Mail-Domain%%"));
+								 	   //write code for exchange and o365
+								 	}
+								 	accountRequests.add(accModify);											 
+							 }
 						 }
-					 }					
-					adPlan.setAccountRequests(accountRequests);
+					  }					
+					adPlan.setAccountRequests(accountRequests);				 
 		          }
 			      adPlan.setIdentity(identity);
 			      if(isDebugEnabled){
@@ -629,6 +642,8 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 	  			import sailpoint.object.Link;
 	  			import sailpoint.object.ProvisioningPlan;
 	  			import sailpoint.tools.Util;
+			  	
+			  	Logger log = Logger.getLogger("CMH-LifecycleEvent-Name-Change");
 			  	
 			  	if (isDebugEnabled) {
 		          log.debug("CMH-LifecycleEvent-Leaver-Disable: Single Account Aggregation");

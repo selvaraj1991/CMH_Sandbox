@@ -74,7 +74,9 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   			String employeeId = null;
   			if(identityName != null){
   				Identity iden = context.getObjectByName(Identity.class,identityName);
-  				employeeId = iden.getStringAttribute("employeeId");
+  				if(null != iden) {
+  				   employeeId = iden.getStringAttribute("employeeId");
+  				}
   			}
   			return employeeId;
   		  
@@ -91,12 +93,14 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   			boolean emailReq = false;
 			if(identityName != null){
   				Identity iden = context.getObjectByName(Identity.class,identityName);
-  				String isEmail = iden.getStringAttribute("mailReqd");
-  				if(Util.nullSafeCaseInsensitiveEq(isEmail, "YES")) {
-  				   emailReq = true;
-  				}else {
-  				   emailReq = false;
-  				}
+  				if(null != iden) {
+	  				String isEmail = iden.getStringAttribute("mailReqd");
+	  				if(Util.nullSafeCaseInsensitiveEq(isEmail, "YES")) {
+	  				   emailReq = true;
+	  				}else {
+	  				   emailReq = false;
+	  				}
+	  			}	
   			}  						
   		    return emailReq;
   		]]></Source>
@@ -112,7 +116,9 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   			String email = null;
 			if(mailRequired){
   				Identity iden = context.getObjectByName(Identity.class,identityName);
-  				email = iden.getStringAttribute("email");  				
+  				if(null != iden) {
+  				  email = iden.getStringAttribute("email");  	
+  				}			
   			}  						
   		    return email;
   		]]></Source>
@@ -123,14 +129,13 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
       <Source><![CDATA[
   		 
   			import sailpoint.object.Identity;
-  			import sailpoint.tools.Util;
   			
   			String assignmentType = null;
-			
-  				Identity iden = context.getObjectByName(Identity.class,identityName);
-  				assignmentType = iden.getStringAttribute("assignmentType");  				
-  			  						
-  		    return assignmentType;
+			Identity iden = context.getObjectByName(Identity.class,identityName);
+  			if(null != iden) {  
+  			   assignmentType = iden.getStringAttribute("assignmentType"); 
+  			} 				
+  			return assignmentType;
   		]]></Source>
     </Script>
   </Variable>
@@ -304,6 +309,8 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 	  			import sailpoint.object.ProvisioningPlan.AttributeRequest;
 	  			import sailpoint.tools.Util;
 			  	
+			  	Logger log = Logger.getLogger("CMH-LifecycleEvent-User-Conversion-Non-Employee");
+			  	
 			  	 if (validationErrors == null) {
 		          validationErrors = new ArrayList();
 		        }
@@ -315,30 +322,32 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 				if (identity != null && application != null) {
 					IdentityService ids = new IdentityService(context);
 					List appLink = ids.getLinks(identity, application);
-					for (Link adLink : appLink) {
-						if (null != adLink && !adLink.isDisabled()) {
-						      String accLink = adLink.getNativeIdentity();
-						      String userOU = accLink.substring(accLink.indexOf(",")+1);
-							 if(!Util.nullSafeCaseInsensitiveEq(newUserOU,userOU)){
-							    
-							 	AccountRequest accModify = new AccountRequest();
-							 	accModify.setApplication(adAppName);
-							 	accModify.setOperation(ProvisioningPlan.AccountRequest.Operation.Modify);
-								accModify.setNativeIdentity(adLink.getNativeIdentity());
-							 	accModify.add(new AttributeRequest("AC_NewParent",newUserOU));
-							 	accModify.add(new AttributeRequest("employeeType",assignmentType));
-							 	
-							    //if (mailRequired && null != mail) {
-								//Exchange code change employee to has email yes or no and o365 code
-							    //}
-							    accountRequests.add(accModify);
-							 }	else {
-							     validationErrors.add("Old OU and New OU cannot be same: RUN AD Aggregation");
-							 }					 
-						 }else {
-						    validationErrors.add("AD Account link is not Active for the User");
+					if(null != appLink) {
+						for (Link adLink : appLink) {
+							if (null != adLink && !adLink.isDisabled()) {
+							      String accLink = adLink.getNativeIdentity();
+							      String userOU = accLink.substring(accLink.indexOf(",")+1);
+								 if(!Util.nullSafeCaseInsensitiveEq(newUserOU,userOU)){
+								    
+								 	AccountRequest accModify = new AccountRequest();
+								 	accModify.setApplication(adAppName);
+								 	accModify.setOperation(ProvisioningPlan.AccountRequest.Operation.Modify);
+									accModify.setNativeIdentity(adLink.getNativeIdentity());
+								 	accModify.add(new AttributeRequest("AC_NewParent",newUserOU));
+								 	accModify.add(new AttributeRequest("employeeType",assignmentType));
+								 	
+								    //if (mailRequired && null != mail) {
+									//Exchange code change employee to has email yes or no and o365 code
+								    //}
+								    accountRequests.add(accModify);
+								 }	else {
+								     validationErrors.add("Old OU and New OU cannot be same: RUN AD Aggregation");
+								 }					 
+							 }else {
+							    validationErrors.add("AD Account link is not Active for the User");
+							}
 						}
-					 }					
+					}				
 					adPlan.setAccountRequests(accountRequests);
 		          }
 			      adPlan.setIdentity(identity);
@@ -427,6 +436,8 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 	  			import sailpoint.object.ProvisioningPlan;
 	  			import sailpoint.tools.Util;
 			  	
+			  	Logger log = Logger.getLogger("CMH-LifecycleEvent-User-Conversion-Non-Employee");
+			  	
 			  	if (isDebugEnabled) {
 		          log.debug("CMH-LifecycleEvent-User-Conversion-Non-Employee: Single Account Aggregation");
 		        }
@@ -513,8 +524,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   			if(isDebugEnabled){
   			    log.debug("CMH-LifecycleEvent-User-Conversion-Non-Employee: Check Status step : Audit Event Generated");
   			}
-  			//wfcontext.getWorkflowCase().put("validationErrors",validationErrors);
-		
+ 
 		]]></Source>
     </Script>
     <Transition to="end"/>
