@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE TaskDefinition PUBLIC "sailpoint.dtd" "sailpoint.dtd">
-<TaskDefinition formPath="/monitor/tasks/accountGroupAggregationTask.xhtml" name="AD Account Group Aggregation" resultAction="Delete" subType="task_item_type_acct_grp_aggregation" type="AccountGroupAggregation">
+<TaskDefinition formPath="/monitor/tasks/accountGroupAggregationTask.xhtml" name="AD Group Aggregation" resultAction="Delete" subType="task_item_type_acct_grp_aggregation" type="AccountGroupAggregation">
   <Attributes>
     <Map>
       <entry key="TaskDefinition.runLengthAverage" value="1"/>
