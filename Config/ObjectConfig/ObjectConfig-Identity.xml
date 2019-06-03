@@ -322,7 +322,7 @@
                 </AttributeTargets>
             </ObjectAttribute>
             <ObjectAttribute displayName="Preferred Email" editMode="ReadOnly" name="preferredEmail" type="string">
-                <AttributeSource name="PreferredEmail">
+    		<AttributeSource name="OtherEmail">
                     <ApplicationRef>
                         <Reference class="sailpoint.object.Application" name="%%CMH-Infor-ApplicationName%%"/>
                     </ApplicationRef>

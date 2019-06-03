@@ -1,8 +1,9 @@
-<?xml version='1.0' encoding='UTF-8'?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE EmailTemplate PUBLIC "sailpoint.dtd" "sailpoint.dtd">
-<EmailTemplate name="User Name Change Manager-Email">
+<EmailTemplate name="User Name Change Manager-NoEmail">
   <Body>
-  &lt;html&gt;
+  
+&lt;html&gt;
 	&lt;head&gt;
 		&lt;meta http-equiv="Content-Type" content="text/html; charset=UTF-8"&gt;
 	&lt;/head&gt;
@@ -12,8 +13,6 @@
 	&lt;p&gt;A request for name change has been completed for $identityName.
 	&lt;p&gt;An email has been sent to the user with instructions to login using their new username.&lt;/p&gt;
 	User’s new username is: &lt;b&gt;$userName&lt;/b&gt;&lt;br/&gt;
-	User’s new email address is: &lt;b&gt;$email&lt;/b&gt;&lt;br/&gt;
-	It may take an hour for user’s new email address to start working. However, the old email address will continue to work.&lt;br/&gt;
 	If the user has other accounts, like Cerner, please submit a request to change the username for these accounts. The user's Single-Sign-On (SSO) and network password will remain the same.&lt;br/&gt;&lt;br/&gt;
 	DO NOT REPLY TO THIS EMAIL. THIS IS AN AUTOMATED MESSAGE.&lt;br/&gt;
 	 If you have any questions, contact the IAM team at IAMAccountSupport@cmh.edu.&lt;br/&gt;&lt;/p&gt;
@@ -21,7 +20,8 @@
 	 		&lt;/font&gt;
 	&lt;/body&gt;
 &lt;/html&gt;
-</Body>
+
+  </Body>
   <Description>
     Email Template for User Name Change sent to manager.
   </Description>
@@ -35,9 +35,6 @@
       </Argument>
       <Argument name="userName" type="string">
         <Description>The users username.</Description>
-      </Argument>
-      <Argument name="email" type="string">
-        <Description>The user's email.</Description>
       </Argument>
     </Inputs>
   </Signature>

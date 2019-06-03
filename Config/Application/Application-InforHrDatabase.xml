@@ -160,7 +160,7 @@
             <AttributeDefinition name="WorkAssignment" type="string"/>
             <AttributeDefinition name="OtherEmpId" type="string"/>
             <AttributeDefinition name="AssignmentType" type="string"/>
-            <AttributeDefinition name="PreferredEmail" type="string"/>
+      <AttributeDefinition name="OtherEmail" type="string"/>
         </Schema>
     </Schemas>
     <ApplicationScorecard/>
