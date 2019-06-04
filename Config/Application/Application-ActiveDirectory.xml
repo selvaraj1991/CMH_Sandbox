@@ -534,7 +534,7 @@
             <AttributeDefinition multi="true" name="objectClass" type="string">
                 <Description>object classes of the entity</Description>
             </AttributeDefinition>
-            <AttributeDefinition entitlement="true" managed="true" multi="true" name="memberOf" type="string">
+            <AttributeDefinition entitlement="true" managed="true" multi="true" name="memberOf" schemaObjectType="group" type="string">
                 <Description>Group Membership</Description>
             </AttributeDefinition>
             <AttributeDefinition name="objectSid" type="string">

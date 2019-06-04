@@ -51,8 +51,7 @@
             </Attributes>
             <Script>
                 <Source>
-                    return "&lt;font color='#ff0000'>&lt;strong>*&lt;/strong>&lt;/font>" + "&lt;font>&lt;strong>
-                    Required Field&lt;/strong>&lt;/font>";
+                    return "&lt;font color='#ff0000'>&lt;strong>*&lt;/strong>&lt;/font>" + "&lt;font>&lt;strong>Required Field&lt;/strong>&lt;/font>";
                 </Source>
             </Script>
         </Field>
