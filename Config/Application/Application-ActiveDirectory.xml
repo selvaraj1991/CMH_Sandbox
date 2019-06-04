@@ -41,7 +41,7 @@
             <entry key="cacheRmiPort" value="40001"/>
             <entry key="compositeDefinition"/>
             <entry key="deletedObjectsContainer" value="CN=Deleted Objects,DOMAIN"/>
-            <entry key="deltaIterationMode" value="DEFAULT"/>
+            <entry key="deltaIterationMode" value="uSNChanged"/>
             <entry key="disableComputePreloading">
                 <value>
                     <Boolean>true</Boolean>
