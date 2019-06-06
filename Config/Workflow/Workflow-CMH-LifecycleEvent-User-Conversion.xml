@@ -11,33 +11,33 @@
     <Description>The name of the identity.</Description>
   </Variable>
   <Variable initializer="script:(identityDisplayName != void) ? identityDisplayName : resolveDisplayName(identityName)" input="true" name="identityDisplayName">
-    <Description>    
-       The displayName of the identity being updated.  
-       Query for this using a projection query and fall back to the name.    
+    <Description>
+       The displayName of the identity being updated.
+       Query for this using a projection query and fall back to the name.
 	</Description>
   </Variable>
   <Variable initializer="string:AccountsRequest" input="true" name="flow">
     <Description>What type of LCM flow is this</Description>
   </Variable>
   <Variable name="plan" type="sailpoint.object.ProvisioningPlan">
-    <Description>The provisioning plan which is built during the workflow.  
+    <Description>The provisioning plan which is built during the workflow.
 	</Description>
   </Variable>
   <Variable initializer="string:LCM" input="true" name="source">
-    <Description>  
-       String version of sailpoint.object.Source to indicate  
-       where the request originated.  Defaults to LCM.  
+    <Description>
+       String version of sailpoint.object.Source to indicate
+       where the request originated.  Defaults to LCM.
 	</Description>
   </Variable>
   <Variable initializer="string:true" input="true" name="trace">
-    <Description>  
-       Used for debugging this workflow and when set to true trace  
-       will be sent to stdout.  
+    <Description>
+       Used for debugging this workflow and when set to true trace
+       will be sent to stdout.
     </Description>
   </Variable>
   <Variable name="project" type="ProvisioningProject">
-    <Description>  
-		ProvisioningProject which is just a compiled version of the ProvisioningPlan.  
+    <Description>
+		ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 	</Description>
   </Variable>
   <Variable name="identityRequestId">
@@ -48,25 +48,25 @@
   <Variable name="isDebugEnabled" type="boolean">
     <Script>
       <Source><![CDATA[
-  		
+
   			import org.apache.log4j.Logger;
-  			
+
   			Logger log = Logger.getLogger("CMH-LifecycleEvent-User-Conversion");
-  			
+
   			if(log.isDebugEnabled()){
   				return true;
   			}
   			return false;
-  		
+
   		]]></Source>
     </Script>
   </Variable>
   <Variable name="employeeId">
     <Script>
       <Source><![CDATA[
-  		
+
   			import sailpoint.object.Identity;
-  			
+
   			String employeeId = null;
   			if(identityName!=null){
   				Identity iden = context.getObjectByName(Identity.class,identityName);
@@ -75,16 +75,16 @@
 				}
   			}
   			return employeeId;
-  		
+
   		]]></Source>
     </Script>
   </Variable>
   <Variable name="assignmentType">
     <Script>
       <Source><![CDATA[
-  		
+
   			import sailpoint.object.Identity;
-  			
+
   			String assignmentType = null;
   			if(identityName!=null){
   				Identity iden = context.getObjectByName(Identity.class,identityName);
@@ -93,16 +93,16 @@
 				}
   			}
   			return assignmentType;
-  		
+
   		]]></Source>
     </Script>
   </Variable>
   <Variable name="emailRequired">
     <Script>
       <Source><![CDATA[
-  		
+
   			import sailpoint.object.Identity;
-  			
+
   			String emailRequired = null;
   			if(identityName!=null){
   				Identity iden = context.getObjectByName(Identity.class,identityName);
@@ -111,16 +111,16 @@
 				}
   			}
   			return emailRequired;
-  		
+
   		]]></Source>
     </Script>
   </Variable>
   <Variable name="eMail">
     <Script>
       <Source><![CDATA[
-  		
+
   			import sailpoint.object.Identity;
-  			
+
   			String email = null;
   			if(identityName!=null){
   				Identity iden = context.getObjectByName(Identity.class,identityName);
@@ -129,16 +129,16 @@
 				}
   			}
   			return email;
-  		
+
   		]]></Source>
     </Script>
   </Variable>
   <Variable name="oldEmployeeId">
     <Script>
       <Source><![CDATA[
-  		
+
   			import sailpoint.object.Identity;
-  			
+
   			String oldEmpId = null;
   			if(identityName!=null){
   				Identity iden = context.getObjectByName(Identity.class,identityName);
@@ -147,18 +147,18 @@
 				}
   			}
   			return oldEmpId;
-  		
+
   		]]></Source>
     </Script>
   </Variable>
   <Variable name="oldEmpName">
     <Script>
       <Source><![CDATA[
-  		
+
   			import sailpoint.object.Filter;
   			import sailpoint.object.Identity;
   			import sailpoint.object.QueryOptions;
-  			  			
+
   			if(oldEmployeeId!=null){
   				QueryOptions ops = new QueryOptions();
 				Filter f = Filter.eq("employeeId",oldEmployeeId);
@@ -172,35 +172,35 @@
 				}
   			}
   			return null;
-  		
+
   		]]></Source>
     </Script>
   </Variable>
   <Variable name="adAppName">
     <Script>
       <Source><![CDATA[
-  		
+
   			import sailpoint.object.Custom;
-  			
+
   			Custom custom = context.getObjectByName(Custom.class,"CMH-Custom-Object-AD-Application");
   			String appName = null;
   			if(custom!=null){
   				appName = custom.getString("adApplication");
   			}
   			return appName;
-  		
+
   		]]></Source>
     </Script>
   </Variable>
   <Variable name="oldUserAdExists" type="boolean">
     <Script>
       <Source><![CDATA[
-  		
+
   			import sailpoint.api.IdentityService;
   			import sailpoint.object.Application;
   			import sailpoint.object.Identity;
   			import sailpoint.tools.Util;
-  			
+
   			if(Util.isNotNullOrEmpty(oldEmpName) && Util.isNotNullOrEmpty(adAppName)){
   				Identity iden = context.getObjectByName(Identity.class,oldEmpName);
 	  			Application app = context.getObjectByName(Application.class,adAppName);
@@ -214,19 +214,19 @@
 	  			}
   			}
   			return false;
-  		
+
   		]]></Source>
     </Script>
   </Variable>
   <Variable name="newUserAdExists" type="boolean">
     <Script>
       <Source><![CDATA[
-  		
+
   			import sailpoint.api.IdentityService;
   			import sailpoint.object.Application;
   			import sailpoint.object.Identity;
   			import sailpoint.tools.Util;
-  			
+
   			if(Util.isNotNullOrEmpty(identityName) && Util.isNotNullOrEmpty(adAppName)){
   				Identity iden = context.getObjectByName(Identity.class,identityName);
 	  			Application app = context.getObjectByName(Application.class,adAppName);
@@ -240,51 +240,51 @@
 	  			}
   			}
   			return false;
-  		
+
   		]]></Source>
     </Script>
   </Variable>
   <Variable name="oldMailExists" type="boolean">
     <Script>
       <Source><![CDATA[
-  		
+
   			import sailpoint.object.Identity;
   			import sailpoint.tools.Util;
-  			
+
   			if(Util.isNotNullOrEmpty(oldEmpName)){
   				Identity iden = context.getObjectByName(Identity.class,oldEmpName);
   				if(iden!=null && Util.isNotNullOrEmpty(iden.getEmail())){
   					return true;
   				}
   			}
-  			
+
   			return false;
-  		
+
   		]]></Source>
     </Script>
   </Variable>
   <Variable name="o365Licenses" type="java.util.List">
     <Script>
       <Source><![CDATA[
-  		
+
   			import sailpoint.object.Custom;
-  			
+
   			Custom custom = context.getObjectByName(Custom.class,"CMH-Custom-Object-AD-Application");
   			List license = new ArrayList();
   			if(custom!=null){
   				license = custom.getList("O365License");
   			}
   			return license;
-  		
+
   		]]></Source>
     </Script>
   </Variable>
   <Variable name="userStatus">
     <Script>
       <Source><![CDATA[
-  		
+
   			import sailpoint.object.Identity;
-  			
+
   			String userStatus = null;
   			if(identityName!=null){
   				Identity iden = context.getObjectByName(Identity.class,identityName);
@@ -293,24 +293,24 @@
 				}
   			}
   			return userStatus;
-  		
+
   		]]></Source>
     </Script>
   </Variable>
   <Variable name="newUserOU">
     <Script>
       <Source><![CDATA[
-  		
+
   			import sailpoint.object.Custom;
   			import sailpoint.tools.Util;
-  			
+
   			String newOU = null;
   			Custom custom = context.getObjectByName(Custom.class,"CMH-User-OU-Mapping-Custom-Object");
   			if(custom!=null && Util.isNotNullOrEmpty(assignmentType)){
   				newOU = custom.getString(assignmentType);
   			}
   			return newOU;
-  		
+
   		]]></Source>
     </Script>
   </Variable>
@@ -323,14 +323,14 @@
   <Step icon="Start" name="Start" posX="95" posY="96" wait="1">
     <Script>
       <Source><![CDATA[
-  		
+
   			import org.apache.log4j.Logger;
-  			
+
   			Logger log = Logger.getLogger("CMH-LifecycleEvent-User-Conversion");
   			if(isDebugEnabled){
   				log.debug("Starting the User Conversion Workflow for the user "+identityName+" with the employee ID : "+employeeId);
   			}
-  		
+
   		]]></Source>
     </Script>
     <Transition to="Validate Data"/>
@@ -338,63 +338,63 @@
   <Step icon="Task" name="Validate Data" posX="218" posY="95" resultVariable="validationErrors">
     <Script>
       <Source><![CDATA[
-  		
+
   			import org.apache.log4j.Logger;
   			import sailpoint.tools.Util;
-  			
+
   			Logger log = Logger.getLogger("CMH-LifecycleEvent-User-Conversion");
-  			
+
   			List errorList = new ArrayList();
   			if(Util.isNullOrEmpty(oldEmployeeId)){
   				errorList.add("Cannot proceed with user conversion since the oldEmployeeId for the user is null or empty");
   			}
-  			
+
   			if(Util.isNullOrEmpty(oldEmpName)){
   				errorList.add("Cannot proceed with user conversion since the user with Employee ID: "+oldEmployeeId+" doesn't exist in IIQ");
   			}
   			if(Util.isNullOrEmpty(adAppName)){
   				errorList.add("The Custom Object is not configured properly with AD app name. Either Custom object or AD application name in custom object is missing");
   			}
-  			
+
   			if(Util.isEmpty(o365Licenses)){
   				errorList.add("The Custom Object is not configured properly with O365 License. Either Custom object or License entry in custom object is missing");
   			}
-  			
+
   			/*if(!oldUserAdExists){
   				errorList.add("The AD account for the other user is not present in IIQ, so cannot proceed with linking the AD account with new User");
   			}*/
-  			
+
   			if(Util.isNullOrEmpty(newUserOU)){
   				errorList.add("The Custom Object is not configured properly with OU details. Either Custom object or OU entry in custom object is missing");
   			}
-  			
+
   			if(Util.nullSafeCaseInsensitiveEq(assignmentType,"EMPLOYEE") && Util.isNullOrEmpty(eMail)){
   				errorList.add("The email for the user is not configured, hence cannot proceed with user conversion for the user "+identityName);
   			}else if(Util.nullSafeCaseInsensitiveEq(emailRequired,"YES") && Util.isNullOrEmpty(eMail)){
   				errorList.add("The email for the user is not configured, hence cannot proceed with user conversion for the user "+identityName);
   			}
-  			
+
   			if(!Util.isEmpty(errorList))
   			{
   				log.error("CMH-LifecycleEvent-User-Conversion: Errors Found :"+Util.listToCsv(errorList));
   			}else if(isDebugEnabled){
   				log.debug("CMH-LifecycleEvent-User-Conversion: Validation Successful");
   			}
-  			
+
   			return errorList;
-  		
+
   		]]></Source>
     </Script>
     <Transition to="Update Identity">
       <Script>
         <Source><![CDATA[
-  			
+
   				import sailpoint.tools.Util;
   				if(Util.isEmpty(validationErrors)){
 					return true;
 				}
 				return false;
-  			
+
   			]]></Source>
       </Script>
     </Transition>
@@ -403,16 +403,16 @@
   <Step icon="Task" name="Update Identity" posX="285" posY="210">
     <Script>
       <Source><![CDATA[
-  		
+
   			import sailpoint.object.Identity;
-  			
+
   			Identity iden = context.getObjectByName(Identity.class,identityName);
   			if(iden!=null){
   				iden.setAttribute("isConversionProcessed","YES");
   				context.saveObject(iden);
   				context.commitTransaction();
   			}
-  		
+
   		]]></Source>
     </Script>
     <Transition to="Check AD Status"/>
@@ -420,15 +420,15 @@
   <Step condition="script:oldUserAdExists" icon="Task" name="Check AD Status" posX="482" posY="209" resultVariable="isADdisabled">
     <Script>
       <Source><![CDATA[
-  		
+
   			import org.apache.log4j.Logger;
   			import sailpoint.api.IdentityService;
   			import sailpoint.object.Application;
   			import sailpoint.object.Identity;
   			import sailpoint.object.Link;
-  			
+
   			Logger log = Logger.getLogger("CMH-LifecycleEvent-User-Conversion");
-  			
+
   			log.debug("CMH-LifecycleEvent-User-Conversion: Check if the AD account of previous user is disabled");
   			boolean isADdisabled = false;
   			if(oldEmpName!=null){
@@ -447,9 +447,9 @@
 	  				}
 	  			}
   			}
-  			
+
   			return isADdisabled;
-  		
+
   		]]></Source>
     </Script>
     <Transition to="Link AD Account" when="script:oldUserAdExists"/>
@@ -457,14 +457,14 @@
     <Transition to="Stop">
       <Script>
         <Source><![CDATA[
-  			
+
   				if(validationErrors==null){
   					validationErrors = new ArrayList();
   				}
   				validationErrors.add("The existing User  "+oldEmpName+" ("+oldEmployeeId+" ) is not having AD account. Hence cannot proceed with User conversion.");
   				wfcontext.getRootWorkflowCase().put("validationErrors",validationErrors);
   				return true;
-  			
+
   			]]></Source>
       </Script>
     </Transition>
@@ -503,16 +503,16 @@
     <Transition to="Do Target Aggregation">
       <Script>
         <Source><![CDATA[
-			
+
 				import sailpoint.tools.Message;
-				
+
 				if(validationErrors==null || validationErrors.size()<=0){
 					return true;
 				}else if(wfcontext.getRootWorkflowCase().getMessages()==null || wfcontext.getRootWorkflowCase().getMessagesByType(Message.Type.Error)==null){
 					return true;
 				}
 				return false;
-			
+
 			]]></Source>
       </Script>
     </Transition>
@@ -534,7 +534,7 @@
     <Transition to="Provision O365 License">
       <Script>
         <Source><![CDATA[
-  			
+
   				import sailpoint.tools.Util;
   				if(Util.nullSafeCaseInsensitiveEq(userStatus,"ACTIVE")){
 	  				if(Util.nullSafeCaseInsensitiveEq(assignmentType,"EMPLOYEE") || Util.nullSafeCaseInsensitiveEq(emailRequired,"Yes")){
@@ -542,23 +542,23 @@
 	  				}
   				}
   				return false;
-  			
+
   			]]></Source>
       </Script>
     </Transition>
     <Transition to="Refresh Identity">
       <Script>
         <Source><![CDATA[
-			
+
 				import sailpoint.tools.Message;
-				
+
 				if(validationErrors==null || validationErrors.size()<=0){
 					return true;
 				}else if(wfcontext.getRootWorkflowCase().getMessages()==null || wfcontext.getRootWorkflowCase().getMessagesByType(Message.Type.Error)==null){
 					return true;
 				}
 				return false;
-			
+
 			]]></Source>
       </Script>
     </Transition>
@@ -582,16 +582,16 @@
     <Transition to="Refresh Identity">
       <Script>
         <Source><![CDATA[
-			
+
 				import sailpoint.tools.Message;
-				
+
 				if(validationErrors==null || validationErrors.size()<=0){
 					return true;
 				}else if(wfcontext.getRootWorkflowCase().getMessages()==null || wfcontext.getRootWorkflowCase().getMessagesByType(Message.Type.Error)==null){
 					return true;
 				}
 				return false;
-			
+
 			]]></Source>
       </Script>
     </Transition>
@@ -600,20 +600,21 @@
   <Step action="call:refreshIdentity" icon="Task" name="Refresh Identity" posX="1299" posY="252">
     <Arg name="identityName" value="ref:identityName"/>
     <Arg name="correlateEntitlements" value="true"/>
+    <Arg name="provision" value="true"/>
     <Arg name="refreshRoleMetadata" value="true"/>
-	<Arg name="refreshIdentityEntitlements" value="true"/>
+	  <Arg name="refreshIdentityEntitlements" value="true"/>
     <Transition to="Stop"/>
   </Step>
   <Step name="Do Target Aggregation" posX="922" posY="334" resultVariable="validationErrors">
     <Script>
       <Source><![CDATA[
-  		
+
   			import sailpoint.api.IdentityService;
 			import sailpoint.object.Application;
 			import sailpoint.object.Identity;
 			import sailpoint.object.Link;
 			import sailpoint.tools.Util;
-		
+
 			if(validationErrors==null){
 				validationErrors = new ArrayList();
 			}
@@ -639,13 +640,13 @@
               	}
             }
             return validationErrors;
-  		
+
   		]]></Source>
     </Script>
     <Transition to="Provision O365 License">
       <Script>
         <Source><![CDATA[
-  			
+
   				import sailpoint.tools.Util;
   				if(Util.nullSafeCaseInsensitiveEq(userStatus,"ACTIVE") && !oldMailExists){
 	  				if(Util.nullSafeCaseInsensitiveEq(assignmentType,"EMPLOYEE") || Util.nullSafeCaseInsensitiveEq(emailRequired,"Yes")){
@@ -653,19 +654,19 @@
 	  				}
   				}
   				return false;
-  			
+
   			]]></Source>
       </Script>
     </Transition>
     <Transition to="Refresh Identity">
       <Script>
         <Source><![CDATA[
-							
+
 				if(validationErrors==null || validationErrors.size()<=0){
 					return true;
 				}
 				return false;
-			
+
 			]]></Source>
       </Script>
     </Transition>
@@ -678,13 +679,13 @@
   			import sailpoint.object.Identity;
   			import sailpoint.tools.Message;
   			import sailpoint.tools.Util;
-  			
+
   			Logger log = Logger.getLogger("CMH-LifecycleEvent-User-Conversion");
-  			
+
   			if(isDebugEnabled){
   				log.debug("CMH-LifecycleEvent-User-Conversion: Check Status step : Checking for errors");
   			}
-  			
+
   			if(wfcontext.getRootWorkflowCase().getMessages()!=null && wfcontext.getRootWorkflowCase().getMessagesByType(Message.Type.Error)!=null){
   				List errorMessagesList = wfcontext.getRootWorkflowCase().getMessagesByType(Message.Type.Error);
   				String errorMessage = Util.listToCsv(errorMessagesList);
@@ -692,12 +693,12 @@
   					validationErrors = new ArrayList();
   				}
   				validationErrors.add(errorMessage);
-  				
+
   				if(isDebugEnabled){
 	  				log.debug("CMH-LifecycleEvent-User-Conversion: Check Status step : Errors Found : "+Util.listToCsv(validationErrors));
 	  			}
   			}
-  			
+
   			if(validationErrors!=null && validationErrors.size()>0){
   				Identity iden = context.getObjectByName(Identity.class,identityName);
 	  			if(iden!=null){
@@ -706,7 +707,7 @@
 	  				context.commitTransaction();
 	  			}
   			}
-  			
+
   			String action = null;
   			String target = identityName;
   			String attrName = "Employee ID";
@@ -722,8 +723,8 @@
   				strMap.put("setString2",Util.listToCsv(validationErrors));
   			}
   			auditWrite(action,source,target,attrName,attrVal,strMap);
-  			  			
-  		
+
+
   		]]></Source>
     </Script>
     <Transition to="Stop"/>
