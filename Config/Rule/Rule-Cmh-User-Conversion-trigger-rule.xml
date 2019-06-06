@@ -47,26 +47,27 @@
   	import java.text.SimpleDateFormat;
   	import org.apache.log4j.Logger;
   	import sailpoint.object.Filter;
-	import sailpoint.object.Identity;
-	import sailpoint.object.QueryOptions;
+    import sailpoint.object.Identity;
+    import sailpoint.object.QueryOptions;
   	import sailpoint.tools.Util;
-  	
+
   	Logger log = Logger.getLogger("cmh.authsource.rules");
   	log.info("CMH-User-Conversion-Trigger-Rule : Entering ");
   	//This rule filters out the users whose previousIdentity status is terminated and newidentity status is active and has otherEmployeeId
     String format = getCustomObject("conversionTimestamp","CMH-DateFormat");
-	if(Util.isNotNullOrEmpty(format)) {
+    if(Util.isNotNullOrEmpty(format)) {
 	    SimpleDateFormat sdf = new SimpleDateFormat(format);
 	  	if(newIdentity!=null){
 			String oldEmpId = newIdentity.getStringAttribute("otherEmpId");
 			if(Util.isNotNullOrEmpty(oldEmpId)){
-		  		QueryOptions ops = new QueryOptions();
+		  	QueryOptions ops = new QueryOptions();
 				Filter usrFilter = Filter.eq("employeeId",oldEmpId);
 				ops.addFilter(usrFilter);
 				Iterator existingUsers = context.search(Identity.class,ops);
 				if(existingUsers!=null && existingUsers.hasNext()){
 					Identity oldIden = (Identity)existingUsers.next();
-					if(Util.nullSafeCaseInsensitiveEq(oldIden.getStringAttribute("status"),"TERMINATED")){
+          String uName = oldIden.getName();
+          if(Util.isNotNullOrEmpty(uName) && uName.contains("_old") && Util.nullSafeCaseInsensitiveEq(oldIden.getStringAttribute("status"),"TERMINATED")){
 						String userStatus = newIdentity.getStringAttribute("status");
 						String isConversionProcessed = newIdentity.getStringAttribute("isConversionProcessed");
 						if(!Util.nullSafeCaseInsensitiveEq(isConversionProcessed,"YES")){
@@ -88,8 +89,8 @@
 								}
 							}
 						}
-					}	
-				}	
+					}
+				}
 			}
 		}
 	}

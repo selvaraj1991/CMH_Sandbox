@@ -106,7 +106,7 @@
 		/**
 				 * Generate user password.
 				 * Description: this method generates user password based on user attributes
-				 * @param firstName 
+				 * @param firstName
 				 * @param lastName
 				 * @param dob the dateofbirth
 				 * @param employeeId
@@ -150,7 +150,7 @@
 
 		/**
 				 * Check length.
-				 * Description: this method checks the length of username 
+				 * Description: this method checks the length of username
 				 * @param username
 				 * @return true/false
 				 */
@@ -239,7 +239,7 @@
 			log.debug("CMH-AD-Generic-Rulelibrary :Entering generateTimeStamp()");
 			Date date = new Date();
 			String format = getCustomObject("ruleLibraryGenerateTimestamp","CMH-DateFormat");
-			if(Util.isNotNullOrEmpty(format)) {			
+			if(Util.isNotNullOrEmpty(format)) {
 				SimpleDateFormat formatter = new SimpleDateFormat(format);
 				String strDate = formatter.format(date);
 				log.debug("CMH-AD-Generic-Rulelibrary : Exiting generateTimeStamp()");
@@ -343,7 +343,7 @@
 		/**
 				 * Check username in cerner.
 				 * Description: this method validates username against custom object
-				 * @param username 
+				 * @param username
 				 * @param customName
 				 * @return true
 				 */
@@ -456,7 +456,7 @@
 
 		/**
 				 * Gets the apps to process.
-				 * Description: this method returns list of application to be processed 
+				 * Description: this method returns list of application to be processed
 				 * @param identityName
 				 * @param customName the key word
 				 * @return list
@@ -566,7 +566,7 @@
 										if(resultMap !=null){
 											ticketNumber = (String) resultMap.get("number");
 											if (Util.isNotNullOrEmpty(ticketNumber)) {
-												log.debug("CMH-AD-Generic-Rulelibrary : Ticket Created" + ticketNumber);								
+												log.debug("CMH-AD-Generic-Rulelibrary : Ticket Created" + ticketNumber);
 											}
 										}
 									}
@@ -647,7 +647,7 @@
 				 * Description: this method checks if startdate is <= 30 days of current day
 				 * @param startDate
 				 * @return true, if successful
-				 */ 
+				 */
 
 		public boolean startDateCheck(String startDate) {
 			log.debug("CMH-AD-Generic-Rulelibrary : Entering startDateCheck()");
@@ -675,8 +675,8 @@
 				 * Description: this method reads usernames from csv and returns the list
 				 * @param filepath
 				 * @return list
-				 */ 
-				 
+				 */
+
 		public List readFromCsv(String filePath) {
 			log.debug("CMH-AD-Generic-Rulelibrary : Entering readFromCsv()");
 			List list = new ArrayList();
@@ -729,12 +729,12 @@
 			return list;
 		}
       /**
-				 * Write To Custom Object 
+				 * Write To Custom Object
 				 * Description: this method reads list and stores it in custom object
 				 * @param unameList
 				 * @param customName
 				 * @return true, if successfull
-				 */ 
+				 */
 		public boolean writeToCustomObject(List unameList, String customName) {
 			log.debug("CMH-AD-Generic-Rulelibrary : Entering writeToCustomObject()");
 			Custom custom = null;
@@ -768,6 +768,40 @@
 			log.debug("CMH-AD-Generic-Rulelibrary : Exiting writeToCustomObject()");
 			return flag;
 		}
+
+    /***Method checks if the user is for the conversion case***/
+    public boolean isConversionCase(String oldEmpId) {
+      log.debug("Entering isConversionCase(String oldEmpId)");
+      boolean isConverted = false;
+      if (null != oldEmpId) {
+          QueryOptions ops = new QueryOptions();
+          Filter filter = Filter.eq("employeeId", oldEmpId);
+          ops.addFilter(filter);
+          Iterator existingUsers = null;
+          try {
+              existingUsers = context.search(Identity.class, ops);
+              if (existingUsers != null && existingUsers.hasNext()) {
+                  Identity iden = (Identity) existingUsers.next();
+                  String uName = iden.getName();
+                  String status = iden.getStringAttribute("status");
+                  if (Util.isNotNullOrEmpty(uName) && uName.contains("_old") && Util.nullSafeCaseInsensitiveEq(status, "TERMINATED")) {
+                      isConverted = true;
+                  } else {
+                      isConverted = false;
+                  }
+              }
+          } catch (GeneralException e) {
+              log.error(e.getMessage());
+          } finally {
+              sailpoint.tools.Util.flushIterator(existingUsers);
+          }
+      } else {
+          isConverted = false;
+      }
+      log.debug("isConverted " + isConverted);
+      log.debug("Exiting isConversionCase(String oldEmpId)");
+      return isConverted;
+    }
 
   ]]></Source>
 </Rule>
