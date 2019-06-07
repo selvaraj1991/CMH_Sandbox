@@ -773,7 +773,7 @@
     public boolean isConversionCase(String oldEmpId) {
       log.debug("CMH-AD-Generic-Rulelibrary: Check if the user is for Conversion Case");
       boolean isConverted = false;
-      if (null != oldEmpId) {
+      if (Util.isNotNullOrEmpty(oldEmpId)) {
           QueryOptions ops = new QueryOptions();
           Filter filter = Filter.eq("employeeId", oldEmpId);
           ops.addFilter(filter);
