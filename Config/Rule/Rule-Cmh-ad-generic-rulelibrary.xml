@@ -771,7 +771,7 @@
 
     /***Method checks if the user is for the conversion case***/
     public boolean isConversionCase(String oldEmpId) {
-      log.debug("Entering isConversionCase(String oldEmpId)");
+      log.debug("CMH-AD-Generic-Rulelibrary: Check if the user is for Conversion Case");
       boolean isConverted = false;
       if (null != oldEmpId) {
           QueryOptions ops = new QueryOptions();
@@ -791,17 +791,33 @@
                   }
               }
           } catch (GeneralException e) {
-              log.error(e.getMessage());
+            log.error("CMH-AD-Generic-Rulelibrary: Error occured while searching for the user :"+e.getMessage());
           } finally {
               sailpoint.tools.Util.flushIterator(existingUsers);
           }
       } else {
           isConverted = false;
       }
-      log.debug("isConverted " + isConverted);
-      log.debug("Exiting isConversionCase(String oldEmpId)");
+      log.debug("CMH-AD-Generic-Rulelibrary: Is it a conversion case? "+isConverted);
       return isConverted;
-    }
+  }
 
+  /***Method checks if the role for the assignmentType valid or not***/
+  public boolean isRoleMatching(String assignmentType, String roleName) {
+    log.debug("CMH-AD-Generic-Rulelibrary: Get the exact role for the user based on userType");
+    boolean roleStatus = false;
+    if (Util.isNotNullOrEmpty(assignmentType)) {
+        assignmentType = assignmentType.trim();
+        if (!Util.nullSafeCaseInsensitiveEq(assignmentType, "Valet")) {
+            String userRole = getCustomObject(assignmentType.toUpperCase(), "CMH-User-Role-Mapping-Custom-Object");
+            if (Util.nullSafeCaseInsensitiveEq(userRole, roleName)) {
+                roleStatus = true;
+            }
+        }
+    } else {
+        log.debug("CMH-Role-Assignment-Rule: assignmentType is NULL");
+    }
+    return roleStatus;
+  }
   ]]></Source>
 </Rule>
