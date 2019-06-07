@@ -38,106 +38,42 @@
         </Returns>
     </Signature>
     <Source><![CDATA[
-		
-		import java.util.Iterator;
-		import sailpoint.object.Filter;
-		import sailpoint.object.Identity;
-		import sailpoint.object.QueryOptions;
-		import sailpoint.tools.GeneralException;
-		import org.apache.log4j.Logger;
-		import sailpoint.tools.Util;
+      import org.apache.log4j.Logger;
+      import sailpoint.object.Identity;
+      import sailpoint.tools.Util;
 
-		Logger logger = Logger.getLogger("cmh.authsource.rules");
+      Logger logger = Logger.getLogger("cmh.authsource.rules");
 
-		/*
-		 * To check if the user is converted user or new user
-		 */
-		public boolean isConversionCase(String oldEmpId) {
-			logger.debug("Entering isConversionCase(String oldEmpId)");
-			if (Util.isNotNullOrEmpty(roleName)) {
-				logger.info("roleName : " + roleName);
-			}
-			boolean isConverted = false;
-			if (null != oldEmpId) {
-				QueryOptions ops = new QueryOptions();
-				Filter filter = Filter.eq("employeeId", oldEmpId);
-				ops.addFilter(filter);
-				Iterator existingUsers = null;
-				try {
-					existingUsers = context.search(Identity.class, ops);
-					if (existingUsers != null && existingUsers.hasNext()) {
-						Identity iden = (Identity) existingUsers.next();
-						String status = iden.getStringAttribute("status");
-						if (Util.nullSafeCaseInsensitiveEq(status, "TERMINATED")) {
-							isConverted = true;
-						} else {
-							isConverted = false;
-						}
-					}
-				} catch(GeneralException e) {
-					logger.error(e.getMessage());
-				} finally {
-					sailpoint.tools.Util.flushIterator(existingUsers);
-				}
-			} else {
-				isConverted = false;
-			}
-			logger.debug("isConverted " + isConverted);
-			logger.debug("Exiting isConversionCase(String oldEmpId)");
-			return isConverted;
-		}
+      logger.debug("CMH-Role-Assignment-Rule:Assign Role for the user based on the assignmentType");
 
-		/*
-		 * Filters out list of active users to whom role has to be assigned
-		 */
-		logger.debug("Entering into CMH-Role-Assignment-Rule");
-		boolean finalFilterUserStatus = false;
+      boolean assignRole = false;
+      String identityName = null;
+      if (identity != null && identity.isCorrelated()) {
+          identityName = identity.getName();
+          String status = identity.getStringAttribute("status");
+          if (!Util.nullSafeCaseInsensitiveEq(status, "Terminated")) {
+              String oldEmpId = identity.getStringAttribute("otherEmpId");
+              String isConversionProcessed = identity.getStringAttribute("isConversionProcessed");
+              if (Util.isNullOrEmpty(oldEmpId) || !isConversionCase(oldEmpId)) {
+                  String startDate = identity.getStringAttribute("startDate");
+                  if (!status.equalsIgnoreCase("Prehire") || (Util.isNotNullOrEmpty(startDate) && startDateCheck(startDate))) {
+                      String assignmentType = identity.getStringAttribute("assignmentType");
+                      if (isRoleMatching(assignmentType, roleName)) {
+                          assignRole = true;
+                      }
+                  }
+              } else if (Util.nullSafeCaseInsensitiveEq(isConversionProcessed, "YES")) {
+                  String assignmentType = identity.getStringAttribute("assignmentType");
+                  if (isRoleMatching(assignmentType, roleName)) {
+                      assignRole = true;
+                  }
+              }
+          }
+      }
 
-		if (identity != null && identity.isCorrelated()) {
-			String status = identity.getStringAttribute("status");
-    String offboardStatus = identity.getStringAttribute("immediateOffboarder");
-    if(!Util.nullSafeCaseInsensitiveEq(status,"Terminated") && !Util.nullSafeCaseInsensitiveEq(offboardStatus,"YES") ){
-				String oldEmpId = identity.getStringAttribute("otherEmpId");
-				String isConversionProcessed = identity.getStringAttribute("isConversionProcessed");
-				if (Util.isNullOrEmpty(oldEmpId) || !isConversionCase(oldEmpId)) {
-					String startDate = identity.getStringAttribute("startDate");
-					if (!status.equalsIgnoreCase("Prehire") || (Util.isNotNullOrEmpty(startDate) && startDateCheck(startDate))) {
-						String userType = identity.getStringAttribute("assignmentType").trim();
-						if (Util.isNotNullOrEmpty(userType) && !Util.nullSafeCaseInsensitiveEq(userType, "Valet")) {
-							// Get role name from custom object
-							String userRole = getCustomObject(userType.toUpperCase(), "CMH-User-Role-Mapping-Custom-Object");
-
-							if (Util.nullSafeCaseInsensitiveEq(userRole, roleName)) {
-								finalFilterUserStatus = true;
-							} else {
-								logger.error("Role : Is NuLL");
-							}
-						} else {
-							logger.error("User Type : Is NuLL");
-						}
-					}
-				} else if (Util.nullSafeCaseInsensitiveEq(isConversionProcessed, "YES")) {
-					String userType = identity.getStringAttribute("assignmentType");
-					if (Util.isNotNullOrEmpty(userType)) {
-						userType = userType.trim();
-						String userRole = getCustomObject(userType.toUpperCase(), "CMH-User-Role-Mapping-Custom-Object");
-						if (Util.isNotNullOrEmpty(userRole)) {
-							userRole = userRole.trim();
-							logger.debug("Assignment Rule: userRole :" + userRole);
-							if (Util.nullSafeCaseInsensitiveEq(userRole, roleName)) {
-								logger.debug("Assignment Rule: userRole Matching:" + userRole);
-								finalFilterUserStatus = true;
-							}
-						}
-					}
-				} else {
-					finalFilterUserStatus = false;
-				}
-			}
-		}
-
-		logger.debug("finalFilterUserStatus " + finalFilterUserStatus);
-		logger.debug("Exiting into CMH-Role-Assignment-Rule");
-		return finalFilterUserStatus;
+      if (assignRole) {
+          logger.debug("CMH-Role-Assignment-Rule:Role " + roleName + " assigned for the User: " + identityName);
+      }
+      return assignRole;
   ]]></Source>
 </Rule>
