@@ -621,7 +621,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
     </Arg>
     <Description>Send Email to Manager</Description>
     <Transition to="Notify User" when="return ((hasEmail==true) &amp;&amp; (null !=newEmail ))"/>
-    <Transition to="Single Account Aggregation"/>
+    <Transition to="Update Role Account Name"/>
   </Step>
   <Step action="call:sendEmail" condition="script:email!=null" icon="Email" name="Notify User" posX="1264" posY="32">
     <Arg name="to" value="ref:email"/>
@@ -630,6 +630,42 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
     <Arg name="userName" value="ref:newIdentityName"/>
     <Arg name="email" value="ref:newEmail"/>
     <Description>Send Email to User</Description>
+    <Transition to="Update Role Account Name"/>
+  </Step>
+  <Step icon="Task" name="Update Role Account Name" posX="28" posY="18" resultVariable="validationErrors">
+   <Script>
+   <Source>
+      <![CDATA[
+               import org.apache.log4j.Logger;
+               import sailpoint.object.Identity;
+               import sailpoint.object.RoleAssignment;
+			   import sailpoint.tools.Util;
+			   import sailpoint.object.RoleTarget;
+			   
+			   Logger log = Logger.getLogger("CMH-LifecycleEvent-Name-Change");
+			   
+			   if (isDebugEnabled) {
+		          log.debug("CMH-LifecycleEvent-Name-Change: Update Role Account Name");
+		        }
+	            Identity iden = context.getObjectByName(Identity.class, newIdentityName);
+					
+		       List userRole = iden.getActiveRoleAssignments();
+		       if(!Util.isEmpty(userRole)) {
+			      for(RoleAssignment role : userRole) {
+					  List targets = role.getTargets();
+					  if(!Util.isEmpty(targets)) {
+						 for(RoleTarget roleTarget : targets) {
+							 roleTarget.setDisplayName(newIdentityName);
+							 context.commitTransaction();
+							 log.debug("New display Name :"+roleTarget.getDisplayName());
+						 }
+					  }
+			      }
+		       }
+		     log.debug("CMH-LifecycleEvent-Name-Change: Update Role Account Name");
+      ]]>
+      </Source>
+   </Script>
     <Transition to="Single Account Aggregation"/>
   </Step>
   <Step icon="Task" name="Single Account Aggregation" posX="28" posY="18" resultVariable="validationErrors">
@@ -646,7 +682,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 			  	Logger log = Logger.getLogger("CMH-LifecycleEvent-Name-Change");
 			  	
 			  	if (isDebugEnabled) {
-		          log.debug("CMH-LifecycleEvent-Leaver-Disable: Single Account Aggregation");
+		          log.debug("CMH-LifecycleEvent-Name-Change: Single Account Aggregation");
 		        }
 	
 		        if (validationErrors == null) {
