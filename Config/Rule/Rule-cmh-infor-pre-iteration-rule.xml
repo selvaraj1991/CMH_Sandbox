@@ -13,7 +13,7 @@
 		import sailpoint.tools.Util;
 		
         Logger log = Logger.getLogger("cmh.authsource.rules");
-		log.debug("CMH-Infor-Pre-Iteration-Rule: Entering");
+		log.debug("CMH-Infor-Pre-Iteration-Rule: Update Custom object with the timestamp for incremental aggregation");
 		//updates the timestamp of the task in custom object
 		Custom custom = context.getObjectByName(Custom.class,"CMH-Infor-Incremental-Aggregation-Custom-Object");
 		String format = getCustomObject("preIterationTimestamp","CMH-DateFormat");
@@ -26,7 +26,7 @@
 				context.commitTransaction();
 		    }
 		}
-		log.debug("CMH-Infor-Pre-Iteration-Rule: Exiting");
+		log.debug("CMH-Infor-Pre-Iteration-Rule: Updated Custom object successfully");
   ]]></Source>
     </Rule>
 </sailpoint>
