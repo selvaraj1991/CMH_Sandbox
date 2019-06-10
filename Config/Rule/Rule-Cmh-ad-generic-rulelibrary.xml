@@ -182,6 +182,7 @@
 
 			log.debug("CMH-AD-Generic-Rulelibrary : Check Unique Input parameters " + username + "," + firstName + "," + lastName + "," + middInitial);
 			int count = 0;
+		List userList = null;
 			Filter fNameFilter = Filter.eq("firstname", firstName);
 			Filter lNameFilter = Filter.eq("lastname", lastName);
 			Filter uNameFilter = Filter.like("name", username, Filter.MatchMode.START);
@@ -203,13 +204,41 @@
 			QueryOptions qOps = new QueryOptions();
 			qOps.add(finalFilter);
 			log.info("CMH-AD-Generic-Rulelibrary : QueryOptions " + qOps);
+		Iterator itr = null;
 			try {
-				count = context.countObjects(Identity.class, qOps);
-				log.info("CMH-AD-Generic-Rulelibrary : Count of existing users with same name " + count);
+			 itr = context.search(Identity.class, qOps);
 			} catch(GeneralException e) {
 				log.error(e.getMessage());
+		}
+		if (!Util.isEmpty(itr)) {
+		    userList = new ArrayList();
+			while (itr.hasNext()) {
+				Identity identity = (Identity) itr.next();
+				if (identity != null) {
+					userList.add(identity.getName());
+				}
 			}
-			log.debug("CMH-AD-Generic-Rulelibrary : Exiting checkUnique()");
+			if (!Util.isEmpty(userList)) {
+			    List numberList = new ArrayList();
+				Pattern p = Pattern.compile("-?\\d+");
+				for (int i = 0; i < userList.size(); i++) {
+					Matcher matcher = p.matcher((String) userList.get(i));
+					if (matcher.find()) {
+						String number = matcher.group();
+						numberList.add(number);						
+					} else {
+						count = 1;
+					}
+				}
+				if(!Util.isEmpty(numberList)) {
+					Collections.sort(numberList, Collections.reverseOrder());
+					log.debug(numberList);
+					count = Integer.parseInt((String) numberList.get(0)) +1;
+				}
+			}
+		}
+		log.debug("CMH-AD-Generic-Rulelibrary: Count ="+count);
+		log.debug("CMH-AD-Generic-Rulelibrary : Exiting checkUnique(String username,String firstName,String lastName,String middInitial)");
 			return count;
 		}
 
