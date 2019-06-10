@@ -4,6 +4,7 @@
     <Source><![CDATA[
 		import java.text.ParseException;
 		import java.text.SimpleDateFormat;
+		import java.util.concurrent.TimeUnit;
 		import org.apache.commons.codec.binary.Base64;
 		import org.apache.commons.lang.StringUtils;
 		import org.apache.log4j.Logger;
@@ -516,112 +517,176 @@
 		}
 
 		/**
+				 * Set Header.
+				 * Description: this method used for setting headers in HTTPPOST
+				 * @param endPointURL
+				 * @param encoding
+				 * @return  HttpPost
+				 */
+
+     private HttpPost setHeader(String endPointURL, String encoding) {
+     log.debug("CMH-AD-Generic-Rulelibrary: Entering setHeader()");
+		HttpPost httpAddCartPost = null;
+		if (Util.isNotNullOrEmpty(endPointURL) && Util.isNotNullOrEmpty(encoding)) {
+			httpAddCartPost = new HttpPost(endPointURL);
+			httpAddCartPost.setHeader("Accept", "application/json");
+			httpAddCartPost.setHeader("Content-Type", "application/json");
+			httpAddCartPost.setHeader("Authorization", "Basic " + encoding);
+		 }
+		log.debug("CMH-AD-Generic-Rulelibrary: Exiting setHeader()");
+	    return httpAddCartPost;
+
+	   }
+	     		/**
+				 * Response Map.
+				 * Description: this method used for execute httpPost request and returns response
+				 * @param httpclient
+				 * @param httpPostRequest
+				 * @return map
+				 */
+	  private Map responseMap(CloseableHttpClient httpclient, HttpPost httpPostRequest) {
+	  log.debug("CMH-AD-Generic-Rulelibrary: Entering responseMap()");
+		String responseValidate = null;
+		CloseableHttpResponse response = null;
+		Map map = null;
+		try {
+			if (null != httpclient && null != httpPostRequest) {
+				response = httpclient.execute(httpPostRequest);
+				if (null != response) {
+				responseValidate = response.getStatusLine().toString();
+				String responseBody = EntityUtils.toString(response.getEntity());
+				if (Util.isNotNullOrEmpty(responseValidate) && Util.isNotNullOrEmpty(responseBody)) {
+					map = new HashMap();
+					map.put("responseValidate", responseValidate);
+					map.put("responseBody", responseBody);
+				}
+			  }
+		   } else {
+		      throw new sailpoint.tools.GeneralException("Client or Post request is empty");
+		   }			
+		} catch (Exception e) {
+			     log.error("CMH-AD-Generic-Rulelibrary :Error: " + e);			    
+		} finally {
+			response.close();			
+		}
+		log.debug("CMH-AD-Generic-Rulelibrary: Exiting responseMap()");
+		return map;
+	  }
+	  
+	  		/**
 				 * Generate snow ticket.
-				 * Description: this method used for service now ticket generation
+				 * Description: this method used for service now ticket generation using catalog items
 				 * @param identityName the identity name
-				 * @param customName the custom name
-				 * @param disconnectedApps the disconnected apps
+				 * @param customName the custom name				 
 				 * @param operation the operation
 				 * @return  string
 				 */
+	  
+     public Object generateSnowTicket(String identityName,String customName , String operation) {
+     log.debug("CMH-AD-Generic-Rulelibrary: Entering generateSnowTicket()");
+        //String identityName = "AMGates";
+		//String operation = "Disable";
+		//String customName = "CMH-Service-Ticket-Configuration-Object";
+		String ticketNo = null;
+		List errorList = new errorList();
+		if (Util.isNotNullOrEmpty(identityName) && Util.isNotNullOrEmpty(operation)
+				&& Util.isNotNullOrEmpty(customName)) {
+			String addCart = null;
+			String checkoutCart = null;
 
-		public String generateSnowTicket(String identityName, String customName, List disconnectedApps, String operation) {
-			log.debug("CMH-AD-Generic-Rulelibrary: Entering generateSnowTicket()" );
-			String ticketNumber = null;
-			Identity user = context.getObjectByName(Identity.class, identityName);
-			Custom custom = context.getObjectByName(Custom.class, customName);
-			if (user != null && custom != null) {
+			if (operation.equalsIgnoreCase("Disable")) {
+				addCart = "addCartDisable";
+				checkoutCart = "checkoutCartDisable";
+			} else if (operation.equalsIgnoreCase("Delete")) {
+				addCart = "addCartDelete";
+				checkoutCart = "checkoutCartDelete";
+			}
+			log.debug("addCart:" + addCart + " " + "checkoutCart:" + checkoutCart);
+			CredentialsProvider credsProvider = new BasicCredentialsProvider();
+			CloseableHttpClient httpclient = HttpClients.custom().setDefaultCredentialsProvider(credsProvider).build();
+			Map jsonMap = new HashMap();
+			jsonMap.put("sysparm_quantity", "1");
+			Map varMap = new HashMap();
+			varMap.put("color", "Black");
+			varMap.put("storage", "64GB");
+			varMap.put("var_tsk_short_desc", "short_description---value");
+			// varMap.put("user", "Aaron Jones"); //put username
+			// varMap.put("description", "User Disable");
+			jsonMap.put("variables", varMap);
+			JsonUtil jUtil = new JsonUtil();
+			String jsonString = jUtil.render(jsonMap);
+			try {
+				Custom serviceNowRestAPIUrlObject = context.getObjectByName(Custom.class, customName);
+				if (null != serviceNowRestAPIUrlObject) {
+					String username = serviceNowRestAPIUrlObject.getString("serviceNowUserName");
+					String encryptedPassword = serviceNowRestAPIUrlObject.getString("serviceNowUserPassword");
+					String userCredentials = username + ":" + context.decrypt(encryptedPassword);
 
-				String description = null;
-				String short_description = "User " + operation + "D - " + user.getName();
-				String serviceNowRequestURL = custom.getString("serviceNowRequestURL");
-				String serviceNowUserName = custom.getString("serviceNowUserName");
-				String serviceNowUserPassword = custom.getString("serviceNowUserPassword");
-				String assignmentGroup = custom.getString("assignment_group");
-				String cmdbCi = custom.getString("cmdb_ci");
+					Base64 b = new Base64();
+					String encoding = b.encodeAsString(new String(userCredentials).getBytes());
+					String addCartURL = serviceNowRestAPIUrlObject.getString(addCart);
+					String checkoutCartURL = serviceNowRestAPIUrlObject.get(checkoutCart);
 
-				StringBuilder str = new StringBuilder();
+					HttpPost httpAddCartPost = setHeader(addCartURL, encoding);
+					HttpEntity entity = new ByteArrayEntity(jsonString.getBytes("utf-8"));
+					httpAddCartPost.setEntity(entity);
+					log.debug("Executing request " + httpAddCartPost.getRequestLine());
 
-				if (Util.nullSafeCaseInsensitiveEq(operation, "Delete") || Util.nullSafeCaseInsensitiveEq(operation, "Disable")) {
-					str = str.append("User").append(user.getName()).append("[").append(user.getStringAttribute("employeeId")).append("] terminated, please ").append(operation).append("all the access from the user.");
-					if (!Util.isEmpty(disconnectedApps)) {
-						str = str.append(operation).append("the user accounts from these applications : " + Util.listToCsv(disconnectedApps));
-					}
-				} else if (Util.nullSafeCaseInsensitiveEq(operation, "Enable")) {
-					str = str.append("User").append(user.getName()).append("[").append(user.getStringAttribute("employeeId")).append("] Rehired, please enable all the access for the user.");
-					if (!Util.isEmpty(disconnectedApps)) {
-						str.append("Enable the user accounts from these applications : " + Util.listToCsv(disconnectedApps));
-					}
-				}
+					Map cartResponseMap = responseMap(httpclient, httpAddCartPost);
+					if (!Util.isEmpty(cartResponseMap)) {
+						String responseValidateAddCart = cartResponseMap.get("responseValidate");
+						if (Util.isNotNullOrEmpty(responseValidateAddCart)
+								&& responseValidateAddCart.contentEquals("HTTP/1.1 200 OK")) {
+							TimeUnit.SECONDS.sleep(5);
 
-				description = str.toString();
+							HttpPost httpCheckOutPost = setHeader(checkoutCartURL, encoding);
+							log.debug("Executing request " + httpCheckOutPost.getRequestLine());
 
-				Map jsonMap = new HashMap();
-				jsonMap.put("assignment_group", assignmentGroup);
-				jsonMap.put("short_description", short_description);
-				jsonMap.put("description", description);
-				jsonMap.put("cmdb_ci", cmdbCi);
-
-				JsonUtil jUtil = new JsonUtil();
-
-				CredentialsProvider credsProvider = new BasicCredentialsProvider();
-				CloseableHttpClient httpclient = HttpClients.custom().setDefaultCredentialsProvider(credsProvider).build();
-				try {
-					String jsonString = jUtil.render(jsonMap);
-					if (Util.isNotNullOrEmpty(serviceNowRequestURL) && Util.isNotNullOrEmpty(serviceNowUserName) && Util.isNotNullOrEmpty(serviceNowUserPassword)) {
-
-						HttpPost httpPost = new HttpPost(serviceNowRequestURL);
-
-						// String decryptedPassword = context.decrypt(serviceNowUserPassword);
-						String userCredentials = serviceNowUserName + ":" + context.decrypt(serviceNowUserPassword);
-
-						Base64 base = new Base64();
-
-						String encoding = base.encodeAsString(new String(userCredentials).getBytes());
-						httpPost.setHeader("Accept", "application/json");
-						httpPost.setHeader("Content-Type", "application/json");
-						httpPost.setHeader("Authorization", "Basic " + encoding);
-
-						HttpEntity entity = new ByteArrayEntity(jsonString.getBytes("utf-8"));
-						httpPost.setEntity(entity);
-						CloseableHttpResponse response = httpclient.execute(httpPost);
-						if(response != null){
-							try {
-								String responseBody = EntityUtils.toString(response.getEntity());
-								if(Util.isNotNullOrEmpty(responseBody)){
-									Map responseMap = (Map) jUtil.parse(responseBody);
-									if (responseMap !=null){
-										Map resultMap = (Map) responseMap.get("result");
-										if(resultMap !=null){
-											ticketNumber = (String) resultMap.get("number");
-											if (Util.isNotNullOrEmpty(ticketNumber)) {
-												log.debug("CMH-AD-Generic-Rulelibrary : Ticket Created" + ticketNumber);
+							Map checkoutResMap = responseMap(httpclient, httpCheckOutPost);
+							if (!Util.isEmpty(checkoutResMap)) {
+								String responseValidateCheckOutPost = checkoutResMap.get("responseValidate");
+								if (Util.isNotNullOrEmpty(responseValidateCheckOutPost)
+										&& responseValidateCheckOutPost.contentEquals("HTTP/1.1 200 OK")) {
+									String responseBody = checkoutResMap.get("responseBody");
+									if (Util.isNotNullOrEmpty(responseBody)) {
+										Map responseMap = (Map) jUtil.parse(responseBody);
+										if (null != map) {
+											Map resultMap = (Map) responseMap.get("result");
+											if (null != responseMap) {
+												ticketNo = resultMap.get("request_number");
+												if(Util.isNotNullOrEmpty(ticketNo)) {
+												   return ticketNo;
+												}
 											}
 										}
 									}
+								} else {
+									errorList.add("Check is not successfull: " + responseValidateCheckOutPost);
 								}
-							} catch(Exception e) {
-								log.error("CMH-AD-Generic-Rulelibrary : Error reading response " + e.getMessage());
-							} finally {
-								response.close();
+							} else {
+								errorList.add("Checkout espose is map is NULL or empty");
 							}
+						} else {
+							errorList.add("No request is created: " + responseValidateAddCart);
 						}
-
+					} else {
+						errorList.add("Add to cart respose is map is NULL or empty");
 					}
-				} catch(Exception e) {
-					log.error("CMH-AD-Generic-Rulelibrary : Error creating service now ticket " + e.getMessage());
-				} finally {
-					try {
-						httpclient.close();
-					} catch(IOException e) {
-						log.error("CMH-AD-Generic-Rulelibrary : Error closing the httpclient in service now ticket generation" + e.getMessage());
-					}
+				} else {
+					errorList.add("Custom object is NULL or empty");
 				}
+			} catch (Exception e) {
+				log.error("Error:" + e.getMessage());
+				errorList.add("Error:" + e.getMessage());
+			} finally {
+				httpclient.close();
 			}
-			log.debug("CMH-AD-Generic-Rulelibrary: Exiting generateSnowTicket()" );
-			return ticketNumber;
+		} else {
+			errorList.add("identityName or custom object name cannot be cannot be empty");
 		}
-
+		log.debug("CMH-AD-Generic-Rulelibrary: Exiting generateSnowTicket()");
+		return errorList;
+  }
 		/**
 				 * Do targeted aggregation.
 				 * Description: this method performs single account aggregation

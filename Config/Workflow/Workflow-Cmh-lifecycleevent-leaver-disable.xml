@@ -455,7 +455,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
     </Transition>
     <Transition to="end"/>
   </Step>
-  <Step icon="Task" name="Create ServiceNow Ticket" resultVariable="snowTicketId">
+  <Step icon="Task" name="Create ServiceNow Ticket">
     <Script>
       <Source><![CDATA[
 			  
@@ -464,8 +464,24 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 		        if (isDebugEnabled) {
 		          log.debug("CMH-LifecycleEvent-Leaver-Disable: Creating ServiceNow Ticket on disablement of user");
 		        }
-	            String snowId = generateSnowTicket(identityName, "CMH-Service-Ticket-Configuration-Object", disConnectedApps,"DISABLE");
-		        return snowId;
+				if(validationErrors==null){
+				validationErrors = new ArrayList();
+			    }
+	            Object ticketObj = generateSnowTicket(identityName, "CMH-Service-Ticket-Configuration-Object", "DISABLE");
+		        if(null != ticketObj) {
+		           if(ticketObj instanceof List) {
+		              List errList  = (List) ticketObj;
+					  validationErrors.add(errList);
+				   }else if(ticketObj instanceof String) {
+		              String snowTicketId = (String) ticketObj;	
+					  log.debug("CMH-LifecycleEvent-Leaver-Disable:Ticket Created:"+snowTicketId);
+                      wfcontext.getWorkflowCase().put("snowTicketId",snowTicketId);					  
+		           }else {
+		    	     validationErrors.add("The Object Type is NOT List OR String");					 
+		           }
+				   validationErrors.add("NULL : Unable to generate ticket");				   
+    	        }
+				wfcontext.getWorkflowCase().put("validationErrors",validationErrors);
       ]]></Source>
     </Script>
     <Transition to="Single Account Aggregation"/>
