@@ -588,7 +588,7 @@
 		//String operation = "Disable";
 		//String customName = "CMH-Service-Ticket-Configuration-Object";
 		String ticketNo = null;
-		List errorList = new errorList();
+		List errorList = new ArrayList();
 		if (Util.isNotNullOrEmpty(identityName) && Util.isNotNullOrEmpty(operation)
 				&& Util.isNotNullOrEmpty(customName)) {
 			String addCart = null;
