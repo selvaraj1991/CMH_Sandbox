@@ -562,12 +562,16 @@
 				}
 			  }
 		   } else {
-		      throw new sailpoint.tools.GeneralException("Client or Post request is empty");
+		      throw new sailpoint.tools.GeneralException("responseMap :Client or Post request is empty");
 		   }			
 		} catch (Exception e) {
-			     log.error("CMH-AD-Generic-Rulelibrary :Error: " + e);			    
+			     log.error("CMH-AD-Generic-Rulelibrary :responseMap Error: " + e);			    
 		} finally {
+		    try {
 			response.close();			
+		    } catch (IOException e) {
+				log.error("CMH-AD-Generic-Rulelibrary :responseMap Error: " + e);	
+			}
 		}
 		log.debug("CMH-AD-Generic-Rulelibrary: Exiting responseMap()");
 		return map;
@@ -650,9 +654,9 @@
 									String responseBody = checkoutResMap.get("responseBody");
 									if (Util.isNotNullOrEmpty(responseBody)) {
 										Map responseMap = (Map) jUtil.parse(responseBody);
-										if (null != map) {
+										if (null != responseMap) {
 											Map resultMap = (Map) responseMap.get("result");
-											if (null != responseMap) {
+											if (null != resultMap) {
 												ticketNo = resultMap.get("request_number");
 												if(Util.isNotNullOrEmpty(ticketNo)) {
 												   return ticketNo;
