@@ -296,7 +296,7 @@
   		</Source>
   	</Script>
   </Transition>
-  <Transition to="Deprovision disconnected Apps"/>
+  <Transition to="Generate Servicenow Ticket"/>
   </Step>
   <Step action="call:compileProvisioningProject" icon="Task" name="Compile Project" posX="406" posY="10" resultVariable="project">
     <Arg name="identityName" value="ref:identityName"/>
@@ -335,22 +335,41 @@
 	<Arg name="project" value="ref:project"/>
 	<Arg name="autoVerify" value="false"/>
 	<Arg name="identityRequestId" value="ref:identityRequestId"/>
-	<Transition to="Deprovision disconnected Apps"/>
+	<Transition to="Generate Servicenow Ticket"/>
   </Step>
-  <Step icon="Task" name="Deprovision disconnected Apps" resultVariable="snowTicketId">
+  <Step icon="Task" name="Generate Servicenow Ticket" resultVariable="snowTicketId">
   	<Script>
   		<Source>
   		<![CDATA[
   			import org.apache.log4j.Logger;
+  			import sailpoint.tools.Util;
   			
   			//method to generate service now ticket
   			Logger log = Logger.getLogger("CMH-LifecycleEvent-Leaver-Delete");
   			
   			if(isDebugEnabled){
-  				log.debug("CMH-LifecycleEvent-Leaver-Delete: Generating service now ticket for disconnected applications");
+  				log.debug("CMH-LifecycleEvent-Leaver-Delete: Generating service now ticket");
   			}
   			
-  			String snowId = generateSnowTicket(identityName, "CMH-Service-Ticket-Configuration-Object", disConnectedApps, "Delete");
+  			if(validationErrors==null){
+  				validationErrors = new ArrayList();
+  			}  			
+  			
+  			String snowId = null;
+  			
+  			Object snowResponse = generateSnowTicket(identityName, "CMH-Service-Ticket-Configuration-Object", "Delete");
+  			if(snowResponse!=null){
+  				if(snowResponse instanceof String){
+  					snowId = (String)snowResponse;
+  					if(isDebugEnabled){
+		  				log.debug("CMH-LifecycleEvent-Leaver-Delete: Service Now ticket generated successfully");
+		  			}
+  				}else if(snowResponse instanceof List){
+  					List errList = (List)snowResponse;
+  					validationErrors.add(errList);
+		  			log.error("CMH-LifecycleEvent-Leaver-Delete: Error occured while generating the serive now ticket "+Util.listToCsv(validationErrors));
+  				}
+  			}
   			
   			return snowId;
   		]]>
@@ -406,6 +425,9 @@
   				action = "Leaver-Delete-Success";
   				strMap.put("setString1","Leaver Delete Process Completed succesfully");
   				strMap.put("setString2","AD and other accounts are deleted from the user");
+  				if(Util.isNotNullOrEmpty(snowTicketId)){
+  					strMap.put("setString3","ServiceNow ticket : "+snowTicketId);
+  				}
   			}else{
   				action = "Leaver-Delete-Failure";
   				strMap.put("setString1","Leaver Delete Process failed due to errors");

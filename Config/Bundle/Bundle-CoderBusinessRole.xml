@@ -33,6 +33,4 @@
             </RuleRef>
         </IdentitySelector>
     </Selector>
-    <RoleScorecard members="3" membersWithMissingRequiredRoles="2" permittedEntitlements="3"
-                   provisionedEntitlements="3"/>
 </Bundle>

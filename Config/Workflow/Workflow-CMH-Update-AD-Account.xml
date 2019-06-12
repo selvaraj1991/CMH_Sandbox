@@ -122,6 +122,8 @@
 	  						
   							if(Util.nullSafeCaseInsensitiveEq(assignmentType,"EMPLOYEE") || Util.nullSafeCaseInsensitiveEq(emailRequired,"Yes")){
   								acctReqMod.add(new AttributeRequest("mail",ProvisioningPlan.Operation.Set,eMail));
+  							}else{
+  								acctReqMod.add(new AttributeRequest("mail",ProvisioningPlan.Operation.Set,""));
   							}
 	  						
 	  						acctReqMod.add(new AttributeRequest("employeeType",ProvisioningPlan.Operation.Set,assignmentType));
