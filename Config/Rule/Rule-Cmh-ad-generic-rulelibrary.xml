@@ -562,15 +562,15 @@
 				}
 			  }
 		   } else {
-		      throw new sailpoint.tools.GeneralException("responseMap :Client or Post request is empty");
+		      log.error("responseMap :Client or Post request is empty");
 		   }			
 		} catch (Exception e) {
-			     log.error("CMH-AD-Generic-Rulelibrary :responseMap Error: " + e);			    
+			     log.error("CMH-AD-Generic-Rulelibrary :responseMap Error: " + e.getMessage());			    
 		} finally {
 		    try {
 			response.close();			
 		    } catch (IOException e) {
-				log.error("CMH-AD-Generic-Rulelibrary :responseMap Error: " + e);	
+				log.error("CMH-AD-Generic-Rulelibrary :responseMap Error: " + e.getMessage());	
 			}
 		}
 		log.debug("CMH-AD-Generic-Rulelibrary: Exiting responseMap()");
