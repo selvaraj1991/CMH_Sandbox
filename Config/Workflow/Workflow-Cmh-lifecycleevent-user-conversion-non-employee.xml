@@ -494,6 +494,9 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 			if(validationErrors==null){
 				validationErrors = new ArrayList();
 			}
+			if(adExists == false){
+			   validationErrors.add("AD Link does exists");
+			}
 			if(wfcontext.getRootWorkflowCase().getMessages() != null && null != wfcontext.getRootWorkflowCase().getMessagesByType(Message.Type.Error)){
 				log.error("CMH-LifecycleEvent-User-Conversion-Non-Employee: Error occured in leaver process: "+wfcontext.getRootWorkflowCase().getMessagesByType(Message.Type.Error));
 				List errorMessagesList = wfcontext.getRootWorkflowCase().getMessagesByType(Message.Type.Error);
@@ -503,7 +506,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 			if(isDebugEnabled){
 				log.debug("CMH-LifecycleEvent-User-Conversion-Non-Employee : Errors recorded in Leaver process: "+validationErrors.toString());
 			}
-			if(Util.isEmpty(validationErrors)){
+			if(Util.isEmpty(validationErrors) && adExists == true){
 			    Map map = new HashMap();
 			    map.put("setString1","Rehire is successfully completed" );
   				auditWrite("User-Conversion-Non-Employee Success",source,target,attributeName,attributeValue,map);
