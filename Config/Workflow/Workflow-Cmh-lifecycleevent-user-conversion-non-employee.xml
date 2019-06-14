@@ -508,7 +508,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 			}
 			if(Util.isEmpty(validationErrors) && adExists == true){
 			    Map map = new HashMap();
-			    map.put("setString1","Rehire is successfully completed" );
+			    map.put("setString1","User-Conversion-Non-Employee is successfully completed" );
   				auditWrite("User-Conversion-Non-Employee Success",source,target,attributeName,attributeValue,map);
 				
   			}else{
