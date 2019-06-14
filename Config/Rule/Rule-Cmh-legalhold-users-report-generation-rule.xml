@@ -1,6 +1,9 @@
-<?xml version='1.0' encoding='UTF-8'?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Rule PUBLIC "sailpoint.dtd" "sailpoint.dtd">
 <Rule language="beanshell" name="CMH-LegalHold-Users-Report-Generation-Rule">
+  <ReferencedRules>
+    <Reference class="sailpoint.object.Rule" name="CMH-AD-Generic-Rulelibrary"/>
+  </ReferencedRules>
   <Signature>
     <Inputs>
       <Argument name="log">
@@ -15,9 +18,6 @@
       </Argument>
     </Inputs>
   </Signature>
-      <ReferencedRules>
-        <Reference class="sailpoint.object.Rule" name="CMH-AD-Generic-Rulelibrary"/>
-    </ReferencedRules>
   <Source><![CDATA[
 
 	import sailpoint.object.Identity;

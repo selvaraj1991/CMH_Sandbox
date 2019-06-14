@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Rule PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<Rule language="beanshell" name="CMH-AD-Department-Rule" type="IdentityAttribute">
+  <Description>Identity attribute rules are used when the value is not simply a copy of an application account attribute value.  A transformation may be necessary on the account attribute, or several account attributes may need to be combined to produce the identity attribute.
+
+This rule can be called in two ways: as a global mapping rule and an application mapping rule.  A global mapping rule is called whenever the identity is refreshed.  The rule can look at any account attributes.  An application mapping rule is called only when the identity contains an account link for that application, this link is passed in the "link" argument which is not passed in global mapping rules.</Description>
+  <Signature returnType="String"/>
+  <Source><![CDATA[
+  	String department = "";
+	String entity = identity.getStringAttribute("entity");
+	if(entity!=null){
+		department = department.concat(entity);
+	}
+	String division =  identity.getStringAttribute("division");
+	if(division!=null){
+		department = department.concat(division);
+	}
+	String glLocation = identity.getStringAttribute("glLocation");
+	if(glLocation!=null){
+		department = department.concat(glLocation);
+	}
+	if(department!=null && !department.isEmpty()){
+		department = department.concat("-");
+	}
+	String divisionDesc = identity.getStringAttribute("divisionDesc");
+	if(divisionDesc!=null){
+		department = department.concat(divisionDesc);
+	}
+	String location = identity.getStringAttribute("location");
+	if(location!=null){
+		department = department.concat(location);
+	}
+	return department;
+	]]></Source>
+</Rule>

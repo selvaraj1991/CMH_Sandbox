@@ -253,24 +253,56 @@
                         <Source><![CDATA[return identity.getStringAttribute("usertype");]]></Source>
                     </Script>
                 </Field>
-                <Field displayName="Employee Number" name="employeeNumber" type="string">
+        <Field displayName="Employee ID" name="employeeID" type="string">
                     <Script>
                         <Source><![CDATA[return identity.getStringAttribute("employeeId");]]></Source>
                     </Script>
                 </Field>
-                <Field displayName="AccountExpires" name="accountExpires" type="string"/>
                 <Field displayName="co" name="co" type="string"/>
                 <Field displayName="c" name="c" type="string"/>
-                <Field displayName="Company" name="company" type="string"/>
                 <Field displayName="countryCode" name="countryCode" type="string"/>
-                <Field displayName="Department" name="department" type="string"/>
-                <Field displayName="displayName" name="displayName" type="string"/>
+        <Field displayName="displayName" name="displayName" type="string">
+          <Script>
+            <Source><![CDATA[
+            
+			String displayName = "";
+			String lastName = identity.getLastname();
+			if(lastName!=null){
+				displayName = displayName.concat(lastName);
+			}
+			String firstName = identity.getFirstname();
+			if(firstName!=null){
+				if(displayName!=null && !displayName.isEmpty()){
+					displayName = displayName.concat(", ");
+				}
+				displayName = displayName.concat(firstName);
+			}
+			String initials = identity.getStringAttribute("middleInitial");
+			if(initials!=null && !initials.isEmpty()){
+				displayName = displayName.concat(" ").concat(initials).concat(".");
+			}
+			return displayName;
+			
+			]]></Source>
+          </Script>
+        </Field>
                 <Field displayName="displayNamePrintable" name="displayNamePrintable" type="string"/>
-                <Field displayName="homeDirectory" name="homeDirectory" type="string"/>
-                <Field displayName="Manager" name="manager" type="string"/>
+        <Field displayName="homeDirectory" name="homeDirectory" type="string">
+          <RuleRef>
+            <Reference class="sailpoint.object.Rule" name="CMH-AD-HomeDirectory-Rule"/>
+          </RuleRef>
+        </Field>
+        <Field displayName="Manager" name="manager" type="string">
+          <RuleRef>
+            <Reference class="sailpoint.object.Rule" name="CMH-Manager-DN"/>
+          </RuleRef>
+        </Field>
                 <Field displayName="primaryGroupID" name="primaryGroupID" type="string"/>
-                <Field displayName="Title" name="title" type="string"/>
-                <Field displayName="userPrincipalName" name="userPrincipalName" type="string"/>
+        <Field displayName="userPrincipalName" name="userPrincipalName" type="string">
+          <Script>
+            <Source><![CDATA[return identity.getEmail();]]></Source>
+          </Script>
+        </Field>
             </Section>
             <Section label="General" name="General">
                 <Field displayName="con_prov_policy_ad_givenName" helpKey="help_con_prov_policy_ad_givenName"
@@ -285,9 +317,51 @@
                         <Source><![CDATA[return identity.getLastname();]]></Source>
                     </Script>
                 </Field>
-                <Field displayName="con_prov_policy_ad_description" helpKey="help_con_prov_policy_ad_description"
-                       name="description" section="General" type="string"/>
-                <Field displayName="Initials" name="initials" type="string"/>
+        <Field displayName="con_prov_policy_ad_description" helpKey="help_con_prov_policy_ad_description" name="description" section="General" type="string">
+          <Script>
+            <Source><![CDATA[
+            
+            import sailpoint.object.Identity;
+            
+            String userType = identity.getStringAttribute("userType");
+			String description = identity.getStringAttribute("employeeId");
+			String displayName = "";
+			if(userType.equalsIgnoreCase("NONEMPLOYEE")){
+				Identity mangerIden = identity.getManager();
+				if(mangerIden!=null){
+					String initials = mangerIden.getStringAttribute("middleInitial");
+					String lastName = mangerIden.getLastname();
+				    if(lastName!=null){
+				    	displayName = displayName.concat(lastName);
+				    }
+				    String firstName = mangerIden.getFirstname();
+				    if(firstName!=null){
+				    	if(displayName!=null && !displayName.isEmpty()){
+					    	displayName = displayName.concat(", ");
+					    }
+				    	displayName = displayName.concat(firstName);
+				    }
+				    if(initials!=null && !initials.isEmpty()){
+				    	displayName = displayName.concat(" ").concat(initials).concat(".");
+					}
+				}
+			}
+			
+			if(description!=null && displayName!=null && !displayName.isEmpty()){
+				description = description +" "+displayName;
+			}
+			return description;
+			]]></Source>
+          </Script>
+        </Field>
+        <Field displayName="Initials" name="initials" type="string">
+          <Script>
+            <Source><![CDATA[
+	            
+	            	return identity.getStringAttribute("middleInitial");
+	            ]]></Source>
+          </Script>
+        </Field>
             </Section>
             <Section label="Dial-in" name="Dial-in">
                 <Field displayName="con_prov_policy_ad_msNPAllowDialin"
@@ -325,8 +399,19 @@
                        helpKey="help_con_prov_policy_ad_msExchHideFromAddressLists" name="msExchHideFromAddressLists"
                        section="Exchange" type="boolean"/>
                 <Field displayName="msExchHomeServerName" name="msExchHomeServerName" type="string"/>
-                <Field displayName="msExchOmaAdminWirelessEnable" name="msExchOmaAdminWirelessEnable" type="string"/>
-                <Field displayName="physicalDeliveryOfficeName " name="physicalDeliveryOfficeName" type="string"/>
+        <Field displayName="msExchOmaAdminWirelessEnable" name="msExchOmaAdminWirelessEnable" type="string">
+          <Script>
+            <Source><![CDATA[
+        		
+        			String val = null;
+        			if(mail!=null && !mail.isEmpty()){
+        				val = "5";
+        			}
+        			return val;
+        		
+        		]]></Source>
+          </Script>
+        </Field>
             </Section>
             <Section label="Skype for Business" name="Skype for Business">
                 <Field displayName="con_prov_policy_ad_SipAddress" helpKey="help_con_prov_policy_ad_SipAddress"
@@ -429,7 +514,7 @@
             <AttributeDefinition name="distinguishedName" type="string">
                 <Description>distinguished name for which the entity is known by</Description>
             </AttributeDefinition>
-            <AttributeDefinition name="employeeNumber" type="string">
+      <AttributeDefinition name="employeeID" type="string">
                 <Description>numerically identifies an employee within an organization</Description>
             </AttributeDefinition>
             <AttributeDefinition name="employeeType" type="string">
@@ -618,6 +703,9 @@
             <AttributeDefinition name="extensionAttribute1" type="string">
                 <Description>Preferred Email</Description>
             </AttributeDefinition>
+      <AttributeDefinition name="countryCode" type="string">
+        <Description>840 by default for all users</Description>
+      </AttributeDefinition>
         </Schema>
         <Schema displayAttribute="sAMAccountName" featuresString="PROVISIONING, GROUPS_HAVE_MEMBERS"
                 hierarchyAttribute="memberOf" identityAttribute="distinguishedName" instanceAttribute=""

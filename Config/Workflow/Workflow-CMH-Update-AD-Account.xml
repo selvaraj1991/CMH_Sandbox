@@ -127,7 +127,7 @@
   							}
 	  						
 	  						acctReqMod.add(new AttributeRequest("employeeType",ProvisioningPlan.Operation.Set,assignmentType));
-	  						acctReqMod.add(new AttributeRequest("employeeNumber",ProvisioningPlan.Operation.Set,employeeId));
+	  						acctReqMod.add(new AttributeRequest("employeeID",ProvisioningPlan.Operation.Set,employeeId));
 	  						accountRequests.add(acctReqMod);
 	  					}
 	  				}

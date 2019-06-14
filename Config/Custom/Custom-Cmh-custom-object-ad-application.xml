@@ -3,6 +3,7 @@
 <Custom name="CMH-Custom-Object-AD-Application">
     <Attributes>
         <Map>
+	    <entry key="homeDirPath" value="%%CMH-AD-HomeDirectory-Path%%"/>
             <entry key="O365License">
                 <value>
                     <List>
