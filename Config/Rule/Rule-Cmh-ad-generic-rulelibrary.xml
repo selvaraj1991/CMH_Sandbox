@@ -84,24 +84,25 @@
 				 * @return string
 				 */
 
-		public String getCustomObject(String customObjectName, String customName) {
-			log.info("CMH-AD-Generic-Rulelibrary : Entering getCustomObject()");
-			String userOU = null;
-			if (Util.isNotNullOrEmpty(customObjectName)) {
-				log.debug("CMH-AD-Generic-Rulelibrary : customObjectName :" + customObjectName);
+		public String getCustomObject(String customAttrName,String customObjectName) {
+			String customAttrValue = null;
+			if (Util.isNotNullOrEmpty(customAttrName) && Util.isNotNullOrEmpty(customObjectName)) {
 				Custom custom = null;
 				try {
-					custom = context.getObject(Custom.class, customName);
+					custom = context.getObject(Custom.class, customObjectName);
 				} catch(GeneralException e) {
-					log.error("CMH-AD-Generic-Rulelibrary : Error: " + e.getMessage());
+					log.error("CMH-AD-Generic-Rulelibrary : Error occured while retrieving cusotm object: " + e.getMessage());
 				}
 				if (null != custom) {
-					userOU = custom.get(customObjectName);
-					log.debug("CMH-AD-Generic-Rulelibrary : customData: " + userOU);
+					customAttrValue = custom.get(customAttrName);
 				}
 			}
-			log.info("CMH-AD-Generic-Rulelibrary : Exiting getCustomObject()");
-			return userOU;
+			if(Util.isNotNullOrEmpty(customAttrValue)){
+				log.debug("CMH-AD-Generic-Rulelibrary : customAttrValue fetched");
+			}else{
+				log.debug("CMH-AD-Generic-Rulelibrary : customAttrValue is null");
+			}
+			return customAttrValue;
 		}
 
 		/**
@@ -199,8 +200,6 @@
 			} else {
 				nameFilter = Filter.and(fNameFilter, lNameFilter);
 			}
-			//Forming the finalfilter
-			//finalFilter = Filter.and(Filter.and(Filter.or(nameFilter,uNameFilter),Filter.not(oldUserFilter)),Filter.not(empIdFilter));
 			finalFilter = Filter.and(lNameFilter, uNameFilter, Filter.not(oldUserFilter), Filter.not(empIdFilter));
 			QueryOptions qOps = new QueryOptions();
 			qOps.add(finalFilter);
@@ -916,6 +915,70 @@
         log.debug("CMH-Role-Assignment-Rule: assignmentType is NULL");
     }
     return roleStatus;
+  }
+  /***Method to retrive the homeDirectory path stored in the custom object***/
+  public String getHomeDirectoryPath(){
+    String homeDirectoryPath = null;
+    Custom custom = context.getObjectByName(Custom.class,"CMH-Custom-Object-AD-Application");
+    if(custom!=null){
+      homeDirectoryPath = custom.getString("homeDirPath");
+    }
+    return homeDirectoryPath;
+  }
+  
+  /***Method to check if the user required homedirectory***/
+  public boolean isHomeDirectoryReq(String assignType){
+    boolean homeDirReq = false;
+    Custom custom = context.getObjectByName(Custom.class,"CMH-Custom-HomeDirectory-UserTypes");
+    if(custom!=null && custom.get("UserTypes")!=null){
+      Map userMap = (Map)custom.get("UserTypes");
+      List nMailReqList = (List)userMap.get("NotRequiredMail"); 
+      if(!Util.isEmpty(nMailReqList) && nMailReqList.contains(assignType)){
+        homeDirReq = true;
+      }else {
+        List mailReqList = custom.getList("RequiredMail");
+        if(!Util.isEmpty(mailReqList) && mailReqList.contains(assignType)){
+          homeDirReq = true;
+        }
+      }
+    }
+    log.debug("CMH-AD-Generic-Rulelibrary: Is homeDirectory required? "+homeDirReq);
+    return homeDirReq;
+  }
+  
+  /***Method to retrieve the homeDirectory value***/
+  public String getHomeDirectory(String identityName){
+  	  log.debug("CMH-AD-Generic-Rulelibrary: Retrieve HomeDirectory for the User");
+	  String homeDirVal = null;
+	  if(Util.isNotNullOrEmpty(identityName)){
+		  Identity identity = context.getObjectByName(Identity.class,identityName);
+		  if(identity!=null){
+		    String assignType = identity.getStringAttribute("assignmentType");
+		    if(Util.isNotNullOrEmpty(assignType)){
+		      String homeDirPath = getHomeDirectoryPath();
+		      if(Util.isNotNullOrEmpty(homeDirPath)){
+		        if(isHomeDirectoryReq(assignType)){
+		          homeDirVal = homeDirPath.concat(identityName);
+		        }
+		      }
+		    }
+		  }
+	  }
+	  log.debug("CMH-AD-Generic-Rulelibrary: HomeDirectory value : "+homeDirVal+" for the User: "+identityName);
+	  return homeDirVal;
+  }
+  
+  /*** Method to retrieve the displayName for AD***/
+  public String getDisplayName(String firstName,String lastName, String initial) {     
+	  String displayName = null;
+	  if(Util.isNotNullOrEmpty(firstName) && Util.isNotNullOrEmpty(lastName)) {
+		  if(Util.isNotNullOrEmpty(initial)){
+		       displayName = lastName.concat(", ").concat(firstName).concat(" ").concat(initial).concat(".");
+		  }else {
+		       displayName = lastName.concat(", ").concat(lastName).concat(" .");
+		  }	
+      }
+    return displayName;
   }
   ]]></Source>
 </Rule>
