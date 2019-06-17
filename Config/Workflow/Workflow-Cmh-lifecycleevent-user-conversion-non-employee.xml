@@ -320,6 +320,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 				Identity identity = context.getObjectByName(Identity.class, identityName);
 				Application application = context.getObjectByName(Application.class, adAppName);
 				if (identity != null && application != null) {
+				    String homeDirectory = getHomeDirectory(identityName);
 					IdentityService ids = new IdentityService(context);
 					List appLink = ids.getLinks(identity, application);
 					if(null != appLink) {
@@ -339,6 +340,9 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 								    //if (mailRequired && null != mail) {
 									//Exchange code change employee to has email yes or no and o365 code
 								    //}
+								    if(Util.isNotNullOrEmpty(homeDirectory)){
+								 	   accModify.add(new AttributeRequest("homeDirectory",ProvisioningPlan.Operation.Set, homeDirectory));
+								 	}
 								    accountRequests.add(accModify);
 								 }	else {
 								     validationErrors.add("Old OU and New OU cannot be same: RUN AD Aggregation");
