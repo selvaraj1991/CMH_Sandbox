@@ -52,12 +52,19 @@
                     </ApplicationRef>
                 </AttributeSource>
             </ObjectAttribute>
-            <ObjectAttribute displayName="Company School" editMode="ReadOnly" name="companySchool" type="string">
-                <AttributeSource name="CompanySchool">
-                    <ApplicationRef>
-                        <Reference class="sailpoint.object.Application" name="%%CMH-Infor-ApplicationName%%"/>
-                    </ApplicationRef>
-                </AttributeSource>
+           <ObjectAttribute displayName="Company School" editMode="ReadOnly" name="companySchool" type="string">
+				<AttributeSource name="CompanySchool">
+				  <ApplicationRef>
+					<Reference class="sailpoint.object.Application" name="%%CMH-Infor-ApplicationName%%"/>
+				  </ApplicationRef>
+				</AttributeSource>
+				<AttributeTargets>
+				  <AttributeTarget name="company" provisionAllAccounts="true">
+					<ApplicationRef>
+					  <Reference class="sailpoint.object.Application" name="%%CMH-AD-ApplicationName%%"/>
+					</ApplicationRef>
+				  </AttributeTarget>
+				</AttributeTargets>
             </ObjectAttribute>
             <ObjectAttribute displayName="Employee Created Date" editMode="ReadOnly" name="dateEmployeeRecordCreated"
                              type="string">
@@ -157,13 +164,20 @@
                     </ApplicationRef>
                 </AttributeSource>
             </ObjectAttribute>
-            <ObjectAttribute displayName="Job Title" editMode="ReadOnly" name="jobTitle" type="string">
-                <AttributeSource name="PositionTitle">
-                    <ApplicationRef>
-                        <Reference class="sailpoint.object.Application" name="%%CMH-Infor-ApplicationName%%"/>
-                    </ApplicationRef>
-                </AttributeSource>
-            </ObjectAttribute>
+			<ObjectAttribute displayName="Job Title" editMode="ReadOnly" name="jobTitle" type="string">
+				<AttributeSource name="PositionTitle">
+				  <ApplicationRef>
+					<Reference class="sailpoint.object.Application" name="%%CMH-Infor-ApplicationName%%"/>
+				  </ApplicationRef>
+				</AttributeSource>
+				<AttributeTargets>
+				  <AttributeTarget name="title" provisionAllAccounts="true">
+					<ApplicationRef>
+					  <Reference class="sailpoint.object.Application" name="%%CMH-AD-ApplicationName%%"/>
+					</ApplicationRef>
+				  </AttributeTarget>
+				</AttributeTargets>
+			</ObjectAttribute>
             <ObjectAttribute displayName="Email Required" editMode="ReadOnly" name="mailReqd" type="string">
                 <AttributeSource name="EmailRequired">
                     <ApplicationRef>
@@ -239,14 +253,23 @@
                     </ApplicationRef>
                 </AttributeSource>
             </ObjectAttribute>
-            <ObjectAttribute displayName="Termination Date" editMode="ReadOnly" extendedNumber="8"
-                             name="terminationDate" type="string">
-                <AttributeSource name="TerminationDate">
-                    <ApplicationRef>
-                        <Reference class="sailpoint.object.Application" name="%%CMH-Infor-ApplicationName%%"/>
-                    </ApplicationRef>
-                </AttributeSource>
-            </ObjectAttribute>
+            <ObjectAttribute displayName="Termination Date" editMode="ReadOnly" extendedNumber="8" name="terminationDate" type="string">
+				<AttributeSource name="TerminationDate">
+				  <ApplicationRef>
+					<Reference class="sailpoint.object.Application" name="%%CMH-Infor-ApplicationName%%"/>
+				  </ApplicationRef>
+				</AttributeSource>
+				<AttributeTargets>
+				  <AttributeTarget name="accountExpires" provisionAllAccounts="true">
+					<ApplicationRef>
+					  <Reference class="sailpoint.object.Application" name="%%CMH-AD-ApplicationName%%"/>
+					</ApplicationRef>
+					<RuleRef>
+					  <Reference class="sailpoint.object.Rule" name="CMH-AD-AccountExpire-Update-Rule"/>
+					</RuleRef>
+				  </AttributeTarget>
+				</AttributeTargets>
+			</ObjectAttribute>
             <ObjectAttribute displayName="UserName" editMode="ReadOnly" extendedNumber="9" name="userName"
                              type="string">
                 <AttributeSource name="Username">
@@ -335,6 +358,40 @@
                     </AttributeTarget>
                 </AttributeTargets>
             </ObjectAttribute>
-        </ObjectConfig>
+            <ObjectAttribute displayName="Department-AD" editMode="ReadOnly" name="adDepartment" type="string">
+				<AttributeSource name="AppRule: CMH-AD-Department-Rule Infor HR Database">
+				  <ApplicationRef>
+					<Reference class="sailpoint.object.Application" name="%%CMH-Infor-ApplicationName%%"/>
+				  </ApplicationRef>
+				  <RuleRef>
+					<Reference class="sailpoint.object.Rule" name="CMH-AD-Department-Rule"/>
+				  </RuleRef>
+				</AttributeSource>
+				<AttributeTargets>
+				  <AttributeTarget name="department" provisionAllAccounts="true">
+					<ApplicationRef>
+					  <Reference class="sailpoint.object.Application" name="%%CMH-AD-ApplicationName%%"/>
+					</ApplicationRef>
+				  </AttributeTarget>
+				</AttributeTargets>
+		    </ObjectAttribute>
+		    <ObjectAttribute displayName="Physical Delivery Office - AD" editMode="ReadOnly" name="adPhysicalDeliveryOfficeName" type="string">
+				<AttributeSource name="AppRule: CMH-AD-PhysicalDeliveryOffice-Rule Infor HR Database">
+				  <ApplicationRef>
+					<Reference class="sailpoint.object.Application" name="%%CMH-Infor-ApplicationName%%"/>
+				  </ApplicationRef>
+				  <RuleRef>
+					<Reference class="sailpoint.object.Rule" name="CMH-AD-PhysicalDeliveryOffice-Rule"/>
+				  </RuleRef>
+				</AttributeSource>
+				<AttributeTargets>
+				  <AttributeTarget name="physicalDeliveryOfficeName" provisionAllAccounts="true">
+					<ApplicationRef>
+					  <Reference class="sailpoint.object.Application" name="%%CMH-AD-ApplicationName%%"/>
+					</ApplicationRef>
+				  </AttributeTarget>
+				</AttributeTargets>
+			</ObjectAttribute>
+		</ObjectConfig>
     </ImportAction>
 </sailpoint>
