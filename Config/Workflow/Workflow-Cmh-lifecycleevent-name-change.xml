@@ -526,7 +526,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 								 	}	
 								 	if(hasEmail) {
 								 	   accModify.add(new AttributeRequest("mail",ProvisioningPlan.Operation.Set,newIdentityName + "%%CMH-Mail-Domain%%"));
-								 	   accModify.add(new AttributeRequest("userPrincipalName",ProvisioningPlan.Operation.Set,newIdentityName + "@cmhAd.com"));								 	  
+								 	   accModify.add(new AttributeRequest("userPrincipalName",ProvisioningPlan.Operation.Set,newIdentityName + "%%CMH-Mail-Domain%%"));								 	  
 								 	}
 								 	accountRequests.add(accModify);											 
 							 }
