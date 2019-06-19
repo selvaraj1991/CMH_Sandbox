@@ -506,7 +506,6 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 				Application application = context.getObjectByName(Application.class, adAppName);
 				if (identity != null && application != null) {
 				    String displayName = getDisplayName(identity.getFirstname(), identity.getLastname(), identity.getStringAttribute("middleInitial"));
-				    String homeDirectory = getHomeDirectory(newIdentityName);
 					IdentityService ids = new IdentityService(context);
 					List appLink = ids.getLinks(identity, application);
 					if( null != appLink) {
@@ -527,10 +526,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 								 	}	
 								 	if(hasEmail) {
 								 	   accModify.add(new AttributeRequest("mail",ProvisioningPlan.Operation.Set,newIdentityName + "%%CMH-Mail-Domain%%"));
-								 	   accModify.add(new AttributeRequest("userPrincipalName",ProvisioningPlan.Operation.Set,newIdentityName + "@cmhAd.com"));								 	  
-								 	}
-								 	if(Util.isNotNullOrEmpty(homeDirectory)){
-								 	   accModify.add(new AttributeRequest("homeDirectory",ProvisioningPlan.Operation.Set, homeDirectory));
+								 	   accModify.add(new AttributeRequest("userPrincipalName",ProvisioningPlan.Operation.Set,newIdentityName + "%%CMH-Mail-Domain%%"));								 	  
 								 	}
 								 	accountRequests.add(accModify);											 
 							 }

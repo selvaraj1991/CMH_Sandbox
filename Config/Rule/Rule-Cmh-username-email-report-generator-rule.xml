@@ -74,6 +74,11 @@
 				for (int i = 0; i < arrList.size(); i++) {
 					Identity user = context.getObjectByName(Identity.class, arrList.get(i).toString());
 					if (null != user && user.isCorrelated()) {
+					    String supervisor = null;
+						Identity idenManager = user.getManager();
+						if(null != idenManager){
+						   supervisor = idenManager.getName();
+						} 
 						Map map = new HashMap();
 						map.put("Username", user.getName());
 						map.put("Email", user.getEmail());
@@ -81,6 +86,7 @@
 						map.put("LastName", user.getLastname());
 						map.put("EmployeeType", user.getStringAttribute("userType"));
 						map.put("EmployeeID", user.getStringAttribute("employeeId"));
+						map.put("Supervisor",supervisor);
 						dataList.add(map);
 					}
 				}
@@ -190,6 +196,11 @@
 					while (itr.hasNext()) {
 						Identity user = (Identity) itr.next();
 						if (null != user && user.isCorrelated()) {
+						    String supervisor = null;
+						    Identity idenManager = user.getManager();
+						    if(null != idenManager){
+						       supervisor = idenManager.getName();
+						    } 
 							Map map = new HashMap();
 							map.put("Username", user.getName());
 							map.put("Email", user.getEmail());
@@ -197,6 +208,7 @@
 							map.put("LastName", user.getLastname());
 							map.put("EmployeeType", user.getStringAttribute("userType"));
 							map.put("EmployeeID", user.getStringAttribute("employeeId"));
+							map.put("Supervisor",supervisor);
 							list.add(map);
 						}
 					}
@@ -224,10 +236,10 @@
 			if (null != finalList && finalList.size() > 0) {
 			    String format = getCustomObject("userNameFileNameTimestamp","CMH-DateFormat");
 			    if(Util.isNotNullOrEmpty(format)) {
-					DateFormat currentDateFormatWithTime = new SimpleDateFormat("format");
+					DateFormat currentDateFormatWithTime = new SimpleDateFormat(format);
 					String strCurrentDateTime = currentDateFormatWithTime.format(endTime);
 					String filename = "UsernameEmailDetails" + strCurrentDateTime + ".csv";
-					String FILE_HEADER = "Username,Email,EmployeeID,FirstName,LastName,EmployeeType";
+					String FILE_HEADER = "Username,Email,EmployeeID,FirstName,LastName,EmployeeType,Supervisor";
 					Map map = null;
 					String filepath = getCustomObject("filepath", "CMH-Custom-Generic-Filepath");
 					if (null != filepath) {
@@ -253,6 +265,12 @@
 								fileWriter.append(map.get("LastName").toString());
 								fileWriter.append(coMMA_DELIMITER);
 								fileWriter.append(map.get("EmployeeType").toString());
+								fileWriter.append(coMMA_DELIMITER);
+								if (null != (map.get("Supervisor"))) {
+									fileWriter.append(map.get("Supervisor").toString());
+								} else {
+									fileWriter.append("NULL");
+								}
 								fileWriter.append(neW_LINE_SEPARATOR);
 	
 							}
