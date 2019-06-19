@@ -8,8 +8,7 @@
     </AccountCorrelationConfig>
     <Attributes>
         <Map>
-            <entry key="SQL"
-                   value="select * from users/>
+            <entry key="SQL" value="select * from users"/>
             <entry key="acctAggregationEnd">
                 <value>
                     <Date>1557314245171</Date>
