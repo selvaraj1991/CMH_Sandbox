@@ -41,7 +41,7 @@
             <entry key="cacheRmiPort" value="40001"/>
             <entry key="compositeDefinition"/>
             <entry key="deletedObjectsContainer" value="CN=Deleted Objects,DOMAIN"/>
-            <entry key="deltaIterationMode" value="uSNChanged"/>
+      <entry key="deltaIterationMode" value="DirSync"/>
             <entry key="disableComputePreloading">
                 <value>
                     <Boolean>true</Boolean>
@@ -258,35 +258,19 @@
                         <Source><![CDATA[return identity.getStringAttribute("employeeId");]]></Source>
                     </Script>
                 </Field>
-                <Field displayName="co" name="co" type="string"/>
-                <Field displayName="c" name="c" type="string"/>
-                <Field displayName="countryCode" name="countryCode" type="string"/>
+        <Field displayName="co" name="co" type="string" value="United States"/>
+        <Field displayName="c" name="c" type="string" value="US"/>
+        <Field displayName="countryCode" name="countryCode" type="string" value="840"/>
         <Field displayName="displayName" name="displayName" type="string">
+          <RuleRef>
+            <Reference class="sailpoint.object.Rule" name="CMH-AD-Displayname-Rule"/>
+          </RuleRef>
+        </Field>
+        <Field displayName="displayNamePrintable" name="displayNamePrintable" type="string">
           <Script>
-            <Source><![CDATA[
-            
-			String displayName = "";
-			String lastName = identity.getLastname();
-			if(lastName!=null){
-				displayName = displayName.concat(lastName);
-			}
-			String firstName = identity.getFirstname();
-			if(firstName!=null){
-				if(displayName!=null && !displayName.isEmpty()){
-					displayName = displayName.concat(", ");
-				}
-				displayName = displayName.concat(firstName);
-			}
-			String initials = identity.getStringAttribute("middleInitial");
-			if(initials!=null && !initials.isEmpty()){
-				displayName = displayName.concat(" ").concat(initials).concat(".");
-			}
-			return displayName;
-			
-			]]></Source>
+            <Source><![CDATA[return identity.getName();]]></Source>
           </Script>
         </Field>
-                <Field displayName="displayNamePrintable" name="displayNamePrintable" type="string"/>
         <Field displayName="homeDirectory" name="homeDirectory" type="string">
           <RuleRef>
             <Reference class="sailpoint.object.Rule" name="CMH-AD-HomeDirectory-Rule"/>
@@ -705,6 +689,12 @@
             </AttributeDefinition>
       <AttributeDefinition name="countryCode" type="string">
         <Description>840 by default for all users</Description>
+      </AttributeDefinition>
+      <AttributeDefinition name="homeDirectory" type="string">
+        <Description>Home Directory</Description>
+      </AttributeDefinition>
+      <AttributeDefinition name="name" type="string">
+        <Description>Name similar to sAMAccountName</Description>
       </AttributeDefinition>
         </Schema>
         <Schema displayAttribute="sAMAccountName" featuresString="PROVISIONING, GROUPS_HAVE_MEMBERS"
