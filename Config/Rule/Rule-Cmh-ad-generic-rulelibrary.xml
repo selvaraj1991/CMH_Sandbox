@@ -370,7 +370,7 @@
 		}
 
 		/**
-				 * Check username in cerner.
+				 * Check username in cerner/infor.
 				 * Description: this method validates username against custom object
 				 * @param username
 				 * @param customName
@@ -980,5 +980,36 @@
       }
     return displayName;
   }
+		/**
+				 * Check user Data In Custom Object
+				 * Description: this method validates job data against custom object
+				 * @param jobdata
+				 * @param customName
+				 * @param entryKey
+				 * @return true
+				 */
+   public boolean checkDataInCustomObject(String jobData, String customName,String entryKey) {
+	    log.debug("CMH-AD-Generic-Rulelibrary : Entering checkDataInCustomObject()");
+	    boolean isSuccess = false;
+		if(Util.isNotNullOrEmpty(jobData) && Util.isNotNullOrEmpty(customName) && Util.isNotNullOrEmpty(entryKey) ) {
+		    log.debug("jobData,customName,entryKey:"+jobData+customName+entryKey);
+			Custom custom = null;
+			try {
+				custom = context.getObject(Custom.class, customName);
+			} catch (GeneralException e) {
+				log.error("CMH-AD-Generic-Rulelibrary: Error checkDataInCustomObject : " + e.getMessage());
+			}
+	
+			List arr = custom.getList(entryKey);
+			if (!Util.isEmpty(arr)) {
+				if (arr.contains(jobData)) {
+					isSuccess= true;
+				}
+			}
+		}
+		log.debug("CMH-AD-Generic-Rulelibrary :checkDataInCustomObject(): isSuccess="+isSuccess);
+		log.debug("CMH-AD-Generic-Rulelibrary : Exiting checkDataInCustomObject()");
+		return isSuccess;	
+   }
   ]]></Source>
 </Rule>
