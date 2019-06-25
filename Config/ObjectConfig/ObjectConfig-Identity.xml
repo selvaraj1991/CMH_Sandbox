@@ -392,6 +392,13 @@
 				  </AttributeTarget>
 				</AttributeTargets>
 			</ObjectAttribute>
+			  <ObjectAttribute displayName="CmhDeptType" editMode="ReadOnly" name="cmhDeptType" type="string">
+                <AttributeSource name="CmhDeptType">
+                    <ApplicationRef>
+                        <Reference class="sailpoint.object.Application" name="%%CMH-Infor-ApplicationName%%"/>
+                    </ApplicationRef>
+                </AttributeSource>
+            </ObjectAttribute>
 		</ObjectConfig>
     </ImportAction>
 </sailpoint>

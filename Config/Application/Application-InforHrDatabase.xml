@@ -159,7 +159,8 @@
             <AttributeDefinition name="WorkAssignment" type="string"/>
             <AttributeDefinition name="OtherEmpId" type="string"/>
             <AttributeDefinition name="AssignmentType" type="string"/>
-      <AttributeDefinition name="OtherEmail" type="string"/>
+            <AttributeDefinition name="OtherEmail" type="string"/>
+			<AttributeDefinition name="CmhDeptType" type="string"/>
         </Schema>
     </Schemas>
     <ApplicationScorecard/>
