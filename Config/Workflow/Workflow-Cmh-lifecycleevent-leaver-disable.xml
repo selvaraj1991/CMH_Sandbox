@@ -455,7 +455,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
     </Transition>
     <Transition to="end"/>
   </Step>
-  <Step icon="Task" name="Create ServiceNow Ticket">
+  <Step icon="Task" name="Create ServiceNow Ticket" resultVariable="snowTicketId">
     <Script>
       <Source><![CDATA[
 			  
@@ -467,13 +467,14 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 				if(validationErrors==null){
 				validationErrors = new ArrayList();
 			    }
+			    String snowTicketId = null;
 	            Object ticketObj = generateSnowTicket(identityName, "CMH-Service-Ticket-Configuration-Object", "DISABLE");
 		        if(null != ticketObj) {
 		           if(ticketObj instanceof List) {
 		              List errList  = (List) ticketObj;
 					  validationErrors.add(errList);
 				   }else if(ticketObj instanceof String) {
-		              String snowTicketId = (String) ticketObj;	
+		              snowTicketId = (String) ticketObj;	
 					  log.debug("CMH-LifecycleEvent-Leaver-Disable:Ticket Created:"+snowTicketId);
                       wfcontext.getWorkflowCase().put("snowTicketId",snowTicketId);					  
 		           }else {
@@ -483,6 +484,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 				   validationErrors.add("NULL : Unable to generate ticket");				   
     	        }
 				wfcontext.getWorkflowCase().put("validationErrors",validationErrors);
+				return snowTicketId;
       ]]></Source>
     </Script>
     <Transition to="Single Account Aggregation"/>
@@ -569,6 +571,9 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 			    Map map = new HashMap();
 			    map.put("setString1","Leaver Disable is successfully completed" );
   				auditWrite("Leaver-Disable Success",source,target,attributeName,attributeValue,map);
+  				if(Util.isNotNullOrEmpty(snowTicketId)){
+  					strMap.put("setString3","ServiceNow ticket : "+snowTicketId);
+  				}
 				
   			}else{
   			    Map map = new HashMap();

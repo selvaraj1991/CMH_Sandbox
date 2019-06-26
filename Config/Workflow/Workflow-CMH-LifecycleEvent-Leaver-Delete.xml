@@ -370,7 +370,7 @@
 		  			log.error("CMH-LifecycleEvent-Leaver-Delete: Error occured while generating the serive now ticket "+Util.listToCsv(validationErrors));
   				}
   			}
-  			
+  			wfcontext.getWorkflowCase().put("validationErrors",validationErrors);
   			return snowId;
   		]]>
   		</Source>
