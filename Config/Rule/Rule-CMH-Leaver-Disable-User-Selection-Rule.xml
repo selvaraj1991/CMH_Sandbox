@@ -38,13 +38,13 @@
 	import sailpoint.object.Identity;
 	import sailpoint.object.Filter;
 	import sailpoint.object.QueryOptions;
-	import sailpoint.tools.Util; 
+	import sailpoint.tools.Util;
 	import org.apache.log4j.Logger;
-  
+
     Logger log = Logger.getLogger("cmh.authsource.rules");
-           
+
     log.debug("Entering CMH-Leaver-Disable-User-Selection-Rule");
-    
+
     boolean disableUser = false;
     if(null !=identity) {
 		String empId = identity.getStringAttribute("employeeId");
@@ -61,16 +61,16 @@
 				int count = context.countObjects(Identity.class,ops);
 				log.debug("CMH-Leaver-Disable-User-Selection-Rule: Count value from the search :"+count);
 				if(count>0){
-					disableUser = false;
+					disableUser = false; //User is conversion user
 				}
 			}else{
-				disableUser = true;
+				disableUser = true;   //User is not a conversion user
 			}
-			
+
 		}
 	}
     log.debug("CMH-Leaver-Disable-User-Selection-Rule: User Found ? :"+disableUser);
-    
+
     return disableUser;
   ]]></Source>
 </Rule>
