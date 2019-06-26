@@ -479,6 +479,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 		           }else {
 		    	     validationErrors.add("The Object Type is NOT List OR String");					 
 		           }
+    	        }else {
 				   validationErrors.add("NULL : Unable to generate ticket");				   
     	        }
 				wfcontext.getWorkflowCase().put("validationErrors",validationErrors);
