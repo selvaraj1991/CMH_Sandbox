@@ -186,11 +186,11 @@
 						account.setDisplayName(oldIdentityName);
 					}
 				}else{
-          log.debug("CMH-User-Creation-Rule:Username & OtherEmpId is not null and user with OtherEmpId Status is not Terminated, so creating user with unique name");
+					log.debug("CMH-User-Creation-Rule:Username & OtherEmpId is not null and user with OtherEmpId Status is not Terminated, so creating user with unique name");
 					createNewUser(firstName,lastName,middInitial,employeeId,userType,mailRequired,status);
 				}
 			}else{
-        log.debug("CMH-User-Creation-Rule:Username & OtherEmpId is not null and user with OtherEmpId is not found in Sailpoint, so creating user with unique name");
+				log.debug("CMH-User-Creation-Rule:Username & OtherEmpId is not null and user with OtherEmpId is not found in Sailpoint, so creating user with unique name");
 				createNewUser(firstName,lastName,middInitial,employeeId,userType,mailRequired,status);
 			}
 		} catch (GeneralException e) {
@@ -199,7 +199,7 @@
 			sailpoint.tools.Util.flushIterator(userItr);
 		}
 	} else {
-    log.debug("CMH-User-Creation-Rule:Either Username or OtherEmpId is null, so creating user with unique name");
+		log.debug("CMH-User-Creation-Rule:Either Username or OtherEmpId is null, so creating user with unique name");
 		createNewUser(firstName,lastName,middInitial,employeeId,userType,mailRequired,status);
 	}
 
