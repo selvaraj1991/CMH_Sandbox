@@ -2,6 +2,9 @@
 <!DOCTYPE Rule PUBLIC "sailpoint.dtd" "sailpoint.dtd">
 <Rule language="beanshell" name="CMH-AD-HomeDirectory-Rule" type="FieldValue">
   <Description>This rule can be used to generate a field value (eg - an account name) using data from the given Identity. If this rule is run in the context of a workflow step then the arguments passed into the step will also be available. Also, any field values that have been processed so far from the policy related to the Application/Role will be available.</Description>
+  <ReferencedRules>
+    <Reference class="sailpoint.object.Rule" name="CMH-AD-Generic-Rulelibrary"/>
+  </ReferencedRules>
   <Signature returnType="String">
     <Inputs>
       <Argument name="log">
@@ -90,49 +93,13 @@
     </Returns>
   </Signature>
   <Source><![CDATA[
-  import sailpoint.object.Custom;
   import sailpoint.tools.Util;
-
-
-  public String getHomeDirectoryPath(){
-    String homeDirectoryPath = null;
-    Custom custom = context.getObjectByName(Custom.class,"CMH-Custom-Object-AD-Application");
-    if(custom!=null){
-      homeDirectoryPath = custom.getString("homeDirPath");
-    }
-    return homeDirectoryPath;
-  }
-
-
-  public boolean isHomeDirectoryReq(String assignType){
-    boolean homeDirReq = false;
-    Custom custom = context.getObjectByName(Custom.class,"CMH-Custom-HomeDirectory-UserTypes");
-    if(custom!=null && custom.get("UserTypes")!=null){
-      Map userMap = (Map)custom.get("UserTypes");
-      List nMailReqList = custom.getList("NotRequiredMail"); 
-      if(!Util.isEmpty(nMailReqList) && nMailReqList.contains(assignType)){
-        homeDirReq = true;
-      }else {
-        List mailReqList = custom.getList("RequiredMail");
-        if(!Util.isEmpty(mailReqList) && mailReqList.contains(assignType)){
-          homeDirReq = true;
-        }
-      }
-    }
-    return homeDirReq;
-  }
 
   String homeDirVal = null;
   if(identity!=null){
-    String idenName = identity.getName();
-    String assignType = identity.getStringAttribute("assignmentType");
-    if(Util.isNotNullOrEmpty(idenName) && Util.isNotNullOrEmpty(assignType)){
-      String homeDirPath = getHomeDirectoryPath();
-      if(Util.isNotNullOrEmpty(homeDirPath)){
-        if(isHomeDirectoryReq(assignType)){
-          homeDirVal = homeDirPath.concat(idenName);
-        }
-      }
+  	String identityName = identity.getName();
+  	if(Util.isNotNullOrEmpty(identityName)){
+  		homeDirVal = getHomeDirectory(identityName);
     }
   }
   return homeDirVal;
