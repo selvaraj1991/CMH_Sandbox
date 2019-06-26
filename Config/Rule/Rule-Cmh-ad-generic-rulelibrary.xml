@@ -384,12 +384,13 @@
 			} catch(GeneralException e) {
 				log.error("CMH-AD-Generic-Rulelibrary: Error checking username in Cerner : " + e.getMessage());
 			}
-
-			List arr = custom.getList("USERNAMES");
-			if (!Util.isEmpty(arr)) {
-				if (arr.contains(username)) {
-					log.debug("CMH-AD-Generic-Rulelibrary : Exiting checkUsernameInCustomObject()");
-					return true;
+			if(custom!=null){
+				List arr = custom.getList("USERNAMES");
+				if (!Util.isEmpty(arr)) {
+					if (arr.contains(username)) {
+						log.debug("CMH-AD-Generic-Rulelibrary : Exiting checkUsernameInCustomObject()");
+						return true;
+					}
 				}
 			}
 			log.debug("CMH-AD-Generic-Rulelibrary : Exiting checkUsernameInCustomObject(String username)");
@@ -999,11 +1000,12 @@
 			} catch (GeneralException e) {
 				log.error("CMH-AD-Generic-Rulelibrary: Error checkDataInCustomObject : " + e.getMessage());
 			}
-	
-			List arr = custom.getList(entryKey);
-			if (!Util.isEmpty(arr)) {
-				if (arr.contains(jobData)) {
-					isSuccess= true;
+			if(custom!=null){
+				List arr = custom.getList(entryKey);
+				if (!Util.isEmpty(arr)) {
+					if (arr.contains(jobData)) {
+						isSuccess= true;
+					}
 				}
 			}
 		}

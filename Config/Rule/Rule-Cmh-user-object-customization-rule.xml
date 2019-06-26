@@ -105,12 +105,14 @@
   public void updateCustomobj(String empId, String customObjName){
   	if(Util.isNotNullOrEmpty(empId) && Util.isNotNullOrEmpty(customObjName)){
   		Custom customObj = context.getObjectByName(Custom.class,customObjName);
-  		Attributes attrs = customObj.getAttributes();
-  		if(attrs!=null && attrs.containsKey(empId)){
-  			customObj.remove(empId);
-  			context.saveObject(customObj);
-  			context.commitTransaction();
-  		}
+		if(customObj!=null){
+			Attributes attrs = customObj.getAttributes();
+			if(attrs!=null && attrs.containsKey(empId)){
+				customObj.remove(empId);
+				context.saveObject(customObj);
+				context.commitTransaction();
+			}
+		}
   	}
   }
 
