@@ -476,7 +476,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 				   }else if(ticketObj instanceof String) {
 		              snowTicketId = (String) ticketObj;	
 					  log.debug("CMH-LifecycleEvent-Leaver-Disable:Ticket Created:"+snowTicketId);
-                      wfcontext.getWorkflowCase().put("snowTicketId",snowTicketId);					  
+                      				  
 		           }else {
 		    	     validationErrors.add("The Object Type is NOT List OR String");					 
 		           }
@@ -570,11 +570,10 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 			if(Util.isEmpty(validationErrors)){
 			    Map map = new HashMap();
 			    map.put("setString1","Leaver Disable is successfully completed" );
-  				auditWrite("Leaver-Disable Success",source,target,attributeName,attributeValue,map);
   				if(Util.isNotNullOrEmpty(snowTicketId)){
-  					strMap.put("setString3","ServiceNow ticket : "+snowTicketId);
+  					map.put("setString2","ServiceNow ticket : "+snowTicketId);
   				}
-				
+				auditWrite("Leaver-Disable Success",source,target,attributeName,attributeValue,map);
   			}else{
   			    Map map = new HashMap();
   			    int counter = validationErrors.size();
