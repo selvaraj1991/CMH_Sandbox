@@ -465,14 +465,18 @@
 				event.setTarget(target);
 				event.setAttributeName(attributeName);
 				event.setAttributeValue(attributeValue);
-				if (null != map.get("setString1")) {
+				if(null != map) { 
+				    for(String entry :map.keySet()) {
+						if (Util.nullSafeCaseInsensitiveEq(entry,"setString1") && null != map.get("setString1")) {
 					event.setString1((String) map.get("setString1"));
-				} else if (null != map.get("setString2")) {
+						} else if (Util.nullSafeCaseInsensitiveEq(entry,"setString2") && null != map.get("setString2")) {
 					event.setString2((String) map.get("setString2"));
-				} else if (null != map.get("setString3")) {
+						} else if (Util.nullSafeCaseInsensitiveEq(entry,"setString3") && null != map.get("setString3")) {
 					event.setString3((String) map.get("setString3"));
-				} else if (null != map.get("setString4")) {
+						} else if (Util.nullSafeCaseInsensitiveEq(entry,"setString4") && null != map.get("setString4")) {
 					event.setString4((String) map.get("setString4"));
+						}
+					}
 				}
 				Auditor.log(event);
 				log.debug("audit ends");
@@ -797,7 +801,6 @@
 								}
 							}
 							count++;
-							System.out.println("index: " + index);
 
 						} else {
 							cols = line.split(cvsSplitBy);
@@ -858,11 +861,20 @@
 							custom.remove(lock);
 							flag = true;
 						}
+					}else {
+					      log.debug("CMH-AD-Generic-Rulelibrary : writeToCustomObject(): Creating custom Object");
+					      custom = new Custom();
+					      custom.setName(customName);
+					      custom.put("USERNAMES",unameList);
+					      context.saveObject(custom);
+                          context.commitTransaction();
+                          flag = true;
 					}
 				} catch(GeneralException e) {
 					log.error("CMH-AD-Generic-Rulelibrary :ERROR: " + e.getMessage());
 				}
 			}
+			log.debug("CMH-AD-Generic-Rulelibrary : writeToCustomObject() is ? : "+flag);
 			log.debug("CMH-AD-Generic-Rulelibrary : Exiting writeToCustomObject()");
 			return flag;
 		}
