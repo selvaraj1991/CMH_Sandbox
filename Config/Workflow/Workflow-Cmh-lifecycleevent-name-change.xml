@@ -259,7 +259,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   <RuleLibraries>
     <Reference class="sailpoint.object.Rule" name="CMH-AD-Generic-Rulelibrary"/>
   </RuleLibraries>
-  <Step icon="Start" name="Start" posX="28" posY="10" wait="1">
+  <Step icon="Start" name="Start" posX="33" posY="128" wait="1">
     <Script>
       <Source><![CDATA[
   		
@@ -274,7 +274,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
     </Script>
     <Transition to="Validate Data"/>
   </Step>
-  <Step icon="Task" name="Validate Data" posX="28" posY="18" resultVariable="validationErrors">
+  <Step icon="Analysis" name="Validate Data" posX="165" posY="126" resultVariable="validationErrors">
     <Script>
       <Source><![CDATA[
 			  
@@ -322,7 +322,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
     </Transition>
     <Transition to="end"/>
   </Step>
-  <Step icon="Task" name="Generate User Name" posX="28" posY="10">
+  <Step icon="Task" name="Generate User Name" posX="233" posY="234">
     <Script>
       <Source><![CDATA[
   		      import sailpoint.object.Identity;
@@ -387,7 +387,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
     </Transition>
     <Transition to="end"/>
   </Step>
-  <Step icon="Task" name="update Custom object" posX="28" posY="10" resultVariable="validationErrors">
+  <Step icon="Default" name="update Custom object" posX="299" posY="344" resultVariable="validationErrors">
     <Script>
       <Source><![CDATA[
                 
@@ -445,7 +445,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
     </Script>
     <Transition to="update Name and Email in Infor"/>
   </Step>
-  <Step icon="Task" name="update Name and Email in Infor" posX="28" posY="10">
+  <Step icon="Default" name="update Name and Email in Infor" posX="449" posY="343">
     <Script>
       <Source><![CDATA[
 	  		        import org.apache.log4j.Logger;
@@ -481,7 +481,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
     </Script>
     <Transition to="Update AD Name and Email"/>
   </Step>
-  <Step icon="Task" name="Update AD Name and Email" posX="28" posY="10" resultVariable="plan">
+  <Step icon="Task" name="Update AD Name and Email" posX="605" posY="344" resultVariable="plan">
     <Script>
       <Source><![CDATA[
   		        import org.apache.log4j.Logger;
@@ -544,7 +544,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
     </Script>
     <Transition to="Compile Project"/>
   </Step>
-  <Step action="call:compileProvisioningProject" icon="Task" name="Compile Project" posX="429" posY="150" resultVariable="project">
+  <Step action="call:compileProvisioningProject" icon="Task" name="Compile Project" posX="747" posY="342" resultVariable="project">
     <Arg name="requester" value="string:spadmin"/>
     <Arg name="requireCreateTemplates" value="string:false"/>
     <Arg name="identityName" value="ref:identityName"/>
@@ -563,7 +563,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
                  defining Args in this step.</Description>
     <Transition to="Create Identity Request"/>
   </Step>
-  <Step action="call:createIdentityRequest" icon="Task" name="Create Identity Request" posX="841" posY="239">
+  <Step action="call:createIdentityRequest" icon="Task" name="Create Identity Request" posX="883" posY="342">
     <Arg name="project" value="ref:project"/>
     <Arg name="source" value="ref:source"/>
     <Arg name="priority" value="string:Normal"/>
@@ -572,12 +572,12 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
     <Return name="identityRequestId" to="identityRequestId"/>
     <Transition to="Provision"/>
   </Step>
-  <Step action="call:provisionProject" icon="Provision" name="Provision" posX="682" posY="10">
+  <Step action="call:provisionProject" icon="Provision" name="Provision" posX="1026" posY="341">
     <Arg name="background" value="false"/>
     <Arg name="project" value="ref:project"/>
     <Transition to="Complete Identity Request"/>
   </Step>
-  <Step action="call:completeIdentityRequest" icon="Task" name="Complete Identity Request" posX="953" posY="94" resultVariable="identityRequest">
+  <Step action="call:completeIdentityRequest" icon="Task" name="Complete Identity Request" posX="1142" posY="339" resultVariable="identityRequest">
     <Arg name="project" value="ref:project"/>
     <Arg name="autoVerify" value="false"/>
     <Arg name="identityRequestId" value="ref:identityRequestId"/>
@@ -596,7 +596,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
     </Transition>
     <Transition to="end"/>
   </Step>
-  <Step action="call:sendEmail" condition="script:managerEmail!=null" icon="Email" name="Notify Manager" posX="1264" posY="32">
+  <Step action="call:sendEmail" condition="script:managerEmail!=null" icon="Email" name="Notify Manager" posX="1209" posY="451">
     <Arg name="to" value="ref:managerEmail"/>
     <Arg name="template">
     	<Script>
@@ -627,7 +627,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
     <Transition to="Notify User" when="return ((hasEmail==true) &amp;&amp; (null !=newEmail ))"/>
     <Transition to="Update Role Account Name"/>
   </Step>
-  <Step action="call:sendEmail" condition="script:email!=null" icon="Email" name="Notify User" posX="1264" posY="32">
+  <Step action="call:sendEmail" condition="script:email!=null" icon="Email" name="Notify User" posX="1276" posY="555">
     <Arg name="to" value="ref:email"/>
     <Arg name="template" value="ref:userNameChange"/>
     <Arg name="identityName" value="ref:newIdentityName"/>
@@ -636,7 +636,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
     <Description>Send Email to User</Description>
     <Transition to="Update Role Account Name"/>
   </Step>
-  <Step icon="Task" name="Update Role Account Name" posX="28" posY="18" resultVariable="validationErrors">
+  <Step icon="Default" name="Update Role Account Name" posX="1430" posY="554" resultVariable="validationErrors">
    <Script>
    <Source>
       <![CDATA[
@@ -672,7 +672,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
    </Script>
     <Transition to="Single Account Aggregation"/>
   </Step>
-  <Step icon="Task" name="Single Account Aggregation" posX="28" posY="18" resultVariable="validationErrors">
+  <Step icon="Task" name="Single Account Aggregation" posX="1586" posY="554" resultVariable="validationErrors">
     <Script>
       <Source><![CDATA[
 			    import org.apache.log4j.Logger;
@@ -720,14 +720,14 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
     </Script>
     <Transition to="Refresh Identity"/>
   </Step>
-      <Step action="call:refreshIdentity" icon="Task" name="Refresh Identity">
+  <Step action="call:refreshIdentity" icon="Task" name="Refresh Identity" posX="1586" posY="425">
     <Arg name="identityName" value="ref:newIdentityName"/>
     <Arg name="correlateEntitlements" value="true"/>
     <Arg name="refreshRoleMetadata" value="true"/>
     <Arg name="refreshIdentityEntitlements" value="true"/>
     <Transition to="end"/>
   </Step>
-  <Step catches="complete" icon="Catches" name="Check Status" posX="778" posY="180">
+  <Step catches="complete" icon="Catches" name="Check Status" posX="32" posY="10">
     <Arg name="attributeName" value="string:Employee ID"/>
     <Arg name="source" value="string:CMH-LifecycleEvent-Name-Change"/>
     <Arg name="attributeValue" value="ref:employeeId"/>
@@ -781,5 +781,5 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
     </Script>
     <Transition to="end"/>
   </Step>
-  <Step icon="Stop" name="end" posX="784" posY="10"/>
+  <Step icon="Stop" name="end" posX="1588" posY="129"/>
 </Workflow>

@@ -99,7 +99,8 @@
   	String lastName = identity.getLastname();
 	String firstName = identity.getFirstname();
 	String initials = identity.getStringAttribute("middleInitial");
-	displayName = getDisplayName(firstName,lastName,initials);
+    String credential = identity.getStringAttribute("credential");
+    displayName = getDisplayName(firstName,lastName,initials,credential);
   }
   return displayName;
   ]]></Source>

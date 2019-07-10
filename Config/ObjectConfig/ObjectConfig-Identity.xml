@@ -392,13 +392,27 @@
 				  </AttributeTarget>
 				</AttributeTargets>
 			</ObjectAttribute>
-			  <ObjectAttribute displayName="CmhDeptType" editMode="ReadOnly" name="cmhDeptType" type="string">
+			<ObjectAttribute displayName="CmhDeptType" editMode="ReadOnly" name="cmhDeptType" type="string">
                 <AttributeSource name="CmhDeptType">
                     <ApplicationRef>
                         <Reference class="sailpoint.object.Application" name="%%CMH-Infor-ApplicationName%%"/>
                     </ApplicationRef>
                 </AttributeSource>
             </ObjectAttribute>
+			<ObjectAttribute displayName="Credential" editMode="ReadOnly" name="credential" type="string">
+				<AttributeSource name="Credential">
+				  <ApplicationRef>
+					<Reference class="sailpoint.object.Application" name="%%CMH-Infor-ApplicationName%%"/>
+				  </ApplicationRef>
+				</AttributeSource>
+			</ObjectAttribute>
+			<ObjectAttribute displayName="DivisionDesc" editMode="ReadOnly" name="divisionDesc" type="string">
+				<AttributeSource name="DivisionDesc">
+				  <ApplicationRef>
+					<Reference class="sailpoint.object.Application" name="%%CMH-Infor-ApplicationName%%"/>
+				  </ApplicationRef>
+				</AttributeSource>
+			</ObjectAttribute>
 		</ObjectConfig>
     </ImportAction>
 </sailpoint>

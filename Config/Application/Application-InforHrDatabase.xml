@@ -8,7 +8,7 @@
     </AccountCorrelationConfig>
     <Attributes>
         <Map>
-            <entry key="SQL" value="select * from users"/>
+      <entry key="SQL" value="SELECT * FROM users where PrimaryWorkAssignment='YES';"/>
             <entry key="acctAggregationEnd">
                 <value>
                     <Date>1557314245171</Date>
@@ -160,7 +160,9 @@
             <AttributeDefinition name="OtherEmpId" type="string"/>
             <AttributeDefinition name="AssignmentType" type="string"/>
             <AttributeDefinition name="OtherEmail" type="string"/>
+      <AttributeDefinition name="DivisionDesc" type="string"/>
 			<AttributeDefinition name="CmhDeptType" type="string"/>
+      <AttributeDefinition name="Credential" type="string"/>
         </Schema>
     </Schemas>
     <ApplicationScorecard/>

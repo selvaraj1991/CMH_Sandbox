@@ -198,7 +198,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   <RuleLibraries>
     <Reference class="sailpoint.object.Rule" name="CMH-AD-Generic-Rulelibrary"/>
   </RuleLibraries>
-  <Step icon="Start" name="Start" posX="28" posY="10" wait="1">
+  <Step icon="Start" name="Start" posX="75" posY="125" wait="1">
     <Script>
       <Source><![CDATA[
   		
@@ -213,7 +213,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
     </Script>
     <Transition to="Validate Data"/>
   </Step>
-  <Step icon="Task" name="Validate Data" posX="28" posY="18" resultVariable="validationErrors">
+  <Step icon="Analysis" name="Validate Data" posX="199" posY="124" resultVariable="validationErrors">
     <Script>
       <Source><![CDATA[
 			  
@@ -256,7 +256,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
     </Transition>
     <Transition to="end"/>
   </Step>
-  <Step icon="Task" name="Get Connected Apps" resultVariable="connectedApps">
+  <Step icon="Task" name="Get Connected Apps" posX="266" posY="210" resultVariable="connectedApps">
     <Script>
       <Source><![CDATA[
   		
@@ -276,7 +276,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
     </Script>
     <Transition to="Get Disconnected Apps"/>
   </Step>
-  <Step icon="Task" name="Get Disconnected Apps" resultVariable="disConnectedApps">
+  <Step icon="Task" name="Get Disconnected Apps" posX="408" posY="209" resultVariable="disConnectedApps">
     <Script>
       <Source><![CDATA[
   		
@@ -296,7 +296,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
     </Script>
     <Transition to="Set User Deletion Date and status"/>
   </Step>
-  <Step icon="Task" name="Set User Deletion Date and status" posX="28" posY="18">
+  <Step icon="Default" name="Set User Deletion Date and status" posX="562" posY="209">
     <Script>
       <Source><![CDATA[
 			  
@@ -333,7 +333,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
     </Script>
     <Transition to="Disable AD Application"/>
   </Step>
-  <Step icon="Task" name="Disable AD Application" posX="28" posY="18" resultVariable="plan">
+  <Step icon="Task" name="Disable AD Application" posX="722" posY="208" resultVariable="plan">
     <Script>
       <Source><![CDATA[
 			    import org.apache.log4j.Logger;
@@ -403,7 +403,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
     </Transition>
     <Transition to="end"/>
   </Step>
-  <Step action="call:compileProvisioningProject" icon="Task" name="Compile Project" posX="429" posY="150" resultVariable="project">
+  <Step action="call:compileProvisioningProject" icon="Task" name="Compile Project" posX="789" posY="316" resultVariable="project">
     <Arg name="requester" value="string:spadmin"/>
     <Arg name="requireCreateTemplates" value="string:false"/>
     <Arg name="identityName" value="ref:identityName"/>
@@ -422,7 +422,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
                  defining Args in this step.</Description>
     <Transition to="Create Identity Request"/>
   </Step>
-  <Step action="call:createIdentityRequest" icon="Task" name="Create Identity Request" posX="841" posY="239">
+  <Step action="call:createIdentityRequest" icon="Task" name="Create Identity Request" posX="909" posY="315">
     <Arg name="project" value="ref:project"/>
     <Arg name="source" value="ref:source"/>
     <Arg name="priority" value="string:Normal"/>
@@ -431,12 +431,12 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
     <Return name="identityRequestId" to="identityRequestId"/>
     <Transition to="Provision"/>
   </Step>
-  <Step action="call:provisionProject" icon="Provision" name="Provision" posX="682" posY="10">
+  <Step action="call:provisionProject" icon="Provision" name="Provision" posX="1035" posY="315">
     <Arg name="background" value="false"/>
     <Arg name="project" value="ref:project"/>
     <Transition to="Complete Identity Request"/>
   </Step>
-  <Step action="call:completeIdentityRequest" icon="Task" name="Complete Identity Request" posX="953" posY="94" resultVariable="identityRequest">
+  <Step action="call:completeIdentityRequest" icon="Task" name="Complete Identity Request" posX="1159" posY="314" resultVariable="identityRequest">
     <Arg name="project" value="ref:project"/>
     <Arg name="autoVerify" value="false"/>
     <Arg name="identityRequestId" value="ref:identityRequestId"/>
@@ -455,7 +455,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
     </Transition>
     <Transition to="end"/>
   </Step>
-  <Step icon="Task" name="Create ServiceNow Ticket" resultVariable="snowTicketId">
+  <Step icon="Provision" name="Create ServiceNow Ticket" posX="1226" posY="422" resultVariable="snowTicketId">
     <Script>
       <Source><![CDATA[
 			  
@@ -476,7 +476,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 				   }else if(ticketObj instanceof String) {
 		              snowTicketId = (String) ticketObj;	
 					  log.debug("CMH-LifecycleEvent-Leaver-Disable:Ticket Created:"+snowTicketId);
-                      wfcontext.getWorkflowCase().put("snowTicketId",snowTicketId);					  
+                     				  
 		           }else {
 		    	     validationErrors.add("The Object Type is NOT List OR String");					 
 		           }
@@ -489,7 +489,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
     </Script>
     <Transition to="Single Account Aggregation"/>
   </Step>
-  <Step icon="Task" name="Single Account Aggregation" posX="28" posY="18" resultVariable="validationErrors">
+  <Step icon="Task" name="Single Account Aggregation" posX="1364" posY="422" resultVariable="validationErrors">
     <Script>
       <Source><![CDATA[
 			    import org.apache.log4j.Logger;
@@ -540,7 +540,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
     </Script>
     <Transition to="end"/>
   </Step>
-  <Step catches="complete" icon="Catches" name="Check Status" posX="778" posY="180">
+  <Step catches="complete" icon="Catches" name="Check Status" posX="78" posY="10">
     <Arg name="attributeName" value="string:Employee ID"/>
     <Arg name="source" value="string:CMH-LifecycleEvent-Leaver-Disable"/>
     <Arg name="attributeValue" value="ref:employeeId"/>
@@ -570,11 +570,10 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 			if(Util.isEmpty(validationErrors)){
 			    Map map = new HashMap();
 			    map.put("setString1","Leaver Disable is successfully completed" );
-  				auditWrite("Leaver-Disable Success",source,target,attributeName,attributeValue,map);
   				if(Util.isNotNullOrEmpty(snowTicketId)){
-  					strMap.put("setString3","ServiceNow ticket : "+snowTicketId);
+  					map.put("setString2","ServiceNow ticket : "+snowTicketId);
   				}
-				
+			   auditWrite("Leaver-Disable Success",source,target,attributeName,attributeValue,map);
   			}else{
   			    Map map = new HashMap();
   			    int counter = validationErrors.size();
@@ -595,5 +594,5 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
     </Script>
     <Transition to="end"/>
   </Step>
-  <Step icon="Stop" name="end" posX="784" posY="10"/>
+  <Step icon="Stop" name="end" posX="1364" posY="118"/>
 </Workflow>

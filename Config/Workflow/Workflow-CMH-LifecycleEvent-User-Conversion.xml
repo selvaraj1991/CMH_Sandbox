@@ -335,7 +335,7 @@
     </Script>
     <Transition to="Validate Data"/>
   </Step>
-  <Step icon="Task" name="Validate Data" posX="218" posY="95" resultVariable="validationErrors">
+  <Step icon="Analysis" name="Validate Data" posX="218" posY="95" resultVariable="validationErrors">
     <Script>
       <Source><![CDATA[
 
@@ -400,7 +400,7 @@
     </Transition>
     <Transition to="Stop"/>
   </Step>
-  <Step icon="Task" name="Update Identity" posX="285" posY="210">
+  <Step icon="Default" name="Update Identity" posX="285" posY="210">
     <Script>
       <Source><![CDATA[
 
@@ -417,7 +417,7 @@
     </Script>
     <Transition to="Check AD Status"/>
   </Step>
-  <Step condition="script:oldUserAdExists" icon="Task" name="Check AD Status" posX="482" posY="209" resultVariable="isADdisabled">
+  <Step condition="script:oldUserAdExists" icon="Audit" name="Check AD Status" posX="480" posY="211" resultVariable="isADdisabled">
     <Script>
       <Source><![CDATA[
 
@@ -597,7 +597,7 @@
     </Transition>
     <Transition to="Stop"/>
   </Step>
-  <Step action="call:refreshIdentity" icon="Task" name="Refresh Identity" posX="1299" posY="252">
+  <Step action="call:refreshIdentity" icon="Default" name="Refresh Identity" posX="1299" posY="252">
     <Arg name="identityName" value="ref:identityName"/>
     <Arg name="correlateEntitlements" value="true"/>
     <Arg name="provision" value="true"/>
@@ -605,7 +605,7 @@
 	  <Arg name="refreshIdentityEntitlements" value="true"/>
     <Transition to="Stop"/>
   </Step>
-  <Step name="Do Target Aggregation" posX="922" posY="334" resultVariable="validationErrors">
+  <Step icon="Default" name="Do Target Aggregation" posX="922" posY="334" resultVariable="validationErrors">
     <Script>
       <Source><![CDATA[
 
@@ -672,7 +672,7 @@
     </Transition>
     <Transition to="Stop"/>
   </Step>
-  <Step catches="complete" icon="Task" name="Check Status" posX="28" posY="10">
+  <Step catches="complete" icon="Catches" name="Check Status" posX="94" posY="6">
     <Script>
       <Source><![CDATA[
   			import org.apache.log4j.Logger;

@@ -90,17 +90,17 @@
   <RuleLibraries>
 	<Reference class="sailpoint.object.Rule" name="CMH-AD-Generic-Rulelibrary"/>
   </RuleLibraries>
-  <Step icon="Start" name="Start" posX="28" posY="10">
+  <Step icon="Start" name="Start" posX="154" posY="126">
     <Transition to="Get Identity for Termination"/>
   </Step>
-  <Step icon="Provision" name="Get Identity for Termination" posX="94" posY="115">
+  <Step icon="Default" name="Get Identity for Termination" posX="274" posY="126">
     <Approval name="Identity for Termination" owner="ref:launcher" return="terminatingUserId">
       <Arg name="workItemDescription" value="string:Immediate Termination"/>
       <Arg name="workItemForm" value="string:CMH-Immediate-Termination-Form"/>
     </Approval>
     <Transition to="Retrieve Identity Info"/>
   </Step>
-  <Step icon="Task" name="Retrieve Identity Info">
+  <Step icon="Task" name="Retrieve Identity Info" posX="399" posY="126">
   	<Script>
   		<Source>
   		<![CDATA[
@@ -135,7 +135,7 @@
   	</Script>
   	<Transition to="Validate Data"/>
   </Step>
-  <Step icon="Task" name="Validate Data" resultVariable="validationErrors">
+  <Step icon="Analysis" name="Validate Data" posX="508" posY="126" resultVariable="validationErrors">
   	<Script>
   		<Source>
   		<![CDATA[
@@ -185,7 +185,7 @@
   	</Transition>
   	<Transition to="Stop"/>
   </Step>
-  <Step name="Update Identity" posX="371" posY="9" resultVariable="validationErrors">
+  <Step icon="Task" name="Update Identity" posX="575" posY="222" resultVariable="validationErrors">
     <Script>
       <Source>
       <![CDATA[
@@ -260,7 +260,7 @@
     </Script>
     <Transition to="Get Disconnected Apps"/>
   </Step>
-  <Step icon="Task" name="Get Disconnected Apps" resultVariable="disConnectedApps">
+  <Step icon="Task" name="Get Disconnected Apps" posX="700" posY="222" resultVariable="disConnectedApps">
   	<Script>
   		<Source>
   		<![CDATA[
@@ -280,7 +280,7 @@
   	</Script>
   	<Transition to="Disable Accounts"/>
   </Step>
-  <Step name="Disable Accounts" posX="521" posY="3" resultVariable="plan">
+  <Step icon="Task" name="Disable Accounts" posX="816" posY="222" resultVariable="plan">
     <Script>
       <Source>
       <![CDATA[
@@ -377,7 +377,7 @@
     </Transition>
     <Transition to="Create ServieNow Ticket"/>
   </Step>
-  <Step action="call:compileProvisioningProject" icon="Task" name="Compile Project" posX="429" posY="150" resultVariable="project">
+  <Step action="call:compileProvisioningProject" icon="Task" name="Compile Project" posX="982" posY="219" resultVariable="project">
     <Arg name="requester" value="string:spadmin"/>
     <Arg name="requireCreateTemplates" value="string:false"/>
     <Arg name="identityName" value="ref:identityName"/>
@@ -396,7 +396,7 @@
                  defining Args in this step.</Description>
     <Transition to="Create Identity Request"/>
   </Step>
-  <Step action="call:createIdentityRequest" icon="Task" name="Create Identity Request" posX="593" posY="267">
+  <Step action="call:createIdentityRequest" icon="Task" name="Create Identity Request" posX="1090" posY="219">
     <Arg name="identityName" value="1002"/>
     <Arg name="project" value="ref:project"/>
     <Arg name="source" value="ref:source"/>
@@ -405,12 +405,12 @@
     <Return name="identityRequestId" to="identityRequestId"/>
     <Transition to="Provision"/>
   </Step>
-  <Step action="call:provisionProject" icon="Provision" name="Provision" posX="1082" posY="239">
+  <Step action="call:provisionProject" icon="Provision" name="Provision" posX="1212" posY="219">
     <Arg name="background" value="false"/>
     <Arg name="project" value="ref:project"/>
     <Transition to="Complete Identity Request"/>
   </Step>
-  <Step action="call:completeIdentityRequest" icon="Task" name="Complete Identity Request" posX="1069" posY="30" resultVariable="identityRequest">
+  <Step action="call:completeIdentityRequest" icon="Task" name="Complete Identity Request" posX="1336" posY="218" resultVariable="identityRequest">
     <Arg name="autoVerify" value="false"/>
     <Arg name="project" value="ref:project"/>
     <Arg name="identityRequestId" value="ref:identityRequestId"/>
@@ -432,7 +432,7 @@
     </Transition>
     <Transition to="Stop"/>
   </Step>
-  <Step name="Create ServieNow Ticket" posX="877">
+  <Step icon="Provision" name="Create ServieNow Ticket" posX="1110" posY="69">
     <Script>
       <Source>
       <![CDATA[
@@ -445,17 +445,29 @@
 			log.debug("CMH-Immediate-Termination: Generating service now ticket for disconnected applications");
 		}
 		
-		String snowId = generateSnowTicket(identityName, "CMH-Service-Ticket-Configuration-Object", disConnectedApps,"Disable");
-		if(isDebugEnabled)	{
-			log.debug("CMH-Immediate-Termination: Service Now ID :  "+snowId);
-		}
-		
-    	]]>    
+		Object ticketObj = generateSnowTicket(identityName, "CMH-Service-Ticket-Configuration-Object", "DISABLE");
+        if(null != ticketObj) {
+        	if(ticketObj instanceof List) {
+		        List errList  = (List) ticketObj;
+				validationErrors.add(errList);
+			}else if(ticketObj instanceof String) {
+				String snowTicketId = (String) ticketObj;	
+				if(isDebugEnabled)	{
+					log.debug("CMH-Immediate-Termination: Service Now ID :  "+snowTicketId);
+				}
+	            wfcontext.getWorkflowCase().put("snowTicketId",snowTicketId);					  
+	      	}else {
+	     		validationErrors.add("The Object Type is NOT List OR String");					 
+	      	}
+			validationErrors.add("NULL : Unable to generate ticket");				   
+  	    }
+		wfcontext.getWorkflowCase().put("validationErrors",validationErrors);		
+    	    
     	</Source>
     </Script>
     <Transition to="Do Target Aggregation"/>
   </Step>
-  <Step name="Do Target Aggregation" resultVariable="validationErrors">
+  <Step icon="Task" name="Do Target Aggregation" posX="1277" posY="69" resultVariable="validationErrors">
   	<Script>
   		<Source>
   		<![CDATA[
@@ -497,7 +509,7 @@
   	</Script>
   	<Transition to="Stop"/>
   </Step>
-  <Step catches="complete" icon="Catches" name="Check Status" posX="778" posY="180" resultVariable="validationErrors">
+  <Step catches="complete" icon="Catches" name="Check Status" posX="156" posY="19" resultVariable="validationErrors">
     <Script>
       <Source>
       <![CDATA[
@@ -553,5 +565,5 @@
     </Script>
     <Transition to="Stop"/>
   </Step>
-  <Step icon="Stop" name="Stop" posX="732" posY="53"/>
+  <Step icon="Stop" name="Stop" posX="1556" posY="134"/>
 </Workflow>

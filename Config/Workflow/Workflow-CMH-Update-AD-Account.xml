@@ -33,7 +33,7 @@
   <Step icon="Start" name="Start" posX="28" posY="10">
     <Transition to="Validate Data"/>
   </Step>
-  <Step icon="Task" name="Validate Data" resultVariable="validationErrors">
+  <Step icon="Analysis" name="Validate Data" posX="98" posY="10" resultVariable="validationErrors">
   	<Script>
   		<Source>
   		<![CDATA[
@@ -66,9 +66,22 @@
   		]]>
   		</Source>
   	</Script>
-  	<Transition to="Update AD Account"/>
+    <Transition to="Update AD Account">
+      <Script>
+        <Source><![CDATA[
+          
+					import sailpoint.tools.Util;
+					if(Util.isEmpty(validationErrors)){
+						return true;
+					}
+						return false;
+					
+        ]]></Source>
+      </Script>
+    </Transition>
+    <Transition to="Stop"/>
   </Step>
-  <Step icon="Task" name="Update AD Account" posX="58" posY="10" resultVariable="plan">
+  <Step icon="Task" name="Update AD Account" posX="165" posY="91" resultVariable="plan">
     <Script>
       <Source><![CDATA[
 		
@@ -145,7 +158,7 @@
     </Script>
     <Transition to="Compile Project"/>
   </Step>
-  <Step action="call:compileProvisioningProject" icon="Task" name="Compile Project" posX="406" posY="10" resultVariable="project">
+  <Step action="call:compileProvisioningProject" icon="Task" name="Compile Project" posX="273" posY="91" resultVariable="project">
     <Arg name="identityName" value="ref:identityName"/>
     <Arg name="plan" value="ref:plan"/>
     <Arg name="requester" value="string:spadmin"/>
@@ -164,7 +177,7 @@
                  defining Args in this step.</Description>
     <Transition to="Create Identity Request"/>
   </Step>
-  <Step action="call:createIdentityRequest" icon="Task" name="Create Identity Request" posX="841" posY="239">
+  <Step action="call:createIdentityRequest" icon="Task" name="Create Identity Request" posX="380" posY="91">
     <Arg name="project" value="ref:project"/>
     <Arg name="source" value="ref:source"/>
     <Arg name="priority" value="string:Normal"/>
@@ -173,16 +186,16 @@
     <Return name="identityRequestId" to="identityRequestId"/>
     <Transition to="Provision"/>
   </Step>
-  <Step action="call:provisionProject" icon="Provision" name="Provision" posX="682" posY="10">
+  <Step action="call:provisionProject" icon="Provision" name="Provision" posX="492" posY="92">
     <Arg name="background" value="false"/>
     <Arg name="project" value="ref:project"/>
     <Transition to="Complete Identity Request"/>
   </Step>
-  <Step action="call:completeIdentityRequest" icon="Task" name="Complete Identity Request" posX="953" posY="94" resultVariable="identityRequest">
+  <Step action="call:completeIdentityRequest" icon="Task" name="Complete Identity Request" posX="600" posY="91" resultVariable="identityRequest">
 	<Arg name="project" value="ref:project"/>
 	<Arg name="autoVerify" value="false"/>
 	<Arg name="identityRequestId" value="ref:identityRequestId"/>
 	<Transition to="Stop"/>
   </Step>
-  <Step icon="Stop" name="Stop" posX="28" posY="10"/>
+  <Step icon="Stop" name="Stop" posX="600" posY="6"/>
 </Workflow>

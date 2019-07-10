@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Workflow PUBLIC "sailpoint.dtd" "sailpoint.dtd">
-<Workflow explicitTransitions="true" libraries="Identity,IdentityRequest" name="CMH-LifeycycleEvent-Prehire" type="IdentityLifecycle">
+<Workflow explicitTransitions="true" libraries="Identity,IdentityRequest" name="CMH-LifecycleEvent-Prehire" type="IdentityLifecycle">
   <Variable input="true" name="trigger">
     <Description>The IdentityTrigger</Description>
   </Variable>
@@ -215,7 +215,7 @@
   <RuleLibraries>
     <Reference class="sailpoint.object.Rule" name="CMH-AD-Generic-Rulelibrary"/>
   </RuleLibraries>
-  <Step icon="Start" name="Start" posX="28" posY="10" wait="1">
+  <Step icon="Start" name="Start" posX="71" posY="126" wait="1">
   	<Script>
   		<Source>
   		<![CDATA[
@@ -230,7 +230,7 @@
   	</Script>
     <Transition to="Validate Data"/>
   </Step>
-  <Step icon="Task" name="Validate Data" resultVariable="validationErrors">
+  <Step icon="Analysis" name="Validate Data" posX="200" posY="125" resultVariable="validationErrors">
   	<Script>
   		<Source>
   		<![CDATA[
@@ -278,7 +278,7 @@
   	</Transition>
   	<Transition to="Stop"/>
   </Step>
-  <Step icon="Task" name="Enable Identity">
+  <Step icon="Default" name="Enable Identity" posX="266" posY="223">
   	<Script>
   		<Source>
   		<![CDATA[
@@ -303,7 +303,7 @@
   	</Script>
   	<Transition to="Enable AD account"/>
   </Step>
-  <Step icon="Task" name="Enable AD account" resultVariable="plan">
+  <Step icon="Task" name="Enable AD account" posX="392" posY="223" resultVariable="plan">
   <Script>
   	<Source>
   		<![CDATA[
@@ -378,7 +378,7 @@
   </Transition>
   <Transition to="Stop"/>
   </Step>
-  <Step action="call:compileProvisioningProject" icon="Task" name="Compile Project" posX="406" posY="10" resultVariable="project">
+  <Step action="call:compileProvisioningProject" icon="Task" name="Compile Project" posX="459" posY="321" resultVariable="project">
     <Arg name="identityName" value="ref:identityName"/>
     <Arg name="plan" value="ref:plan"/>
     <Arg name="requester" value="string:spadmin"/>
@@ -397,7 +397,7 @@
                  defining Args in this step.</Description>
     <Transition to="Create Identity Request"/>
   </Step>
-  <Step action="call:createIdentityRequest" icon="Task" name="Create Identity Request" posX="841" posY="239">
+  <Step action="call:createIdentityRequest" icon="Task" name="Create Identity Request" posX="587" posY="319">
     <Arg name="project" value="ref:project"/>
     <Arg name="source" value="ref:source"/>
     <Arg name="priority" value="string:Normal"/>
@@ -406,25 +406,25 @@
     <Return name="identityRequestId" to="identityRequestId"/>
     <Transition to="Provision"/>
   </Step>
-  <Step action="call:provisionProject" icon="Provision" name="Provision" posX="682" posY="10">
+  <Step action="call:provisionProject" icon="Provision" name="Provision" posX="725" posY="316">
     <Arg name="background" value="false"/>
     <Arg name="project" value="ref:project"/>
     <Transition to="Complete Identity Request"/>
   </Step>
-  <Step action="call:completeIdentityRequest" icon="Task" name="Complete Identity Request" posX="953" posY="94" resultVariable="identityRequest">
+  <Step action="call:completeIdentityRequest" icon="Task" name="Complete Identity Request" posX="844" posY="314" resultVariable="identityRequest">
 	<Arg name="project" value="ref:project"/>
 	<Arg name="autoVerify" value="false"/>
 	<Arg name="identityRequestId" value="ref:identityRequestId"/>
 	<Transition to="Refresh Identity"/>
   </Step>
-  <Step action="call:refreshIdentity" icon="Task" name="Refresh Identity">
+  <Step action="call:refreshIdentity" icon="Task" name="Refresh Identity" posX="983" posY="314">
   	<Arg name="identityName" value="ref:identityName"/>
   	<Arg name="correlateEntitlements" value="true"/>
     <Arg name="refreshRoleMetadata" value="true"/>
 	<Arg name="refreshIdentityEntitlements" value="true"/>
   	<Transition to="Stop"/>
   </Step>
-  <Step icon="Task" catches="complete" name="Check Status">
+  <Step catches="complete" icon="Catches" name="Check Status" posX="68" posY="22">
   	<Script>
   		<Source>
   		<![CDATA[
@@ -499,5 +499,5 @@
   	</Script>
   	<Transition to="Stop"/>
   </Step>
-  <Step icon="Stop" name="Stop" posX="784" posY="10"/>
+  <Step icon="Stop" name="Stop" posX="983" posY="120"/>
 </Workflow>

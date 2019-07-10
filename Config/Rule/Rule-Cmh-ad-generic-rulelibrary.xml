@@ -970,15 +970,18 @@
   }
   
   /*** Method to retrieve the displayName for AD***/
-  public String getDisplayName(String firstName,String lastName, String initial) {     
+  public String getDisplayName(String firstName, String lastName, String initial, String credential) {     
 	  String displayName = null;
 	  if(Util.isNotNullOrEmpty(firstName) && Util.isNotNullOrEmpty(lastName)) {
 		  if(Util.isNotNullOrEmpty(initial)){
-		       displayName = lastName.concat(", ").concat(firstName).concat(" ").concat(initial).concat(".");
+        	displayName = lastName.concat(", ").concat(firstName).concat(", ").concat(initial);
 		  }else {
-		       displayName = lastName.concat(", ").concat(lastName).concat(" .");
+        	displayName = lastName.concat(", ").concat(firstName);
 		  }	
+      if(Util.isNotNullOrEmpty(credential) && Util.isNotNullOrEmpty(displayName)){
+        displayName = displayName.concat(" ").concat(credential);
       }
+    }
     return displayName;
   }
 		/**
@@ -993,7 +996,6 @@
 	    log.debug("CMH-AD-Generic-Rulelibrary : Entering checkDataInCustomObject()");
 	    boolean isSuccess = false;
 		if(Util.isNotNullOrEmpty(jobData) && Util.isNotNullOrEmpty(customName) && Util.isNotNullOrEmpty(entryKey) ) {
-		    log.debug("jobData,customName,entryKey:"+jobData+customName+entryKey);
 			Custom custom = null;
 			try {
 				custom = context.getObject(Custom.class, customName);
