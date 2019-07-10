@@ -11,33 +11,33 @@
     <Description>The name of the identity.</Description>
   </Variable>
   <Variable initializer="script:(identityDisplayName != void) ? identityDisplayName : resolveDisplayName(identityName)" input="true" name="identityDisplayName">
-    <Description>    
-       The displayName of the identity being updated.  
-       Query for this using a projection query and fall back to the name.    
+    <Description>
+       The displayName of the identity being updated.
+       Query for this using a projection query and fall back to the name.
 </Description>
   </Variable>
   <Variable initializer="string:AccountsRequest" input="true" name="flow">
     <Description>What type of LCM flow is this</Description>
   </Variable>
   <Variable name="plan" type="sailpoint.object.ProvisioningPlan">
-    <Description>The provisioning plan which is built during the workflow.  
+    <Description>The provisioning plan which is built during the workflow.
 </Description>
   </Variable>
   <Variable initializer="string:LCM" input="true" name="source">
-    <Description>  
-       String version of sailpoint.object.Source to indicate  
-       where the request originated.  Defaults to LCM.  
+    <Description>
+       String version of sailpoint.object.Source to indicate
+       where the request originated.  Defaults to LCM.
 </Description>
   </Variable>
   <Variable initializer="string:true" input="true" name="trace">
-    <Description>  
-       Used for debugging this workflow and when set to true trace  
-       will be sent to stdout.  
+    <Description>
+       Used for debugging this workflow and when set to true trace
+       will be sent to stdout.
     </Description>
   </Variable>
   <Variable name="project" type="ProvisioningProject">
-    <Description>  
-ProvisioningProject which is just a compiled version of the ProvisioningPlan.  
+    <Description>
+ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 </Description>
   </Variable>
   <Variable name="identityRequestId">
@@ -48,41 +48,41 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   <Variable name="isDebugEnabled" type="boolean">
     <Script>
       <Source><![CDATA[
-  		
+
   			import org.apache.log4j.Logger;
-  			
+
   			Logger log = Logger.getLogger("CMH-LifecycleEvent-Leaver-Disable");
-  			
+
   			if(log.isDebugEnabled()){
   				return true;
   			}
   			return false;
-  		
+
   		]]></Source>
     </Script>
   </Variable>
   <Variable name="employeeId">
     <Script>
       <Source><![CDATA[
-  		
+
   			import sailpoint.object.Identity;
-  			
+
   			String employeeId = null;
   			if(identityName != null){
   				Identity iden = context.getObjectByName(Identity.class,identityName);
   				if(null != iden) {
   				   employeeId = iden.getStringAttribute("employeeId");
-  				} 				
+  				}
   			}
   			return employeeId;
-  		  
+
   		]]></Source>
     </Script>
   </Variable>
   <Variable name="assignmentType">
     <Script>
       <Source><![CDATA[
-  		
+
   			import sailpoint.object.Identity;
   			import sailpoint.tools.Util;
   			String assignmentType = null;
@@ -97,21 +97,21 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
             }else {
                return null;
   			}
-  		
+
   		]]></Source>
     </Script>
   </Variable>
   <Variable name="hasEmail" type="boolean">
     <Script>
       <Source><![CDATA[
-  		 
+
   			import sailpoint.object.Identity;
   			import sailpoint.tools.Util;
-  			
+
   			String email = null;
   			if(identityName != null){
   				Identity iden = context.getObjectByName(Identity.class,identityName);
-  				if(null != iden) {  
+  				if(null != iden) {
   				   email= iden.getStringAttribute("email");
   				}
   				if(Util.isNotNullOrEmpty(email)) {
@@ -119,35 +119,35 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   				}else {
   				   return false;
   				}
-  			}  						
-  		  
+  			}
+
   		]]></Source>
     </Script>
   </Variable>
   <Variable name="adAppName">
     <Script>
       <Source><![CDATA[
-  		
+
   			import sailpoint.object.Custom;
-  			
+
   			Custom custom = context.getObjectByName(Custom.class,"CMH-Custom-Object-AD-Application");
   			String appName = null;
   			if(custom != null){
   				appName = custom.getString("adApplication");
   			}
   			return appName;
-  		
+
   		]]></Source>
     </Script>
   </Variable>
   <Variable name="disabledOU">
     <Script>
       <Source><![CDATA[
-  		
+
   			    import sailpoint.object.Custom;
 	  			import sailpoint.object.Identity;
 	  			import sailpoint.tools.Util;
-	  			
+
 	  			Identity identity = context.getObjectByName(Identity.class,identityName);
 	  			String disabledOU = null;
 	  			if(null != identity) {
@@ -171,7 +171,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 	  			   }
 	  			}
 	  			return disabledOU;
-  		
+
   		]]></Source>
     </Script>
   </Variable>
@@ -201,14 +201,14 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   <Step icon="Start" name="Start" posX="75" posY="125" wait="1">
     <Script>
       <Source><![CDATA[
-  		
+
   			import org.apache.log4j.Logger;
-  			
+
   			Logger log = Logger.getLogger("CMH-LifecycleEvent-Leaver-Disable");
   			if(isDebugEnabled){
   				log.debug("Starting the LifecycleEvent-Leaver-Disable Workflow for the user "+identityName);
   			}
-  		
+
   		]]></Source>
     </Script>
     <Transition to="Validate Data"/>
@@ -216,18 +216,18 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   <Step icon="Analysis" name="Validate Data" posX="199" posY="124" resultVariable="validationErrors">
     <Script>
       <Source><![CDATA[
-			  
+
             import org.apache.log4j.Logger;
   			import sailpoint.tools.Util;
-  			
+
   			Logger log = Logger.getLogger("CMH-LifecycleEvent-Leaver-Disable");
-  			
+
   			List errorList = new ArrayList();
   			if(Util.isNullOrEmpty(adAppName)) {
   			   errorList.add("The Custom Object is not configured properly with AD app name.Either Custom object or AD" +
   			   "application name in custom object is missing");
   			}
-			
+
   			if(Util.isNullOrEmpty(disabledOU)) {
   			    errorList.add("The Custom Object is not configured properly with AD app name.Either Custom object or AD" +
   			   "disabled user OU in custom object is missing");
@@ -238,19 +238,19 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   				log.debug("CMH-LifecycleEvent-Leaver-Disable: Validation Successful");
   			}
   			return errorList;
-			  
+
       ]]></Source>
     </Script>
     <Transition to="Get Connected Apps">
       <Script>
         <Source><![CDATA[
-  			  
+
   				import sailpoint.tools.Util;
   				if(Util.isEmpty(validationErrors)){
 					return true;
 				}
 				return false;
-  			   
+
   			]]></Source>
       </Script>
     </Transition>
@@ -259,9 +259,9 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   <Step icon="Task" name="Get Connected Apps" posX="266" posY="210" resultVariable="connectedApps">
     <Script>
       <Source><![CDATA[
-  		
+
   			import org.apache.log4j.Logger;
-  			
+
   			Logger log = Logger.getLogger("CMH-LifecycleEvent-Leaver-Disable");
   			List connectedApps = getAppsToProcess(identityName,"CMH-Leaver-Custom-Object","connectedApplications");
   			if(connectedApps==null || connectedApps.size()<=0){
@@ -271,7 +271,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   				log.debug("CMH-LifecycleEvent-Leaver-Disable: List of Connected Apps to be deleted: "+connectedApps.toString());
   			}
   			return connectedApps;
-  		
+
   		]]></Source>
     </Script>
     <Transition to="Get Disconnected Apps"/>
@@ -279,9 +279,9 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   <Step icon="Task" name="Get Disconnected Apps" posX="408" posY="209" resultVariable="disConnectedApps">
     <Script>
       <Source><![CDATA[
-  		
+
   			import org.apache.log4j.Logger;
-  			
+
   			Logger log = Logger.getLogger("CMH-LifecycleEvent-Leaver-Disable");
   			List disConnectedApps = getAppsToProcess(identityName,"CMH-Leaver-Custom-Object","disConnectedApplications");
   			if(disConnectedApps==null || disConnectedApps.size()<=0){
@@ -291,7 +291,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   				log.debug("CMH-LifecycleEvent-Leaver-Delete: List of disConnected Apps to be deleted: "+disConnectedApps.toString());
   			}
   			return disConnectedApps;
-  		
+
   		]]></Source>
     </Script>
     <Transition to="Set User Deletion Date and status"/>
@@ -299,20 +299,20 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   <Step icon="Default" name="Set User Deletion Date and status" posX="562" posY="209">
     <Script>
       <Source><![CDATA[
-			  
+
             import java.text.SimpleDateFormat;
             import java.util.Date;
             import org.apache.log4j.Logger;
   			import sailpoint.object.Identity;
   			import sailpoint.tools.Util;
- 
+
   			Logger log = Logger.getLogger("CMH-LifecycleEvent-Leaver-Disable");
-  			
+
   			Identity iden = context.getObjectByName(Identity.class,identityName);
   			if(iden != null){
   				iden.setInactive(true);
   				iden.setAttribute("status","TERMINATED");
-  				
+
   				Date today = new Date();
   				String format = getCustomObject("leaverDeleteTimestamp","CMH-DateFormat");
   				if(Util.isNotNullOrEmpty(format)) {
@@ -320,7 +320,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 			    	Date deletetionDate =  Util.incrementDateByDays(today, numberOfDays);
 			    	String deleteDate = sdf.format(deletetionDate);
 			    	log.debug("CMH-LifecycleEvent-Leaver-Disable :deleteDate : "+deleteDate);
-			    	
+
 			    	iden.setAttribute("deletionDate",deleteDate);
 	  				context.saveObject(iden);
 	  				context.commitTransaction();
@@ -328,7 +328,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   				if(isDebugEnabled){
   					log.debug("CMH-LifecycleEvent-Leaver-Disable: Identity status "+identityName+" disabled succesfully");
   				}
-  			}			  
+  			}
       ]]></Source>
     </Script>
     <Transition to="Disable AD Application"/>
@@ -345,12 +345,12 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 	  			import sailpoint.object.ProvisioningPlan.AccountRequest;
 	  			import sailpoint.object.ProvisioningPlan.AttributeRequest;
 	  			import sailpoint.tools.Util;
-			  	
+
 			  	Logger log = Logger.getLogger("CMH-LifecycleEvent-Leaver-Disable");
                 ProvisioningPlan adPlan = new ProvisioningPlan();
 				List accountRequests = new ArrayList();
 				Identity identity = context.getObjectByName(Identity.class, identityName);
-				
+
 				for(String appName:connectedApps){
 				    Application application = context.getObjectByName(Application.class, appName);
 					if (identity != null && application != null) {
@@ -368,7 +368,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 										accrq.add(new AttributeRequest("AC_NewParent",disabledOU));
 										if (Util.nullSafeCaseInsensitiveEq(assignmentType, "EMPLOYEE")) {
 											//Exchange code change employee to has email yes or no;
-									    }	
+									    }
 									} else {
 									    accrq.setApplication(appName);
 										accrq.setOperation(ProvisioningPlan.AccountRequest.Operation.Disable);
@@ -384,20 +384,20 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 			    if(isDebugEnabled){
 	  				log.debug("CMH-LifecycleEvent-Leaver-Disable: Plan created for the user successfully: "+adPlan.toXml());
 	  			}
-  			
-  			   return adPlan;	
-	
+
+  			   return adPlan;
+
       ]]></Source>
     </Script>
     <Transition to="Compile Project">
       <Script>
         <Source><![CDATA[
-  		  
+
   			if(plan.getAccountRequests() != null && plan.getAccountRequests().size()>0 &&  Util.isEmpty(validationErrors)){
   				return true;
   			}
   			return false;
-  		   
+
   		]]></Source>
       </Script>
     </Transition>
@@ -412,13 +412,13 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
     <Arg name="source" value="ref:source"/>
     <Arg name="optimisticProvisioning" value="string:false"/>
     <Arg name="plan" value="ref:plan"/>
-    <Description>Compile the provisioning plan into a provisioning project.  
-                 If you need to pass in provisioner options like "noFiltering"  
-                 or "noRoleDeprovisioning" you must pass them as explicit  
-                 arguments to the call.  
-                 The evaluation options "requester" and "source" are commonly  
-                 set here.               
-                 You can also pass things into the Template and Field scripts by  
+    <Description>Compile the provisioning plan into a provisioning project.
+                 If you need to pass in provisioner options like "noFiltering"
+                 or "noRoleDeprovisioning" you must pass them as explicit
+                 arguments to the call.
+                 The evaluation options "requester" and "source" are commonly
+                 set here.
+                 You can also pass things into the Template and Field scripts by
                  defining Args in this step.</Description>
     <Transition to="Create Identity Request"/>
   </Step>
@@ -443,13 +443,13 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
     <Transition to="Create ServiceNow Ticket">
       <Script>
         <Source><![CDATA[
-  			  
+
   				import sailpoint.tools.Message;
   				if(wfcontext.getRootWorkflowCase().getMessages()== null && null == wfcontext.getRootWorkflowCase().getMessagesByType(Message.Type.Error)) {
 					return true;
 				}
 				return false;
-  			   
+
   			]]></Source>
       </Script>
     </Transition>
@@ -458,7 +458,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   <Step icon="Provision" name="Create ServiceNow Ticket" posX="1226" posY="422" resultVariable="snowTicketId">
     <Script>
       <Source><![CDATA[
-			  
+
 				Logger log = Logger.getLogger("CMH-LifecycleEvent-Leaver-Disable");
 
 		        if (isDebugEnabled) {
@@ -474,14 +474,14 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 		              List errList  = (List) ticketObj;
 					  validationErrors.add(errList);
 				   }else if(ticketObj instanceof String) {
-		              snowTicketId = (String) ticketObj;	
+		              snowTicketId = (String) ticketObj;
 					  log.debug("CMH-LifecycleEvent-Leaver-Disable:Ticket Created:"+snowTicketId);
-                     				  
+
 		           }else {
-		    	     validationErrors.add("The Object Type is NOT List OR String");					 
+		    	     validationErrors.add("The Object Type is NOT List OR String");
 		           }
     	        }else {
-				   validationErrors.add("NULL : Unable to generate ticket");				   
+				   validationErrors.add("NULL : Unable to generate ticket");
     	        }
 				wfcontext.getWorkflowCase().put("validationErrors",validationErrors);
 				return snowTicketId;
@@ -499,17 +499,17 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 	  			import sailpoint.object.Link;
 	  			import sailpoint.object.ProvisioningPlan;
 	  			import sailpoint.tools.Util;
-			  	
+
 			  	Logger log = Logger.getLogger("CMH-LifecycleEvent-Leaver-Disable");
-			  	
+
 			  	if (isDebugEnabled) {
 		          log.debug("CMH-LifecycleEvent-Leaver-Disable: Single Account Aggregation");
 		        }
-	
+
 		        if (validationErrors == null) {
 		          validationErrors = new ArrayList();
 		        }
-		        
+
                 ProvisioningPlan adPlan = new ProvisioningPlan();
 				List accountRequests = new ArrayList();
 				Identity identity = context.getObjectByName(Identity.class, identityName);
@@ -529,7 +529,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 					              validationErrors.add("CN Value is NULL");
 					            }
 					         }
-					     }         
+					     }
 					}
 				 }
 			    if(isDebugEnabled){
@@ -547,13 +547,13 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
     <Arg name="target" value="ref:identityName"/>
     <Script>
       <Source><![CDATA[
-  		
-			  
+
+
 	      	import sailpoint.tools.Message;
 			import sailpoint.tools.Util;
 			import java.util.ArrayList;
 			import org.apache.log4j.Logger;
-			
+
 			Logger log = Logger.getLogger("CMH-LifecycleEvent-Leaver-Disable");
 			if(validationErrors==null){
 				validationErrors = new ArrayList();
@@ -585,11 +585,11 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 		  		}
 		  		auditWrite("Leaver-Disable Failure",source,target,attributeName,attributeValue,map);
   			}
-  			
+
   			if(isDebugEnabled){
   			    log.debug("CMH-LifecycleEvent-Leaver-Disable: Check Status step : Audit Event Generated");
   			}
-  			
+
 		]]></Source>
     </Script>
     <Transition to="end"/>

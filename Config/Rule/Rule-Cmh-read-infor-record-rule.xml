@@ -16,19 +16,19 @@
 		List list = null;
 		boolean isSuccess = false;
 		TaskDefinition taskDef = context.getObjectByName(TaskDefinition.class, "CMH Read Infor Username");
-		log.debug("taskDef :" + taskDef);
 		String ruleInput = taskDef.getString("ruleConfig");
 		if (Util.isNotNullOrEmpty(ruleInput)) {
 			String filePath = ruleInput.substring(ruleInput.indexOf(",") + 1);
+         log.debug("filePath:"+filePath);
 			if (Util.isNotNullOrEmpty(filePath)) {
 				list = new ArrayList();
 				list = readFromCsv(filePath);
 				if (null != list && list.size() > 1) {
-					if (Util.nullSafeCaseInsensitiveEq("USERNAME", list.get(0).toString())) {
+	           if(Util.nullSafeCaseInsensitiveEq("USERNAMES",list.get(0).toString())) {
 						list.remove(0);
 						if (writeToCustomObject(list, "CMH-Infor-Usernames")) {
-							log.debug("CMH-Read-Infor-Record-Rule: isSuccess :" + isSuccess);
 							isSuccess = true;
+		              log.debug("CMH-Read-Infor-Record-Rule: isSuccess :"+isSuccess);
 						}
 					}
 				} else {
@@ -36,16 +36,17 @@
 				}
 			}
 		} else {
-			throw new sailpoint.tools.GeneralException("CMH-Read-Infor-Record-Rule :Rule Config must contain complete" + "CSV filepath with token as [path] like 'path,<Complete filepath>");
+        throw new sailpoint.tools.GeneralException("CMH-Read-Infor-Record-Rule :Rule Config must contain complete" 
+                                          +"CSV filepath with token as [path] like 'path,<Complete filepath>");			
 		}
 		if (isSuccess) {
 			log.debug("CMH-Read-Infor-Record-Rule: Success");
 			log.debug("CMH-Read-Infor-Record-Rule: Exiting");
 			return "success";
-		} 
+    } else {
 		log.debug("CMH-Read-Infor-Record-Rule: Failure");
 		log.debug("CMH-Read-Infor-Record-Rule: Exiting");
-		return "failed";
-
+       return "Failed";
+    }
  ]]></Source>
 </Rule>
