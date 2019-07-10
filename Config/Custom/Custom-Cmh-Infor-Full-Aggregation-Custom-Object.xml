@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Custom PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<Custom name="CMH-Infor-Full-Aggregation-Custom-Object">
+  <Attributes>
+    <Map>
+      <entry key="applicationName" value="Infor HR Database"/>
+      <entry key="lastRunTimeStamp"/>
+      <entry key="oldRunTimeStamp"/>
+      <entry key="sqlQuery" value="SELECT * FROM AuthSource.users WHERE PrimaryWorkAssignment='YES';"/>
+      <entry key="sqlQueryIncremental" value="SELECT * FROM AuthSource.users WHERE PrimaryWorkAssignment='YES' and DateEmployeeRecordCreated&gt;='TIME_STAMP' and DateEmployeeRecordUpdated&gt;='TIME_STAMP'"/>
+      <entry key="taskName" value="Infor HR Database Aggregation"/>
+    </Map>
+  </Attributes>
+</Custom>
