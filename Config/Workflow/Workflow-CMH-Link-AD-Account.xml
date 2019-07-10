@@ -24,10 +24,10 @@
   		</Source>
   	</Script>
   </Variable>
-  <Step icon="Start" name="Start" posX="28" posY="10">
+  <Step icon="Start" name="Start" posX="75" posY="135">
     <Transition to="Link Account"/>
   </Step>
-  <Step icon="Task" name="Link Account" posX="58" posY="10">
+  <Step icon="Task" name="Link Account" posX="182" posY="136">
     <Script>
       <Source><![CDATA[
 		
@@ -98,5 +98,5 @@
     </Script>
     <Transition to="Stop"/>
   </Step>
-  <Step icon="Stop" name="Stop" posX="28" posY="10"/>
+  <Step icon="Stop" name="Stop" posX="279" posY="136"/>
 </Workflow>

@@ -8,6 +8,7 @@
             import org.apache.log4j.Logger;
             import sailpoint.object.Application;
             import sailpoint.object.Custom;
+			import sailpoint.tools.Util;
             
 		    Logger log = Logger.getLogger("cmh.authsource.rules");
 		    log.debug("CMH-Infor-Post-Iteration-Rule: Entering");
@@ -20,24 +21,22 @@
             String whereClause = null;
             if(custom!=null){
             lastRunTimeStamp = (String)custom.get("lastRunTimeStamp");
-            if(lastRunTimeStamp!=null){
-                appName = (String)custom.get("applicationName");
-                if(appName!=null){
-                    app = context.getObjectByName(Application.class,appName);
-                    sqlQuery = (String)app.getAttributeValue("SQL");
-                    if(sqlQuery!=null){
-                        whereClause = "where DateEmployeeRecordCreated>=" + "'" +lastRunTimeStamp+"'"+" or DateEmployeeRecordUpdated>="+ "'" +lastRunTimeStamp+ "'";
-                        if(sqlQuery.indexOf("where")>0){
-                            sqlQuery = sqlQuery.substring(0,sqlQuery.indexOf("where")).trim();
-                        }
-                        sqlQuery = sqlQuery + " " + whereClause;
-                        app.setAttribute("SQL",sqlQuery);
-                        context.saveObject(app);
-                        context.commitTransaction();
-                    }
-                }
-            }
-            }
+				if(Util.isNotNullOrEmpty(lastRunTimeStamp)){
+					appName = (String)custom.get("applicationName");
+					if(Util.isNotNullOrEmpty(appName)){
+						app = context.getObjectByName(Application.class,appName);
+						sqlQuery = custom.getString("sqlQuery");
+						if(Util.isNotNullOrEmpty(sqlQuery) && app!=null){
+							if(sqlQuery.contains("TIME_STAMP")){
+								sqlQuery = sqlQuery.replace("TIME_STAMP",lastRunTimeStamp);
+							}
+				      		app.setAttribute("SQL",sqlQuery);
+							context.saveObject(app);
+							context.commitTransaction();
+						}
+					}
+				}
+			}
             log.debug("CMH-Infor-Post-Iteration-Rule: Exiting");
             ]]>
         </Source>

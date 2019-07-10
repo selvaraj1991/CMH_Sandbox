@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='UTF-8'?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Workflow PUBLIC "sailpoint.dtd" "sailpoint.dtd">
 <Workflow explicitTransitions="true" libraries="Identity,IdentityRequest" name="CMH-LifeycycleEvent-LOA-Workflow" type="IdentityLifecycle">
   <Variable input="true" name="trigger">
@@ -160,10 +160,10 @@
   <RuleLibraries>
 	<Reference class="sailpoint.object.Rule" name="CMH-AD-Generic-Rulelibrary"/>
   </RuleLibraries>
-  <Step icon="Start" name="Start" posX="25" posY="10" wait="1">
+  <Step icon="Start" name="Start" posX="53" posY="126" wait="1">
     <Transition to="Validate Data"/>
   </Step>
-  <Step icon="Task" name="Validate Data" resultVariable="validationErrors">
+  <Step icon="Analysis" name="Validate Data" posX="182" posY="125" resultVariable="validationErrors">
   	<Script>
   		<Source>
   		<![CDATA[
@@ -207,7 +207,7 @@
   	</Transition>
   	<Transition to="Stop"/>
   </Step>
-  <Step icon="Task" name="Update Identity">
+  <Step icon="Default" name="Update Identity" posX="248" posY="249">
   	<Script>
   		<Source>
   		<![CDATA[
@@ -224,7 +224,7 @@
   	</Script>
   	<Transition to="Retrieve Connected Apps"/>
   </Step>
-  <Step icon="Task" name="Retrieve Connected Apps" resultVariable="connectedApps">
+  <Step icon="Default" name="Retrieve Connected Apps" posX="376" posY="248" resultVariable="connectedApps">
   	<Script>
   		<Source>
   		<![CDATA[
@@ -258,7 +258,7 @@
   	</Transition>
   	<Transition to="Stop"/>
   </Step>
-  <Step name="Build Plan" posX="148" posY="10" resultVariable="plan">
+  <Step icon="Task" name="Build Plan" posX="443" posY="341" resultVariable="plan">
     <Description>Updating group for LOA users in active directory.</Description>
     <Script>
       <Source>
@@ -326,7 +326,7 @@
     </Transition>
     <Transition to="Stop"/>
   </Step>
-  <Step action="call:compileProvisioningProject" icon="Task" name="Compile Project" posX="429" posY="150" resultVariable="project">
+  <Step action="call:compileProvisioningProject" icon="Task" name="Compile Project" posX="510" posY="437" resultVariable="project">
     <Arg name="requester" value="string:spadmin"/>
     <Arg name="requireCreateTemplates" value="string:false"/>
     <Arg name="identityName" value="ref:identityName"/>
@@ -345,7 +345,7 @@
                  defining Args in this step.</Description>
     <Transition to="Create Identity Request"/>
   </Step>
-  <Step action="call:createIdentityRequest" icon="Task" name="Create Identity Request" posX="593" posY="267">
+  <Step action="call:createIdentityRequest" icon="Task" name="Create Identity Request" posX="620" posY="437">
     <Arg name="identityName" value="1002"/>
     <Arg name="project" value="ref:project"/>
     <Arg name="source" value="ref:source"/>
@@ -354,12 +354,12 @@
     <Return name="identityRequestId" to="identityRequestId"/>
     <Transition to="Provision"/>
   </Step>
-  <Step action="call:provisionProject" icon="Provision" name="Provision" posX="1082" posY="239">
+  <Step action="call:provisionProject" icon="Provision" name="Provision" posX="723" posY="437">
     <Arg name="background" value="false"/>
     <Arg name="project" value="ref:project"/>
     <Transition to="Complete Identity Request"/>
   </Step>
-  <Step action="call:completeIdentityRequest" icon="Task" name="Complete Identity Request" posX="1069" posY="30" resultVariable="identityRequest">
+  <Step action="call:completeIdentityRequest" icon="Task" name="Complete Identity Request" posX="828" posY="437" resultVariable="identityRequest">
     <Arg name="autoVerify" value="false"/>
     <Arg name="project" value="ref:project"/>
     <Arg name="identityRequestId" value="ref:identityRequestId"/>
@@ -378,7 +378,7 @@
     </Transition>
     <Transition to="Stop"/>
   </Step>
-  <Step icon="Task" name="Generate ServiceNow Ticket" resultVariable="snowTicketId">
+  <Step icon="Provision" name="Generate ServiceNow Ticket" posX="887" posY="344" resultVariable="snowTicketId">
   	<Script>
   		<Source>
   		<![CDATA[
@@ -391,7 +391,24 @@
   				log.debug("CMH-LifeycycleEvent-LOA-Workflow: Generating service now ticket");
   			}
   			
-  			String snowId = generateSnowTicket(identityName, "CMH-Service-Ticket-Configuration-Object", null, "Disable");
+  			Object ticketObj = generateSnowTicket(identityName, "CMH-Service-Ticket-Configuration-Object", "DISABLE");
+  			String snowId = null;
+	        if(null != ticketObj) {
+	        	if(ticketObj instanceof List) {
+			        List errList  = (List) ticketObj;
+					validationErrors.add(errList);
+				}else if(ticketObj instanceof String) {
+					snowId = (String) ticketObj;	
+					if(isDebugEnabled)	{
+						log.debug("CMH-LifeycycleEvent-LOA-Workflow: Service Now ID :  "+snowId);
+					}
+		            wfcontext.getWorkflowCase().put("snowTicketId",snowId);					  
+		      	}else {
+		     		validationErrors.add("The Object Type is NOT List OR String");					 
+		      	}
+				validationErrors.add("NULL : Unable to generate ticket");				   
+	  	    }
+			wfcontext.getWorkflowCase().put("validationErrors",validationErrors);
   			
   			return snowId;
   		]]>
@@ -399,7 +416,7 @@
   	</Script>
   	<Transition to="Stop"/>
   </Step>
-  <Step catches="complete" icon="Catches" name="Check Status" posX="778" posY="180">
+  <Step catches="complete" icon="Catches" name="Check Status" posX="55" posY="19">
     <Script>
       <Source>
       <![CDATA[
@@ -443,5 +460,5 @@
     </Script>
     <Transition to="Stop"/>
   </Step>
-  <Step icon="Stop" name="Stop" posX="1131" posY="253"/>
+  <Step icon="Stop" name="Stop" posX="736" posY="245"/>
 </Workflow>

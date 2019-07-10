@@ -197,7 +197,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   <RuleLibraries>
     <Reference class="sailpoint.object.Rule" name="CMH-AD-Generic-Rulelibrary"/>
   </RuleLibraries>
-  <Step icon="Start" name="Start" posX="28" posY="18">
+  <Step icon="Start" name="Start" posX="54" posY="124">
     <Script>
       <Source><![CDATA[
   		
@@ -212,7 +212,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
     </Script>
     <Transition to="Validate Data"/>
   </Step>
-  <Step icon="Task" name="Validate Data" posX="28" posY="18" resultVariable="validationErrors">
+  <Step icon="Analysis" name="Validate Data" posX="185" posY="125" resultVariable="validationErrors">
     <Script>
       <Source><![CDATA[
 			  
@@ -258,7 +258,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
     </Transition>
     <Transition to="end"/>
   </Step>
-  <Step icon="Task" name="Check User Status" posX="28" posY="18" resultVariable="isUserActive">
+  <Step icon="Default" name="Check User Status" posX="252" posY="237" resultVariable="isUserActive">
     <Arg name="userStatus" value="ref:userStatus"/>
     <Script>
       <Source><![CDATA[
@@ -274,7 +274,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
     <Transition to="Check AD Application" when="return (isUserActive==true)"/>
     <Transition to="end" when="return (isUserActive==false)"/>
   </Step>
-  <Step icon="Task" name="Check AD Application" posX="28" posY="18">
+  <Step icon="Default" name="Check AD Application" posX="319" posY="326">
     <Script>
       <Source><![CDATA[
 			  
@@ -315,7 +315,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
     <Transition to="end" when="return ((adLinkExist==false) &amp;&amp; retries &gt;= 3)"/>
     <Transition to="Notify Manager" when="return (adLinkExist==true)"/>
   </Step>
-  <Step icon="Task" name="Increase Retry Count" wait="1">
+  <Step icon="Default" name="Increase Retry Count" posX="479" posY="430" wait="1">
     <Script>
       <Source><![CDATA[
 		
@@ -326,10 +326,10 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
     </Script>
     <Transition to="Wait for next Retry"/>
   </Step>
-  <Step icon="Default" name="Wait for next Retry" wait="ref:retryTime">
+  <Step icon="Undo" name="Wait for next Retry" posX="320" posY="431" wait="ref:retryTime">
     <Transition to="Check AD Application"/>
   </Step>
-  <Step icon="Task" name="o365 Provisioning Plan" posX="174" posY="9" resultVariable="plan">
+  <Step icon="Task" name="o365 Provisioning Plan" posX="52" posY="20" resultVariable="plan">
     <Description>Process the user who has been provsioned to AD</Description>
     <Script>
       <Source><![CDATA[  
@@ -340,7 +340,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
     </Script>
     <Transition to="Compile Project"/>
   </Step>
-  <Step action="call:compileProvisioningProject" name="Compile Project" posX="406" posY="10" resultVariable="project">
+  <Step action="call:compileProvisioningProject" name="Compile Project" posX="172" posY="20" resultVariable="project">
     <Arg name="identityName" value="ref:identityName"/>
     <Arg name="plan" value="ref:plan"/>
     <Arg name="requester" value="string:spadmin"/>
@@ -359,7 +359,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 	</Description>
     <Transition to="Create Identity Request"/>
   </Step>
-  <Step action="call:createIdentityRequest" icon="Task" name="Create Identity Request" posX="841" posY="239">
+  <Step action="call:createIdentityRequest" icon="Task" name="Create Identity Request" posX="295" posY="19">
     <Arg name="project" value="ref:project"/>
     <Arg name="source" value="ref:source"/>
     <Arg name="priority" value="string:Normal"/>
@@ -368,18 +368,18 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
     <Return name="identityRequestId" to="identityRequestId"/>
     <Transition to="Provision"/>
   </Step>
-  <Step action="call:provisionProject" icon="Provision" name="Provision" posX="682" posY="10">
+  <Step action="call:provisionProject" icon="Provision" name="Provision" posX="427" posY="19">
     <Arg name="background" value="false"/>
     <Arg name="project" value="ref:project"/>
     <Transition to="Complete Identity Request"/>
   </Step>
-  <Step action="call:completeIdentityRequest" icon="Task" name="Complete Identity Request" posX="953" posY="94" resultVariable="identityRequest">
+  <Step action="call:completeIdentityRequest" icon="Task" name="Complete Identity Request" posX="536" posY="18" resultVariable="identityRequest">
     <Arg name="project" value="ref:project"/>
     <Arg name="autoVerify" value="false"/>
     <Arg name="identityRequestId" value="ref:identityRequestId"/>
     <Transition to="Notify Manager"/>
   </Step>
-  <Step action="call:sendEmail" condition="script:managerEmail!=null" icon="Email" name="Notify Manager" posX="1264" posY="32">
+  <Step action="call:sendEmail" condition="script:managerEmail!=null" icon="Email" name="Notify Manager" posX="636" posY="317">
     <Arg name="to" value="ref:managerEmail"/>
     <Arg name="template" value="ref:managerEmailTemplate"/>
     <Arg name="managername" value="ref:managerName"/>
@@ -390,14 +390,14 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
     <Description>Send Email to Manager</Description>
     <Transition to="Refresh Identity"/>
   </Step>
-  <Step action="call:refreshIdentity" icon="Task" name="Refresh Identity">
+  <Step action="call:refreshIdentity" icon="Task" name="Refresh Identity" posX="788" posY="316">
     <Arg name="identityName" value="ref:identityName"/>
     <Arg name="correlateEntitlements" value="true"/>
     <Arg name="refreshRoleMetadata" value="true"/>
     <Arg name="refreshIdentityEntitlements" value="true"/>
    <Transition to="end"/>
   </Step>
-  <Step catches="complete" icon="Catches" name="Check Status" posX="778" posY="180">
+  <Step catches="complete" icon="Catches" name="Check Status" posX="656" posY="22">
     <Arg name="attributeName" value="string:Employee ID"/>
     <Arg name="source" value="string:CMH-LifecycleEvent-Joiner"/>
     <Arg name="attributeValue" value="ref:employeeId"/>
@@ -452,5 +452,5 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
     </Script>
     <Transition to="end"/>
   </Step>
-  <Step icon="Stop" name="end" posX="784" posY="10"/>
+  <Step icon="Stop" name="end" posX="875" posY="199"/>
 </Workflow>

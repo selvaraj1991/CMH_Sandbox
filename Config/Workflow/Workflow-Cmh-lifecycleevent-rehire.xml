@@ -277,7 +277,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   <RuleLibraries>
     <Reference class="sailpoint.object.Rule" name="CMH-AD-Generic-Rulelibrary"/>
   </RuleLibraries>
-  <Step icon="Start" name="Start" posX="28" posY="10" wait="1">
+  <Step icon="Start" name="Start" posX="101" posY="128" wait="1">
     <Script>
       <Source><![CDATA[
   		
@@ -292,7 +292,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
     </Script>
     <Transition to="Validate Data"/>
   </Step>
-  <Step icon="Task" name="Validate Data" posX="28" posY="18" resultVariable="validationErrors">
+  <Step icon="Analysis" name="Validate Data" posX="224" posY="126" resultVariable="validationErrors">
     <Script>
       <Source><![CDATA[
 			  
@@ -337,7 +337,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
     </Transition>
     <Transition to="end"/>
   </Step>
-    <Step icon="Task" name="Get Connected Apps" resultVariable="connectedApps">
+  <Step icon="Task" name="Get Connected Apps" posX="290" posY="246" resultVariable="connectedApps">
     <Script>
       <Source><![CDATA[
   			import org.apache.log4j.Logger;
@@ -355,7 +355,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
     </Script>
     <Transition to="Get Disconnected Apps"/>
   </Step>
-  <Step icon="Task" name="Get Disconnected Apps" resultVariable="disConnectedApps">
+  <Step icon="Task" name="Get Disconnected Apps" posX="412" posY="245" resultVariable="disConnectedApps">
     <Script>
       <Source><![CDATA[
   			import org.apache.log4j.Logger;
@@ -372,7 +372,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
     </Script>
     <Transition to="Check AD Application"/>
   </Step>
-  <Step icon="Task" name="Check AD Application" posX="28" posY="18">
+  <Step icon="Task" name="Check AD Application" posX="552" posY="245">
     <Script>
       <Source><![CDATA[
 			  
@@ -412,7 +412,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
     <Transition to="Enable User" when="return (adExists==true)"/>
     <Transition to="end" when="return ((adExists==false) &amp;&amp; retries &gt;= 3)"/>
   </Step>
-  <Step icon="Task" name="Increase Retry Count" wait="1">
+  <Step icon="Default" name="Increase Retry Count" posX="698" posY="352" wait="1">
     <Script>
       <Source><![CDATA[
 		
@@ -423,10 +423,10 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
     </Script>
     <Transition to="Wait for next Retry"/>
   </Step>
-  <Step icon="Default" name="Wait for next Retry" wait="ref:retryTime">
+  <Step icon="Undo" name="Wait for next Retry" posX="552" posY="353" wait="ref:retryTime">
     <Transition to="Check AD Application"/>
   </Step>
-  <Step icon="Task" name="Enable User" posX="28" posY="18">
+  <Step icon="Default" name="Enable User" posX="818" posY="359">
     <Script>
       <Source><![CDATA[
 			  
@@ -482,7 +482,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
     </Transition>
     <Transition to="end"/>
   </Step>
-  <Step icon="Task" name="Process Provisioning For PREHIRE" posX="28" posY="18" resultVariable="plan">
+  <Step icon="Task" name="Process Provisioning For PREHIRE" posX="884" posY="449" resultVariable="plan">
     <Script>
       <Source><![CDATA[
 			    import org.apache.log4j.Logger;
@@ -565,7 +565,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
     </Transition>
     <Transition to="end"/>
   </Step>
-  <Step icon="Task" name="Process Provisioning For ACTIVE" posX="28" posY="18" resultVariable="plan">
+  <Step icon="Task" name="Process Provisioning For ACTIVE" posX="878" posY="268" resultVariable="plan">
     <Script>
       <Source><![CDATA[
         
@@ -668,7 +668,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
     </Transition>
     <Transition to="end"/>
   </Step>
-  <Step action="call:compileProvisioningProject" icon="Task" name="Compile Project" posX="429" posY="150" resultVariable="project">
+  <Step action="call:compileProvisioningProject" icon="Task" name="Compile Project" posX="1012" posY="553" resultVariable="project">
     <Arg name="requester" value="string:spadmin"/>
     <Arg name="requireCreateTemplates" value="string:false"/>
     <Arg name="identityName" value="ref:identityName"/>
@@ -687,7 +687,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
                  defining Args in this step.</Description>
     <Transition to="Create Identity Request"/>
   </Step>
-  <Step action="call:createIdentityRequest" icon="Task" name="Create Identity Request" posX="841" posY="239">
+  <Step action="call:createIdentityRequest" icon="Task" name="Create Identity Request" posX="1163" posY="553">
     <Arg name="project" value="ref:project"/>
     <Arg name="source" value="ref:source"/>
     <Arg name="priority" value="string:Normal"/>
@@ -696,12 +696,12 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
     <Return name="identityRequestId" to="identityRequestId"/>
     <Transition to="Provision"/>
   </Step>
-  <Step action="call:provisionProject" icon="Provision" name="Provision" posX="682" posY="10">
+  <Step action="call:provisionProject" icon="Provision" name="Provision" posX="1295" posY="552">
     <Arg name="background" value="false"/>
     <Arg name="project" value="ref:project"/>
     <Transition to="Complete Identity Request"/>
   </Step>
-  <Step action="call:completeIdentityRequest" icon="Task" name="Complete Identity Request" posX="953" posY="94" resultVariable="identityRequest">
+  <Step action="call:completeIdentityRequest" icon="Task" name="Complete Identity Request" posX="1435" posY="551" resultVariable="identityRequest">
     <Arg name="project" value="ref:project"/>
     <Arg name="autoVerify" value="false"/>
     <Arg name="identityRequestId" value="ref:identityRequestId"/>
@@ -733,7 +733,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
     </Transition>
     <Transition to="end"/>
   </Step>
-  <Step action="call:sendEmail" condition="script:toAddress!=null" icon="Email" name="Notify Manager" posX="1264" posY="32">
+  <Step action="call:sendEmail" condition="script:toAddress!=null" icon="Email" name="Notify Manager" posX="1721" posY="421">
     <Arg name="to" value="ref:toAddress"/>
     <Arg name="template" value="ref:managerEmailTemplate"/>
     <Arg name="managername" value="ref:managerName"/>
@@ -744,7 +744,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
     <Description>Send Email to Manager</Description>
     <Transition to="Single Account Aggregation"/>
   </Step>
-  <Step icon="Task" name="Single Account Aggregation" posX="28" posY="18" resultVariable="validationErrors">
+  <Step icon="Task" name="Single Account Aggregation" posX="1501" posY="660" resultVariable="validationErrors">
     <Script>
       <Source><![CDATA[
 			    import org.apache.log4j.Logger;
@@ -795,7 +795,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
     </Script>
     <Transition to="Refresh Identity"/>
   </Step>
-  <Step action="call:refreshIdentity" icon="Task" name="Refresh Identity">
+  <Step action="call:refreshIdentity" icon="Task" name="Refresh Identity" posX="1725" posY="658">
     <Arg name="identityName" value="ref:identityName"/>
     <Arg name="correlateEntitlements" value="true"/>
     <Arg name="provision" value="true"/>
@@ -806,7 +806,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
     <Arg name="synchronizeAttributes" value="true"/>
     <Transition to="end"/>
   </Step>
-  <Step catches="complete" icon="Catches" name="Check Status" posX="778" posY="180">
+  <Step catches="complete" icon="Catches" name="Check Status" posX="99" posY="32">
     <Arg name="attributeName" value="string:Employee ID"/>
     <Arg name="source" value="string:CMH-LifecycleEvent-Rehire"/>
     <Arg name="attributeValue" value="ref:employeeId"/>
@@ -863,5 +863,5 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
     </Script>
     <Transition to="end"/>
   </Step>
-  <Step icon="Stop" name="end" posX="784" posY="10"/>
+  <Step icon="Stop" name="end" posX="1603" posY="221"/>
 </Workflow>
