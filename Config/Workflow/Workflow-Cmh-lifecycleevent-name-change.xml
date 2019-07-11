@@ -505,7 +505,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 				Identity identity = context.getObjectByName(Identity.class, newIdentityName);
 				Application application = context.getObjectByName(Application.class, adAppName);
 				if (identity != null && application != null) {
-				    String displayName = getDisplayName(identity.getFirstname(), identity.getLastname(), identity.getStringAttribute("middleInitial"));
+				    String displayName = getDisplayName(identity.getFirstname(), identity.getLastname(), identity.getStringAttribute("middleInitial"),identity.getStringAttribute("credential"));
 					IdentityService ids = new IdentityService(context);
 					List appLink = ids.getLinks(identity, application);
 					if( null != appLink) {
