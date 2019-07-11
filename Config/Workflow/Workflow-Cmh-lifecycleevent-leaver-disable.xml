@@ -521,7 +521,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 					    for (Link adLink : appLink) {
 					         if(null != adLink) {
 					            String nativeIdentity = adLink.getNativeIdentity();
-					            String cn = nativeIdentity.substring(0,nativeIdentity.indexOf(","));
+					            String cn = calculateCN(nativeIdentity);
 					            if(Util.isNotNullOrEmpty(cn)){
 					               String newNativeIdentity = cn+","+disabledOU;
 					               validationErrors.addAll(doTargetedAggregation(newNativeIdentity,adAppName,identityName));

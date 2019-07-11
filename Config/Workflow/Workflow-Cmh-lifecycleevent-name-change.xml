@@ -704,7 +704,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 					   for (Link adLink : appLink) {
 					        if(null != adLink) {
 					            String accLink = adLink.getNativeIdentity();
-						        String userOU = accLink.substring(accLink.indexOf(","));
+						        String userOU = getPrimaryGrpDN(accLink);
 					            String newNativeIdentity = "CN=".concat(newIdentityName).concat(userOU);
 					            validationErrors.addAll(doTargetedAggregation(newNativeIdentity,adAppName,newIdentityName));
 					         }

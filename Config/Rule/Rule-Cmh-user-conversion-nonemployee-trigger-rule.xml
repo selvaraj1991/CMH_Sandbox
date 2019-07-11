@@ -47,8 +47,7 @@
 				String newIdentityStatus = newIdentity.getStringAttribute("status");
 				if (Util.nullSafeCaseInsensitiveEq(prevIdentityStatus, "ACTIVE") && 
 					Util.nullSafeCaseInsensitiveEq(newIdentityStatus, "ACTIVE") && 
-					!Util.nullSafeCaseInsensitiveEq(prevAssignmentType, newAssignmentType) && 
-					Util.isNullOrEmpty(newIdentity.getStringAttribute("otherEmpId"))) {
+	           !Util.nullSafeCaseInsensitiveEq(prevAssignmentType, newAssignmentType)){
 					isConversion = true;
 
 				}

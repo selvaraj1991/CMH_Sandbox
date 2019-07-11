@@ -327,7 +327,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 						for (Link adLink : appLink) {
 							if (null != adLink && !adLink.isDisabled()) {
 							      String accLink = adLink.getNativeIdentity();
-							      String userOU = accLink.substring(accLink.indexOf(",")+1);
+							      String userOU = getPrimaryGrpDN(accLink);
 								 if(!Util.nullSafeCaseInsensitiveEq(newUserOU,userOU)){
 								    
 								 	AccountRequest accModify = new AccountRequest();
@@ -461,7 +461,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 					    for (Link adLink : appLink) {
 					         if(null != adLink) {
 					            String nativeIdentity = adLink.getNativeIdentity();
-					            String cn = nativeIdentity.substring(0,nativeIdentity.indexOf(","));
+					            String cn = calculateCN(nativeIdentity);
 					            if(Util.isNotNullOrEmpty(cn)){
 					               String newNativeIdentity = cn+","+newUserOU;
 					               validationErrors.addAll(doTargetedAggregation(newNativeIdentity,adAppName,identityName));
