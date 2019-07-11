@@ -462,7 +462,7 @@
 			validationErrors.add("NULL : Unable to generate ticket");				   
   	    }
 		wfcontext.getWorkflowCase().put("validationErrors",validationErrors);		
-    	    
+    	]]>    
     	</Source>
     </Script>
     <Transition to="Do Target Aggregation"/>
