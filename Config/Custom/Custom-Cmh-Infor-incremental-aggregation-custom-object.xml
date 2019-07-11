@@ -3,8 +3,9 @@
 <Custom name="CMH-Infor-Incremental-Aggregation-Custom-Object">
     <Attributes>
         <Map>
-            <entry key="lastRunTimeStamp"/>
-            <entry key="applicationName" value="%%CMH-Infor-ApplicationName%%"/>
+      		<entry key="applicationName" value="%%CMH-Infor-ApplicationName%%"/>
+          <entry key="lastRunTimeStamp"/>
+      		<entry key="sqlQuery" value="SELECT * FROM AuthSource.users WHERE PrimaryWorkAssignment='YES' and DateEmployeeRecordCreated>='TIME_STAMP' or DateEmployeeRecordUpdated>='TIME_STAMP'"/>
         </Map>
     </Attributes>
 </Custom>
