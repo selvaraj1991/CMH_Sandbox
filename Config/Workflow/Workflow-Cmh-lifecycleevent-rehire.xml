@@ -512,7 +512,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 						for (Link adLink : appLink) {
 							if (null != adLink && adLink.isDisabled()) {
 							      String accLink = adLink.getNativeIdentity();
-							      String userOU = accLink.substring(accLink.indexOf(",")+1);
+							      String userOU = getPrimaryGrpDN(accLink);
 								 if(!Util.nullSafeCaseInsensitiveEq(enabledUserOU,userOU)){
 								 	AccountRequest accModify = new AccountRequest();
 								 	accModify.setApplication(adAppName);
@@ -596,7 +596,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 						for (Link adLink : appLink) {
 							if (null != adLink && adLink.isDisabled()) {
 							      String accLink = adLink.getNativeIdentity();
-							      String userOU = accLink.substring(accLink.indexOf(",")+1);
+							      String userOU = getPrimaryGrpDN(accLink);
 								 if(!Util.nullSafeCaseInsensitiveEq(enabledUserOU,userOU)){
 								    AccountRequest accrq = new AccountRequest();
 								    accrq.setApplication(adAppName);
@@ -722,6 +722,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
       <Script>
         <Source><![CDATA[
   		   
+  				import sailpoint.tools.Message;
   				import sailpoint.tools.Util;
   				if(wfcontext.getRootWorkflowCase().getMessages()== null && null == wfcontext.getRootWorkflowCase().getMessagesByType(Message.Type.Error) && Util.nullSafeCaseInsensitiveEq(status,"ACTIVE")){
 					return true;
@@ -776,7 +777,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 					    for (Link adLink : appLink) {
 					         if(null != adLink) {
 					            String nativeIdentity = adLink.getNativeIdentity();
-					            String cn = nativeIdentity.substring(0,nativeIdentity.indexOf(","));
+					            String cn = calculateCN(nativeIdentity);
 					            if(Util.isNotNullOrEmpty(cn)){
 					               String newNativeIdentity = cn+","+enabledUserOU;
 					               validationErrors.addAll(doTargetedAggregation(newNativeIdentity,adAppName,identityName));
