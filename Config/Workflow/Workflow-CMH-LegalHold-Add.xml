@@ -348,13 +348,10 @@
            			if(adLink!=null){
 	           			String nativeIdentity = adLink.getNativeIdentity();
 	           			if(Util.isNotNullOrEmpty(nativeIdentity)){
-	           				String[] parts=nativeIdentity.split(",");
-	           				if(parts!=null){
-	           					String value=parts[0];
-	           					if(Util.isNotNullOrEmpty(value)){
-	           						String finalOU = value+","+adOU;
-	           						validationErrors.addAll(doTargetedAggregation(finalOU,adAppName,identityName));
-	           					}
+           					String userCN = calculateCN(nativeIdentity);
+           					if(Util.isNotNullOrEmpty(userCN)){
+           						String newUserDN = userCN+","+adOU;
+           						validationErrors.addAll(doTargetedAggregation(newUserDN,adAppName,identityName));
 	           				}
 	           			}
            			}

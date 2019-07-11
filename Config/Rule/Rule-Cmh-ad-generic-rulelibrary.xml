@@ -1027,5 +1027,26 @@
 		log.debug("CMH-AD-Generic-Rulelibrary : Exiting checkDataInCustomObject()");
 		return isSuccess;	
    }
+  /**Method is used to pull the Primary Group DN from the nativeIdentity of the user**/
+  public String getPrimaryGrpDN(String nativeIdentity){
+  	String primaryDN = null;
+  	if(Util.isNotNullOrEmpty(nativeIdentity)){
+  		if(nativeIdentity.contains("OU")){
+  			primaryDN = nativeIdentity.substring(nativeIdentity.indexOf("OU"));
+  		}
+  	}
+  	return primaryDN;
+  }
+  
+  /**Method is used to pull the CN from the nativeIdentity of the user**/
+  public String calculateCN(String nativeIdentity) {
+     String cn = null;
+	 if(Util.isNotNullOrEmpty(nativeIdentity)) {
+		if(nativeIdentity.contains("OU")){
+			cn = nativeIdentity.substring(0,(nativeIdentity.indexOf("OU")-1));
+		 }
+	  } 
+	return cn;
+  }
   ]]></Source>
 </Rule>

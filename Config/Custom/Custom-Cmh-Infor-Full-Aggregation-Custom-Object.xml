@@ -3,7 +3,7 @@
 <Custom name="CMH-Infor-Full-Aggregation-Custom-Object">
   <Attributes>
     <Map>
-      <entry key="applicationName" value="Infor HR Database"/>
+      <entry key="applicationName" value="%%CMH-Infor-ApplicationName%%"/>
       <entry key="lastRunTimeStamp"/>
       <entry key="oldRunTimeStamp"/>
       <entry key="sqlQuery" value="SELECT * FROM users WHERE PrimaryWorkAssignment='YES';"/>

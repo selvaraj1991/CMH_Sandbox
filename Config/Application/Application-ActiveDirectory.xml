@@ -377,8 +377,19 @@
             <Section label="Exchange" name="Exchange">
                 <Field displayName="con_prov_policy_ad_homeMDB" helpKey="help_con_prov_policy_ad_homeMDB" name="homeMDB"
                        section="Exchange" type="string"/>
-                <Field displayName="con_prov_policy_ad_mailNickname" helpKey="help_con_prov_policy_ad_mailNickname"
-                       name="mailNickname" section="Exchange" type="string"/>
+                <Field displayName="con_prov_policy_ad_mailNickname" helpKey="help_con_prov_policy_ad_mailNickname" name="mailNickname" section="Exchange" type="string">
+					<Script>
+						<Source>
+							<![CDATA[
+								import sailpoint.tools.Util;
+								if(Util.isNotNullOrEmpty(identity.getEmail())){
+									return identity.getName();
+								}
+								return null;
+							]]>
+						</Source>
+					</Script>
+				</Field>
                 <Field displayName="con_prov_policy_ad_msExchHideFromAddressLists"
                        helpKey="help_con_prov_policy_ad_msExchHideFromAddressLists" name="msExchHideFromAddressLists"
                        section="Exchange" type="boolean"/>
