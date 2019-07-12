@@ -163,6 +163,7 @@
                     <Boolean/>
                 </value>
             </entry>
+			<entry key="maxRetries" value="3"/>
             <entry key="nativeChangeDetectionAttributeScope" value="entitlements"/>
             <entry key="nativeChangeDetectionAttributes"/>
             <entry key="nativeChangeDetectionEnabled">
@@ -172,6 +173,7 @@
             </entry>
             <entry key="nativeChangeDetectionOperations"/>
             <entry key="pageSize" value="100"/>
+			<entry key="provisioningRetryThreshold" value="15"/>
             <entry key="searchDNs">
                 <value>
                     <List>
