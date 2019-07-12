@@ -618,8 +618,8 @@
 			varMap.put("color", "Black");
 			varMap.put("storage", "64GB");
 			varMap.put("var_tsk_short_desc", "short_description---value");
-			// varMap.put("user", "Aaron Jones"); //put username
-			// varMap.put("description", "User Disable");
+			//varMap.put("username", "kdhyani"); //put username
+	        //varMap.put("description", "User "+operation);
 			jsonMap.put("variables", varMap);
 			JsonUtil jUtil = new JsonUtil();
 			String jsonString = jUtil.render(jsonMap);
