@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Workflow PUBLIC "sailpoint.dtd" "sailpoint.dtd">
-<Workflow explicitTransitions="true" libraries="Identity,IdentityRequest" name="CMH-LifeycycleEvent-Return-LOA-Workflow" type="IdentityLifecycle">
+<Workflow explicitTransitions="true" libraries="Identity,IdentityRequest" name="CMH-LifecycleEvent-Return-LOA-Workflow" type="IdentityLifecycle">
   <Variable input="true" name="trigger">
     <Description>The IdentityTrigger</Description>
   </Variable>

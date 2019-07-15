@@ -11,7 +11,7 @@
     <HandlerParameters>
         <Attributes>
             <Map>
-                <entry key="workflow" value="CMH-LifeycycleEvent-Prehire"/>
+                <entry key="workflow" value="CMH-LifecycleEvent-Prehire"/>
             </Map>
         </Attributes>
     </HandlerParameters>

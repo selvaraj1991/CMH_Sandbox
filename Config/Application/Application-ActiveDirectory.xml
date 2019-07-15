@@ -401,6 +401,7 @@
             <Source><![CDATA[
         		
         			String val = null;
+					String mail = identity.getEmail();
         			if(mail!=null && !mail.isEmpty()){
         				val = "5";
         			}

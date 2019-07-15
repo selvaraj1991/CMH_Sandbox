@@ -10,7 +10,7 @@
     <HandlerParameters>
         <Attributes>
             <Map>
-                <entry key="workflow" value="CMH-LifeycycleEvent-Return-LOA-Workflow"/>
+                <entry key="workflow" value="CMH-LifecycleEvent-Return-LOA-Workflow"/>
             </Map>
         </Attributes>
     </HandlerParameters>
