@@ -49,6 +49,7 @@
     if(null !=identity) {
 		String empId = identity.getStringAttribute("employeeId");
 		String uName = identity.getName();
+		
 		if(Util.isNotNullOrEmpty(empId) && Util.isNotNullOrEmpty(uName)) {
 			if(uName.contains("_old")){
 				uName = uName.substring(0,uName.indexOf("_old")).trim();
