@@ -85,7 +85,6 @@
   		</Source>
   	</Script>
   </Variable>
-  <Variable name="disConnectedApps" type="java.util.List"/>
   <Description>This workflow is used to immediately disabling a user identity, disable AD account, generate ServiceNow ticket for unmanaged accounts.</Description>
   <RuleLibraries>
 	<Reference class="sailpoint.object.Rule" name="CMH-AD-Generic-Rulelibrary"/>
@@ -258,29 +257,9 @@
      ]]>
      </Source>
     </Script>
-    <Transition to="Get Disconnected Apps"/>
-  </Step>
-  <Step icon="Task" name="Get Disconnected Apps" posX="700" posY="222" resultVariable="disConnectedApps">
-  	<Script>
-  		<Source>
-  		<![CDATA[
-  			import org.apache.log4j.Logger;
-  			
-  			Logger log = Logger.getLogger("CMH_ImmediateTerminationLog");
-  			List disConnectedApps = getAppsToProcess(identityName,"CMH-Leaver-Custom-Object","disConnectedApplications");
-  			if(disConnectedApps==null || disConnectedApps.size()<=0){
-  				log.info("CMH-LifeycycleEvent-Leaver-Delete: There are no disconnected Apps associated with the user");
-  			}
-  			else if(isDebugEnabled){
-  				log.debug("CMH-LifeycycleEvent-Leaver-Delete: List of disConnected Apps to be deleted: "+disConnectedApps.toString());
-  			}
-  			return disConnectedApps;
-  		]]>
-  		</Source>
-  	</Script>
   	<Transition to="Disable Accounts"/>
   </Step>
-  <Step icon="Task" name="Disable Accounts" posX="816" posY="222" resultVariable="plan">
+  <Step icon="Task" name="Disable Accounts" posX="758" posY="222" resultVariable="plan">
     <Script>
       <Source>
       <![CDATA[

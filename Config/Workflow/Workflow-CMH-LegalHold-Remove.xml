@@ -248,6 +248,11 @@
     			if(Util.isNotNullOrEmpty(adOU)){
     				return true;
     			}
+				if(validationErrors==null){
+					validationErrors = new ArrayList();
+				}
+				validationErrors.add("CMH-User-OU-Mapping-Custom-Object: Not configured properly with User OU details");
+				wfcontext.getRootWorkflowCase().put("validationErrors",validationErrors);
     			return false;
     		]]>
     		</Source>

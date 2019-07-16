@@ -24,6 +24,7 @@
     </Owner>
     <Requirements>
         <Reference class="sailpoint.object.Bundle" name="Internet and QPM IT Role"/>
+    <Reference class="sailpoint.object.Bundle" name="Volunteer Scope Access IT Role"/>
     </Requirements>
     <Selector>
         <IdentitySelector>

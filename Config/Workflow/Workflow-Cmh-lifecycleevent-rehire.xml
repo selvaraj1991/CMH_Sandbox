@@ -249,7 +249,6 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   <Variable initializer="New Account Creation" input="true" name="managerEmailTemplate"/>
   <Variable name="validationErrors" type="java.util.List"/>
   <Variable name="connectedApps" type="java.util.List"/>
-  <Variable name="disConnectedApps" type="java.util.List"/>
   <Variable name="snowTicketId"/>
   <Variable name="password">
     <Description>user password</Description>
@@ -351,23 +350,6 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   				log.debug("CMH-LifecycleEvent-Rehire: List of Connected Apps to be deleted: "+connectedApps.toString());
   			}
   			return connectedApps;
-  		]]></Source>
-    </Script>
-    <Transition to="Get Disconnected Apps"/>
-  </Step>
-  <Step icon="Task" name="Get Disconnected Apps" posX="412" posY="245" resultVariable="disConnectedApps">
-    <Script>
-      <Source><![CDATA[
-  			import org.apache.log4j.Logger;
-  			Logger log = Logger.getLogger("CMH-LifecycleEvent-Leaver-Delete");
-  			List disConnectedApps = getAppsToProcess(identityName,"CMH-Leaver-Custom-Object","disConnectedApplications");
-  			if(disConnectedApps==null || disConnectedApps.size()<=0){
-  				log.info("CMH-LifecycleEvent-Leaver-Delete: There are no disconnected Apps associated with the user");
-  			}
-  			else if(isDebugEnabled){
-  				log.debug("CMH-LifecycleEvent-Leaver-Delete: List of disConnected Apps to be deleted: "+disConnectedApps.toString());
-  			}
-  			return disConnectedApps;
   		]]></Source>
     </Script>
     <Transition to="Check AD Application"/>

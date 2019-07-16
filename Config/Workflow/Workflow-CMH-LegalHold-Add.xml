@@ -233,11 +233,17 @@
     			if(Util.isNotNullOrEmpty(adOU)){
     				return true;
     			}
+				if(validationErrors==null){
+					validationErrors = new ArrayList();
+				}
+				validationErrors.add("CMH-Custom-Object-AD-Application: Not configured properly with Legal Hold OU details");
+				wfcontext.getRootWorkflowCase().put("validationErrors",validationErrors);
     			return false;
     		]]>
     		</Source>
     	</Script>
     </Transition>
+	<Transition to="Stop"/>
   </Step>
   <Step name="Move User OU" posX="782" posY="318" resultVariable="plan">
     <Description>Modifying OU for legal hold users in active directory.</Description>

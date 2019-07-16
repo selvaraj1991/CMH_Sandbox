@@ -284,9 +284,9 @@
 				Application app = context.getObjectByName(Application.class,appName);
 				if(iden!=null && app!=null){
 					IdentityService identityService = new IdentityService(context);
-					List adLinks = identityService.getLinks(iden,app);
-					if(adLinks!=null && adLinks.size()>0){
-						for(Link li:adLinks){
+					List appLinks = identityService.getLinks(iden,app);
+					if(appLinks!=null && appLinks.size()>0){
+						for(Link li:appLinks){
 							if(li!=null){
 								AccountRequest acctReq = new AccountRequest();
 								if(Util.nullSafeCaseInsensitiveEq(adAppName,appName)){
