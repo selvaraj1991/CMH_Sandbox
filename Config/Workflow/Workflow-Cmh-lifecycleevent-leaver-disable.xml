@@ -288,6 +288,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   			Logger log = Logger.getLogger("CMH-LifecycleEvent-Leaver-Disable");
 
   			Identity iden = context.getObjectByName(Identity.class,identityName);
+  			String immeTermStat = iden.getStringAttribute("immediateOffboarder");
   			if(iden != null){
   				iden.setInactive(true);
   				iden.setAttribute("status","TERMINATED");
@@ -301,6 +302,9 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 			    	log.debug("CMH-LifecycleEvent-Leaver-Disable :deleteDate : "+deleteDate);
 
 			    	iden.setAttribute("deletionDate",deleteDate);
+			    	if(Util.nullSafeCaseInsensitiveEq(immeTermStat,"YES")) {
+			    	   iden.setAttribute("immediateOffboarder","NO");
+			    	}
 	  				context.saveObject(iden);
 	  				context.commitTransaction();
   				}
