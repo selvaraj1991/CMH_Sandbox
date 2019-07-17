@@ -1048,5 +1048,19 @@
 	  } 
 	return cn;
   }
+  /**Method is replace all the special characters , hypen and space from the string**/
+  public String filterSpecialCharacter(String attrValue) {
+	  String filterString = null;
+	  if (Util.isNotNullOrEmpty(attrValue)) {
+          Pattern pattern = Pattern.compile("[a-zA-Z0-9]*");
+          Matcher matcher = pattern.matcher(attrValue);
+          if (matcher.find()) {
+			  filterString = attrValue.replaceAll("[^a-zA-Z0-9]", "");			  
+		  } else {
+			  filterString = attrValue;
+		  }
+	   }
+	  return filterString;
+	}
   ]]></Source>
 </Rule>

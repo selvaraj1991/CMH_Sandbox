@@ -43,51 +43,66 @@
        import sailpoint.tools.Util;
              
        Logger log = Logger.getLogger("cmh.authsource.rules");
+       public boolean isGrantRole(String roleName, String roleNameCustomObject,String jobLevel, String cmhDept,String jobCode,String jobFamily) {
+        boolean roleAssign = false;
+        if(Util.isNotNullOrEmpty(roleName) && Util.isNotNullOrEmpty(roleNameCustomObject)) {
+			if (checkDataInCustomObject(roleName, roleNameCustomObject, "OTHEREMPLOYEEROLE")) {
+				if (Util.nullSafeCaseInsensitiveEq(roleName, "Patient Care Leaders Business Role")) {
+					if (checkDataInCustomObject(jobLevel, birthRightCustomObject, "PATIENTCAREALLJOBLEVEL")) {
+						if (Util.nullSafeCaseInsensitiveEq(cmhDept, "PATIENTCARE")) {
+							roleAssign = true;
+						} else if (Util.nullSafeCaseInsensitiveEq(cmhDept, "NONPATIENTCARE")) {
+							if (Util.isNotNullOrEmpty(jobFamily) && checkDataInCustomObject(jobFamily, birthRightCustomObject, "JOBFAMILY")) {
+								roleAssign = true;
+							}
+						}
+					}
+				} else if (Util.nullSafeCaseInsensitiveEq(roleName, "CEO Assembly Business Role")) {
+					 if (checkDataInCustomObject(jobLevel, birthRightCustomObject, "CEOASSEMBLYJOBLEVEL")) {
+						roleAssign = true;
+					} else if (Util.isNotNullOrEmpty(jobCode)) {
+						if (checkDataInCustomObject(jobCode, birthRightCustomObject, "CEOASSEMBLYJOBLEVEL")) {
+							roleAssign = true;
+						}
+					}
+				} else if (Util.nullSafeCaseInsensitiveEq(roleName, "HR Leadership Forum Business Role")) {
+					if (checkDataInCustomObject(jobLevel, birthRightCustomObject, "HRLEADERSHIPJOBLEVEL")) {
+						roleAssign = true;
+					}
+				} else if (Util.nullSafeCaseInsensitiveEq(roleName, "Patient Care All Business Role")) {
+					if (Util.nullSafeCaseInsensitiveEq(cmhDept, "PATIENTCARE")) {
+						roleAssign = true;
+					}
+				}
+			 }
+		  }
+		  return roleAssign;
+	   }
        log.debug("CMH-Employee-Other-Birthright-Rule: Entering");
-       String status = identity.getAttribute("status");
-       String userType = identity.getAttribute("userType");
        boolean roleAssign = false;
        String birthRightCustomObject = "CMH-Custom-Birthright-Employee-Role-AssignmentData";
        String roleNameCustomObject = "CMH-User-Role-Mapping-Custom-Object";
-       
-       if(Util.nullSafeCaseInsensitiveEq(userType,"EMPLOYEE") && Util.nullSafeCaseInsensitiveEq(status,"ACTIVE")) {
-          log.debug("CMH-Employee-Other-Birthright-Rule:"+roleName);
-           String jobLevel = identity.getStringAttribute("jobLevel");
-           String cmhDept = identity.getStringAttribute("cmhDeptType");
-           if(checkDataInCustomObject(roleName,roleNameCustomObject,"OTHEREMPLOYEEROLE")) {
-              
-	            if(Util.nullSafeCaseInsensitiveEq(roleName,"Patient Care Leaders Business Role")) {
-	              if(checkDataInCustomObject(jobLevel,birthRightCustomObject,"PATIENTCAREALLJOBLEVEL")) {
-		               if(Util.nullSafeCaseInsensitiveEq(cmhDept,"PATIENTCARE")) {
-		                   roleAssign= true;  
-		               } else if(Util.nullSafeCaseInsensitiveEq(cmhDept,"NONPATIENTCARE")) {
-		                   String jobFamily = identity.getStringAttribute("jobFamily");
-		                   if(checkDataInCustomObject(jobFamily,birthRightCustomObject,"JOBFAMILY")) {
-		                      roleAssign= true; 
-		                   }
-		                }
-		            }
-		          }else if(Util.nullSafeCaseInsensitiveEq(roleName,"CEO Assembly Business Role")) {
-		              String jobCode = identity.getStringAttribute("jobCode");
-		              if(checkDataInCustomObject(jobLevel,birthRightCustomObject,"CEOASSEMBLYJOBLEVEL")) {
-		                  roleAssign= true;
-		              }else if(Util.isNotNullOrEmpty(jobCode)){
-		                   if(checkDataInCustomObject(jobCode,birthRightCustomObject,"CEOASSEMBLYJOBLEVEL")) {
-		                      roleAssign= true;
-		                   }		                 
-		              }        
-		          }else if(Util.nullSafeCaseInsensitiveEq(roleName,"HR Leadership Forum Business Role")) {
-		             if(checkDataInCustomObject(jobLevel,birthRightCustomObject,"HRLEADERSHIPJOBLEVEL")) {
-		                      roleAssign= true;
-		             }	
-		          }else if(Util.nullSafeCaseInsensitiveEq(roleName,"Patient Care All Business Role")) {
-		             if(Util.nullSafeCaseInsensitiveEq(cmhDept,"PATIENTCARE")) {
-		                      roleAssign= true;
-		             }	
-		         }
-		      }
+       if (identity != null && identity.isCorrelated()) {
+           String status = identity.getAttribute("status");
+           String userType = identity.getAttribute("userType");
+           if(Util.nullSafeCaseInsensitiveEq(userType,"EMPLOYEE") && Util.nullSafeCaseInsensitiveEq(status,"ACTIVE")) {
+	           log.debug("CMH-Employee-Other-Birthright-Rule:"+roleName);
+	           String jobLevel = identity.getStringAttribute("jobLevel");
+	           String cmhDept = identity.getStringAttribute("cmhDeptType");
+	           String oldEmpId = identity.getStringAttribute("otherEmpId");
+               String isConversionProcessed = identity.getStringAttribute("isConversionProcessed");	
+               String jobFamily = identity.getStringAttribute("jobFamily");
+               String jobCode = identity.getStringAttribute("jobCode");           
+	           if(Util.nullSafeCaseInsensitiveEq(isConversionProcessed, "YES")) {
+	              roleAssign = isGrantRole(roleName,roleNameCustomObject,jobLevel,cmhDept,jobCode,jobFamily);
+	           }else if(Util.isNullOrEmpty(oldEmpId) || !isConversionCase(oldEmpId)) {
+	              roleAssign = isGrantRole(roleName,roleNameCustomObject,jobLevel,cmhDept,jobCode,jobFamily);
+	           } 
+	        }
+	    }
+	    if (roleAssign) {
+            log.debug("CMH-Employee-Other-Birthright-Rule:Role " + roleName + " assigned for the User: " + identityName.getName());
         }
-        log.debug("CMH-Employee-Other-Birthright-Rule: Role assigned :"+roleAssign+" Exiting");
         return roleAssign;
   ]]></Source>
 </Rule>
