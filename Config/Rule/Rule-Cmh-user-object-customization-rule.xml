@@ -45,6 +45,9 @@
       </Argument>
     </Returns>
   </Signature>
+  <ReferencedRules>
+    <Reference class="sailpoint.object.Rule" name="CMH-AD-Generic-Rulelibrary"/>
+  </ReferencedRules>
   <Source><![CDATA[
   import java.text.ParseException;
   import java.text.SimpleDateFormat;
@@ -62,21 +65,6 @@
   import sailpoint.tools.Util;
 
   Logger log = Logger.getLogger("cmh.authsource.rules");
-
-  //Audit when there is a mandatory attribute is missing from infor
-  public void auditEventLog(String attrName, String attrEmpIdValue) {
-    log.debug("CMH-User-Object-Customization-Rule: Auditing for the missing mandatory attributes");
-    String action = "Infor-Mandatory-Attributes";	
-    AuditEvent event = new AuditEvent();			
-    event.setAction(action);
-    event.setCreated(new Date());
-    event.setAttributeName("Employee ID");
-    event.setAttributeValue(attrEmpIdValue);
-    event.setString1(attrName + " is mandatory attribute which cannot be null or empty");
-    Auditor.log(event);
-    context.commitTransaction();
-  }
-  
   
   public boolean isConversionWithFutureDate(String oldEmpId,String usrName,String startDate){
   	Custom customObj = context.getObjectByName(Custom.class,"CMH-DateFormat");
@@ -126,41 +114,41 @@
   String status = object.getStringAttribute("RelationshipStatus");
   String birthMonthDay = object.getStringAttribute("BirthMonthDay");
 
-
-
   boolean isAttributeMissing = false;
-  String attrName = null;
-
+  String attrName = null; 
   if (StringUtils.isBlank(firstName)) {
     isAttributeMissing = true;
-    attrName = "FirstName";
+    attrName = "FirstName";      
   }else if (StringUtils.isBlank(lastName)) {
     isAttributeMissing = true;
-    attrName = "LastName";
+    attrName = "LastName";    
   } else if (StringUtils.isBlank(employeeId)) {
     isAttributeMissing = true;
-    attrName = "Employee";
+    attrName = "Employee";   
   } else if (StringUtils.isBlank(managerId)) {
     isAttributeMissing = true;
-    attrName = "SupvEmployeeID";
+    attrName = "SupvEmployeeID";   
   }else if (StringUtils.isBlank(userType)) {
     isAttributeMissing = true;
-    attrName = "RelationshipToOrganization";
+    attrName = "RelationshipToOrganization";  
   }else if (StringUtils.isBlank(status)) {
     isAttributeMissing = true;
-    attrName = "RelationshipStatus";
+    attrName = "RelationshipStatus";  
   }else if (StringUtils.isBlank(birthMonthDay)) {
     isAttributeMissing = true;
-    attrName = "BirthMonthDay";
+    attrName = "BirthMonthDay";   
   }else if (StringUtils.isBlank(assignmentType)) {
     isAttributeMissing = true;
     attrName = "AssignmentType";
+   
   }
 
-
   if(isAttributeMissing){
-    log.debug("CMH-User-Object-Customization-Rule: Mandatory attribute is missing : "+attrName);
-    auditEventLog(attrName, employeeId);
+    log.debug("CMH-User-Object-Customization-Rule: Auditing for the missing mandatory attributes for : "+employeeId);
+    String attrValue = null;
+    Map map = new HashMap();
+    map.put("setString1",attrName+" is mandatory attribute that cannot be null or empty");
+    auditWrite("Infor-Mandatory-Attributes", "CMH-User-Object-Customization-Rule", employeeId,attrName,attrValue, map);
     object = null;
   }else{
     QueryOptions ops = new QueryOptions();
