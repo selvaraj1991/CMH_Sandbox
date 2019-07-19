@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Rule PUBLIC "sailpoint.dtd" "sailpoint.dtd">
 <Rule language="beanshell" name="CMH-Employee-Other-Birthright-Rule" type="IdentitySelector">
-  <Description>This rule is used to select an Identity that is related to the given Identity</Description>
+  <Description>The rule assigns the birthright roles such as patient care, CEO assembly &amp; HR Leadership roles based on the assignmentType and jobCode of the user.</Description>
   <ReferencedRules>
     <Reference class="sailpoint.object.Rule" name="CMH-AD-Generic-Rulelibrary"/>
   </ReferencedRules>

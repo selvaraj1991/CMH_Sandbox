@@ -5,6 +5,8 @@
         Identity. If this rule is run in the context of a workflow step then the arguments passed into the step will
         also be available. Also, any field values that have been processed so far from the policy related to the
         Application/Role will be available.
+		
+		This rule sets the account status to Active or disabled based on the user's status Active or Prehire/Terminated respectively.
     </Description>
     <Signature returnType="String">
         <Inputs>

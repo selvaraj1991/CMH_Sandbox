@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Rule PUBLIC "sailpoint.dtd" "sailpoint.dtd">
 <Rule language="beanshell" name="CMH-LegalHold-Users-Report-Generation-Rule">
+<Description>This rule is used to generate a report of the users who are on Legal Hold. The rule will generate the report at some specified server location.</Description>
   <ReferencedRules>
     <Reference class="sailpoint.object.Rule" name="CMH-AD-Generic-Rulelibrary"/>
   </ReferencedRules>

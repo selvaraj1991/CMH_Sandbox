@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Rule PUBLIC "sailpoint.dtd" "sailpoint.dtd">
 <Rule language="beanshell" name="CMH-Aggregate-FutureDated-Conversion-Users-Rule">
+<Description>The rule is run by the Future Dated conversion users task. This rule checks for the conversion case users who are not created before because of Future Start date, and if the current date is their start date then this will trigger the infor aggregation for those users.</Description>
   <Source><![CDATA[
   	import java.text.SimpleDateFormat;
   	import sailpoint.api.TaskManager;

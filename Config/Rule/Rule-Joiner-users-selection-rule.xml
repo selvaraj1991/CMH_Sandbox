@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Rule PUBLIC "sailpoint.dtd" "sailpoint.dtd">
 <Rule language="beanshell" name="Joiner-Users-Selection-Rule" type="IdentitySelector">
-    <Description>This rule is used to select an Identity that is related to the given Identity</Description>
+    <Description>This rule is used to filter out the conversion users, since the joiner should not be triggered to those users.</Description>
     <Signature returnType="boolean">
         <Inputs>
             <Argument name="log">

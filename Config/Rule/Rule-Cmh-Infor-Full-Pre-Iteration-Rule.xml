@@ -5,7 +5,7 @@
   <ReferencedRules>
      <Reference class="sailpoint.object.Rule" name="CMH-AD-Generic-Rulelibrary"/>
   </ReferencedRules>
-  <Description>This rule is used to update the timestamp of the task and update application object</Description>
+  <Description>This rule runs prior to infor full aggregation and updates the SQL query of the infor application to pull all the users as part of full aggregation</Description>
         <Source><![CDATA[
 		import java.text.SimpleDateFormat;
 		import org.apache.log4j.Logger;

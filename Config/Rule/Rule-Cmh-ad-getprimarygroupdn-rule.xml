@@ -7,6 +7,8 @@
         step will also be available. Also, any field values that have been
         processed so far from the policy related to the Application/Role will
         be available.
+		
+		This rule identifies the Primary Group DN for the user based on the assignmentType from the infor for creating an AD account.
     </Description>
     <ReferencedRules>
         <Reference class="sailpoint.object.Rule" name="CMH-AD-Generic-Rulelibrary"/>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Rule PUBLIC "sailpoint.dtd" "sailpoint.dtd">
 <Rule language="beanshell" name="CMH-Username-Email-Report-Generator-Rule">
-    <Description>Generating CSV for Infor Team containing username and email</Description>
+    <Description>This rule is used to generate a report of users who are created in IIQ with unique username, so that the infor can be updated with the same.</Description>
     <ReferencedRules>
         <Reference class="sailpoint.object.Rule" name="CMH-AD-Generic-Rulelibrary"/>
     </ReferencedRules>

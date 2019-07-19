@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Rule PUBLIC "sailpoint.dtd" "sailpoint.dtd">
 <Rule language="beanshell" name="CMH-AD-Generic-Rulelibrary">
+<Description>This rule contains utility methods which are used by most of the workflows (like Joiner, Leaver, Rehire, Conversion) and rules. The key logics covered in this rule are like username generation, username validation, service-now ticket generation, AD single account aggregation and etc.</Description>
     <Source><![CDATA[
 		import java.text.ParseException;
 		import java.text.SimpleDateFormat;

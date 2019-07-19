@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Rule PUBLIC "sailpoint.dtd" "sailpoint.dtd">
 <Rule language="beanshell" name="CMH-Read-Infor-Record-Rule">
-    <Description>This rule reads terminated user record from Infor csv file and puts in into custom object</Description>
+    <Description>This rule reads the cerner records provided in the CSV file and those records are used for validation purpose during username generation.</Description>
     <ReferencedRules>
         <Reference class="sailpoint.object.Rule" name="CMH-AD-Generic-Rulelibrary"/>
     </ReferencedRules>

@@ -4,6 +4,8 @@
     <Description>This rule can be used for Certification Events that use rule triggers. The previousIdentity and
         newIdentity hold snapshots of the identity before the update has occurred and the state of the identity after
         the update, respectively.
+		
+		This rule is used to trigger the rehire workflow when rehire flag for the user is set to YES and identity status Active/Prehire and previous status is TERMINATED.
     </Description>
     <ReferencedRules>
         <Reference class="sailpoint.object.Rule" name="CMH-AD-Generic-Rulelibrary"/>

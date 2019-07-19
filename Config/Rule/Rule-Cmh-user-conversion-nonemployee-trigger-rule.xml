@@ -4,6 +4,8 @@
     <Description>This rule can be used for Certification Events that use rule triggers. The previousIdentity and
         newIdentity hold snapshots of the identity before the update has occurred and the state of the identity after
         the update, respectively.
+		
+		This rule is used to trigger the Non-Employee to Non-Employee conversion workflow when there is a change in assignmentType for the user.
     </Description>
     <Signature returnType="boolean">
         <Inputs>

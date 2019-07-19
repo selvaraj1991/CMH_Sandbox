@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Rule PUBLIC "sailpoint.dtd" "sailpoint.dtd">
 <Rule language="beanshell" name="CMH-AD-GetDN-Rule" type="FieldValue">
-    <Description> This rule is for generating the account DN value
+    <Description> This rule is used to generate a value for distinguishedName attribute of AD when creating an account for the user. The distinguishedName is identified based on the user's assignmentType attribute from Infor.
     </Description>
     <ReferencedRules>
         <Reference class="sailpoint.object.Rule" name="CMH-AD-Generic-Rulelibrary"/>

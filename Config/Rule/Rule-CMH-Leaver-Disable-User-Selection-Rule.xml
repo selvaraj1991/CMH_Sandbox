@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Rule PUBLIC "sailpoint.dtd" "sailpoint.dtd">
 <Rule language="beanshell" name="CMH-Leaver-Disable-User-Selection-Rule" type="IdentitySelector">
-    <Description>This rule is used to select an Identity that is related to the given Identity</Description>
+    <Description>This rule is used to avoids disabling of the AD account for the conversion user(only when the new user is present in IIQ), since the AD account is linked from old user to new user.</Description>
     <Signature returnType="boolean">
         <Inputs>
             <Argument name="log">

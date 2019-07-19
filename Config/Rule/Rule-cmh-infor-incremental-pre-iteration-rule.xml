@@ -1,11 +1,11 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!DOCTYPE sailpoint PUBLIC "sailpoint.dtd" "sailpoint.dtd">
 <sailpoint>
-<Rule language="beanshell" name="CMH-Infor-Pre-Iteration-Rule">
+<Rule language="beanshell" name="CMH-Infor-Incremental-Pre-Iteration-Rule">
   <ReferencedRules>
      <Reference class="sailpoint.object.Rule" name="CMH-AD-Generic-Rulelibrary"/>
   </ReferencedRules>
-  <Description>This rule is used to update the timestamp of the task</Description>
+  <Description>This rule runs prior to the Infor aggregation and updates the Custom object with timestamp, so that the in the post iteration rule the SQL query can be updated with this timestamp</Description>
         <Source><![CDATA[
 		import java.text.SimpleDateFormat;
 		import org.apache.log4j.Logger;

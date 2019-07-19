@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!DOCTYPE sailpoint PUBLIC "sailpoint.dtd" "sailpoint.dtd">
 <sailpoint>
-    <Rule language="beanshell" name="CMH-Infor-Post-Iteration-Rule">
-        <Description>This rule is used to update the timestamp of the task</Description>
+    <Rule language="beanshell" name="CMH-Infor-Incremental-Post-Iteration-Rule">
+        <Description>This rule runs after the Infor aggregation and updates the SQL with latest run timestamp, so that the next aggregation can pick users created/updated from that timestamp</Description>
         <Source>
             <![CDATA[
             import org.apache.log4j.Logger;

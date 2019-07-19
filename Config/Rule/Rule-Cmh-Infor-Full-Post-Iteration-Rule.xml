@@ -2,7 +2,7 @@
 <!DOCTYPE sailpoint PUBLIC "sailpoint.dtd" "sailpoint.dtd">
 <sailpoint>
     <Rule language="beanshell" name="CMH-Infor-Full-Post-Iteration-Rule">
-        <Description>This rule is used to update the timestamp of the application object</Description>
+        <Description>This rule runs post infor full aggregation and updates the SQL query of the infor application to pull users for the incremental aggregation</Description>
         <Source>
             <![CDATA[
             import org.apache.log4j.Logger;

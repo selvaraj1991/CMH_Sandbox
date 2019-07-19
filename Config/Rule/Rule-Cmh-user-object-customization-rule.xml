@@ -3,7 +3,9 @@
 <Rule language="beanshell" name="CMH-User-Object-Customization-Rule" type="ResourceObjectCustomization">
   <Description>This rule is configured on the application and is called after the connector has build a ResourceObject from the native application data.
 
-    Initially designed for non-rule based connectors to add SPPrivileged flag to an object, but could be used to do any transformations.</Description>
+    Initially designed for non-rule based connectors to add SPPrivileged flag to an object, but could be used to do any transformations.
+	
+	This rule runs during infor aggregation and it runs prior to the Creation rule. It validates the user data and if the required data is missing then it will generate an audit for the user and the user won't be created in IIQ</Description>
   <Signature returnType="ResourceObject">
     <Inputs>
       <Argument name="log">

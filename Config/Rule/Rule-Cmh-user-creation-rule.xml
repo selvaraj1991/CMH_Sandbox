@@ -10,7 +10,9 @@
 		the default application name is complex (such as a directory DN).
 
 		Another common operation is to assign a set of initial capabilities
-		based on the attributes pulled from the application account.</Description>
+		based on the attributes pulled from the application account.
+		
+		This rule runs during the aggregation process and creates new user by generating unique username for each user.</Description>
   <ReferencedRules>
     <Reference class="sailpoint.object.Rule" name="CMH-AD-Generic-Rulelibrary"/>
   </ReferencedRules>

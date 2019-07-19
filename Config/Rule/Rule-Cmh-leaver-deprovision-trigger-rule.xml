@@ -4,6 +4,8 @@
     <Description>This rule can be used for Certification Events that use rule triggers. The previousIdentity and
         newIdentity hold snapshots of the identity before the update has occurred and the state of the identity after
         the update, respectively.
+		
+		This rule triggers the Leaver Delete process for the users on the T+30 days.
     </Description>
     <Signature returnType="boolean">
         <Inputs>
