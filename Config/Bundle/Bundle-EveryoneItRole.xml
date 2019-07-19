@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Bundle PUBLIC "sailpoint.dtd" "sailpoint.dtd">
-<Bundle displayName="O365 IT Role" name="O365 IT Role" type="it">
+<Bundle displayName="Everyone IT Role" name="Everyone IT Role" type="it">
   <Attributes>
     <Map>
       <entry key="accountSelectorRules"/>
@@ -17,7 +17,7 @@
     </Map>
   </Attributes>
   <Inheritance>
-    <Reference class="sailpoint.object.Bundle" name="O365 Business Role"/>
+    <Reference class="sailpoint.object.Bundle" name="Everyone Business Role"/>
   </Inheritance>
   <Owner>
     <Reference class="sailpoint.object.Identity" name="spadmin"/>
@@ -31,9 +31,7 @@
         <Filter operation="CONTAINS_ALL" property="memberOf">
           <Value>
             <List>
-              <String>%%CMH-Email-Enabled-Group%%</String>
-              <String>%%CMH-AD-O365E5Lic%%</String>
-              <String>%%CMH-AD-O365EMSLic%%</String>
+              <String>%%CMH-AD-Everyone-Grp%%</String>
             </List>
           </Value>
         </Filter>
