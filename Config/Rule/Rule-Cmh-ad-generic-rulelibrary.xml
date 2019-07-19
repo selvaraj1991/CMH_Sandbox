@@ -455,7 +455,7 @@
 
 		public void auditWrite(String action, String source, String target, String attributeName, String attributeValue, Map map) {
 			log.debug("CMH-AD-Generic-Rulelibrary : Entering auditWrite()");
-			if (!StringUtils.isBlank(action) && !StringUtils.isBlank(source) && !StringUtils.isBlank(target) && !StringUtils.isBlank(attributeName) && !StringUtils.isBlank(attributeValue) && null != map) {
+			if (!StringUtils.isBlank(action) && !StringUtils.isBlank(source) && !StringUtils.isBlank(target) && !StringUtils.isBlank(attributeName) && null != map) {
 
 				AuditEvent event = new AuditEvent();
 				log.debug("audit start");
