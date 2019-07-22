@@ -186,21 +186,11 @@
 			log.debug("CMH-AD-Generic-Rulelibrary : Check Unique Input parameters " + username + "," + firstName + "," + lastName + "," + middInitial);
 			int count = 0;
 		List userList = null;
-			Filter fNameFilter = Filter.eq("firstname", firstName);
 			Filter lNameFilter = Filter.eq("lastname", lastName);
 			Filter uNameFilter = Filter.like("name", username, Filter.MatchMode.START);
 			Filter oldUserFilter = Filter.like("name", "_old", Filter.MatchMode.ANYWHERE);
 			Filter empIdFilter = Filter.eq("employeeId", empId);
-			Filter mNameFilter = null;
-			Filter nameFilter = null;
 			Filter finalFilter = null;
-
-			if (Util.isNotNullOrEmpty(middInitial)) {
-				mNameFilter = Filter.eq("middleInitial", middInitial);
-				nameFilter = Filter.and(fNameFilter, lNameFilter, mNameFilter);
-			} else {
-				nameFilter = Filter.and(fNameFilter, lNameFilter);
-			}
 			finalFilter = Filter.and(lNameFilter, uNameFilter, Filter.not(oldUserFilter), Filter.not(empIdFilter));
 			QueryOptions qOps = new QueryOptions();
 			qOps.add(finalFilter);
@@ -292,12 +282,18 @@
 			String uname = null;
 			String temp = null;
 			String finalUsername = null;
+			String filteredFname  = filterSpecialCharacter(firstName);
+			String filteredLname = filterSpecialCharacter(lastName);
+			if(Util.isNotNullOrEmpty(filteredFname) && Util.isNotNullOrEmpty(filteredLname)) {
 			if (Util.isNotNullOrEmpty(middInitial)) {
-				temp = firstName.substring(0, 1).concat(middInitial).concat(lastName);
+				    String filteredMiddleName = filterSpecialCharacter(middInitial);
+				    if(Util.isNotNullOrEmpty(filteredMiddleName)) {
+					   temp = filteredFname.substring(0, 1).concat(filteredMiddleName).concat(filteredLname);
+					}
 			} else {
-				temp = firstName.substring(0, 1).concat(lastName); // SMitra
+					temp = filteredFname.substring(0, 1).concat(filteredLname); // SMitra
 			}
-
+            }
 			if (Util.isNotNullOrEmpty(temp) && temp.length() > 17) {
 				uname = temp.substring(0, 17);
 			} else {
