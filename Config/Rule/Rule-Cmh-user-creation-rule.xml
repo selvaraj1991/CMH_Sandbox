@@ -94,24 +94,15 @@
 
     String firstName = account.getStringAttribute("FirstName");
     if(Util.isNotNullOrEmpty(firstName)){
-    	String filterString = filterSpecialCharacter(firstName);
-    	if(Util.isNotNullOrEmpty(filterString)){
-    	   firstName = filterString;
-    	 }
+    	firstName = firstName.trim();   	
     }
 	String middInitial = account.getStringAttribute("MiddleInitial");
 	if(Util.isNotNullOrEmpty(middInitial)){
-    	String filterString = filterSpecialCharacter(middInitial);
-    	if(Util.isNotNullOrEmpty(filterString)){
-    	   middInitial = filterString;
-    	 }  
+    	middInitial = middInitial.trim();    	 	 
     }
 	String lastName = account.getStringAttribute("LastName");
 	if(Util.isNotNullOrEmpty(lastName)){
-	    String filterString = filterSpecialCharacter(lastName);
-    	if(Util.isNotNullOrEmpty(filterString)){
-    	   lastName = filterString;
-    	 } 
+	    lastName = lastName.trim();    	
     }
 	String oldemployeeId = account.getStringAttribute("OtherEmpId");
 	if(Util.isNotNullOrEmpty(oldemployeeId)){

@@ -97,7 +97,10 @@
 	           if(Util.nullSafeCaseInsensitiveEq(isConversionProcessed, "YES")) {
 	              roleAssign = isGrantRole(roleName,roleNameCustomObject,jobLevel,cmhDept,jobCode,jobFamily);
 	           }else if(Util.isNullOrEmpty(oldEmpId) || !isConversionCase(oldEmpId)) {
+	              String startDate = identity.getStringAttribute("startDate");
+	              if (!status.equalsIgnoreCase("Prehire") || (Util.isNotNullOrEmpty(startDate) && startDateCheck(startDate))) {
 	              roleAssign = isGrantRole(roleName,roleNameCustomObject,jobLevel,cmhDept,jobCode,jobFamily);
+	              }
 	           } 
 	        }
 	    }
