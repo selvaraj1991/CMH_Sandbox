@@ -61,6 +61,10 @@ This rule is used to generate and provision the department attribute to AD</Desc
     </Returns>
   </Signature>
   <Source><![CDATA[
+    import org.apache.log4j.Logger; 
+    
+    Logger log = Logger.getLogger("cmh.authsource.rules");
+    log.debug("Entering CMH-AD-Department-Rule() for identity:"+identity.getName());
   	String department = "";
 	String entity = identity.getStringAttribute("entity");
 	if(entity!=null){
@@ -85,6 +89,7 @@ This rule is used to generate and provision the department attribute to AD</Desc
 	if(location!=null){
 		department = department.concat(location);
 	}
+	log.debug("Exiting CMH-AD-Department-Rule() for identity:"+identity.getName());
 	return department;
 	]]></Source>
 </Rule>

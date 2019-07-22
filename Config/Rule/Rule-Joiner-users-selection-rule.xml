@@ -71,8 +71,8 @@
 		log.debug("Entering Joiner-Users-Selection-Rule");
 		boolean success = false;
 		if (null != identity) {
+		    log.debug("Joiner-Users-Selection-Rule for identity:"+identity.getName());
 			String status = identity.getStringAttribute("status");
-			log.debug("status : " + status);
 			if (!StringUtils.isBlank(status) && StringUtils.equalsIgnoreCase("Active", status)) {
 				String rehire = identity.getStringAttribute("rehire");
 				if (Util.isNullOrEmpty(rehire) || Util.nullSafeCaseInsensitiveEq(rehire, "NO")) {
@@ -89,7 +89,7 @@
 				}
 			}
 		}
-		log.debug("success : " + success);
+		log.debug("Joiner-Users-Selection-Rule success ? : " + success);
 		log.debug("Exiting Joiner-Users-Selection-Rule");
 		return success;
   ]]></Source>

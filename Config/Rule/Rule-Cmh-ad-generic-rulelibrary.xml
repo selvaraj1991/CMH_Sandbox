@@ -600,6 +600,7 @@
 		List errorList = new ArrayList();
 		if (Util.isNotNullOrEmpty(identityName) && Util.isNotNullOrEmpty(operation)
 				&& Util.isNotNullOrEmpty(customName)) {
+				log.debug("CMH-AD-Generic-Rulelibrary:  generateSnowTicket() for identity:"+identityName);
 			String addCart = null;
 			String checkoutCart = null;
 

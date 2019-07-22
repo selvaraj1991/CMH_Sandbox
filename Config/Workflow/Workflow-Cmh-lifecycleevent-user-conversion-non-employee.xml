@@ -530,6 +530,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   			
   			if(isDebugEnabled){
   			    log.debug("CMH-LifecycleEvent-User-Conversion-Non-Employee: Check Status step : Audit Event Generated");
+  			    log.debug("Ending the LifecycleEvent-User-Conversion-Non-Employee for the user "+identityName);
   			}
  
 		]]></Source>

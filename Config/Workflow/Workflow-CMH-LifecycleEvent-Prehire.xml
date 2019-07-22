@@ -223,7 +223,7 @@
   			
   			Logger log = Logger.getLogger("CMH_LifecycleEvent_Prehire");
   			if(isDebugEnabled){
-  				log.debug("Starting the Prehire Workflow for the user "+identityName+" with the employee ID : "+employeeId);
+  				log.debug("Starting the Prehire Workflow for the user "+identityName);
   			}
   		]]>
   		</Source>
@@ -493,7 +493,11 @@
   				}catch(EmailException e){
   					log.error("CMH_LifecycleEvent_Prehire: Error in Sending email : "+e.getMessage());
   				}
-  			}  		
+  			}  
+  			
+  			if(isDebugEnabled){
+  				log.debug("Ending the Prehire Workflow for the user "+identityName);
+  			}		
   		]]>
   		</Source>
   	</Script>

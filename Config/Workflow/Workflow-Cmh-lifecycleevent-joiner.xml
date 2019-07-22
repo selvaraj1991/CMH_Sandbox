@@ -446,6 +446,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   			
   			if(isDebugEnabled){
   			    log.debug("CMH-LifecycleEvent-Joiner: Check Status step : Audit Event Generated");
+  			    log.debug("Ending the CMH-LifecycleEvent-Joiner Workflow for the user "+identityName);
   			}
 		
 		]]></Source>

@@ -62,6 +62,10 @@
     </Returns>
   </Signature>
   <Source><![CDATA[
+    import org.apache.log4j.Logger;
+	
+	Logger log = Logger.getLogger("cmh.authsource.rules");
+    log.debug("Entering CMH-AD-PhysicalDeliveryOffice-Rule for identity:"+identity.getName());
   	String physicalDeliveryOfficeName = "";
 	String divisionDesc = identity.getStringAttribute("divisionDesc");
 	if(divisionDesc!=null){
@@ -74,6 +78,7 @@
 	if(location!=null){
 		physicalDeliveryOfficeName = physicalDeliveryOfficeName.concat(location);
 	}
+	log.debug("Exiting CMH-AD-PhysicalDeliveryOffice-Rule for identity:"+identity.getName());
 	return physicalDeliveryOfficeName;
 	]]></Source>
 </Rule>

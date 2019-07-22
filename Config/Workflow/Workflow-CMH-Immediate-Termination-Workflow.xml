@@ -532,6 +532,7 @@
   			
 			if(isDebugEnabled)	{
 				log.debug("CMH_ImmediateTermination: Check Status step : Audit Event Generated");
+				log.debug("Ending the CMH_ImmediateTermination Workflow for the user "+identityName);
 			}
   			
   			context.commitTransaction();

@@ -97,8 +97,7 @@
 	<![CDATA[
         import org.apache.log4j.Logger;
 		Logger log = Logger.getLogger("cmh.authsource.rules");
-		
-		log.debug("CMH-AD-GetDN-Rule: Entering");
+		log.debug("Entering CMH-AD-GetDN-Rule for identity:"+identity.getName());
 		//Generates account dn value 
 		String username = identity.getName();
 		String usertype = identity.getStringAttribute("assignmentType").trim();
@@ -108,7 +107,7 @@
 		} else {
 			log.error("CMH-AD-GetPrimaryGroupDN-Rule :Formed DN is null");
 		}
-		log.debug("CMH-AD-GetDN-Rule: Exiting");
+		log.debug("Exiting CMH-AD-GetDN-Rule for identity:"+username);
 		return value; 
 	]]>
 	</Source>

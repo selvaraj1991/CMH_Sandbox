@@ -51,7 +51,7 @@
 		import sailpoint.tools.Util;
 		
 		Logger log = Logger.getLogger("cmh.authsource.rules");
-		log.debug("CMH-Leaver-Deprovision-Trigger-Rule: Entering");
+		log.debug("Entering CMH-Leaver-Deprovision-Trigger-Rule for identity:"+previousIdentity.getName());
 		//Filtering out the users having deletion status not deleted
 		String format = getCustomObject("leaverDeleteTimestamp","CMH-DateFormat");
 		if(Util.isNotNullOrEmpty(format)) {
@@ -78,7 +78,7 @@
 				}
 		    }
 		}
-		log.debug("CMH-Leaver-Deprovision-Trigger-Rule: Exiting");
+		log.debug("Exiting CMH-Leaver-Deprovision-Trigger-Rule for identity:"+previousIdentity.getName());
 		return false;
 		]]>
     </Source>

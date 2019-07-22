@@ -161,6 +161,18 @@
 	<Reference class="sailpoint.object.Rule" name="CMH-AD-Generic-Rulelibrary"/>
   </RuleLibraries>
   <Step icon="Start" name="Start" posX="53" posY="126" wait="1">
+    <Script>
+  		<Source>
+  		<![CDATA[
+  			import org.apache.log4j.Logger;
+  			
+  			Logger log = Logger.getLogger("CmhLoa");
+  			if(isDebugEnabled){
+  				log.debug("Starting the CMH-LifecycleEvent-LOA-Workflow for the user "+identityName);
+  			}
+  		]]>
+  		</Source>
+  	</Script>
     <Transition to="Validate Data"/>
   </Step>
   <Step icon="Analysis" name="Validate Data" posX="182" posY="125" resultVariable="validationErrors">
@@ -455,6 +467,10 @@
   				strMap.put("setString2",Util.listToCsv(validationErrors));
   			}
   			auditWrite(action,source,target,attrName,attrVal,strMap);
+			
+			if(isDebugEnabled){
+  				log.debug("Ending the CMH-LifecycleEvent-LOA-Workflow for the user "+identityName);  				
+  			}
     	]]>    
     	</Source>
     </Script>

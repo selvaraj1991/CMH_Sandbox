@@ -64,13 +64,14 @@
 
 	Logger log = Logger.getLogger("cmh.authsource.rules");
 
+    log.debug("Entering CMH-User-Creation-Rule");
 	String workEmail = "WorkEmail";
 	String usrName = "Username";
 	String oldFormat = "_old";
 	String domain = "@cmhad.com";
 
 	public void createNewUser(String firstName, String lastName, String middInitial, String employeeId, String userType, String mailRequired, String status){
-		log.info("CMH-User-Creation-Rule: Creating a new user by generating username & email from firstname & lastname of the user");
+		log.debug("CMH-User-Creation-Rule: Creating a new user by generating username & email from firstname & lastname of the user");
 		String finalUsername =null;
 		String genUsername = userNameGenerator(firstName,lastName,middInitial,employeeId);	//Generate a username based on firstname,lastname, middleInitial
 		if(null !=genUsername) {
@@ -140,6 +141,7 @@
 	if(Util.isNotNullOrEmpty(employeeId)){
 	    employeeId = employeeId.trim();
 	}
+	log.debug("CMH-User-Creation-Rule for employee:"+employeeId);
     if (!StringUtils.isBlank(oldemployeeId) && !StringUtils.isBlank(username)) {	//User conversion Case, Update the existing user's name to _old+timestamp and create the new user with same
 
     	log.info("CMH-User-Creation-Rule: User Conversion Case : Proceeding with updating existing user's name _old+timestamp and create the new user with same");
@@ -218,5 +220,6 @@
 		log.info("CMH-User-Creation-Rule: Creating a new prehire user with inactive status");
 		identity.setInactive(true);
 	}
+	log.debug("Exiting CMH-User-Creation-Rule");
 	]]></Source>
 </Rule>

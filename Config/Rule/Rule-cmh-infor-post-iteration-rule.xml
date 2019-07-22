@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE sailpoint PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<sailpoint>
+    <Rule language="beanshell" name="CMH-Infor-Post-Iteration-Rule">
+        <Description>This rule is used to update the timestamp of the task</Description>
+        <Source>
+            <![CDATA[
+            import org.apache.log4j.Logger;
+            import sailpoint.object.Application;
+            import sailpoint.object.Custom;
+			import sailpoint.tools.Util;
+            
+		    Logger log = Logger.getLogger("cmh.authsource.rules");
+		    log.debug("CMH-Infor-Post-Iteration-Rule: Entering");
+            //Updates the last run timestamp of the task in custom object
+            Custom custom = context.getObjectByName(Custom.class,"CMH-Infor-Incremental-Aggregation-Custom-Object");
+            String lastRunTimeStamp = null;
+            Application app = null;
+            String appName = null;
+            String sqlQuery = null;
+            String whereClause = null;
+            if(custom!=null){
+            lastRunTimeStamp = (String)custom.get("lastRunTimeStamp");
+				if(Util.isNotNullOrEmpty(lastRunTimeStamp)){
+					appName = (String)custom.get("applicationName");
+					if(Util.isNotNullOrEmpty(appName)){
+						app = context.getObjectByName(Application.class,appName);
+						sqlQuery = custom.getString("sqlQuery");
+						if(Util.isNotNullOrEmpty(sqlQuery) && app!=null){
+							if(sqlQuery.contains("TIME_STAMP")){
+								sqlQuery = sqlQuery.replace("TIME_STAMP",lastRunTimeStamp);
+							}
+				      		app.setAttribute("SQL",sqlQuery);
+							context.saveObject(app);
+							context.commitTransaction();
+						}
+					}
+				}
+			}
+            log.debug("CMH-Infor-Post-Iteration-Rule: Exiting");
+            ]]>
+        </Source>
+    </Rule>
+</sailpoint>

@@ -112,7 +112,7 @@
 		import org.apache.log4j.Logger;
 		Logger log = Logger.getLogger("cmh.authsource.rules");
 		
-		log.debug("CMH-AD-GetPrimaryGroupDN-Rule: Entering");
+		log.debug("CMH-AD-GetPrimaryGroupDN-Rule: Entering for identity:"+identity.getName());
 		//Generates primary group DN based on assignmentType of user
 		String usertype = identity.getStringAttribute("assignmentType").trim();
 		String value = generatePrimaryGroupDN(usertype);
@@ -121,7 +121,7 @@
 		} else {
 			log.error("CMH-AD-GetPrimaryGroupDN-Rule :Formed Primary DN is null");
 		}
-		log.debug("CMH-AD-GetPrimaryGroupDN-Rule: Exiting");
+		log.debug("CMH-AD-GetPrimaryGroupDN-Rule: Exiting for identity:"+identity.getName());
 		return value;
   ]]></Source>
 </Rule>

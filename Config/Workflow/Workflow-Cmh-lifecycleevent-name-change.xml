@@ -774,6 +774,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   			
   			if(isDebugEnabled){
   			    log.debug("CMH-LifecycleEvent-Name-Change: Check Status step : Audit Event Generated");
+  			    log.debug("Ending the CMH-LifecycleEvent-Name-Change for the user "+identityName);
   			}
   			
 		

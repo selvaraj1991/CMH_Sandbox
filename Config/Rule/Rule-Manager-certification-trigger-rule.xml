@@ -46,12 +46,13 @@
     
     Logger log = Logger.getLogger("cmh.authsource.rules");
     log.debug("Manager-Certification-Trigger-Rule: Entering");
+    boolean flag = false;
     //return true if there is change in manager
     if(!Util.nullSafeCaseInsensitiveEq(previousIdentity.getManager().getName(),newIdentity.getManager().getName())){
-  		log.debug("Manager-Certification-Trigger-Rule: Exiting");
-  		return true;
+  		log.debug("Manager-Certification-Trigger-Rule for identity:"+previousIdentity.getName());
+  		flag= true;
 	}
 	log.debug("Manager-Certification-Trigger-Rule: Exiting");
-	return false;
+	return flag;
 	]]></Source>
 </Rule>

@@ -24,7 +24,7 @@
 				list = new ArrayList();
 				list = readFromCsv(filePath);
 				if (null != list && list.size() > 1) {
-	           if(Util.nullSafeCaseInsensitiveEq("USERNAMES",list.get(0).toString())) {
+	           if(Util.nullSafeCaseInsensitiveEq("USERNAME",list.get(0).toString())) {
 						list.remove(0);
 						if (writeToCustomObject(list, "CMH-Infor-Usernames")) {
 							isSuccess = true;

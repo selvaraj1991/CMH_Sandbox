@@ -95,14 +95,18 @@
     </Returns>
   </Signature>
   <Source><![CDATA[
+  import org.apache.log4j.Logger
   import sailpoint.tools.Util;
-
+  Logger log = Logger.getLogger("cmh.authsource.rules");
+  
   String homeDirVal = null;
   if(identity!=null){
-  	String identityName = identity.getName();
-  	if(Util.isNotNullOrEmpty(identityName)){
+    String identityName = identity.getName();
+    log.debug("Entering CMH-AD-HomeDirectory-Rule for identity:"+identityName);
+   	if(Util.isNotNullOrEmpty(identityName)){
   		homeDirVal = getHomeDirectory(identityName);
     }
+     log.debug("Exiting CMH-AD-HomeDirectory-Rule for identity:"+identityName);
   }
   return homeDirVal;
   ]]></Source>

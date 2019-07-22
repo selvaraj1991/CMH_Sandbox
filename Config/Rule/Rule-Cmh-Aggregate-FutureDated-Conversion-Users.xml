@@ -3,6 +3,7 @@
 <Rule language="beanshell" name="CMH-Aggregate-FutureDated-Conversion-Users-Rule">
 <Description>The rule is run by the Future Dated conversion users task. This rule checks for the conversion case users who are not created before because of Future Start date, and if the current date is their start date then this will trigger the infor aggregation for those users.</Description>
   <Source><![CDATA[
+    import org.apache.log4j.Logger;
   	import java.text.SimpleDateFormat;
   	import sailpoint.api.TaskManager;
   	import sailpoint.object.Attributes;
@@ -57,7 +58,8 @@
   			}
   		}
   	}
-  	
+  	Logger log = Logger.getLogger("cmh.authsource.rules");
+  	log.debug("Entering CMH-Aggregate-FutureDated-Conversion-Users-Rule");
   	Custom stCustomObj = context.getObjectByName(Custom.class,"CMH-DateFormat");
   	List usersList = null;
   	String custObjName = "CMH-Custom-Future-Conversion-Users";
@@ -94,7 +96,7 @@
 		  	}
   		}
   	}
-  	
+  	log.debug("Exiting CMH-Aggregate-FutureDated-Conversion-Users-Rule");
   	return "Success";
 
   	

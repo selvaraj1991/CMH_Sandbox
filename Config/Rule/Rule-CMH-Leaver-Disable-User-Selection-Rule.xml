@@ -44,12 +44,11 @@
     Logger log = Logger.getLogger("cmh.authsource.rules");
 
     log.debug("Entering CMH-Leaver-Disable-User-Selection-Rule");
-
     boolean disableUser = false;
     if(null !=identity) {
+        log.debug("CMH-Leaver-Disable-User-Selection-Rule for identity:"+identity.getName());
 		String empId = identity.getStringAttribute("employeeId");
 		String uName = identity.getName();
-		
 		if(Util.isNotNullOrEmpty(empId) && Util.isNotNullOrEmpty(uName)) {
 			if(uName.contains("_old")){
 				uName = uName.substring(0,uName.indexOf("_old")).trim();
@@ -71,7 +70,7 @@
 		}
 	}
     log.debug("CMH-Leaver-Disable-User-Selection-Rule: User Found ? :"+disableUser);
-
+    log.debug("Exiting CMH-Leaver-Disable-User-Selection-Rule");
     return disableUser;
   ]]></Source>
 </Rule>

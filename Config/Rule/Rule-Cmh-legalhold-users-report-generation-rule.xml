@@ -46,6 +46,7 @@
 
 
 	Logger log = Logger.getLogger("cmh.legalhold.rules");
+	log.debug("Entering CMH-LegalHold-Users-Report-Generation-Rule");
 	//Creatng a List with details of users which are on Legal Hold.
 	public List getLegalHoldUsers() {
 		log.debug("Entering getLegalHoldUsers()");
@@ -66,7 +67,7 @@
 		try {
 			identityIterator = context.search(Identity.class, qo);
 		} catch (Exception ex) {
-			log.error("Error: " + ex.getMessage());
+			log.error("Error: CMH-LegalHold-Users-Report-Generation-Rule " + ex.getMessage());
 		}
 		// The  following if loop will Iterate the list of records returned from context search and return the user list
 		if (identityIterator != null) {
@@ -172,7 +173,7 @@
 					} //end of try
 					catch (Exception e) {
 						log.error("Error in CsvFileWriter !!!");
-						log.error("Rule Error: " + e.getMessage());
+						log.error("CMH-LegalHold-Users-Report-Generation-Rule Error: " + e.getMessage());
 					} //end of catch
 					finally {
 						try {
@@ -185,7 +186,7 @@
 					} //end of finally   
 				} //end of if
 				else {
-					log.debug("No users are on Legal Hold");
+					log.debug("CMH-LegalHold-Users-Report-Generation-Rule :No users are on Legal Hold");
 				}
 			}
 		}
@@ -193,5 +194,6 @@
 	private static int count = 0;
 	List list = getLegalHoldUsers();
 	callMethod(list);
+	log.debug("Exiting CMH-LegalHold-Users-Report-Generation-Rule");
 	]]></Source>
 </Rule>

@@ -127,7 +127,7 @@
   			
   			Logger log = Logger.getLogger("CMH-LifecycleEvent-Leaver-Delete");
   			if(isDebugEnabled){
-  				log.debug("Starting the Leaver Deprovisioning Workflow for the user "+identityName+" with the employee ID : "+employeeId);
+  				log.debug("Starting the Leaver Deprovisioning Workflow for the user "+identityName);
   			}
   		]]>
   		</Source>
@@ -417,6 +417,7 @@
   			
   			if(isDebugEnabled){
   				log.debug("CMH-LifecycleEvent-Leaver-Delete: Check Status step : Audit Event Generated");
+  				log.debug("Ending the Leaver Deprovisioning Workflow for the user "+identityName);
   			}
   			
   			context.commitTransaction();

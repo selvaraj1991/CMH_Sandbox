@@ -78,11 +78,12 @@
 		  }
 		  return roleAssign;
 	   }
-       log.debug("CMH-Employee-Other-Birthright-Rule: Entering");
+       log.debug("Entering CMH-Employee-Other-Birthright-Rule");
        boolean roleAssign = false;
        String birthRightCustomObject = "CMH-Custom-Birthright-Employee-Role-AssignmentData";
        String roleNameCustomObject = "CMH-User-Role-Mapping-Custom-Object";
        if (identity != null && identity.isCorrelated()) {
+           log.debug("CMH-Employee-Other-Birthright-Rule for identity:"+identity.getName());
            String status = identity.getAttribute("status");
            String userType = identity.getAttribute("userType");
            if(Util.nullSafeCaseInsensitiveEq(userType,"EMPLOYEE") && Util.nullSafeCaseInsensitiveEq(status,"ACTIVE")) {
@@ -101,8 +102,9 @@
 	        }
 	    }
 	    if (roleAssign) {
-            log.debug("CMH-Employee-Other-Birthright-Rule:Role " + roleName + " assigned for the User: " + identityName.getName());
+            log.debug("CMH-Employee-Other-Birthright-Rule:Role " + roleName + " assigned for the User: " + identity.getName());
         }
+        log.debug("Exiting CMH-Employee-Other-Birthright-Rule");
         return roleAssign;
   ]]></Source>
 </Rule>

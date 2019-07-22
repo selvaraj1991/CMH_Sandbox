@@ -40,12 +40,13 @@
 		//Filters out users for name change based on lastname or firstname change
 		boolean isNameChange = false;
 		if (null != previousIdentity && null != newIdentity) {
+		        log.debug("CMH-User-Name-Change-Trigger-Rule for identity:"+previousIdentity.getName());
                 if( ! Util.nullSafeCaseInsensitiveEq(previousIdentity.getFirstname(),newIdentity.getFirstname()) ||
                     ! Util.nullSafeCaseInsensitiveEq(previousIdentity.getLastname(),newIdentity.getLastname()) ) {
 				isNameChange = true;
 			}
 		}
-		log.debug("isNameChange " + isNameChange);
+		log.debug("CMH-User-Name-Change-Trigger-Rule isNameChange ?:" + isNameChange);
 		log.debug("Exiting CMH-User-Name-Change-Trigger-Rule");
 		return isNameChange;
   ]]></Source>
