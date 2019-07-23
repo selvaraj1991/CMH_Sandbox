@@ -559,13 +559,8 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 			   auditWrite("Leaver-Disable Success",source,target,attributeName,attributeValue,map);
   			}else{
   			    Map map = new HashMap();
-  			    int counter = validationErrors.size();
-  			    if(counter >4) {
-	  			    counter = 4;
-  			    }
-  			    for(int i=0; i<counter ; i++){
-		  			map.put("setString".concat(Integer.toString(i+1)), validationErrors.get(i));
-		  		}
+  			    map.put("setString1","Leaver Disable Process failed due to errors");
+  				map.put("setString2",Util.listToCsv(validationErrors));
 		  		auditWrite("Leaver-Disable Failure",source,target,attributeName,attributeValue,map);
   			}
 
