@@ -44,7 +44,7 @@
 		import java.util.Iterator;
 		import sailpoint.tools.Util;
 
-		Logger log = Logger.getLogger("cmh.authsource.rules");
+		Logger log = Logger.getLogger("Rule.CMH-Joiner-Users-Selection-Rule");
 		public boolean checkOldEmployeeIdUserStatus(String oldEmployeeId) {
 			log.debug("Entering checkOldEmployeeIdUserStatus(String oldEmployeeId)");
 			boolean isStatus = false;

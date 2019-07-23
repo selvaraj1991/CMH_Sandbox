@@ -35,7 +35,7 @@
 		import sailpoint.object.Identity;
 		import sailpoint.tools.Util;
 
-		Logger log = Logger.getLogger("cmh.authsource.rules");
+		Logger log = Logger.getLogger("Rule.CMH-User-Name-Change-Trigger-Rule");
 		log.debug("Entering CMH-User-Name-Change-Trigger-Rule");
 		//Filters out users for name change based on lastname or firstname change
 		boolean isNameChange = false;

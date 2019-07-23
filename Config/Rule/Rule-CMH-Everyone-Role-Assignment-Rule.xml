@@ -42,7 +42,7 @@
   import org.apache.log4j.Logger;
   import sailpoint.tools.Util;
 
-  Logger logger = Logger.getLogger("cmh.authsource.rules");
+  Logger logger = Logger.getLogger("Rule.CMH-Everyone-Role-Assignment-Rule");
 
   logger.debug("Entering CMH-Everyone-Role-Assignment-Rule:Assign Everyone Role for the user based on the userType and EmailRequired");
   

@@ -23,7 +23,7 @@
       <Source>
       <![CDATA[
   			import org.apache.log4j.Logger;
-  			Logger log = Logger.getLogger("CMH_ImmediateTerminationLog");
+  			Logger log = Logger.getLogger("Workflow.CMH-Immediate-Termination");;
   			if(log.isDebugEnabled()){
   				return true;
   			}
@@ -107,7 +107,7 @@
   			import sailpoint.object.Identity;
 			import sailpoint.tools.Util;
   			
-  			Logger log = Logger.getLogger("CMH_ImmediateTerminationLog");	
+  			Logger log = Logger.getLogger("Workflow.CMH-Immediate-Termination");;	
   			String userName = null;
   			String employeeId = null;
   			String userOnLegalHold = null;
@@ -141,7 +141,7 @@
   			import org.apache.log4j.Logger;
   			import sailpoint.tools.Util;
   			
-  			Logger log = Logger.getLogger("CMH_ImmediateTerminationLog");
+  			Logger log = Logger.getLogger("Workflow.CMH-Immediate-Termination");;
 			if(isDebugEnabled)	{
 				log.debug("CMH-Immediate-Termination-Process-Workflow: Validating the Data");
 			}
@@ -167,7 +167,7 @@
   			<Source>
   			<![CDATA[
   				import org.apache.log4j.Logger;
-  				Logger log = Logger.getLogger("CMH_ImmediateTerminationLog");
+  				Logger log = Logger.getLogger("Workflow.CMH-Immediate-Termination");;
   				if(validationErrors==null || validationErrors.size()<=0){
 					if(isDebugEnabled)	{
 						log.debug("CMH-Immediate-Termination-Process-Workflow: No Validation Errors");
@@ -198,7 +198,7 @@
         import sailpoint.tools.GeneralException;
         import sailpoint.tools.Util;
               
-       	Logger log = Logger.getLogger("CMH_ImmediateTerminationLog");
+       	Logger log = Logger.getLogger("Workflow.CMH-Immediate-Termination");;
 
         if (isDebugEnabled) {
 			log.debug("CMH-Immediate-Termination: Updating Identity Attributes for "+ employeeId);
@@ -276,7 +276,7 @@
         import sailpoint.object.ProvisioningPlan.AttributeRequest;
 		import sailpoint.tools.Util;
            
-        Logger log = Logger.getLogger("CMH_ImmediateTerminationLog");
+        Logger log = Logger.getLogger("Workflow.CMH-Immediate-Termination");;
 		
         if (isDebugEnabled) {
         	log.debug("CMH-Immediate-Termination: Disable AD Account for "+ employeeId + " started");
@@ -418,7 +418,7 @@
         import org.apache.log4j.Logger;
   			
 		//method to generate service now ticket
-		Logger log = Logger.getLogger("CMH_ImmediateTerminationLog");
+		Logger log = Logger.getLogger("Workflow.CMH-Immediate-Termination");;
 		
 		if(isDebugEnabled){
 			log.debug("CMH-Immediate-Termination: Generating service now ticket for disconnected applications");
@@ -496,7 +496,7 @@
   			import sailpoint.tools.Message;
   			import sailpoint.tools.Util;
   			
-  			Logger log = Logger.getLogger("CMH_ImmediateTerminationLog");
+  			Logger log = Logger.getLogger("Workflow.CMH-Immediate-Termination");;
 			
 			if(isDebugEnabled)	{
 				log.debug("CMH_ImmediateTermination: Check Status step : Checking for errors");

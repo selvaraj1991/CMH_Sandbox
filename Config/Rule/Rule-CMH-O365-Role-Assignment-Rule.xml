@@ -42,7 +42,7 @@
   import org.apache.log4j.Logger;
   import sailpoint.tools.Util;
 
-  Logger logger = Logger.getLogger("cmh.authsource.rules");
+  Logger logger = Logger.getLogger("Rule.CMH-O365-Role-Assignment-Rule");
 
   logger.debug("Entering CMH-O365-Role-Assignment-Rule:Assign O365 Role for the user based on the userType and EmailRequired");
 

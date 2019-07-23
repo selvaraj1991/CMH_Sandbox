@@ -21,7 +21,7 @@
   		<Source>
   		<![CDATA[
   			import org.apache.log4j.Logger;
-  			Logger log = Logger.getLogger("CMH-LifecycleEvent-User-Conversion");
+  			Logger log = Logger.getLogger("Workflow.CMH-Update-AD-Account");
   			if(log.isDebugEnabled()){
   				return true;
   			}
@@ -95,7 +95,7 @@
   			import sailpoint.object.ProvisioningPlan.AttributeRequest;
   			import sailpoint.tools.Util;
   			
-  			Logger log = Logger.getLogger("CMH-LifecycleEvent-User-Conversion");
+  			Logger log = Logger.getLogger("Workflow.CMH-Update-AD-Account");
   			
   			if(isDebugEnabled){
   				log.debug("CMH-LifecycleEvent-User-Conversion: Building Provisioning Plan for enabling the AD account of User: "+identityName);
@@ -150,7 +150,7 @@
   			adPlan.setIdentity(iden);
   			
   			if(isDebugEnabled){
-  				log.debug("CMH-LifecycleEvent-User-Conversion: Plan created for the user successfully: "+adPlan.toXml());
+  				log.debug("CMH-LifecycleEvent-User-Conversion: Plan created to update the AD account of the User : "+identityName);
   			}
   			return adPlan;
 		

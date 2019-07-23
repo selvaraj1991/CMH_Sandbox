@@ -38,7 +38,7 @@
 		import org.apache.http.util.EntityUtils;
 		import sailpoint.integration.JsonUtil;
 
-		Logger log = Logger.getLogger("cmh.authsource.rules");
+		Logger log = Logger.getLogger("Rule.CMH-AD-Generic-Rulelibrary");
 
 		/**
 				* Generate primary group DN.

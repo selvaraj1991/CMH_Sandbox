@@ -13,7 +13,7 @@
 		import sailpoint.tools.Util;
 		import sailpoint.object.Application;
 		
-        Logger log = Logger.getLogger("cmh.authsource.rules");
+        Logger log = Logger.getLogger("Rule.CMH-Infor-Full-Pre-Iteration-Rule");
 		log.debug("CMH-Infor-Full-Pre-Iteration-Rule: Entering :Update Custom object with the timestamp for full aggregation");
 		//updates the timestamp of the task in custom object
 		Custom custom = context.getObjectByName(Custom.class,"CMH-Infor-Full-Aggregation-Custom-Object");

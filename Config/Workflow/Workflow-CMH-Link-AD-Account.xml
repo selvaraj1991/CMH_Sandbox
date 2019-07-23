@@ -15,7 +15,7 @@
   		<Source>
   		<![CDATA[
   			import org.apache.log4j.Logger;
-  			Logger log = Logger.getLogger("CMH-LifecycleEvent-User-Conversion");
+  			Logger log = Logger.getLogger("Workflow.CMH-Link-AD-Account");
   			if(log.isDebugEnabled()){
   				return true;
   			}
@@ -42,7 +42,7 @@
 			import sailpoint.object.ProvisioningPlan.AttributeRequest;
 			
 			
-			Logger log = Logger.getLogger("CMH-LifecycleEvent-User-Conversion");
+			Logger log = Logger.getLogger("Workflow.CMH-Link-AD-Account");
 			
 			if(isDebugEnabled){
 				log.debug("CMH-Link-AD-Account: Building the plan to link the AD application account from User: "+oldIdentityName+" To User: "+newIdentityName);
@@ -82,7 +82,7 @@
 			plan.setSource(sailpoint.object.Source.LCM);    
 			
 			if(isDebugEnabled){
-				log.debug("CMH-Link-AD-Account: Plan has been generated successfully "+plan.toXml());
+				log.debug("CMH-Link-AD-Account: Plan generated to link the existing AD account of "+oldIdentityName+" to new User : "+newIdentityName);
 			} 
  
 			Provisioner provisioner = new Provisioner(context);  

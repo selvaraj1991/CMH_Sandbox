@@ -51,7 +51,7 @@
 
   			import org.apache.log4j.Logger;
 
-  			Logger log = Logger.getLogger("CMH-LifecycleEvent-User-Conversion");
+  			Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-User-Conversion");
 
   			if(log.isDebugEnabled()){
   				return true;
@@ -326,7 +326,7 @@
 
   			import org.apache.log4j.Logger;
 
-  			Logger log = Logger.getLogger("CMH-LifecycleEvent-User-Conversion");
+  			Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-User-Conversion");
   			if(isDebugEnabled){
   				log.debug("Starting the User Conversion Workflow for the user "+identityName);
   			}
@@ -342,7 +342,7 @@
   			import org.apache.log4j.Logger;
   			import sailpoint.tools.Util;
 
-  			Logger log = Logger.getLogger("CMH-LifecycleEvent-User-Conversion");
+  			Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-User-Conversion");
 
   			List errorList = new ArrayList();
   			if(Util.isNullOrEmpty(oldEmployeeId)){
@@ -427,7 +427,7 @@
   			import sailpoint.object.Identity;
   			import sailpoint.object.Link;
 
-  			Logger log = Logger.getLogger("CMH-LifecycleEvent-User-Conversion");
+  			Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-User-Conversion");
 
   			log.debug("CMH-LifecycleEvent-User-Conversion: Check if the AD account of previous user is disabled");
   			boolean isADdisabled = false;
@@ -677,7 +677,7 @@
   			import sailpoint.tools.Message;
   			import sailpoint.tools.Util;
 
-  			Logger log = Logger.getLogger("CMH-LifecycleEvent-User-Conversion");
+  			Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-User-Conversion");
 
   			if(isDebugEnabled){
   				log.debug("CMH-LifecycleEvent-User-Conversion: Check Status step : Checking for errors");

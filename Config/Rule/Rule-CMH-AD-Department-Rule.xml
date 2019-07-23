@@ -63,7 +63,7 @@ This rule is used to generate and provision the department attribute to AD</Desc
   <Source><![CDATA[
     import org.apache.log4j.Logger; 
     
-    Logger log = Logger.getLogger("cmh.authsource.rules");
+    Logger log = Logger.getLogger("Rule.CMH-AD-Department-Rule");
     log.debug("Entering CMH-AD-Department-Rule() for identity:"+identity.getName());
   	String department = "";
 	String entity = identity.getStringAttribute("entity");

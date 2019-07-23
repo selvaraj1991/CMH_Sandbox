@@ -27,7 +27,7 @@
     	<Source>
 		<![CDATA[
   			import org.apache.log4j.Logger;
-  			Logger log = Logger.getLogger("CMH_ADOUMoveLog");
+  			Logger log = Logger.getLogger("Workflow.CMH-LegalHold-Add");
   			if(log.isDebugEnabled()){
   				return true;
   			}
@@ -96,7 +96,7 @@
   			import sailpoint.object.Identity;
 			import sailpoint.tools.Util;
   			
-  			Logger log = Logger.getLogger("CMHLegalHold");
+  			Logger log = Logger.getLogger("Workflow.CMH-LegalHold-Add");
   			String identityName = null;
   			String userType = null;
   			String status = null;
@@ -134,7 +134,7 @@
   		<![CDATA[
   			import org.apache.log4j.Logger;
   			import sailpoint.tools.Util;
-  			Logger log = Logger.getLogger("CMHLegalHold");
+  			Logger log = Logger.getLogger("Workflow.CMH-LegalHold-Add");
   			
   			List errorMessages = new ArrayList();
 			if(Util.isNullOrEmpty(identityName)){
@@ -184,7 +184,7 @@
   			import sailpoint.object.Application;
   			import sailpoint.object.Identity;
   			
-  			Logger log = Logger.getLogger("CMHLegalHold");
+  			Logger log = Logger.getLogger("Workflow.CMH-LegalHold-Add");
   			Identity iden = context.getObjectByName(Identity.class, identityName);
   			Application app = context.getObjectByName(Application.class,adAppName);
   			if(iden!=null && app!=null){
@@ -259,7 +259,7 @@
 			import sailpoint.object.ProvisioningPlan.AccountRequest;
 			import sailpoint.object.ProvisioningPlan.AttributeRequest;
 			
-			Logger log = Logger.getLogger("CMHLegalHold");
+			Logger log = Logger.getLogger("Workflow.CMH-LegalHold-Add");
 			if (isDebugEnabled) {
 				log.debug("CMH-LegalHold-Add-Workflow: Generating plan to move the user AD account to appropriate OU");
 			}
@@ -385,7 +385,7 @@
   			import sailpoint.tools.Message;
   			import sailpoint.tools.Util;
   			
-  			Logger log = Logger.getLogger("CMH_ImmediateTerminationLog");
+  			Logger log = Logger.getLogger("Workflow.CMH-LegalHold-Add");
   		
   			log.debug("CMH-LegalHold-Add-Workflow: Check Status step : Checking for errors");
   			

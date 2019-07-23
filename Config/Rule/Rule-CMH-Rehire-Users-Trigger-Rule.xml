@@ -38,7 +38,7 @@
 		import sailpoint.object.Identity;
 		import sailpoint.tools.Util;
 
-		Logger log = Logger.getLogger("cmh.authsource.rules");
+		Logger log = Logger.getLogger("Rule.CMH-Rehire-Users-Trigger-Rule");
 		log.debug("Entering into CHM-Rehire-Users-Trigger-Rule");
 		//Selecting the users for rehire based on status and rehire flag
 		boolean rehired = false;

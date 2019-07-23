@@ -14,7 +14,7 @@
   		<Source>
   		<![CDATA[
   			import org.apache.log4j.Logger;
-  			Logger log = Logger.getLogger("CMH-LifecycleEvent-User-Conversion");
+  			Logger log = Logger.getLogger("Workflow.CMH-Create-AD-Account");
   			if(log.isDebugEnabled()){
   				return true;
   			}
@@ -55,7 +55,7 @@
 		import sailpoint.object.ProvisioningPlan;
 		import sailpoint.object.ProvisioningPlan.AccountRequest;
 		
-		Logger log = Logger.getLogger("CMH-LifecycleEvent-User-Conversion");
+		Logger log = Logger.getLogger("Workflow.CMH-Create-AD-Account");
 		
 		log.info("CMH-Create-AD-Account-Workflow: Building Plan to create AD account");
 		

@@ -47,7 +47,7 @@
     import sailpoint.object.Identity;
     import sailpoint.tools.Util;
 
-    Logger log = Logger.getLogger("cmh.authsource.rules");
+    Logger log = Logger.getLogger("Rule.CMH-User-Conversion-Trigger-Rule");
     log.info("CMH-User-Conversion-Trigger-Rule : Triggers Conversion workflow after validation");
     String format = getCustomObject("conversionTimestamp", "CMH-DateFormat");
     if (Util.isNotNullOrEmpty(format)) {

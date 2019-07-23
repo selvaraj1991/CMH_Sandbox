@@ -41,7 +41,7 @@
 	import sailpoint.tools.Util;
 	import org.apache.log4j.Logger;
 
-    Logger log = Logger.getLogger("cmh.authsource.rules");
+    Logger log = Logger.getLogger("Rule.CMH-Leaver-Disable-User-Selection-Rule");
 
     log.debug("Entering CMH-Leaver-Disable-User-Selection-Rule");
     boolean disableUser = false;

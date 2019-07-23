@@ -10,7 +10,7 @@
 		import sailpoint.object.TaskDefinition;
 		import sailpoint.tools.Util;
 
-		Logger log = Logger.getLogger("cmh.authsource.rules");
+		Logger log = Logger.getLogger("Rule.CMH-Read-Infor-Record-Rule");
 		log.debug("CMH-Read-Infor-Record-Rule: Entering");
 		//Reads csv file and writes to custom object
 		List list = null;

@@ -45,7 +45,7 @@
 	import sailpoint.tools.Util;
 
 
-	Logger log = Logger.getLogger("cmh.legalhold.rules");
+	Logger log = Logger.getLogger("Rule.CMH-LegalHold-Users-Report-Generation-Rule");
 	log.debug("Entering CMH-LegalHold-Users-Report-Generation-Rule");
 	//Creatng a List with details of users which are on Legal Hold.
 	public List getLegalHoldUsers() {

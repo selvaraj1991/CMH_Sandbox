@@ -110,7 +110,7 @@
     </Signature>
     <Source><![CDATA[
 		import org.apache.log4j.Logger;
-		Logger log = Logger.getLogger("cmh.authsource.rules");
+		Logger log = Logger.getLogger("Rule.CMH-AD-GetPrimaryGroupDN-Rule");
 		
 		log.debug("CMH-AD-GetPrimaryGroupDN-Rule: Entering for identity:"+identity.getName());
 		//Generates primary group DN based on assignmentType of user

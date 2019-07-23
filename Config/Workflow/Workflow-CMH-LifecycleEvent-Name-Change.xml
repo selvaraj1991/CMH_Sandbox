@@ -51,7 +51,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   		
   			import org.apache.log4j.Logger;
   			
-  			Logger log = Logger.getLogger("CMH-LifecycleEvent-Name-Change");
+  			Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-Name-Change");
   			
   			if(log.isDebugEnabled()){
   				return true;
@@ -265,7 +265,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   		
   			import org.apache.log4j.Logger;
   			
-  			Logger log = Logger.getLogger("CMH-LifecycleEvent-Name-Change");
+  			Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-Name-Change");
   			if(isDebugEnabled){
   				log.debug("Starting the CMH-LifecycleEvent-Name-Change for the user "+identityName);
   			}
@@ -281,7 +281,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
             import org.apache.log4j.Logger;
   			import sailpoint.tools.Util;
   			
-  			Logger log = Logger.getLogger("CMH-LifecycleEvent-Name-Change");
+  			Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-Name-Change");
   			
   			List errorList = new ArrayList();
   			if(Util.isNullOrEmpty(adAppName)) {
@@ -455,7 +455,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 		  			import sailpoint.object.Link;
 		  			import sailpoint.tools.Util;
   		           
-  		            Logger log = Logger.getLogger("CMH-LifecycleEvent-Name-Change");
+  		            Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-Name-Change");
   		            
   		            Application application = context.getObjectByName(Application.class, hrAppName);
   		            Identity identity = context.getObjectByName(Identity.class, newIdentityName);
@@ -495,7 +495,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 	  			import sailpoint.object.ProvisioningPlan.AttributeRequest;
 	  			import sailpoint.tools.Util;
 			  	
-			  	Logger log = Logger.getLogger("CMH-LifecycleEvent-Name-Change");
+			  	Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-Name-Change");
 			  	
 			  	if (validationErrors == null) {
 		          validationErrors = new ArrayList();
@@ -646,7 +646,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 			   import sailpoint.tools.Util;
 			   import sailpoint.object.RoleTarget;
 			   
-			   Logger log = Logger.getLogger("CMH-LifecycleEvent-Name-Change");
+			   Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-Name-Change");
 			   
 			   if (isDebugEnabled) {
 		          log.debug("CMH-LifecycleEvent-Name-Change: Update Role Account Name");
@@ -683,7 +683,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 	  			import sailpoint.object.ProvisioningPlan;
 	  			import sailpoint.tools.Util;
 			  	
-			  	Logger log = Logger.getLogger("CMH-LifecycleEvent-Name-Change");
+			  	Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-Name-Change");
 			  	
 			  	if (isDebugEnabled) {
 		          log.debug("CMH-LifecycleEvent-Name-Change: Single Account Aggregation");
@@ -742,7 +742,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 			import java.util.HashMap;
 			import org.apache.log4j.Logger;
 			
-			Logger log = Logger.getLogger("CMH-LifecycleEvent-Name-Change");
+			Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-Name-Change");
 			if(validationErrors==null){
 				validationErrors = new ArrayList();
 			}

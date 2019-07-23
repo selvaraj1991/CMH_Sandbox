@@ -96,7 +96,7 @@
     <Source>
 	<![CDATA[
         import org.apache.log4j.Logger;
-		Logger log = Logger.getLogger("cmh.authsource.rules");
+		Logger log = Logger.getLogger("Rule.CMH-AD-GetDN-Rule");
 		log.debug("Entering CMH-AD-GetDN-Rule for identity:"+identity.getName());
 		//Generates account dn value 
 		String username = identity.getName();

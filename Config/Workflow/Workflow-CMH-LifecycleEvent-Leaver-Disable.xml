@@ -51,7 +51,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 
   			import org.apache.log4j.Logger;
 
-  			Logger log = Logger.getLogger("CMH-LifecycleEvent-Leaver-Disable");
+  			Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-Leaver-Disable");
 
   			if(log.isDebugEnabled()){
   				return true;
@@ -203,7 +203,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 
   			import org.apache.log4j.Logger;
 
-  			Logger log = Logger.getLogger("CMH-LifecycleEvent-Leaver-Disable");
+  			Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-Leaver-Disable");
   			if(isDebugEnabled){
   				log.debug("Starting the LifecycleEvent-Leaver-Disable Workflow for the user "+identityName);
   			}
@@ -219,7 +219,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
             import org.apache.log4j.Logger;
   			import sailpoint.tools.Util;
 
-  			Logger log = Logger.getLogger("CMH-LifecycleEvent-Leaver-Disable");
+  			Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-Leaver-Disable");
 
   			List errorList = new ArrayList();
   			if(Util.isNullOrEmpty(adAppName)) {
@@ -261,7 +261,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 
   			import org.apache.log4j.Logger;
 
-  			Logger log = Logger.getLogger("CMH-LifecycleEvent-Leaver-Disable");
+  			Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-Leaver-Disable");
   			List connectedApps = getAppsToProcess(identityName,"CMH-Leaver-Custom-Object","connectedApplications");
   			if(connectedApps==null || connectedApps.size()<=0){
   				log.info("CMH-LifecycleEvent-Leaver-Disable: There are no connected Apps associated with the user");
@@ -285,7 +285,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   			import sailpoint.object.Identity;
   			import sailpoint.tools.Util;
 
-  			Logger log = Logger.getLogger("CMH-LifecycleEvent-Leaver-Disable");
+  			Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-Leaver-Disable");
 
   			Identity iden = context.getObjectByName(Identity.class,identityName);
   			String immeTermStat = iden.getStringAttribute("immediateOffboarder");
@@ -329,7 +329,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 	  			import sailpoint.object.ProvisioningPlan.AttributeRequest;
 	  			import sailpoint.tools.Util;
 
-			  	Logger log = Logger.getLogger("CMH-LifecycleEvent-Leaver-Disable");
+			  	Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-Leaver-Disable");
                 ProvisioningPlan adPlan = new ProvisioningPlan();
 				List accountRequests = new ArrayList();
 				Identity identity = context.getObjectByName(Identity.class, identityName);
@@ -442,7 +442,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
     <Script>
       <Source><![CDATA[
 
-				Logger log = Logger.getLogger("CMH-LifecycleEvent-Leaver-Disable");
+				Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-Leaver-Disable");
 
 		        if (isDebugEnabled) {
 		          log.debug("CMH-LifecycleEvent-Leaver-Disable: Creating ServiceNow Ticket on disablement of user");
@@ -483,7 +483,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 	  			import sailpoint.object.ProvisioningPlan;
 	  			import sailpoint.tools.Util;
 
-			  	Logger log = Logger.getLogger("CMH-LifecycleEvent-Leaver-Disable");
+			  	Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-Leaver-Disable");
 
 			  	if (isDebugEnabled) {
 		          log.debug("CMH-LifecycleEvent-Leaver-Disable: Single Account Aggregation");
@@ -537,7 +537,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 			import java.util.ArrayList;
 			import org.apache.log4j.Logger;
 
-			Logger log = Logger.getLogger("CMH-LifecycleEvent-Leaver-Disable");
+			Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-Leaver-Disable");
 			if(validationErrors==null){
 				validationErrors = new ArrayList();
 			}

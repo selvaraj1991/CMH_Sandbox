@@ -16,7 +16,7 @@
   		<Source>
   		<![CDATA[
   			import org.apache.log4j.Logger;
-  			Logger log = Logger.getLogger("CMH-Provision-O365-License-Workflow");
+  			Logger log = Logger.getLogger("Workflow.CMH-Provision-O365-License");
   			if(log.isDebugEnabled()){
   				return true;
   			}
@@ -106,7 +106,7 @@
   			import sailpoint.object.ProvisioningPlan.AttributeRequest;
   			import sailpoint.tools.Util;
   			
-  			Logger log = Logger.getLogger("CMH-Provision-O365-License-Workflow");
+  			Logger log = Logger.getLogger("Workflow.CMH-Provision-O365-License");
   			
   			if(isDebugEnabled){
   				log.debug("CMH-Provision-O365-License-Workflow: Building Provisioning Plan for enabling the AD account of User: "+identityName);
@@ -140,7 +140,7 @@
   			adPlan.setIdentity(iden);
   			
   			if(isDebugEnabled){
-  				log.debug("CMH-Provision-O365-License-Workflow: Plan created for the user successfully: "+adPlan.toXml());
+  				log.debug("CMH-Provision-O365-License-Workflow: Plan created to provision O365 licences for the User : "+identityName);
   			}
   			return adPlan;
 		

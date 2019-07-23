@@ -58,7 +58,7 @@
   			}
   		}
   	}
-  	Logger log = Logger.getLogger("cmh.authsource.rules");
+  	Logger log = Logger.getLogger("Rule.CMH-Aggregate-FutureDated-Conversion-Users-Rule");
   	log.debug("Entering CMH-Aggregate-FutureDated-Conversion-Users-Rule");
   	Custom stCustomObj = context.getObjectByName(Custom.class,"CMH-DateFormat");
   	List usersList = null;

@@ -97,7 +97,7 @@
   <Source><![CDATA[
   import org.apache.log4j.Logger;
   import sailpoint.tools.Util;
-  Logger log = Logger.getLogger("cmh.authsource.rules");
+  Logger log = Logger.getLogger("Rule.CMH-AD-HomeDirectory-Rule");
   
   String homeDirVal = null;
   if(identity!=null){

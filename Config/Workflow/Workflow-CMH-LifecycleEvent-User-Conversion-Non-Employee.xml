@@ -51,7 +51,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   		
   			import org.apache.log4j.Logger;
   			
-  			Logger log = Logger.getLogger("CMH-LifecycleEvent-User-Conversion-Non-Employee");
+  			Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-User-Conversion-Non-Employee");
   			
   			if(log.isDebugEnabled()){
   				return true;
@@ -190,7 +190,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   		
   			import org.apache.log4j.Logger;
   			
-  			Logger log = Logger.getLogger("CMH-LifecycleEvent-User-Conversion-Non-Employee");
+  			Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-User-Conversion-Non-Employee");
   			if(isDebugEnabled){
   				log.debug("Starting the LifecycleEvent-User-Conversion-Non-Employee for the user "+identityName);
   			}
@@ -206,7 +206,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
             import org.apache.log4j.Logger;
   			import sailpoint.tools.Util;
   			
-  			Logger log = Logger.getLogger("CMH-LifecycleEvent-User-Conversion-Non-Employee");
+  			Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-User-Conversion-Non-Employee");
   			
   			List errorList = new ArrayList();
   			if(Util.isNullOrEmpty(adAppName)) {
@@ -251,7 +251,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
                 import sailpoint.object.Identity;
                 import sailpoint.tools.GeneralException;
                 
-				Logger log = Logger.getLogger("cmh.authsource.rules");
+				Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-User-Conversion-Non-Employee");
                 Identity identity = context.getObjectByName(Identity.class, identityName);
                 Application app= null;  
                     try {
@@ -309,7 +309,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 	  			import sailpoint.object.ProvisioningPlan.AttributeRequest;
 	  			import sailpoint.tools.Util;
 			  	
-			  	Logger log = Logger.getLogger("CMH-LifecycleEvent-User-Conversion-Non-Employee");
+			  	Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-User-Conversion-Non-Employee");
 			  	
 			  	 if (validationErrors == null) {
 		          validationErrors = new ArrayList();
@@ -356,7 +356,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 		          }
 			      adPlan.setIdentity(identity);
 			      if(isDebugEnabled){
-	  				log.debug("CMH-LifecycleEvent-User-Conversion-Non-Employee: Plan created for the user successfully FOR ACTIVE USER: "+adPlan.toXml());
+	  				log.debug("CMH-LifecycleEvent-User-Conversion-Non-Employee: Plan created to update OU and other information as per new assignmentType for the User: "+identityName);
 	  			  }
   			    wfcontext.getWorkflowCase().put("validationErrors",validationErrors);
   			    return adPlan;
@@ -440,7 +440,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 	  			import sailpoint.object.ProvisioningPlan;
 	  			import sailpoint.tools.Util;
 			  	
-			  	Logger log = Logger.getLogger("CMH-LifecycleEvent-User-Conversion-Non-Employee");
+			  	Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-User-Conversion-Non-Employee");
 			  	
 			  	if (isDebugEnabled) {
 		          log.debug("CMH-LifecycleEvent-User-Conversion-Non-Employee: Single Account Aggregation");
@@ -494,7 +494,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 			import java.util.ArrayList;
 			import org.apache.log4j.Logger;
 			
-			Logger log = Logger.getLogger("CMH-LifecycleEvent-User-Conversion-Non-Employee");
+			Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-User-Conversion-Non-Employee");
 			if(validationErrors==null){
 				validationErrors = new ArrayList();
 			}

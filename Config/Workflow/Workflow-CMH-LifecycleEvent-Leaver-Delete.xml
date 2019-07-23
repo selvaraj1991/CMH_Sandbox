@@ -46,7 +46,7 @@
   		<![CDATA[
   			import org.apache.log4j.Logger;
   			
-  			Logger log = Logger.getLogger("CMH-LifecycleEvent-Leaver-Delete");
+  			Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-Leaver-Delete");
   			
   			if(log.isDebugEnabled()){
   				return true;
@@ -125,7 +125,7 @@
   		<![CDATA[
   			import org.apache.log4j.Logger;
   			
-  			Logger log = Logger.getLogger("CMH-LifecycleEvent-Leaver-Delete");
+  			Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-Leaver-Delete");
   			if(isDebugEnabled){
   				log.debug("Starting the Leaver Deprovisioning Workflow for the user "+identityName);
   			}
@@ -142,7 +142,7 @@
   			import sailpoint.object.Custom;
   			import sailpoint.tools.Util;
   			
-  			Logger log = Logger.getLogger("CMH-LifecycleEvent-Leaver-Delete");
+  			Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-Leaver-Delete");
   			
   			List errorList = new ArrayList(); 
   			Custom custom = context.getObjectByName(Custom.class,"CMH-Leaver-Custom-Object");
@@ -197,7 +197,7 @@
   		<![CDATA[
   			import org.apache.log4j.Logger;
   			
-  			Logger log = Logger.getLogger("CMH-LifecycleEvent-Leaver-Delete");
+  			Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-Leaver-Delete");
   			List connectedApps = getAppsToProcess(identityName,"CMH-Leaver-Custom-Object","connectedApplications");
   			if(connectedApps==null || connectedApps.size()<=0){
   				log.info("CMH-LifecycleEvent-Leaver-Delete: There are no connected Apps associated with the user");
@@ -223,7 +223,7 @@
   			import sailpoint.object.ProvisioningPlan;
   			import sailpoint.object.ProvisioningPlan.AccountRequest;
   			
-  			Logger log = Logger.getLogger("CMH-LifecycleEvent-Leaver-Delete");
+  			Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-Leaver-Delete");
   			
   			if(isDebugEnabled){
   				log.debug("CMH-LifecycleEvent-Leaver-Delete: Building Provisioning Plan for deleting the accounts of User: "+identityName);
@@ -324,7 +324,7 @@
   			import sailpoint.tools.Util;
   			
   			//method to generate service now ticket
-  			Logger log = Logger.getLogger("CMH-LifecycleEvent-Leaver-Delete");
+  			Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-Leaver-Delete");
   			
   			if(isDebugEnabled){
   				log.debug("CMH-LifecycleEvent-Leaver-Delete: Generating service now ticket");
@@ -368,7 +368,7 @@
   			import sailpoint.tools.Message;
   			import sailpoint.tools.Util;
   			
-  			Logger log = Logger.getLogger("CMH-LifecycleEvent-Leaver-Delete");
+  			Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-Leaver-Delete");
   			
   			if(isDebugEnabled){
   				log.debug("CMH-LifecycleEvent-Leaver-Delete: Check Status step : Checking for errors");

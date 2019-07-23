@@ -66,7 +66,7 @@
   import sailpoint.server.Auditor;
   import sailpoint.tools.Util;
 
-  Logger log = Logger.getLogger("cmh.authsource.rules");
+  Logger log = Logger.getLogger("Rule.CMH-User-Object-Customization-Rule");
   log.debug("Entering CMH-User-Object-Customization-Rule");
   public boolean isConversionWithFutureDate(String oldEmpId,String usrName,String startDate){
   	Custom customObj = context.getObjectByName(Custom.class,"CMH-DateFormat");

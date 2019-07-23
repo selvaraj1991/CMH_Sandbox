@@ -64,7 +64,7 @@
   <Source><![CDATA[
     import org.apache.log4j.Logger;
 	
-	Logger log = Logger.getLogger("cmh.authsource.rules");
+	Logger log = Logger.getLogger("Rule.CMH-AD-PhysicalDeliveryOffice-Rule");
     log.debug("Entering CMH-AD-PhysicalDeliveryOffice-Rule for identity:"+identity.getName());
   	String physicalDeliveryOfficeName = "";
 	String divisionDesc = identity.getStringAttribute("divisionDesc");

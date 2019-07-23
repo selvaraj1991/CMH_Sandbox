@@ -99,7 +99,7 @@
 	import sailpoint.object.Identity;
 	import sailpoint.object.Link;
 	
-	Logger log = Logger.getLogger("cmh.authsource.rules");
+	Logger log = Logger.getLogger("Rule.CMH-Manager-DN");
 	log.debug("Entering CMH-Manager-DN");
 	
 	String nativeIdentity = null;

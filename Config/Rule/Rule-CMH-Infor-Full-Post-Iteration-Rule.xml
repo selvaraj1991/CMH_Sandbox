@@ -12,7 +12,7 @@
             import sailpoint.object.TaskResult.CompletionStatus;
             import sailpoint.tools.Util;
             
-		    Logger log = Logger.getLogger("cmh.authsource.rules");
+		    Logger log = Logger.getLogger("Rule.CMH-Infor-Full-Post-Iteration-Rule");
 		    log.debug("CMH-Infor-Full-Post-Iteration-Rule: Entering");
 		    
             private boolean taskSucessStatus(String taskName) {

@@ -98,7 +98,7 @@
       import org.apache.log4j.Logger; 
       import sailpoint.tools.Util;
       
-      Logger log = Logger.getLogger("cmh.authsource.rules");
+      Logger log = Logger.getLogger("Rule.CMH-AD-Displayname-Rule");
       log.debug("Entering CMH-AD-Displayname-Rule() for identity:"+identity.getName());
 	  String displayName = null;
 	  if(identity!=null){

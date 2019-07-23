@@ -42,7 +42,7 @@
        import sailpoint.object.Identity;
        import sailpoint.tools.Util;
              
-       Logger log = Logger.getLogger("cmh.authsource.rules");
+       Logger log = Logger.getLogger("Rule.CMH-Employee-Other-Birthright-Rule");
        public boolean isGrantRole(String roleName, String roleNameCustomObject,String jobLevel, String cmhDept,String jobCode,String jobFamily) {
         boolean roleAssign = false;
         if(Util.isNotNullOrEmpty(roleName) && Util.isNotNullOrEmpty(roleNameCustomObject)) {

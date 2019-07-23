@@ -44,7 +44,7 @@
     import org.apache.log4j.Logger;  
     import sailpoint.tools.Util;
     
-    Logger log = Logger.getLogger("cmh.authsource.rules");
+    Logger log = Logger.getLogger("Rule.CMH-Manager-Certification-Trigger-Rule");
     log.debug("Manager-Certification-Trigger-Rule: Entering");
     boolean flag = false;
     //return true if there is change in manager
