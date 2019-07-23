@@ -12,7 +12,7 @@
     <Selector>
         <IdentitySelector>
             <RuleRef>
-                <Reference class="sailpoint.object.Rule" name="Joiner-Users-Selection-Rule"/>
+                <Reference class="sailpoint.object.Rule" name="CMH-Joiner-Users-Selection-Rule"/>
             </RuleRef>
         </IdentitySelector>
     </Selector>

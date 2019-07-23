@@ -55,18 +55,13 @@
           if (!Util.nullSafeCaseInsensitiveEq(status, "Terminated")) {
               String oldEmpId = identity.getStringAttribute("otherEmpId");
               String isConversionProcessed = identity.getStringAttribute("isConversionProcessed");
-              if (Util.isNullOrEmpty(oldEmpId) || !isConversionCase(oldEmpId)) {
+              if (Util.isNullOrEmpty(oldEmpId) || !isConversionCase(oldEmpId) || 							Util.nullSafeCaseInsensitiveEq(isConversionProcessed, "YES")) {
                   String startDate = identity.getStringAttribute("startDate");
                   if (!status.equalsIgnoreCase("Prehire") || (Util.isNotNullOrEmpty(startDate) && startDateCheck(startDate))) {
                       String assignmentType = identity.getStringAttribute("assignmentType");
                       if (isRoleMatching(assignmentType, roleName)) {
                           assignRole = true;
                       }
-                  }
-              } else if (Util.nullSafeCaseInsensitiveEq(isConversionProcessed, "YES")) {
-                  String assignmentType = identity.getStringAttribute("assignmentType");
-                  if (isRoleMatching(assignmentType, roleName)) {
-                      assignRole = true;
                   }
               }
           }
