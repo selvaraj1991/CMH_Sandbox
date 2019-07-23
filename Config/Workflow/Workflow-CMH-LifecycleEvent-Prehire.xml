@@ -357,7 +357,7 @@
   			}
   			adPlan.setAccountRequests(accountRequests);
   			if(isDebugEnabled){
-  				log.debug("CMH_LifecycleEvent_Prehire: Plan created for the user successfully: "+adPlan.toXml());
+  				log.debug("CMH_LifecycleEvent_Prehire: AD Plan to disable the AD account for the Prehire User Created : "+identityName);
   			}
   			
   			return adPlan;

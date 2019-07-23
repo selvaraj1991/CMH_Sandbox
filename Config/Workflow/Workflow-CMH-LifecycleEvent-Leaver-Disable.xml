@@ -365,7 +365,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 				adPlan.setAccountRequests(accountRequests);
 			    adPlan.setIdentity(identity);
 			    if(isDebugEnabled){
-	  				log.debug("CMH-LifecycleEvent-Leaver-Disable: Plan created for the user successfully: "+adPlan.toXml());
+	  				log.debug("CMH-LifecycleEvent-Leaver-Disable: Plan created to Disable the AD account for the user : "+identityName);
 	  			}
 
   			   return adPlan;

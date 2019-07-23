@@ -536,7 +536,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 		          }
 			      adPlan.setIdentity(identity);
 			      if(isDebugEnabled){
-	  				log.debug("CMH-LifecycleEvent-Name-Change: Plan created for the user : "+adPlan.toXml());
+	  				log.debug("CMH-LifecycleEvent-Name-Change: Name change Plan created for the user : "+identityName);
 	  			  }
   			    wfcontext.getWorkflowCase().put("validationErrors",validationErrors);
   			    return adPlan;	

@@ -336,7 +336,7 @@
 		} 
 
         if (isDebugEnabled) {
-          log.debug("CMH-Immediate-Termination: Plan for disabling the AD account is generated "+adPlan.toXml());
+          log.debug("CMH-Immediate-Termination: Plan for disabling the AD account is generated for the user : "+identityName);
         }
         return adPlan;
     ]]>

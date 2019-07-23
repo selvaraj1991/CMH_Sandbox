@@ -256,7 +256,7 @@
 	  		plan.setAccountRequests(accountRequests);
   			
   			if(isDebugEnabled){
-  				log.debug("CMH-LifecycleEvent-Leaver-Delete: Plan created for the user successfully: "+plan.toXml());
+  				log.debug("CMH-LifecycleEvent-Leaver-Delete: Plan created to delete the AD accounts of User : "+identityName);
   			}
   			
   			return plan;
