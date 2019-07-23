@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Custom PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<Custom name="CMH-Service-Ticket-Configuration-Object">
+    <Attributes>
+        <Map>
+            <entry key="serviceNowRequestURL" value="%%CMH-ServiceNowURL%%"/>
+            <entry key="serviceNowUserName" value="%%CMH-ServiceNowUser%%"/>
+            <entry key="serviceNowUserPassword" value="%%CMH-ServiceNowPassword%%"/>
+			<entry key="addCartDisable" value="%%CMH-addCartDisable%%"/>
+            <entry key="checkoutCartDisable" value="%%CMH-checkoutCart%%"/>
+	        <entry key="addCartDelete" value="%%CMH-addCartDelete%%"/>
+            <entry key="checkoutCartDelete" value="%%CMH-checkoutCart%%"/>
+        </Map>
+    </Attributes>
+</Custom>
