@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Rule PUBLIC "sailpoint.dtd" "sailpoint.dtd">
-<Rule language="beanshell" name="Manager-Certification-Trigger-Rule" type="IdentityTrigger">
+<Rule language="beanshell" name="CMH-Manager-Certification-Trigger-Rule" type="IdentityTrigger">
     <Description>This rule can be used for Certification Events that use rule triggers. The previousIdentity and
         newIdentity hold snapshots of the identity before the update has occurred and the state of the identity after
         the update, respectively.
