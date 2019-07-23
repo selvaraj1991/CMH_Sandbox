@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Rule PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<Rule language="beanshell" name="CMH-User-Name-Change-Trigger-Rule" type="IdentityTrigger">
+   <Description>This rule can be used for Certification Events that use rule triggers. The previousIdentity and
+        newIdentity hold snapshots of the identity before the update has occurred and the state of the identity after
+        the update, respectively.
+		
+		This rule is used to trigger the Name change workflow when there is a change in the Firstname or Lastname for the user.
+    </Description>
+    <Signature returnType="boolean">
+        <Inputs>
+            <Argument type="previousIdentity">
+                <Description>
+                    The identity before the refresh/aggregation (this will be null when an
+                    identity is created).
+                </Description>
+            </Argument>
+            <Argument type="newIdentity">
+                <Description>
+                    The identity after the refresh/aggregation (this will be null when an
+                    identity is deleted).
+                </Description>
+            </Argument>
+        </Inputs>
+        <Returns>
+            <Argument type="result">
+                <Description>
+                    A boolean describing the result of the rule.
+                </Description>
+            </Argument>
+        </Returns>
+    </Signature>
+    <Source><![CDATA[  
+		import org.apache.log4j.Logger;
+		import sailpoint.object.Identity;
+		import sailpoint.tools.Util;
+
+		Logger log = Logger.getLogger("cmh.authsource.rules");
+		log.debug("Entering CMH-User-Name-Change-Trigger-Rule");
+		//Filters out users for name change based on lastname or firstname change
+		boolean isNameChange = false;
+		if (null != previousIdentity && null != newIdentity) {
+		        log.debug("CMH-User-Name-Change-Trigger-Rule for identity:"+previousIdentity.getName());
+                if( ! Util.nullSafeCaseInsensitiveEq(previousIdentity.getFirstname(),newIdentity.getFirstname()) ||
+                    ! Util.nullSafeCaseInsensitiveEq(previousIdentity.getLastname(),newIdentity.getLastname()) ) {
+				isNameChange = true;
+			}
+		}
+		log.debug("CMH-User-Name-Change-Trigger-Rule isNameChange ?:" + isNameChange);
+		log.debug("Exiting CMH-User-Name-Change-Trigger-Rule");
+		return isNameChange;
+  ]]></Source>
+</Rule>

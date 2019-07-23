@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Rule PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<Rule language="beanshell" name="CMH-Rehire-Users-Trigger-Rule" type="IdentityTrigger">
+    <Description>This rule can be used for Certification Events that use rule triggers. The previousIdentity and
+        newIdentity hold snapshots of the identity before the update has occurred and the state of the identity after
+        the update, respectively.
+		
+		This rule is used to trigger the rehire workflow when rehire flag for the user is set to YES and identity status Active/Prehire and previous status is TERMINATED.
+    </Description>
+    <ReferencedRules>
+        <Reference class="sailpoint.object.Rule" name="CMH-AD-Generic-Rulelibrary"/>
+    </ReferencedRules>
+    <Signature returnType="boolean">
+        <Inputs>
+            <Argument type="previousIdentity">
+                <Description>
+                    The identity before the refresh/aggregation (this will be null when an
+                    identity is created).
+                </Description>
+            </Argument>
+            <Argument type="newIdentity">
+                <Description>
+                    The identity after the refresh/aggregation (this will be null when an
+                    identity is deleted).
+                </Description>
+            </Argument>
+        </Inputs>
+        <Returns>
+            <Argument type="result">
+                <Description>
+                    A boolean describing the result of the rule.
+                </Description>
+            </Argument>
+        </Returns>
+    </Signature>
+    <Source><![CDATA[
+		import org.apache.log4j.Logger;
+		import sailpoint.object.Identity;
+		import sailpoint.tools.Util;
+
+		Logger log = Logger.getLogger("cmh.authsource.rules");
+		log.debug("Entering into CHM-Rehire-Users-Trigger-Rule");
+		//Selecting the users for rehire based on status and rehire flag
+		boolean rehired = false;
+		if (null != previousIdentity && null != newIdentity) {
+		    log.debug("CMH-Rehire-Users-Trigger-Rule for identity:"+previousIdentity.getName());
+			String prevOffboarder = previousIdentity.getStringAttribute("immediateOffboarder");
+			String newOffboarder = newIdentity.getStringAttribute("immediateOffboarder");
+		    if(Util.nullSafeCaseInsensitiveEq(prevOffboarder,"YES") && Util.nullSafeCaseInsensitiveEq(newOffboarder,"YES")) {
+			     rehired = false;
+			} else {
+				String prevIdenStatus = previousIdentity.getStringAttribute("status");
+				String newIdenStatus = newIdentity.getStringAttribute("status");
+				log.debug("prevIdenStatus: " + prevIdenStatus + " newIdenStatus: " + newIdenStatus);
+				String rehire = newIdentity.getStringAttribute("rehire");
+				if(Util.nullSafeCaseInsensitiveEq("TERMINATED",prevIdenStatus) && Util.nullSafeCaseInsensitiveEq("PREHIRE",newIdenStatus)
+						        && Util.nullSafeCaseInsensitiveEq("YES",rehire)) {
+					String startdate = newIdentity.getStringAttribute("startDate");
+					boolean flag = startDateCheck(startdate);
+					if (flag) {
+						rehired = true;
+					} else {
+						rehired = false;
+					}
+				} else if (Util.nullSafeCaseInsensitiveEq("TERMINATED", prevIdenStatus) && Util.nullSafeCaseInsensitiveEq("ACTIVE", newIdenStatus)) {
+					rehired = true;
+				} else {
+					rehired = false;
+				}											    
+		     }
+	     }
+	    log.debug("CMH-Rehire-Users-Trigger-Rule rehired ?:" + rehired);	
+	    log.debug("Exiting from CMH-Rehire-Users-Trigger-Rule");
+		return rehired;
+  ]]></Source>
+</Rule>
