@@ -53,6 +53,7 @@
     if (Util.isNotNullOrEmpty(format)) {
         SimpleDateFormat sdf = new SimpleDateFormat(format);
         if (newIdentity != null) {
+		    log.debug("CMH-User-Conversion-Trigger-Rule : Triggering Conversion workflow for Active User "+newIdentity.getName());
             String oldEmpId = newIdentity.getStringAttribute("otherEmpId");
             if (Util.isNotNullOrEmpty(oldEmpId)) {
                 if (isConversionCase(oldEmpId)) {
@@ -60,7 +61,7 @@
                     String isConversionProcessed = newIdentity.getStringAttribute("isConversionProcessed");
                     if (!Util.nullSafeCaseInsensitiveEq(isConversionProcessed, "YES")) {
                         if (Util.nullSafeCaseInsensitiveEq(userStatus, "ACTIVE")) {
-                            log.debug("CMH-User-Conversion-Trigger-Rule : Trigger Conversion workflow for Active User "+newIdentity.getName());
+                            log.debug("CMH-User-Conversion-Trigger-Rule : Triggered Conversion workflow for Active User "+newIdentity.getName());
                             return true;
                         } else if (Util.nullSafeCaseInsensitiveEq(userStatus, "PREHIRE")) {
                             String startDate = newIdentity.getStringAttribute("startDate");

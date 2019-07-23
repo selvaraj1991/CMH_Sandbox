@@ -180,8 +180,8 @@
 			List customDataList = customUserDetail(nameCustomObjName);
 			List finalList = new ArrayList();
 			FileWriter fileWriter = null;
-			String neW_LINE_SEPARATOR = "\n";
-			String coMMA_DELIMITER = ",";
+			String NEW_LINE_SEPARATOR = "\n";
+			String COMMA_DELIMITER = ",";
 			boolean isSuccess = false;
 			QueryOptions qo = new QueryOptions();
 			Filter f1 = Filter.ge("created", startTime);
@@ -246,32 +246,32 @@
 						try {
 							fileWriter = new FileWriter(filepath + filename);
 							fileWriter.append(FILE_HEADER.toString());
-							fileWriter.append(neW_LINE_SEPARATOR);
+							fileWriter.append(NEW_LINE_SEPARATOR);
 							for (int i = 0; i < finalList.size(); i++) {
 								map = (Map) finalList.get(i);
 								log.info(map);
 								fileWriter.append(map.get("Username").toString());
-								fileWriter.append(coMMA_DELIMITER);
+								fileWriter.append(COMMA_DELIMITER);
 								if (null != (map.get("Email"))) {
 									fileWriter.append(map.get("Email").toString());
 								} else {
 									fileWriter.append("NULL");
 								}
-								fileWriter.append(coMMA_DELIMITER);
+								fileWriter.append(COMMA_DELIMITER);
 								fileWriter.append(map.get("EmployeeID").toString());
-								fileWriter.append(coMMA_DELIMITER);
+								fileWriter.append(COMMA_DELIMITER);
 								fileWriter.append(map.get("FirstName").toString());
-								fileWriter.append(coMMA_DELIMITER);
+								fileWriter.append(COMMA_DELIMITER);
 								fileWriter.append(map.get("LastName").toString());
-								fileWriter.append(coMMA_DELIMITER);
+								fileWriter.append(COMMA_DELIMITER);
 								fileWriter.append(map.get("EmployeeType").toString());
-								fileWriter.append(coMMA_DELIMITER);
+								fileWriter.append(COMMA_DELIMITER);
 								if (null != (map.get("Supervisor"))) {
 									fileWriter.append(map.get("Supervisor").toString());
 								} else {
 									fileWriter.append("NULL");
 								}
-								fileWriter.append(neW_LINE_SEPARATOR);
+								fileWriter.append(NEW_LINE_SEPARATOR);
 	
 							}
 							log.debug("CMH-Username-Email-Report-Generator-Rule :CSV file was created successfully !!!");
