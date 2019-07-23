@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Workflow PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<Workflow explicitTransitions="true" libraries="Identity,IdentityRequest" name="CMH-Provision-O365-License-Workflow" type="Subprocess">
+  <Variable input="true" name="identityName"/>
+  <Variable input="true" name="adAppName"/>
+  <Variable input="true" name="source"/>
+  <Variable input="true" name="flow"/>
+  <Variable input="true" name="O365Lic" type="java.util.List"/>
+  <Variable output="true" name="validationErrors" type="java.util.List"/>
+  <Variable name="adExists" type="boolean"/>
+  <Variable name="plan" type="ProvisioningPlan"/>
+  <Variable name="project" type="ProvisioningProject"/>
+  <Variable name="identityRequestId"/>
+  <Variable name="isDebugEnabled" type="boolean">
+  	<Script>
+  		<Source>
+  		<![CDATA[
+  			import org.apache.log4j.Logger;
+  			Logger log = Logger.getLogger("CMH-Provision-O365-License-Workflow");
+  			if(log.isDebugEnabled()){
+  				return true;
+  			}
+  			return false;
+  		]]>
+  		</Source>
+  	</Script>
+  </Variable>
+  <Step icon="Start" name="Start" posX="8" posY="10">
+    <Transition to="Validate Data"/>
+  </Step>
+  <Step icon="Analysis" name="Validate Data" posX="98" posY="10" resultVariable="validationErrors">
+  	<Script>
+  		<Source>
+  		<![CDATA[
+  			import sailpoint.tools.Util;
+  			
+  			if(validationErrors==null){
+  				validationErrors = new ArrayList();
+  			}
+  			if(Util.isNullOrEmpty(identityName)){
+  				validationErrors.add("CMH-Provision-O365-License-Workflow: identityName is null, not referenced properly from the parent workflow");
+  			}
+  			if(Util.isNullOrEmpty(adAppName)){
+  				validationErrors.add("CMH-Provision-O365-License-Workflow: adAppName is null, not referenced properly from the parent workflow");
+  			}
+  			if(Util.isEmpty(O365Lic)){
+  				validationErrors.add("CMH-Provision-O365-License-Workflow: O365Lic is null, not referenced properly from the parent workflow");
+  			}
+  			return validationErrors;
+  		]]>
+  		</Source>
+  	</Script>
+  	<Transition to="Check if AD Exists">
+  		<Script>
+  			<Source>
+  			<![CDATA[
+  				if(validationErrors!=null && validationErrors.size()<=0){
+  					return true;
+  				}
+  				return false;
+  			]]>
+  			</Source>
+  		</Script>
+  	</Transition>
+  	<Transition to="Stop"/>
+  </Step>
+  <Step icon="Audit" name="Check if AD Exists" posX="164" posY="106" resultVariable="adExists">
+  	<Script>
+  		<Source>
+  		<![CDATA[
+  			import sailpoint.api.IdentityService;
+  			import sailpoint.object.Application;
+  			import sailpoint.object.Identity;
+  			import sailpoint.tools.Util;
+  			
+  			if(Util.isNotNullOrEmpty(identityName) && Util.isNotNullOrEmpty(adAppName)){
+  				Identity iden = context.getObjectByName(Identity.class,identityName);
+	  			Application app = context.getObjectByName(Application.class,adAppName);
+	  			List appList = null;
+	  			if(iden!=null && app!=null){
+	  				IdentityService iser = new IdentityService(context);
+	  				appList = iser.getLinks(iden,app);
+	  				if(appList!=null && appList.size()>0){
+	  					return true;
+	  				}
+	  			}
+  			}
+  			return false;
+  		]]>
+  		</Source>
+  	</Script>
+  	<Transition to="Build Plan for O365" when="script:adExists"/>
+  	<Transition to="Stop"/>
+  </Step>
+  <Step icon="Task" name="Build Plan for O365" posX="230" posY="204" resultVariable="plan">
+    <Script>
+      <Source><![CDATA[
+		
+			import org.apache.log4j.Logger;
+  			import sailpoint.api.IdentityService;
+  			import sailpoint.object.Application;
+  			import sailpoint.object.Identity;
+  			import sailpoint.object.Link;
+  			import sailpoint.object.ProvisioningPlan;
+  			import sailpoint.object.ProvisioningPlan.AccountRequest;
+  			import sailpoint.object.ProvisioningPlan.AttributeRequest;
+  			import sailpoint.tools.Util;
+  			
+  			Logger log = Logger.getLogger("CMH-Provision-O365-License-Workflow");
+  			
+  			if(isDebugEnabled){
+  				log.debug("CMH-Provision-O365-License-Workflow: Building Provisioning Plan for enabling the AD account of User: "+identityName);
+  			}
+  			
+  			ProvisioningPlan adPlan = new ProvisioningPlan();
+  			List accountRequests = new ArrayList();
+  			Identity iden = context.getObjectByName(Identity.class,identityName);
+  			Application app = context.getObjectByName(Application.class,adAppName);
+  			if(iden!=null && app!=null){
+  				IdentityService iser = new IdentityService(context);
+  				List adLinks = iser.getLinks(iden,app);
+  				if(adLinks!=null && adLinks.size()>0){
+	  				for(Link adLink:adLinks){
+	  					if(adLink!=null){
+	  						AccountRequest acctReqMod = new AccountRequest();
+	  						acctReqMod.setApplication(adAppName);
+	  						acctReqMod.setOperation(ProvisioningPlan.AccountRequest.Operation.Modify);
+	  						acctReqMod.setNativeIdentity(adLink.getNativeIdentity());
+							for(String O365License:O365Lic){
+								if(Util.isNotNullOrEmpty(O365License)){
+									acctReqMod.add(new AttributeRequest("memberOf",ProvisioningPlan.Operation.Add,O365License));
+								}
+							}
+	  						accountRequests.add(acctReqMod);
+	  					}
+	  				}
+	  			}
+  				adPlan.setAccountRequests(accountRequests);
+  			}
+  			adPlan.setIdentity(iden);
+  			
+  			if(isDebugEnabled){
+  				log.debug("CMH-Provision-O365-License-Workflow: Plan created for the user successfully: "+adPlan.toXml());
+  			}
+  			return adPlan;
+		
+		]]></Source>
+    </Script>
+    <Transition to="Compile Project"/>
+  </Step>
+  <Step action="call:compileProvisioningProject" icon="Task" name="Compile Project" posX="364" posY="204" resultVariable="project">
+    <Arg name="identityName" value="ref:identityName"/>
+    <Arg name="plan" value="ref:plan"/>
+    <Arg name="requester" value="string:spadmin"/>
+    <Arg name="source" value="ref:source"/>
+    <Arg name="optimisticProvisioning" value="string:false"/>
+    <Arg name="requireCreateTemplates" value="string:false"/>
+    <Arg name="noLocking" value="true"/>
+    <Arg name="noApplicationTemplates" value="string:true"/>
+    <Description>Compile the provisioning plan into a provisioning project.  
+                 If you need to pass in provisioner options like "noFiltering"  
+                 or "noRoleDeprovisioning" you must pass them as explicit  
+                 arguments to the call.  
+                 The evaluation options "requester" and "source" are commonly  
+                 set here.               
+                 You can also pass things into the Template and Field scripts by  
+                 defining Args in this step.</Description>
+    <Transition to="Create Identity Request"/>
+  </Step>
+  <Step action="call:createIdentityRequest" icon="Task" name="Create Identity Request" posX="470" posY="203">
+    <Arg name="project" value="ref:project"/>
+    <Arg name="source" value="ref:source"/>
+    <Arg name="priority" value="string:Normal"/>
+    <Arg name="identityName" value="ref:identityName"/>
+    <Arg name="flow" value="ref:flow"/>
+    <Return name="identityRequestId" to="identityRequestId"/>
+    <Transition to="Provision"/>
+  </Step>
+  <Step action="call:provisionProject" icon="Provision" name="Provision" posX="589" posY="203">
+    <Arg name="background" value="false"/>
+    <Arg name="project" value="ref:project"/>
+    <Transition to="Complete Identity Request"/>
+  </Step>
+  <Step action="call:completeIdentityRequest" icon="Task" name="Complete Identity Request" posX="704" posY="204" resultVariable="identityRequest">
+	<Arg name="project" value="ref:project"/>
+	<Arg name="autoVerify" value="false"/>
+	<Arg name="identityRequestId" value="ref:identityRequestId"/>
+	<Transition to="Stop"/>
+  </Step>
+  <Step icon="Stop" name="Stop" posX="704" posY="8"/>
+</Workflow>

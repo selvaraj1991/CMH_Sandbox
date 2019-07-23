@@ -1,0 +1,480 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Workflow PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<Workflow explicitTransitions="true" libraries="Identity,IdentityRequest" name="CMH-LifecycleEvent-LOA-Workflow" type="IdentityLifecycle">
+  <Variable input="true" name="trigger">
+    <Description>The IdentityTrigger</Description>
+  </Variable>
+  <Variable input="true" name="event">
+    <Description>The IdentityChangeEvent</Description>
+  </Variable>
+    <Variable input="true" name="identityName">
+    <Description>The name of the identity.</Description>
+  </Variable>
+  <Variable initializer="script:(identityDisplayName != void) ? identityDisplayName : resolveDisplayName(identityName)" input="true" name="identityDisplayName">
+    <Description>    
+       The displayName of the identity being updated.  
+       Query for this using a projection query and fall back to the name.    
+	</Description>
+  </Variable>
+  <Variable initializer="string:AccountsRequest" input="true" name="flow">
+    <Description>What type of LCM flow is this</Description>
+  </Variable>
+  <Variable name="plan" type="sailpoint.object.ProvisioningPlan">
+    <Description>The provisioning plan which is built during the workflow.</Description>
+  </Variable>
+  <Variable name="project" type="ProvisioningProject">
+    <Description>  
+		ProvisioningProject which is just a compiled version of the ProvisioningPlan.  
+	</Description>
+  </Variable>
+  <Variable initializer="string:LCM" input="true" name="source">
+    <Description>  
+       String version of sailpoint.object.Source to indicate  
+       where the request originated.  Defaults to LCM.  
+	</Description>
+  </Variable>
+  <Variable name="identityRequestId">
+    <Description>
+		The Identity Request Id we get back from the request.
+	</Description>
+  </Variable>
+  <Variable initializer="false" name="trace">
+    <Description>
+      Used for debugging this workflow and when set to true trace
+      will be sent to stdout.
+    </Description>
+  </Variable>
+  <Variable name="isDebugEnabled" type="boolean">
+    <Script>
+    	<Source>
+		<![CDATA[
+  			import org.apache.log4j.Logger;
+  			Logger log = Logger.getLogger("CmhLoa");
+  			if(log.isDebugEnabled()){
+  				return true;
+  			}
+  			return false;
+  		]]>
+		</Source>
+    </Script>
+  </Variable>
+  <Variable name="adAppName">
+  	<Script>
+  		<Source>
+  		<![CDATA[
+  			import sailpoint.object.Custom;
+  			
+  			Custom custom = context.getObjectByName(Custom.class,"CMH-Custom-Object-AD-Application");
+  			String appName = null;
+  			if(custom!=null){
+  				appName = custom.getString("adApplication");
+  			}
+  			return appName;
+  		]]>
+  		</Source>
+  	</Script>
+  </Variable>
+  <Variable name="LOA_Group">
+  	<Script>
+  		<Source>
+  		<![CDATA[
+  			import sailpoint.object.Custom;
+  			
+  			Custom custom = context.getObjectByName(Custom.class,"CMH-Custom-Object-AD-Application");
+  			String loaGrp = null;
+  			if(custom!=null){
+  				loaGrp = custom.getString("OnLeave");
+  			}
+  			return loaGrp;
+  		]]>
+  		</Source>
+  	</Script>
+  </Variable>
+  <Variable name="userType">
+  	<Script>
+  		<Source>
+  		<![CDATA[
+  			import sailpoint.object.Identity;
+  			import sailpoint.tools.Util;
+  			
+  			String userType = null;
+  			if(Util.isNotNullOrEmpty(identityName)){
+	  			Identity iden = context.getObjectByName(Identity.class, identityName);
+	  			if(iden!=null){
+	  				userType = iden.getStringAttribute("userType");
+	  			}
+	  		}
+  			return userType;
+  		]]>
+  		</Source>
+  	</Script>
+  </Variable>
+  <Variable name="adExists" type="boolean">
+  	<Script>
+  		<Source>
+  		<![CDATA[
+  			import org.apache.log4j.Logger;
+  			import sailpoint.api.IdentityService;
+  			import sailpoint.object.Application;
+  			import sailpoint.object.Identity;
+  			import sailpoint.tools.Util;
+  			
+  			Logger log = Logger.getLogger("CmhLoa");
+  			if(Util.isNotNullOrEmpty(identityName) && Util.isNotNullOrEmpty(adAppName)){
+	  			Identity iden = context.getObjectByName(Identity.class, identityName);
+	  			Application app = context.getObjectByName(Application.class,adAppName);
+	  			if(iden!=null && app!=null){
+	  				IdentityService identityService = new IdentityService(context);
+					List adLinks = identityService.getLinks(iden,app);
+					if(adLinks!=null && adLinks.size()>0){
+						return true;
+					}
+	  			}
+	  		}
+  			return false;
+  		]]>
+  		</Source>
+  	</Script>
+  </Variable>
+  <Variable name="employeeId">
+    <Script>
+      <Source><![CDATA[
+  		
+  			import sailpoint.object.Identity;
+  			
+  			String employeeId = null;
+  			if(identityName!=null){
+  				Identity iden = context.getObjectByName(Identity.class,identityName);
+				if(iden!=null){
+					employeeId = iden.getStringAttribute("employeeId");
+				}
+  			}
+  			return employeeId;
+  		
+  		]]></Source>
+    </Script>
+  </Variable>
+  <Variable name="snowTicketId"/>
+  <Variable name="connectedApps" type="java.util.List"/>
+  <Variable name="validationErrors" type="java.util.List"/>
+  <RuleLibraries>
+	<Reference class="sailpoint.object.Rule" name="CMH-AD-Generic-Rulelibrary"/>
+  </RuleLibraries>
+  <Step icon="Start" name="Start" posX="53" posY="126" wait="1">
+    <Script>
+  		<Source>
+  		<![CDATA[
+  			import org.apache.log4j.Logger;
+  			
+  			Logger log = Logger.getLogger("CmhLoa");
+  			if(isDebugEnabled){
+  				log.debug("Starting the CMH-LifecycleEvent-LOA-Workflow for the user "+identityName);
+  			}
+  		]]>
+  		</Source>
+  	</Script>
+    <Transition to="Validate Data"/>
+  </Step>
+  <Step icon="Analysis" name="Validate Data" posX="182" posY="125" resultVariable="validationErrors">
+  	<Script>
+  		<Source>
+  		<![CDATA[
+  			import org.apache.log4j.Logger;
+  			import sailpoint.tools.Util;
+  			
+  			Logger log = Logger.getLogger("CmhLoa");
+  			
+  			List errorMessages = new ArrayList();
+			if(Util.isNullOrEmpty(userType)){
+				log.error("CMH-LifeycycleEvent-LOA-Workflow: userType is NULL");
+				errorMessages.add("CMH-LifeycycleEvent-LOA-Workflow: userType is NULL");
+			}
+			if(Util.isNullOrEmpty(LOA_Group)){
+				log.error("CMH-LifeycycleEvent-LOA-Workflow: LOA_Group is NULL : Custom object is not configured properly");
+				errorMessages.add("CMH-LifeycycleEvent-LOA-Workflow: LOA_Group is NULL : Custom object is not configured properly");
+			}
+			if(Util.isNullOrEmpty(adAppName)){
+				log.error("CMH-LifeycycleEvent-LOA-Workflow: adAppName is NULL : Custom object is not configured properly");
+				errorMessages.add("CMH-LifeycycleEvent-LOA-Workflow: adAppName is NULL : Custom object is not configured properly");
+			}
+			if(Util.isNullOrEmpty(employeeId)){
+				log.error("CMH-LifeycycleEvent-LOA-Workflow: employeeId is NULL");
+				errorMessages.add("CMH-LifeycycleEvent-LOA-Workflow: employeeId is NULL");
+			}
+			return errorMessages;
+  		]]>
+  		</Source>
+  	</Script>
+  	<Transition to="Update Identity">
+  		<Script>
+  			<Source>
+  			<![CDATA[
+  				if(validationErrors==null || validationErrors.size()<=0){		
+  					return true;
+  				}
+  				return false;
+  			]]>
+  			</Source>
+  		</Script>
+  	</Transition>
+  	<Transition to="Stop"/>
+  </Step>
+  <Step icon="Default" name="Update Identity" posX="248" posY="249">
+  	<Script>
+  		<Source>
+  		<![CDATA[
+  			import sailpoint.object.Identity;
+  			
+  			Identity iden = context.getObjectByName(Identity.class,identityName);
+  			if(iden!=null){
+  				iden.setInactive(true);
+  				context.saveObject(iden);
+  				context.commitTransaction();
+  			}
+  		]]>
+  		</Source>
+  	</Script>
+  	<Transition to="Retrieve Connected Apps"/>
+  </Step>
+  <Step icon="Default" name="Retrieve Connected Apps" posX="376" posY="248" resultVariable="connectedApps">
+  	<Script>
+  		<Source>
+  		<![CDATA[
+  			import org.apache.log4j.Logger;
+  			import sailpoint.tools.Util;
+  			
+  			Logger log = Logger.getLogger("CmhLoa");
+  			List connectedApps = getAppsToProcess(identityName,"CMH-Leaver-Custom-Object","connectedApplications");
+  			if(Util.isEmpty(connectedApps)){
+  				log.info("CMH-LifeycycleEvent-LOA-Workflow: There are no connected Apps associated with the user");
+  			}
+  			else if(isDebugEnabled){
+  				log.debug("CMH-LifeycycleEvent-LOA-Workflow: List of Connected Apps associated with the user: "+connectedApps.toString());
+  			}
+  			return connectedApps;
+  		]]>
+  		</Source>
+  	</Script>
+  	<Transition to="Build Plan">
+  		<Script>
+  			<Source>
+  			<![CDATA[
+  				import sailpoint.tools.Util;
+  				if(Util.isEmpty(connectedApps)){
+  					return false;
+  				}
+  				return true;
+  			]]>
+  			</Source>
+  		</Script>
+  	</Transition>
+  	<Transition to="Stop"/>
+  </Step>
+  <Step icon="Task" name="Build Plan" posX="443" posY="341" resultVariable="plan">
+    <Description>Updating group for LOA users in active directory.</Description>
+    <Script>
+      <Source>
+      <![CDATA[
+      		import org.apache.log4j.Logger;
+      		import sailpoint.api.IdentityService;
+			import sailpoint.object.Application;
+			import sailpoint.object.Identity;
+			import sailpoint.object.Link;
+			import sailpoint.object.ProvisioningPlan;
+			import sailpoint.object.ProvisioningPlan.AccountRequest;
+			import sailpoint.object.ProvisioningPlan.AttributeRequest;
+			import sailpoint.tools.Util;
+			
+			Logger log = Logger.getLogger("CmhLoa");
+			if (isDebugEnabled) {
+				log.debug("CMH-LifeycycleEvent-LOA-Workflow: Generating plan to move the user AD account to appropriate OU");
+			}
+			ProvisioningPlan plan = new ProvisioningPlan();
+			List accountRequests = new ArrayList();
+			Identity iden = context.getObjectByName(Identity.class,identityName);
+			for(String appName:connectedApps){
+				Application app = context.getObjectByName(Application.class,appName);
+				if(iden!=null && app!=null){
+					IdentityService identityService = new IdentityService(context);
+					List appLinks = identityService.getLinks(iden,app);
+					if(appLinks!=null && appLinks.size()>0){
+						for(Link li:appLinks){
+							if(li!=null){
+								AccountRequest acctReq = new AccountRequest();
+								if(Util.nullSafeCaseInsensitiveEq(adAppName,appName)){
+									acctReq.setOperation(AccountRequest.Operation.Modify);
+									acctReq.setApplication(adAppName);
+									acctReq.setNativeIdentity(li.getNativeIdentity());
+									acctReq.add(new AttributeRequest("memberOf",ProvisioningPlan.Operation.Add,LOA_Group));
+									accountRequests.add(acctReq);
+								}else{
+									acctReq.setOperation(AccountRequest.Operation.Disable);
+									acctReq.setApplication(appName);
+									acctReq.setNativeIdentity(li.getNativeIdentity());
+								}
+							}
+						}
+					}
+				}
+			}
+			plan.setIdentity(iden);
+			plan.setAccountRequests(accountRequests);
+			
+			return plan;
+		]]>
+		</Source>
+    </Script>
+    <Transition to="Compile Project">
+    	<Script>
+    		<Source>
+    		<![CDATA[
+    			if(plan!=null && plan.getAccountRequests()!=null && plan.getAccountRequests().size()>0){
+    				return true;
+    			}
+    			return false
+    		]]>
+    		</Source>
+    	</Script>
+    </Transition>
+    <Transition to="Stop"/>
+  </Step>
+  <Step action="call:compileProvisioningProject" icon="Task" name="Compile Project" posX="510" posY="437" resultVariable="project">
+    <Arg name="requester" value="string:spadmin"/>
+    <Arg name="requireCreateTemplates" value="string:false"/>
+    <Arg name="identityName" value="ref:identityName"/>
+    <Arg name="noLocking" value="true"/>
+    <Arg name="noApplicationTemplates" value="string:true"/>
+    <Arg name="source" value="ref:source"/>
+    <Arg name="optimisticProvisioning" value="string:false"/>
+    <Arg name="plan" value="ref:plan"/>
+    <Description>Compile the provisioning plan into a provisioning project.  
+                 If you need to pass in provisioner options like "noFiltering"  
+                 or "noRoleDeprovisioning" you must pass them as explicit  
+                 arguments to the call.  
+                 The evaluation options "requester" and "source" are commonly  
+                 set here.               
+                 You can also pass things into the Template and Field scripts by  
+                 defining Args in this step.</Description>
+    <Transition to="Create Identity Request"/>
+  </Step>
+  <Step action="call:createIdentityRequest" icon="Task" name="Create Identity Request" posX="620" posY="437">
+    <Arg name="identityName" value="1002"/>
+    <Arg name="project" value="ref:project"/>
+    <Arg name="source" value="ref:source"/>
+    <Arg name="priority" value="string:Normal"/>
+    <Arg name="flow" value="ref:flow"/>
+    <Return name="identityRequestId" to="identityRequestId"/>
+    <Transition to="Provision"/>
+  </Step>
+  <Step action="call:provisionProject" icon="Provision" name="Provision" posX="723" posY="437">
+    <Arg name="background" value="false"/>
+    <Arg name="project" value="ref:project"/>
+    <Transition to="Complete Identity Request"/>
+  </Step>
+  <Step action="call:completeIdentityRequest" icon="Task" name="Complete Identity Request" posX="828" posY="437" resultVariable="identityRequest">
+    <Arg name="autoVerify" value="false"/>
+    <Arg name="project" value="ref:project"/>
+    <Arg name="identityRequestId" value="ref:identityRequestId"/>
+    <Transition to="Generate ServiceNow Ticket">
+    	<Script>
+    		<Source>
+    		<![CDATA[
+    			import sailpoint.tools.Message;
+    			if(wfcontext.getRootWorkflowCase().getMessages()==null || wfcontext.getRootWorkflowCase().getMessagesByType(Message.Type.Error)==null){
+    				return true;
+    			}
+    			return false;
+    		]]>
+    		</Source>
+    	</Script>
+    </Transition>
+    <Transition to="Stop"/>
+  </Step>
+  <Step icon="Provision" name="Generate ServiceNow Ticket" posX="887" posY="344" resultVariable="snowTicketId">
+  	<Script>
+  		<Source>
+  		<![CDATA[
+  			import org.apache.log4j.Logger;
+  			
+  			//method to generate service now ticket
+  			Logger log = Logger.getLogger("CmhLoa");
+  			
+  			if(isDebugEnabled){
+  				log.debug("CMH-LifeycycleEvent-LOA-Workflow: Generating service now ticket");
+  			}
+  			
+  			Object ticketObj = generateSnowTicket(identityName, "CMH-Service-Ticket-Configuration-Object", "DISABLE");
+  			String snowId = null;
+	        if(null != ticketObj) {
+	        	if(ticketObj instanceof List) {
+			        List errList  = (List) ticketObj;
+					validationErrors.add(errList);
+				}else if(ticketObj instanceof String) {
+					snowId = (String) ticketObj;	
+					if(isDebugEnabled)	{
+						log.debug("CMH-LifeycycleEvent-LOA-Workflow: Service Now ID :  "+snowId);
+					}
+		            wfcontext.getWorkflowCase().put("snowTicketId",snowId);					  
+		      	}else {
+		     		validationErrors.add("The Object Type is NOT List OR String");					 
+		      	}
+				validationErrors.add("NULL : Unable to generate ticket");				   
+	  	    }
+			wfcontext.getWorkflowCase().put("validationErrors",validationErrors);
+  			
+  			return snowId;
+  		]]>
+  		</Source>
+  	</Script>
+  	<Transition to="Stop"/>
+  </Step>
+  <Step catches="complete" icon="Catches" name="Check Status" posX="55" posY="19">
+    <Script>
+      <Source>
+      <![CDATA[
+  			import org.apache.log4j.Logger;
+  			import sailpoint.tools.Message;
+  			import sailpoint.tools.Util;
+  			
+  			Logger log = Logger.getLogger("CmhLoa");
+  		
+  			log.debug("CMH-LifeycycleEvent-LOA-Workflow: Check Status step : Checking for errors");
+  			
+  			if(validationErrors==null){
+  				validationErrors = new ArrayList();
+  			}
+  			
+  			if(wfcontext.getRootWorkflowCase().getMessages()!=null && wfcontext.getRootWorkflowCase().getMessagesByType(Message.Type.Error)!=null){
+  				List errorMessagesList = wfcontext.getRootWorkflowCase().getMessagesByType(Message.Type.Error);
+  				String errorMessage = Util.listToCsv(errorMessagesList);
+  				log.error("CMH_ImmediateTermination: Check Status step : Errors Found : "+errorMessage);
+  				validationErrors.add(errorMessage);	
+  			}else if(!Util.isEmpty(validationErrors)){
+  				log.error("CMH_ImmediateTermination: Check Status step : Errors Found : "+Util.listToCsv(validationErrors));
+  			}
+			
+			String action = null;
+  			String target = identityName;
+  			String attrName = "Employee ID";
+  			String attrVal = employeeId;
+  			Map strMap = new HashMap();
+  			if(Util.isEmpty(validationErrors)){
+  				action = "LOA-Success";
+  				strMap.put("setString1","LOA Completed succesfully");
+  			}else{
+  				action = "LOA-Failure";
+  				strMap.put("setString1","LOA failed due to errors");
+  				strMap.put("setString2",Util.listToCsv(validationErrors));
+  			}
+  			auditWrite(action,source,target,attrName,attrVal,strMap);
+			
+			if(isDebugEnabled){
+  				log.debug("Ending the CMH-LifecycleEvent-LOA-Workflow for the user "+identityName);  				
+  			}
+    	]]>    
+    	</Source>
+    </Script>
+    <Transition to="Stop"/>
+  </Step>
+  <Step icon="Stop" name="Stop" posX="736" posY="245"/>
+</Workflow>
