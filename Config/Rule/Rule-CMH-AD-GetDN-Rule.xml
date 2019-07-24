@@ -103,9 +103,9 @@
 		String usertype = identity.getStringAttribute("assignmentType").trim();
 		String value = generateAccountDN(username, usertype);
 		if (value != null) {
-			log.info("CMH-AD-GetDN-Rule: DN = " + value);
+			log.info("DN Value for the user "+username+" is " + value);
 		} else {
-			log.error("CMH-AD-GetPrimaryGroupDN-Rule :Formed DN is null");
+			log.error("DN is null");
 		}
 		log.debug("Exiting CMH-AD-GetDN-Rule for identity:"+username);
 		return value; 

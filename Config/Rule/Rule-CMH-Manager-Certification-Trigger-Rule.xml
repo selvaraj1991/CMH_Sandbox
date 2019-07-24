@@ -45,14 +45,13 @@
     import sailpoint.tools.Util;
     
     Logger log = Logger.getLogger("Rule.CMH-Manager-Certification-Trigger-Rule");
-    log.debug("Manager-Certification-Trigger-Rule: Entering");
+    log.debug("Entering Manager-Certification-Trigger-Rule");
     boolean flag = false;
     //return true if there is change in manager
     if(!Util.nullSafeCaseInsensitiveEq(previousIdentity.getManager().getName(),newIdentity.getManager().getName())){
-  		log.debug("Manager-Certification-Trigger-Rule for identity:"+previousIdentity.getName());
   		flag= true;
 	}
-	log.debug("Manager-Certification-Trigger-Rule: Exiting");
+	log.debug("Exiting Manager-Certification-Trigger-Rule: Trigger Manager Certification?"+flag);
 	return flag;
 	]]></Source>
 </Rule>

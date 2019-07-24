@@ -44,13 +44,12 @@
 
       Logger logger = Logger.getLogger("Rule.CMH-Role-Assignment-Rule");
 
-      logger.debug("Entering CMH-Role-Assignment-Rule:Assign Role for the user based on the assignmentType");
+      logger.debug("Entering CMH-Role-Assignment-Rule:Assign Role for the user based on the assignmentType for the user "+identity!=null?identity.getName():"");
 
       boolean assignRole = false;
       String identityName = null;
       if (identity != null && identity.isCorrelated()) {
           identityName = identity.getName();
-          logger.debug("CMH-Role-Assignment-Rule for identity:"+identityName);
           String status = identity.getStringAttribute("status");
           if (!Util.nullSafeCaseInsensitiveEq(status, "Terminated")) {
               String oldEmpId = identity.getStringAttribute("otherEmpId");
@@ -68,9 +67,9 @@
       }
 
       if (assignRole) {
-          logger.debug("CMH-Role-Assignment-Rule:Role " + roleName + " assigned for the User: " + identityName);
+          logger.debug("Role " + roleName + " assigned for the User: " + identityName);
       }
-      logger.debug("Exiting CMH-Role-Assignment-Rule:Assign Role for the user based on the assignmentType");
+      logger.debug("Exiting CMH-Role-Assignment-Rule");
       return assignRole;
   ]]></Source>
 </Rule>

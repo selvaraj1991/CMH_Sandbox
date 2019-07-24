@@ -78,7 +78,7 @@
 	if(location!=null){
 		physicalDeliveryOfficeName = physicalDeliveryOfficeName.concat(location);
 	}
-	log.debug("Exiting CMH-AD-PhysicalDeliveryOffice-Rule for identity:"+identity.getName());
+	log.debug("Exiting CMH-AD-PhysicalDeliveryOffice-Rule");
 	return physicalDeliveryOfficeName;
 	]]></Source>
 </Rule>

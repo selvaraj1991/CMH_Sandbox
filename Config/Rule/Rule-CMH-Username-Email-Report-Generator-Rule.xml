@@ -32,41 +32,44 @@
         
         //This method fetches the last timestamp of the this task 
 		public Date getCustomObjectTimestamp(String customObjectName, String customName) {
-			log.debug("CMH-Username-Email-Report-Generator-Rule :Entering getCustomObjectTimestamp(String customObjectName, StringcustomName)");
+			log.debug("Entering getCustomObjectTimestamp method");
 			Date date = null;
 			List uList = null;
 			Custom custom = getCustom(customName);
 			if (null != custom) {
 				date = (Date) custom.get(customObjectName);
 			}
-			log.debug("CMH-Username-Email-Report-Generator-Rule :Exiting getCustomObjectTimestamp(String customObjectName, String customName)");
+			log.debug("Exiting getCustomObjectTimestamp method");
 			return date;
 		}
 		
         //Gets the list of usernames under nonexported tag from custom object
 		public List getCustomNameChangeData(String customName) {
-			log.debug("CMH-Username-Email-Report-Generator-Rule : Entering getCustomNameChangeData(StringcustomName)");
+			log.debug("Entering getCustomNameChangeData method");
 			List uList = null;
 			Custom custom = getCustom(customName);
 			if (null != custom) {
 				uList = custom.getAttributes().getList("NOTEXPORTED");
 			}
 
-			log.debug("CMH-Username-Email-Report-Generator-Rule : Exiting getCustomNameChangeData(String customName)");
+			log.debug("Exiting getCustomNameChangeData method");
 			return uList;
 		}
+		
 		public Custom getCustom(String customName) {
+			log.debug("Entering getCustom method");
 			Custom customObj = null;
 			try {
 				customObj = context.getObject(Custom.class, customName);
 			} catch(GeneralException e) {
-				log.error("Error: " + e.getMessage());
+				log.error("Error in getCustom method " + e.getMessage());
 			}
+			log.debug("Exiting getCustom method");
 			return customObj;
 		}
 		//Generated the list of user mapped records
 		public List customUserDetail(String customName) {
-			log.info("CMH-Username-Email-Report-Generator-Rule : Entering into CustomUserDetail");
+			log.debug("Entering customUserDetail method");
 			List arrList = getCustomNameChangeData(customName);
 			List dataList = null;
 			if (null != arrList && arrList.size() > 0) {
@@ -91,15 +94,15 @@
 					}
 				}
 			} else {
-				log.info("CMH-Username-Email-Report-Generator-Rule :List is null or empty for 'NOTEXPORTED'");
+				log.debug("There are no users which needs to be exported");
 			}
-			log.info("CMH-Username-Email-Report-Generator-Rule : Exiting into CustomUserDetail");
+			log.debug(" Exiting CustomUserDetail method");
 			return dataList;
 		}
 		
 		//Gets the user list from nonexported tag,puts under exported and deletes list from nonexported
 		public void updateCustomNameChangeData(List dataList, String customName) {
-			log.debug("CMH-Username-Email-Report-Generator-Rule : Entering updateCustomNameChangeData(List dataList, String customName)");
+			log.debug("Entering updateCustomNameChangeData method");
 
 			if (null != dataList && dataList.size() > 0) {
 				List finalList = null;
@@ -125,18 +128,17 @@
 					}
 
 				} catch(GeneralException e) {
-
-					log.error(e.getMessage());
+					log.error("Error in updateCustomNameChangeData method"+e.getMessage());
 				}
 			} else {
-				log.debug("CMH-Username-Email-Report-Generator-Rule: Custom dataList does not have any value");
+				log.debug("Custom dataList does not have any value");
 			}
-			log.debug("CMH-Username-Email-Report-Generator-Rule :Exiting updateCustomNameChangeData(List dataList, String customName)");
+			log.debug("Exiting updateCustomNameChangeData method");
 		}
 
         //Updating the last run timestamp to custom object
 		public void updateCustomTimeStamp(Date lastTimeStamp, String customName) {
-			log.debug("CMH-Username-Email-Report-Generator-Rule :Entering updateCustomTimeStamp(Date lastTimeStamp)");
+			log.debug("Entering updateCustomTimeStamp method");
 			if (null != lastTimeStamp) {
 				try {
 					Custom custom = getCustom(customName);
@@ -149,16 +151,16 @@
 						custom.remove(lock);
 					}
 				} catch(GeneralException e) {
-					log.error("CMH-Username-Email-Report-Generator-Rule : ERROR is " + e.getMessage());
+					log.error("ERROR in updateCustomTimeStamp" + e.getMessage());
 				}
 			} else {
-				log.debug("CMH-Username-Email-Report-Generator-Rule: lastTimeStamp is null");
+				log.debug("lastTimeStamp is null");
 			}
-			log.debug("CMH-Username-Email-Report-Generator-Rule : Exiting updateCustomTimeStamp(Date lastTimeStamp)");
+			log.debug("Exiting updateCustomTimeStamp method");
 		}
 
 		public Date getDateTime() {
-			log.debug("CMH-Username-Email-Report-Generator-Rule : Entering getDateTime()");
+			log.debug("Entering getDateTime method");
 			String format = getCustomObject("userNameGenerationTimestamp","CMH-DateFormat");
 			Date today = null;
 			if(Util.isNotNullOrEmpty(format)) {
@@ -166,15 +168,15 @@
 				try {
 					today = sdf.parse(sdf.format(new Date()));
 				} catch(ParseException e) {
-					log.error("CMH-Username-Email-Report-Generator-Rule : Error is  " + e.getMessage());
+					log.error(" Error in getDateTime method" + e.getMessage());
 				}
 			}
-			log.debug("CMH-Username-Email-Report-Generator-Rule : Exiting getDateTime()");
+			log.debug("Exiting getDateTime method");
 			return today;
 		}
         //searching the users created within specified timestamp , appending custom data and writing to data to csv file
 		public boolean generateReport(Date startTime, Date endTime) {
-			log.debug("CMH-Username-Email-Report-Generator-Rule : Entering generateReport(Date startTime, Date endTime)");
+			log.debug("Entering generateReport method");
 			Date today = null;
 			List list = new ArrayList();
 			List customDataList = customUserDetail(nameCustomObjName);
@@ -215,13 +217,12 @@
 				} else {
 					if (null == customDataList) {
 						isSuccess = true;
-						log.debug("CMH-Username-Email-Report-Generator-Rule : isSuccess " + isSuccess);
-						log.debug("CMH-Username-Email-Report-Generator-Rule : Exiting generateReport(Date startTime, Date endTime)");
+						log.debug(" Exiting generateReport method");
 						return isSuccess;
 					}
 				}
 			} catch(GeneralException e) {
-				log.error("CMH-Username-Email-Report-Generator-Rule :Error is " + e.getMessage());
+				log.error("Error in generateReport method " + e.getMessage());
 			} finally {
 				if (null != itr) {
 					sailpoint.tools.Util.flushIterator(itr);
@@ -249,7 +250,6 @@
 							fileWriter.append(NEW_LINE_SEPARATOR);
 							for (int i = 0; i < finalList.size(); i++) {
 								map = (Map) finalList.get(i);
-								log.info(map);
 								fileWriter.append(map.get("Username").toString());
 								fileWriter.append(COMMA_DELIMITER);
 								if (null != (map.get("Email"))) {
@@ -274,11 +274,10 @@
 								fileWriter.append(NEW_LINE_SEPARATOR);
 	
 							}
-							log.debug("CMH-Username-Email-Report-Generator-Rule :CSV file was created successfully !!!");
+							log.debug("CSV file was created successfully !!!");
 							isSuccess = true;
 						} catch(IOException e) {
-							log.error("CMH-Username-Email-Report-Generator-Rule :Error in CsvFileWriter !!!");
-							log.error("CMH-Username-Email-Report-Generator-Rule :Error: " + e.getMessage());
+							log.error("IOException in generateReport method" + e.getMessage());
 						}
 						try {
 							if (null != fileWriter) {
@@ -286,22 +285,21 @@
 								fileWriter.close();
 							}
 						} catch(IOException e) {
-							log.error("Error while flushing/closing fileWriter !!!");
-							log.error("Error: " + e.getMessage());
+							log.error("IOException in closing fileWriter of generateReport method " + e.getMessage());
 						}
 					} else {
-						log.error("CMH-Username-Email-Report-Generator-Rule :Filepath is not present in custom object or is NULL");
+						log.error("Filepath is not present in custom object or is NULL");
 					}
 			    }
 			} else {
 				isSuccess = false;
 			}
-			log.debug("CMH-Username-Email-Report-Generator-Rule :isSuccess :" + isSuccess);
-			log.debug("CMH-Username-Email-Report-Generator-Rule :Exiting generateReport(Date startTime, Date endTime)");
+			log.debug("Exiting generateReport method");
 			return isSuccess;
 		}
-
-		log.debug("CMH-Username-Email-Report-Generator-Rule :Entering CMH-Username-Email-Report-Generator-Rule");
+		
+		//Rule starts from here
+		log.debug("Entering CMH-Username-Email-Report-Generator-Rule");
 		Date lastTimeStamp = getCustomObjectTimestamp("Timestamp", "CMH-Last-Generated-Timestamp-Report");
 		Date startTime = null;
 		Date endTime = null;
@@ -315,14 +313,11 @@
 				endTime = date;
 			}
 		} else {
-			log.info("CMH-Username-Email-Report-Generator-Rule : lastTimeStamp :" + lastTimeStamp);
 			startTime = lastTimeStamp;
 			endTime = getDateTime();
 		}
 		boolean flag = false;
 		if (null != startTime && null != endTime) {
-			log.debug("CMH-Username-Email-Report-Generator-Rule :startTime :" + startTime);
-			log.debug("CMH-Username-Email-Report-Generator-Rule :endTime :" + endTime);
 			boolean success = generateReport(startTime, endTime);
 			if (success) {
 				lastTimeStamp = endTime;
@@ -337,11 +332,12 @@
 			}
 		}
 		if (flag) {
-			log.debug("CMH-Username-Email-Report-Generator-Rule :Exiting CMH-Username-Email-Report-Generator-Rule");
+			log.debug("Exiting CMH-Username-Email-Report-Generator-Rule");
 			return "success";
-		} else {
-			log.debug("CMH-Username-Email-Report-Generator-Rule :Exiting CMH-Username-Email-Report-Generator-Rule");
-			return "Failed";
 		}
+		
+		log.debug("Exiting CMH-Username-Email-Report-Generator-Rule");
+		return "Failed";
+
  ]]></Source>
 </Rule>

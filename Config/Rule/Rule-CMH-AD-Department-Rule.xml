@@ -64,32 +64,34 @@ This rule is used to generate and provision the department attribute to AD</Desc
     import org.apache.log4j.Logger; 
     
     Logger log = Logger.getLogger("Rule.CMH-AD-Department-Rule");
-    log.debug("Entering CMH-AD-Department-Rule() for identity:"+identity.getName());
+    log.debug("Entering CMH-AD-Department-Rule for identity:"+identity!=null?identity.getName():"");
   	String department = "";
-	String entity = identity.getStringAttribute("entity");
-	if(entity!=null){
-		department = department.concat(entity);
+	if(identity!=null){
+		String entity = identity.getStringAttribute("entity");
+		if(entity!=null){
+			department = department.concat(entity);
+		}
+		String division =  identity.getStringAttribute("division");
+		if(division!=null){
+			department = department.concat(division);
+		}
+		String glLocation = identity.getStringAttribute("glLocation");
+		if(glLocation!=null){
+			department = department.concat(glLocation);
+		}
+		if(department!=null && !department.isEmpty()){
+			department = department.concat("-");
+		}
+		String divisionDesc = identity.getStringAttribute("divisionDesc");
+		if(divisionDesc!=null){
+			department = department.concat(divisionDesc);
+		}
+		String location = identity.getStringAttribute("location");
+		if(location!=null){
+			department = department.concat(location);
+		}
 	}
-	String division =  identity.getStringAttribute("division");
-	if(division!=null){
-		department = department.concat(division);
-	}
-	String glLocation = identity.getStringAttribute("glLocation");
-	if(glLocation!=null){
-		department = department.concat(glLocation);
-	}
-	if(department!=null && !department.isEmpty()){
-		department = department.concat("-");
-	}
-	String divisionDesc = identity.getStringAttribute("divisionDesc");
-	if(divisionDesc!=null){
-		department = department.concat(divisionDesc);
-	}
-	String location = identity.getStringAttribute("location");
-	if(location!=null){
-		department = department.concat(location);
-	}
-	log.debug("Exiting CMH-AD-Department-Rule() for identity:"+identity.getName());
+	log.debug("Exiting CMH-AD-Department-Rule");
 	return department;
 	]]></Source>
 </Rule>

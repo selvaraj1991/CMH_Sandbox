@@ -13,10 +13,10 @@
             import sailpoint.tools.Util;
             
 		    Logger log = Logger.getLogger("Rule.CMH-Infor-Full-Post-Iteration-Rule");
-		    log.debug("CMH-Infor-Full-Post-Iteration-Rule: Entering");
+		    
 		    
             private boolean taskSucessStatus(String taskName) {
-              log.debug("CMH-Infor-Full-Post-Iteration-Rule: Entering taskSucessStatus");
+              log.debug("Entering taskSucessStatus method");
               boolean isSuccess = false;
               if(Util.isNotNullOrEmpty(taskName)) {
                   TaskResult result = context.getObjectByName(TaskResult.class,taskName);
@@ -30,9 +30,12 @@
                      }
                   }
                }
-               log.debug("CMH-Infor-Full-Post-Iteration-Rule: Exiting taskSucessStatus : isSuccess ?"+isSuccess);
+               log.debug("Exiting taskSucessStatus method: Task Success? "+isSuccess);
                return isSuccess;
             }
+			
+			//Rule starts from here
+			log.debug("Entering CMH-Infor-Full-Post-Iteration-Rule");
             Custom custom = context.getObjectByName(Custom.class,"CMH-Infor-Full-Aggregation-Custom-Object");
             if(custom != null) {
                String taskName = (String) custom.get("taskName");
@@ -57,13 +60,13 @@
 					          context.saveObject(app);
 							  context.commitTransaction();
 							} catch (GeneralException e) {
-								 log.error("ERROR : CMH-Infor-Full-Post-Iteration-Rule:"+e.getMessage());
+								 log.error("Error: "+e.getMessage());
 						    };
 					   }
                    }
                }
             }
-            log.debug("CMH-Infor-Full-Post-Iteration-Rule: Exiting");
+            log.debug("Exiting CMH-Infor-Full-Post-Iteration-Rule");
             ]]>
         </Source>
     </Rule>

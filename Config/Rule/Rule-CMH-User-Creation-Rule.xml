@@ -62,22 +62,13 @@
     import sailpoint.tools.GeneralException;
     import sailpoint.tools.Util;
 
-	Logger log = Logger.getLogger("Rule.CMH-User-Creation-Rule");
-
-    log.debug("Entering CMH-User-Creation-Rule");
-	String workEmail = "WorkEmail";
-	String usrName = "Username";
-	String oldFormat = "_old";
-	String domain = "@cmhad.com";
-
 	public void createNewUser(String firstName, String lastName, String middInitial, String employeeId, String userType, String mailRequired, String status){
-		log.debug("CMH-User-Creation-Rule: Creating a new user by generating username & email from firstname & lastname of the user");
+		log.debug("Entering createNewUser method");
 		String finalUsername =null;
 		String genUsername = userNameGenerator(firstName,lastName,middInitial,employeeId);	//Generate a username based on firstname,lastname, middleInitial
 		if(null !=genUsername) {
 			finalUsername=finalUserName(genUsername,firstName,lastName,middInitial,employeeId);	//Validate the generated username for the uniqueness
 		}
-		log.debug("CMH-User-Creation-Rule: Unique username : "+finalUsername);
 		if(null !=finalUsername) {
 		    finalUsername = finalUsername.toLowerCase();
 			identity.setName(finalUsername);
@@ -89,9 +80,18 @@
 				account.setAttribute(workEmail, finalUsername + domain);
 			}
 		}
+		log.debug("Exiting createNewUser method");
 	}
 
-
+	//Rule starts from here
+	Logger log = Logger.getLogger("Rule.CMH-User-Creation-Rule");
+    log.debug("Entering CMH-User-Creation-Rule");
+	
+	String workEmail = "WorkEmail";
+	String usrName = "Username";
+	String oldFormat = "_old";
+	String domain = "@cmhad.com";
+	
     String firstName = account.getStringAttribute("FirstName");
     if(Util.isNotNullOrEmpty(firstName)){
     	firstName = firstName.trim();   	
@@ -132,10 +132,9 @@
 	if(Util.isNotNullOrEmpty(employeeId)){
 	    employeeId = employeeId.trim();
 	}
-	log.debug("CMH-User-Creation-Rule for employee:"+employeeId);
     if (!StringUtils.isBlank(oldemployeeId) && !StringUtils.isBlank(username)) {	//User conversion Case, Update the existing user's name to _old+timestamp and create the new user with same
 
-    	log.info("CMH-User-Creation-Rule: User Conversion Case : Proceeding with updating existing user's name _old+timestamp and create the new user with same");
+    	log.debug("Proceeding with updating existing user's name _old+timestamp and create the new user with same username for the user:"+employeeId);
 		QueryOptions ops = new QueryOptions();
 		Filter filter = Filter.eq("employeeId", oldemployeeId);
 		ops.addFilter(filter);
@@ -159,7 +158,6 @@
 						if(links!=null && links.size()>0){
 							Link hrLink = links.get(0);
 							if(hrLink!=null){
-								log.debug("CMH-User-Creation-Rule: Updating old user's HR links display name");
 								hrLink.setDisplayName(oldIdentityName + oldFormat + timestamp);
 								hrLink.setAttribute(usrName,oldIdentityName + oldFormat + timestamp);
 								if(Util.isNotNullOrEmpty(oldIdentityMail)){
@@ -170,7 +168,7 @@
 						}
 						context.saveObject(oldIden);
 						context.commitTransaction();
-						log.debug("CMH-User-Creation-Rule:Old User object name updated to _old+timestamp");
+						log.debug("Old User object name updated to _old+timestamp for user : "+oldemployeeId);
 						identity.setName(oldIdentityName);//Creating new user with same user name
 						identity.setDisplayName(oldIdentityName);
 						if(Util.nullSafeCaseInsensitiveEq(userType,"NonEmployee") && Util.nullSafeCaseInsensitiveEq(mailRequired,"Yes")){
@@ -190,25 +188,25 @@
 						account.setDisplayName(oldIdentityName);
 					}
 				}else{
-					log.debug("CMH-User-Creation-Rule:Username & OtherEmpId is not null and user with OtherEmpId Status is not Terminated, so creating user with unique name");
+					log.debug("Username & OtherEmpId is not null and user with OtherEmpId Status is not Terminated, so creating user with unique name for identity "+employeeId);
 					createNewUser(firstName,lastName,middInitial,employeeId,userType,mailRequired,status);
 				}
 			}else{
-				log.debug("CMH-User-Creation-Rule:Username & OtherEmpId is not null and user with OtherEmpId is not found in Sailpoint, so creating user with unique name");
+				log.debug("Username & OtherEmpId is not null and user with OtherEmpId "+oldemployeeId+" is not found in Sailpoint, so creating user with unique name for the user"+employeeId);
 				createNewUser(firstName,lastName,middInitial,employeeId,userType,mailRequired,status);
 			}
 		} catch (GeneralException e) {
-			log.error("CMH-User-Creation-Rule: Exception occured while searching for the existing user in IIQ :"+e.getMessage());
+			log.error("Exception occured while searching for the existing user in IIQ :"+e.getMessage());
 		} finally {
 			sailpoint.tools.Util.flushIterator(userItr);
 		}
 	} else {
-		log.debug("CMH-User-Creation-Rule:Either Username or OtherEmpId is null, so creating user with unique name");
+		log.debug("Either Username or OtherEmpId is null, so creating user with unique name");
 		createNewUser(firstName,lastName,middInitial,employeeId,userType,mailRequired,status);
 	}
 
 	if (status.equalsIgnoreCase("PreHire")) {
-		log.info("CMH-User-Creation-Rule: Creating a new prehire user with inactive status");
+		log.info("Creating a new prehire user with inactive status");
 		identity.setInactive(true);
 	}
 	log.debug("Exiting CMH-User-Creation-Rule");

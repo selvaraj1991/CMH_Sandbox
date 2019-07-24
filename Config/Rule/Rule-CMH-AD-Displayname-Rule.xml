@@ -99,7 +99,7 @@
       import sailpoint.tools.Util;
       
       Logger log = Logger.getLogger("Rule.CMH-AD-Displayname-Rule");
-      log.debug("Entering CMH-AD-Displayname-Rule() for identity:"+identity.getName());
+      log.debug("Entering CMH-AD-Displayname-Rule for identity:"+identity.getName());
 	  String displayName = null;
 	  if(identity!=null){
 	  	String lastName = identity.getLastname();
@@ -108,7 +108,7 @@
 	    String credential = identity.getStringAttribute("credential");
 	    displayName = getDisplayName(firstName,lastName,initials,credential);
 	  }
-	  log.debug("Exiting CMH-AD-Displayname-Rule() for identity:"+identity.getName());
+	  log.debug("Exiting CMH-AD-Displayname-Rule");
 	  return displayName;
   ]]></Source>
 </Rule>

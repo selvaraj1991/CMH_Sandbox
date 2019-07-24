@@ -13,6 +13,7 @@
   	import sailpoint.tools.Util;
   	
   	public boolean runAggregation(String usersStr){
+		log.debug("Entering runAggregation method");
   		boolean status = false;
   		String whereClause = "where Employee in ("+usersStr+")";
   		String sqlQuery = null;
@@ -43,10 +44,12 @@
 	  			}
 	  		}
   		}
+		log.debug("Exiting runAggregation method");
   		return status;
   	}
   	
   	public void updateCustomObject(String customObjName, List usersList){
+		log.debug("Entering updateCustomObject method");
   		if(Util.isNotNullOrEmpty(customObjName)){
   			Custom customObj = context.getObjectByName(Custom.class,customObjName);
   			if(customObj!=null && !Util.isEmpty(usersList)){
@@ -57,6 +60,7 @@
   				context.commitTransaction();
   			}
   		}
+		log.debug("Exiting updateCustomObject method");
   	}
   	Logger log = Logger.getLogger("Rule.CMH-Aggregate-FutureDated-Conversion-Users-Rule");
   	log.debug("Entering CMH-Aggregate-FutureDated-Conversion-Users-Rule");

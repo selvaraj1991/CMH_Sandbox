@@ -44,14 +44,13 @@
 
   Logger logger = Logger.getLogger("Rule.CMH-Everyone-Role-Assignment-Rule");
 
-  logger.debug("Entering CMH-Everyone-Role-Assignment-Rule:Assign Everyone Role for the user based on the userType and EmailRequired");
+  logger.debug("Entering CMH-Everyone-Role-Assignment-Rule:To Assign Everyone Role for the user "+identity!=null?identity.getName():"");
   
   boolean assignRole = false;
   String identityName = null;
   
   if (identity != null && identity.isCorrelated()) {
   	identityName = identity.getName();
-  	logger.debug("CMH-Everyone-Role-Assignment-Rule for identity:"+identityName);
   	String email = identity.getEmail();
     String status = identity.getStringAttribute("status");
     if(!Util.nullSafeCaseInsensitiveEq(status,"Terminated")){
@@ -82,9 +81,9 @@
   }
 
   if(assignRole){
-  	logger.debug("CMH-Everyone-Role-Assignment-Rule:Everyone role assigned for the User: "+identityName);
+  	logger.debug("Everyone role assigned for the User: "+identityName);
   }
-  logger.debug("Exiting CMH-Everyone-Role-Assignment-Rule:Assign Everyone Role for the user based on the userType and EmailRequired");
+  logger.debug("Exiting CMH-Everyone-Role-Assignment-Rule");
   return assignRole;
   ]]></Source>
 </Rule>

@@ -44,9 +44,8 @@
 		import java.util.Iterator;
 		import sailpoint.tools.Util;
 
-		Logger log = Logger.getLogger("Rule.CMH-Joiner-Users-Selection-Rule");
 		public boolean checkOldEmployeeIdUserStatus(String oldEmployeeId) {
-			log.debug("Entering checkOldEmployeeIdUserStatus(String oldEmployeeId)");
+			log.debug("Entering checkOldEmployeeIdUserStatus method");
 			boolean isStatus = false;
 			if (!StringUtils.isBlank(oldEmployeeId)) {
 				Filter f = Filter.eq("employeeId", oldEmployeeId);
@@ -63,15 +62,15 @@
 					}
 				}
 			}
-			log.debug("isStatus :" + isStatus);
-			log.debug("Exiting checkOldEmployeeIdUserStatus(String oldEmployeeId)");
+			log.debug("Exiting checkOldEmployeeIdUserStatus method");
 			return isStatus;
 		}
 		
-		log.debug("Entering Joiner-Users-Selection-Rule");
+		//Rule starts from here
+		Logger log = Logger.getLogger("Rule.CMH-Joiner-Users-Selection-Rule");
+		log.debug("Entering CMH-Joiner-Users-Selection-Rule for user "+identity!=null?identity.getName():"");
 		boolean success = false;
 		if (null != identity) {
-		    log.debug("Joiner-Users-Selection-Rule for identity:"+identity.getName());
 			String status = identity.getStringAttribute("status");
 			if (!StringUtils.isBlank(status) && StringUtils.equalsIgnoreCase("Active", status)) {
 				String rehire = identity.getStringAttribute("rehire");
@@ -89,7 +88,7 @@
 				}
 			}
 		}
-		log.debug("Joiner-Users-Selection-Rule success ? : " + success);
+		log.debug("Proceed with Joiner? " + success);
 		log.debug("Exiting Joiner-Users-Selection-Rule");
 		return success;
   ]]></Source>

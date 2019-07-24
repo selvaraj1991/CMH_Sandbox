@@ -48,12 +48,12 @@
     import sailpoint.tools.Util;
 
     Logger log = Logger.getLogger("Rule.CMH-User-Conversion-Trigger-Rule");
-    log.info("CMH-User-Conversion-Trigger-Rule : Triggers Conversion workflow after validation");
+    log.debug("Entering CMH-User-Conversion-Trigger-Rule for identity "+newIdentity!=null?newIdentity.getName():"");
+	boolean triggerConversion = false;
     String format = getCustomObject("conversionTimestamp", "CMH-DateFormat");
     if (Util.isNotNullOrEmpty(format)) {
         SimpleDateFormat sdf = new SimpleDateFormat(format);
         if (newIdentity != null) {
-		    log.debug("CMH-User-Conversion-Trigger-Rule : Triggering Conversion workflow for Active User "+newIdentity.getName());
             String oldEmpId = newIdentity.getStringAttribute("otherEmpId");
             if (Util.isNotNullOrEmpty(oldEmpId)) {
                 if (isConversionCase(oldEmpId)) {
@@ -61,8 +61,7 @@
                     String isConversionProcessed = newIdentity.getStringAttribute("isConversionProcessed");
                     if (!Util.nullSafeCaseInsensitiveEq(isConversionProcessed, "YES")) {
                         if (Util.nullSafeCaseInsensitiveEq(userStatus, "ACTIVE")) {
-                            log.debug("CMH-User-Conversion-Trigger-Rule : Triggered Conversion workflow for Active User "+newIdentity.getName());
-                            return true;
+                            triggerConversion = true;
                         } else if (Util.nullSafeCaseInsensitiveEq(userStatus, "PREHIRE")) {
                             String startDate = newIdentity.getStringAttribute("startDate");
                             try {
@@ -71,12 +70,11 @@
                                     Date currDate = new Date();
                                     int daysDiff = Util.getDaysDifference(stDate, currDate);
                                     if (daysDiff > 0 && daysDiff <= 30) {
-                                        log.debug("CMH-User-Conversion-Trigger-Rule : Trigger Conversion workflow for Prehire User "+newIdentity.getName());
-                                        return true;
+                                        triggerConversion = true;
                                     }
                                 }
                             } catch (ParseException ex) {
-                                log.error("CMH-User-Conversion-Trigger-Rule: Error while parsing the date");
+                                log.error("Error while parsing the date in CMH-User-Conversion-Trigger-Rule");
                             }
                         }
                     }
@@ -84,7 +82,8 @@
             }
         }
     }
-    return false;
+	log.debug("Exiting CMH-User-Conversion-Trigger-Rule: Proceed with Conversion?"triggerConversion);
+    return triggerConversion;
     ]]>
     </Source>
 </Rule>

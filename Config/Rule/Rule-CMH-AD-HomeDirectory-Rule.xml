@@ -106,7 +106,7 @@
    	if(Util.isNotNullOrEmpty(identityName)){
   		homeDirVal = getHomeDirectory(identityName);
     }
-     log.debug("Exiting CMH-AD-HomeDirectory-Rule for identity:"+identityName);
+    log.debug("Exiting CMH-AD-HomeDirectory-Rule for identity:"+identityName);
   }
   return homeDirVal;
   ]]></Source>

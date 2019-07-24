@@ -14,13 +14,14 @@
 		import sailpoint.object.Application;
 		
         Logger log = Logger.getLogger("Rule.CMH-Infor-Full-Pre-Iteration-Rule");
-		log.debug("CMH-Infor-Full-Pre-Iteration-Rule: Entering :Update Custom object with the timestamp for full aggregation");
+		log.debug("Entering CMH-Infor-Full-Pre-Iteration-Rule");
+		
 		//updates the timestamp of the task in custom object
 		Custom custom = context.getObjectByName(Custom.class,"CMH-Infor-Full-Aggregation-Custom-Object");
 		String format = getCustomObject("preIterationTimestamp","CMH-DateFormat");
 		String incrementalAggrTime = getCustomObject("lastRunTimeStamp","CMH-Infor-Incremental-Aggregation-Custom-Object");
 		try {
-			 if(Util.isNotNullOrEmpty(format)) {
+			if(Util.isNotNullOrEmpty(format)) {
 				SimpleDateFormat sdf = new SimpleDateFormat(format);
 				String newLastRunTimeStamp = sdf.format(new Date());
 				if(custom!=null){
@@ -30,7 +31,6 @@
 				    custom.put("lastRunTimeStamp",newLastRunTimeStamp);
 					context.saveObject(custom);
 					String appName = (String) custom.get("applicationName");
-					log.debug("CMH-Infor-Full-Pre-Iteration-Rule: Update application object with query for full aggregation");
 					if(Util.isNotNullOrEmpty(appName)) {
 					   Application app = context.getObjectByName(Application.class,appName);
 					   if(app != null) {
@@ -42,13 +42,13 @@
 					   context.saveObject(app);
 					}
 					context.commitTransaction();
-			     }
-			  }
-			 log.debug("CMH-Infor-Full-Pre-Iteration-Rule: Exiting :Updated Custom object and application object successfully");
-		   }catch (GeneralException e) {
-			     log.error("ERROR : CMH-Infor-Full-Pre-Iteration-Rule:"+e.getMessage());
-		   }
-		
+			    }
+			}
+			log.debug("Updated Custom object and Application object successfully");
+		}catch (GeneralException e) {
+			log.error("ERROR:"+e.getMessage());
+		}
+		log.debug("Exiting CMH-Infor-Full-Pre-Iteration-Rule");
   ]]></Source>
     </Rule>
 </sailpoint>
