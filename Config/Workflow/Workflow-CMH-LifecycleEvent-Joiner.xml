@@ -407,7 +407,6 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 		
 	        import sailpoint.tools.Message;
 			import sailpoint.tools.Util;
-			import java.util.ArrayList;
 			import org.apache.log4j.Logger;
 			
 			Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-Joiner");

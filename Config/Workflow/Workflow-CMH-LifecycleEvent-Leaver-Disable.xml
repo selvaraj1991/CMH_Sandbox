@@ -280,7 +280,6 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
       <Source><![CDATA[
 
             import java.text.SimpleDateFormat;
-            import java.util.Date;
             import org.apache.log4j.Logger;
   			import sailpoint.object.Identity;
   			import sailpoint.tools.Util;
@@ -480,7 +479,6 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 	  			import sailpoint.object.Application;
 	  			import sailpoint.object.Identity;
 	  			import sailpoint.object.Link;
-	  			import sailpoint.object.ProvisioningPlan;
 	  			import sailpoint.tools.Util;
 
 			  	Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-Leaver-Disable");
@@ -493,7 +491,6 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 		          validationErrors = new ArrayList();
 		        }
 
-                ProvisioningPlan adPlan = new ProvisioningPlan();
 				List accountRequests = new ArrayList();
 				Identity identity = context.getObjectByName(Identity.class, identityName);
 				Application application = context.getObjectByName(Application.class, adAppName);
@@ -534,7 +531,6 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 
 	      	import sailpoint.tools.Message;
 			import sailpoint.tools.Util;
-			import java.util.ArrayList;
 			import org.apache.log4j.Logger;
 
 			Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-Leaver-Disable");

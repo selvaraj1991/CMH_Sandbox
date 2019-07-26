@@ -680,7 +680,6 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 	  			import sailpoint.object.Application;
 	  			import sailpoint.object.Identity;
 	  			import sailpoint.object.Link;
-	  			import sailpoint.object.ProvisioningPlan;
 	  			import sailpoint.tools.Util;
 			  	
 			  	Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-Name-Change");
@@ -693,7 +692,6 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 		          validationErrors = new ArrayList();
 		        }
 		        
-                ProvisioningPlan adPlan = new ProvisioningPlan();
 				List accountRequests = new ArrayList();
 				Identity identity = context.getObjectByName(Identity.class, newIdentityName);
 				Application application = context.getObjectByName(Application.class, adAppName);
@@ -738,8 +736,6 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 			  
 	      	import sailpoint.tools.Message;
 			import sailpoint.tools.Util;
-			import java.util.ArrayList;
-			import java.util.HashMap;
 			import org.apache.log4j.Logger;
 			
 			Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-Name-Change");
