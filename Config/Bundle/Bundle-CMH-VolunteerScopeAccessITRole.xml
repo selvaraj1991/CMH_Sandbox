@@ -31,7 +31,7 @@
         <Filter operation="CONTAINS_ALL" property="memberOf">
           <Value>
             <List>
-              <String>CN=Scope_Access_Only,OU=Groups,OU=CMHUsers,DC=cmhAd,DC=com</String>
+              <String>%%CMH-AD-ScopeAccessOnly-Group%%</String>
             </List>
           </Value>
         </Filter>
