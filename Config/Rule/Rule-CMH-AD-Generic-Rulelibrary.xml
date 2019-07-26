@@ -1053,5 +1053,22 @@ public String filterSpecialCharacter(String attrValue) {
 	log.debug("Exiting filterSpecialCharacter method");
 	return filterString;
 }
+
+
+public Identity acquireLockOnIdentity(String identityName) {
+	log.debug("Entering acquireLockOnIdentity method");
+	int WAIT_TIMEOUT = 5;
+	Identity lockedIden = null;
+	if(Util.isNotNullOrEmpty(identityName)) {
+		try {
+			lockedIden = ObjectUtil.lockIdentityByName(context, identityName, WAIT_TIMEOUT);
+			log.debug("Successfully acquired lock on the identity object")
+		}catch(Exception e) {
+			log.error("Error occured while trying to acquire the lock on the user object: "+identityName);
+		}
+	}
+	log.debug("Exiting acquireLockOnIdentity method");
+	return lockedIden;
+}
   ]]></Source>
 </Rule>
