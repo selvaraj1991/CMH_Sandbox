@@ -413,6 +413,14 @@
 				  </ApplicationRef>
 				</AttributeSource>
 			</ObjectAttribute>
+			   <ObjectAttribute displayName="PersonIsSupv" editMode="ReadOnly" extendedNumber="1" name="personIsSupv"
+                             type="string">
+                <AttributeSource name="PersonIsSupv">
+                    <ApplicationRef>
+                        <Reference class="sailpoint.object.Application" name="%%CMH-Infor-ApplicationName%%"/>
+                    </ApplicationRef>
+                </AttributeSource>
+            </ObjectAttribute>
 		</ObjectConfig>
     </ImportAction>
 </sailpoint>

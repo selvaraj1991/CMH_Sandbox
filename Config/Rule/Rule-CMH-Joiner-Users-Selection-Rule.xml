@@ -41,7 +41,6 @@
 		import sailpoint.object.Identity;
 		import sailpoint.object.Filter;
 		import sailpoint.object.QueryOptions;
-		import java.util.Iterator;
 		import sailpoint.tools.Util;
 
 		public boolean checkOldEmployeeIdUserStatus(String oldEmployeeId) {

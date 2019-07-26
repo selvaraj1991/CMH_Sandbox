@@ -275,13 +275,15 @@ public String userNameGenerator(String firstName, String lastName, String middIn
 	String finalUsername = null;
 	String filteredFname = filterSpecialCharacter(firstName);
 	String filteredLname = filterSpecialCharacter(lastName);
-	if (Util.isNotNullOrEmpty(filteredFname) && Util.isNotNullOrEmpty(filteredLname)) {
-		if (Util.isNotNullOrEmpty(middInitial)) {
-			String filteredMiddleName = filterSpecialCharacter(middInitial);
-			if (Util.isNotNullOrEmpty(filteredMiddleName)) {
-				temp = filteredFname.substring(0, 1).concat(filteredMiddleName).concat(filteredLname);
-			}
-		} else {
+			String filteredMiddleName = null;
+			if (Util.isNotNullOrEmpty(middInitial)) {
+				filteredMiddleName = filterSpecialCharacter(middInitial);
+		    }
+			if(Util.isNotNullOrEmpty(filteredFname) && Util.isNotNullOrEmpty(filteredLname)) {
+			   if(Util.isNotNullOrEmpty(filteredMiddleName)) {
+					   temp = filteredFname.substring(0, 1).concat(filteredMiddleName).concat(filteredLname);
+				}
+			    else {
 			temp = filteredFname.substring(0, 1).concat(filteredLname); // SMitra
 		}
 	}

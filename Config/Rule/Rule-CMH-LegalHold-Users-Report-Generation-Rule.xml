@@ -24,11 +24,6 @@
 	import sailpoint.object.Identity;
 	import sailpoint.object.Filter;
 	import sailpoint.object.QueryOptions;
-	import java.util.ArrayList;
-	import java.util.List;
-	import java.util.Map;
-	import java.util.HashMap;
-	import java.util.Map.Entry;
 	import sailpoint.object.Application;
 	import sailpoint.object.Link;
 	import sailpoint.object.Identity;
@@ -39,7 +34,6 @@
 	import java.io.File;
 	import java.text.ParseException;
 	import java.text.SimpleDateFormat;
-	import java.util.Date;
 	import org.apache.log4j.Logger;
 	import sailpoint.object.Custom;
 	import sailpoint.tools.Util;
