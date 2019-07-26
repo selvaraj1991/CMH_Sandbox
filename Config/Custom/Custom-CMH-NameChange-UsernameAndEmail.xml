@@ -3,14 +3,8 @@
 <Custom name="CMH-NameChange-UsernameAndEmail">
     <Attributes>
         <Map>
-            <entry key="NOTEXPORTED">
-                <value>
-                    <List>
-                        <String>KMWatson1</String>
-                        <String>KMWatson1</String>
-                    </List>
-                </value>
-            </entry>
+            <entry key="NOTEXPORTED"/>
+            <entry key="EXPORTED"/>
         </Map>
     </Attributes>
 </Custom>
