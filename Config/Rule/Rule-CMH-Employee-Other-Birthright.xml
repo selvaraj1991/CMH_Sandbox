@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Rule PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<Rule language="beanshell" name="CMH-Employee-Other-Birthright-Rule" type="IdentitySelector">
+  <Description>The rule assigns the birthright roles such as patient care, CEO assembly &amp; HR Leadership roles based on the assignmentType and jobCode of the user.</Description>
+  <ReferencedRules>
+    <Reference class="sailpoint.object.Rule" name="CMH-AD-Generic-Rulelibrary"/>
+  </ReferencedRules>
+  <Signature returnType="boolean">
+    <Inputs>
+      <Argument name="logger">
+        <Description>
+          The logger object associated with the SailPointContext.
+        </Description>
+      </Argument>
+      <Argument name="context">
+        <Description>
+          A sailpoint.api.SailPointContext object that can be used to query the database if necessary.
+        </Description>
+      </Argument>
+      <Argument name="identity" type="Identity">
+        <Description>
+          The identity.
+        </Description>
+      </Argument>
+      <Argument name="roleName" type="String">
+        <Description>
+          The name of the sailpoint.object.Bundle (role) that is being selected for the Identity.
+          If roles are not applicable to this Identity selection, this value will be void.
+        </Description>
+      </Argument>
+    </Inputs>
+    <Returns>
+      <Argument name="success">
+        <Description>
+          True if the selection was successful; false otherwise.
+        </Description>
+      </Argument>
+    </Returns>
+  </Signature>
+  <Source><![CDATA[
+		import org.apache.log4j.Logger;
+		import sailpoint.object.Identity;
+		import sailpoint.tools.Util;
+             
+		Logger log = Logger.getLogger("Rule.CMH-Employee-Other-Birthright-Rule");
+		public boolean isGrantRole(String roleName, String roleNameCustomObject,String jobLevel, String cmhDept,String jobCode,String jobFamily) {
+			log.debug("Entering isGrantRole method");
+			boolean roleAssign = false;
+			if(Util.isNotNullOrEmpty(roleName) && Util.isNotNullOrEmpty(roleNameCustomObject)) {
+				if (checkDataInCustomObject(roleName, roleNameCustomObject, "OTHEREMPLOYEEROLE")) {
+					if (Util.nullSafeCaseInsensitiveEq(roleName, "Patient Care Leaders Business Role")) {
+						if (checkDataInCustomObject(jobLevel, birthRightCustomObject, "PATIENTCAREALLJOBLEVEL")) {
+							if (Util.nullSafeCaseInsensitiveEq(cmhDept, "PATIENTCARE")) {
+								roleAssign = true;
+							} else if (Util.nullSafeCaseInsensitiveEq(cmhDept, "NONPATIENTCARE")) {
+								if (Util.isNotNullOrEmpty(jobFamily) && checkDataInCustomObject(jobFamily, birthRightCustomObject, "JOBFAMILY")) {
+									roleAssign = true;
+								}
+							}
+						}
+					} else if (Util.nullSafeCaseInsensitiveEq(roleName, "CEO Assembly Business Role")) {
+						if (checkDataInCustomObject(jobLevel, birthRightCustomObject, "CEOASSEMBLYJOBLEVEL")) {
+							roleAssign = true;
+						} else if (Util.isNotNullOrEmpty(jobCode)) {
+							if (checkDataInCustomObject(jobCode, birthRightCustomObject, "CEOASSEMBLYJOBLEVEL")) {
+								roleAssign = true;
+							}
+						}
+					} else if (Util.nullSafeCaseInsensitiveEq(roleName, "HR Leadership Forum Business Role")) {
+						if (checkDataInCustomObject(jobLevel, birthRightCustomObject, "HRLEADERSHIPJOBLEVEL")) {
+							roleAssign = true;
+						}
+					} else if (Util.nullSafeCaseInsensitiveEq(roleName, "Patient Care All Business Role")) {
+						if (Util.nullSafeCaseInsensitiveEq(cmhDept, "PATIENTCARE")) {
+							roleAssign = true;
+						}
+					}
+				}
+			}
+			log.debug("Exiting isGrantRole method");
+			return roleAssign;
+		}
+	   
+	   //Rule starts from here
+       log.debug("Entering CMH-Employee-Other-Birthright-Rule for identity "+identity!=null?identity.getName():"");
+       boolean roleAssign = false;
+       String birthRightCustomObject = "CMH-Custom-Birthright-Employee-Role-AssignmentData";
+       String roleNameCustomObject = "CMH-User-Role-Mapping-Custom-Object";
+       if (identity != null && identity.isCorrelated()) {
+           String status = identity.getAttribute("status");
+           String userType = identity.getAttribute("userType");
+           if(Util.nullSafeCaseInsensitiveEq(userType,"EMPLOYEE") && Util.nullSafeCaseInsensitiveEq(status,"ACTIVE")) {
+	           String jobLevel = identity.getStringAttribute("jobLevel");
+	           String cmhDept = identity.getStringAttribute("cmhDeptType");
+	           String oldEmpId = identity.getStringAttribute("otherEmpId");
+               String isConversionProcessed = identity.getStringAttribute("isConversionProcessed");	
+               String jobFamily = identity.getStringAttribute("jobFamily");
+               String jobCode = identity.getStringAttribute("jobCode");           
+	           if(Util.isNullOrEmpty(oldEmpId) || !isConversionCase(oldEmpId) || Util.nullSafeCaseInsensitiveEq(isConversionProcessed, "YES")) {
+	              String startDate = identity.getStringAttribute("startDate");
+	              if (!status.equalsIgnoreCase("Prehire") || (Util.isNotNullOrEmpty(startDate) && startDateCheck(startDate))) {
+	              roleAssign = isGrantRole(roleName,roleNameCustomObject,jobLevel,cmhDept,jobCode,jobFamily);
+	              }
+	           } 
+	        }
+	    }
+	    if (roleAssign) {
+            log.debug("CMH-Employee-Other-Birthright-Rule:Role " + roleName + " assigned for the User: " + identity.getName());
+        }
+        log.debug("Exiting CMH-Employee-Other-Birthright-Rule for identity "+identity!=null?identity.getName():"");
+        return roleAssign;
+  ]]></Source>
+</Rule>

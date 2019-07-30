@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Rule PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<Rule language="beanshell" name="CMH-Joiner-Users-Selection-Rule" type="IdentitySelector">
+    <Description>This rule is used to filter out the conversion users, since the joiner should not be triggered to those users.</Description>
+    <Signature returnType="boolean">
+        <Inputs>
+            <Argument name="log">
+                <Description>
+                    The log object associated with the SailPointContext.
+                </Description>
+            </Argument>
+            <Argument name="context">
+                <Description>
+                    A sailpoint.api.SailPointContext object that can be used to query the database if necessary.
+                </Description>
+            </Argument>
+            <Argument name="identity" type="Identity">
+                <Description>
+                    The identity.
+                </Description>
+            </Argument>
+            <Argument name="roleName" type="String">
+                <Description>
+                    The name of the sailpoint.object.Bundle (role) that is being selected for the Identity.
+                    If roles are not applicable to this Identity selection, this value will be void.
+                </Description>
+            </Argument>
+        </Inputs>
+        <Returns>
+            <Argument name="success">
+                <Description>
+                    True if the selection was successful; false otherwise.
+                </Description>
+            </Argument>
+        </Returns>
+    </Signature>
+    <Source><![CDATA[
+  
+		import org.apache.log4j.Logger;
+		import org.apache.commons.lang.StringUtils;
+		import sailpoint.object.Identity;
+		import sailpoint.object.Filter;
+		import sailpoint.object.QueryOptions;
+		import sailpoint.tools.Util;
+
+		public boolean checkOldEmployeeIdUserStatus(String oldEmployeeId) {
+			log.debug("Entering checkOldEmployeeIdUserStatus method");
+			boolean isStatus = false;
+			if (!StringUtils.isBlank(oldEmployeeId)) {
+				Filter f = Filter.eq("employeeId", oldEmployeeId);
+				QueryOptions q0 = new QueryOptions();
+				q0.add(f);
+				Iterator itr = context.search(Identity.class, q0);
+				if (null != itr && itr.hasNext()) {
+					Identity identity = (Identity) itr.next();
+					String status = identity.getStringAttribute("status");
+					if (!StringUtils.isBlank(status) && StringUtils.equalsIgnoreCase(status, "Active")) {
+						isStatus = true;
+					} else {
+						isStatus = false;
+					}
+				}
+			}
+			log.debug("Exiting checkOldEmployeeIdUserStatus method");
+			return isStatus;
+		}
+		
+		//Rule starts from here
+		Logger log = Logger.getLogger("Rule.CMH-Joiner-Users-Selection-Rule");
+		log.debug("Entering CMH-Joiner-Users-Selection-Rule for user "+identity!=null?identity.getName():"");
+		boolean success = false;
+		if (null != identity) {
+			String status = identity.getStringAttribute("status");
+			if (!StringUtils.isBlank(status) && StringUtils.equalsIgnoreCase("Active", status)) {
+				String rehire = identity.getStringAttribute("rehire");
+				if (Util.isNullOrEmpty(rehire) || Util.nullSafeCaseInsensitiveEq(rehire, "NO")) {
+					String oldEmpId = identity.getStringAttribute("otherEmpId");
+					if (!StringUtils.isBlank(oldEmpId) && checkOldEmployeeIdUserStatus(oldEmpId)) {
+						success = true;
+					} else if (StringUtils.isBlank(oldEmpId)) {
+						success = true;
+					} else {
+						success = false;
+					}
+				} else {
+					success = false;
+				}
+			}
+		}
+		log.debug("Proceed with Joiner? " + success);
+		log.debug("Exiting Joiner-Users-Selection-Rule");
+		return success;
+  ]]></Source>
+</Rule>
