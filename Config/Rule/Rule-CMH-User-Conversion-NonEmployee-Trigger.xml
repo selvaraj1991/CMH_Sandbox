@@ -36,7 +36,7 @@
 		import sailpoint.tools.Util;
 
 		Logger log = Logger.getLogger("Rule.CMH-User-Conversion-NonEmployee-Trigger-Rule");
-		log.debug("Entering CMH-User-Conversion-NonEmployee-Trigger-Rule for identity "+previousIdentity!=null?previousIdentity.getName():"");
+		log.debug("Entering CMH-User-Conversion-NonEmployee-Trigger-Rule for identity "+newIdentity!=null?newIdentity.getName():"");
 		//Filters users for conversion based on assignmentType change of user
 		boolean isConversion = false;
 		if (null != previousIdentity && null != newIdentity) {
@@ -55,7 +55,7 @@
 				}
 			}
 		}
-		log.debug("Exiting CMH-User-Conversion-NonEmployee-Trigger-Rule: Proceed with Conversion?"isConversion);
+		log.debug("Exiting CMH-User-Conversion-NonEmployee-Trigger-Rule: Proceed with Conversion?"+isConversion);
 		return isConversion;
   ]]></Source>
 </Rule>

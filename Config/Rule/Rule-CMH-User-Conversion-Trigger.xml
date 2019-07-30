@@ -82,7 +82,7 @@
             }
         }
     }
-	log.debug("Exiting CMH-User-Conversion-Trigger-Rule: Proceed with Conversion?"triggerConversion);
+	log.debug("Exiting CMH-User-Conversion-Trigger-Rule: Proceed with Conversion?"+triggerConversion);
     return triggerConversion;
     ]]>
     </Source>
