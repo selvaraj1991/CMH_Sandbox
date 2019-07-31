@@ -47,7 +47,7 @@
   		</Source>
   	</Script>
   </Variable>
-  <Variable initializer="script:new Integer(1);" name="numberOfDays" type="Integer">
+  <Variable initializer="script:new Integer(30);" name="numberOfDays" type="Integer">
     <Description>Number of days after which deletion date has to be set</Description>
   </Variable>
   <Variable name="identityName"/>
@@ -211,39 +211,39 @@
 		Identity user = (Identity) context.getObjectByName(Identity.class,identityName);         	
 	    if (user != null) {
 	    	try {
-				String dateFormat = "MM/dd/yyyy";
-	
-               	DateFormat terminationDateFormat = new SimpleDateFormat(dateFormat);
-               	Date currentDate = new Date();
-               	String terminationDate = terminationDateFormat.format(currentDate);
-               	
-                Date deletionDate = Util.incrementDateByDays(currentDate,numberOfDays);
-                DateFormat deletionDateFormat = new SimpleDateFormat(dateFormat);
-               	String deletionDateStr = deletionDateFormat.format(deletionDate);
-               	
-               	if(Util.isNotNullOrEmpty(inforAppName)){
-               		Application inforApp = context.getObjectByName(Application.class,inforAppName);
-               		if(inforApp!=null){
-	               		IdentityService iser = new IdentityService(context);
-		  				List appLinks = iser.getLinks(user,inforApp);
-		  				if(appLinks!=null && appLinks.size()>0){
-		  					Link inforLink = appLinks.get(0);
-		  					if(inforLink!=null){
-		  						inforLink.setAttribute("RelationshipStatus","TERMINATED");
-		  						inforLink.setAttribute("TerminationDate",terminationDate);
-		  						context.saveObject(inforLink);
-		  					}
-		  				}
-		  			}
-               	}
-               	
-               	user.setInactive(true);
-                user.setAttribute("status","TERMINATED");
-                user.setAttribute("terminationDate", terminationDate);
-                user.setAttribute("deletionDate", deletionDateStr);
-				user.setAttribute("immediateOffboarder","YES");
-                context.saveObject(user);
-                context.commitTransaction();	
+				String dateFormat = getCustomObject("terminationDateFormat", "CMH-DateFormat");
+				if(Util.isNotNullOrEmpty(dateFormat)){
+					DateFormat terminationDateFormat = new SimpleDateFormat(dateFormat);
+					Date currentDate = new Date();
+					String terminationDate = terminationDateFormat.format(currentDate);
+					
+					Date deletionDate = Util.incrementDateByDays(currentDate,numberOfDays);
+					DateFormat deletionDateFormat = new SimpleDateFormat(dateFormat);
+					String deletionDateStr = deletionDateFormat.format(deletionDate);
+					
+					if(Util.isNotNullOrEmpty(inforAppName)){
+						Application inforApp = context.getObjectByName(Application.class,inforAppName);
+						if(inforApp!=null){
+							IdentityService iser = new IdentityService(context);
+							List appLinks = iser.getLinks(user,inforApp);
+							if(appLinks!=null && appLinks.size()>0){
+								Link inforLink = appLinks.get(0);
+								if(inforLink!=null){
+									inforLink.setAttribute("RelationshipStatus","TERMINATED");
+									inforLink.setAttribute("TerminationDate",terminationDate);
+									context.saveObject(inforLink);
+								}
+							}
+						}
+					}   	
+					user.setInactive(true);
+					user.setAttribute("status","TERMINATED");
+					user.setAttribute("terminationDate", terminationDate);
+					user.setAttribute("deletionDate", deletionDateStr);
+					user.setAttribute("immediateOffboarder","YES");
+					context.saveObject(user);
+					context.commitTransaction();
+				}				
 			} catch (GeneralException e) {
 	            log.error("Error in updating identity attributes "+ e.getMessage());
 	        }

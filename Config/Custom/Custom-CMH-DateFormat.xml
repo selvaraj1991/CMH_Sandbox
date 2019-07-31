@@ -11,6 +11,7 @@
       <entry key="userNameFileNameTimestamp" value="yyyy-MM-dd.hh.mm.ss.a"/>
       <entry key="userNameGenerationTimestamp" value="yyyy-MM-dd hh:mm:ss a"/>
       <entry key="startDateFormat" value="MM/dd/yyyy HH:mm:ss a z"/>
+	  <entry key="terminationDateFormat" value="MM/dd/yyyy HH:mm:ss a z"/>
     </Map>
   </Attributes>
 </Custom>
