@@ -30,7 +30,7 @@
             <entry key="deltaTable"/>
             <entry key="driverClass" value="com.mysql.jdbc.Driver"/>
             <entry key="getDeltaSQL"/>
-      		<entry key="getObjectSQL" value="select * from users where username='$(identity.username)'"/>
+      		<entry key="getObjectSQL"/>
             <entry key="isPermissionEnabled">
                 <value>
                     <Boolean/>
