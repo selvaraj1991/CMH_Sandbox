@@ -696,7 +696,6 @@ public List doTargetedAggregation(String nativeId, String appName, String identi
 		if (rObj != null) {
 			Attributes argMap = new Attributes();
 			argMap.put("noOptimizeReaggregation", "true");
-			argMap.put("correlateEntitlements", "true");
 			// Construct an aggregator instance.
 			Aggregator agg = new Aggregator(context, argMap);
 			if (ObjectUtil.isLocked(context, Identity.class, identityName)) {
