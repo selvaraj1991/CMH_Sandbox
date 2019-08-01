@@ -816,7 +816,6 @@ public boolean writeToCustomObject(List unameList, String customName) {
 	log.debug("Entering writeToCustomObject method");
 	Custom custom = null;
 	boolean flag = false;
-	List finalList = new ArrayList();
 	if (null != unameList && Util.isNotNullOrEmpty(customName)) {
 		try {
 			custom = context.getObjectByName(Custom.class, customName);
@@ -824,20 +823,19 @@ public boolean writeToCustomObject(List unameList, String customName) {
 				String lock = custom.getLock();
 				List list = custom.getAttributes().getList("USERNAMES");
 				if (null != list) {
-					finalList.addAll(list);
-					finalList.addAll(unameList);
-				} else {
-					finalList.addAll(unameList);
-				}
-				if (finalList != null) {
 					custom.setLock(lock);
-					custom.put("USERNAMES", finalList);
+					boolean objRemoved = list.removeAll(list);
+					if(objRemoved) {
+					   custom.put("USERNAMES", list);
+					   custom.put("USERNAMES", unameList);
+				    }
 					context.saveObject(custom);
 					context.commitTransaction();
 					custom.remove(lock);
 					flag = true;
 				}
 			} else {
+			    log.debug("CMH-AD-Generic-Rulelibrary : writeToCustomObject(): Creating custom Object");
 				custom = new Custom();
 				custom.setName(customName);
 				custom.put("USERNAMES", unameList);
@@ -845,6 +843,7 @@ public boolean writeToCustomObject(List unameList, String customName) {
 				context.commitTransaction();
 				flag = true;
 			}
+		
 		} catch(GeneralException e) {
 			log.error("ERROR in writeToCustomObject method: " + e.getMessage());
 		}
