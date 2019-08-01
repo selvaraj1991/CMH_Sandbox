@@ -964,14 +964,18 @@ public String getHomeDirectory(String identityName) {
 public String getDisplayName(String firstName, String lastName, String initial, String credential) {
 	log.debug("Entering getDisplayName method");
 	String displayName = null;
+	String COMMA_SEPARATE = ", ";
 	if (Util.isNotNullOrEmpty(firstName) && Util.isNotNullOrEmpty(lastName)) {
 		if (Util.isNotNullOrEmpty(initial)) {
-			displayName = lastName.concat(", ").concat(firstName).concat(", ").concat(initial);
+			displayName = lastName.concat(COMMA_SEPARATE).concat(firstName).concat(COMMA_SEPARATE).concat(initial);
+			if (Util.isNotNullOrEmpty(credential)) {
+				displayName = displayName.concat(" ").concat(credential);
+			}
 		} else {
-			displayName = lastName.concat(", ").concat(firstName);
-		}
-		if (Util.isNotNullOrEmpty(credential) && Util.isNotNullOrEmpty(displayName)) {
-			displayName = displayName.concat("").concat(credential);
+			displayName = lastName.concat(COMMA_SEPARATE).concat(firstName);
+			if (Util.isNotNullOrEmpty(credential)) {
+				displayName = displayName.concat(COMMA_SEPARATE).concat(credential);
+			}
 		}
 	}
 	log.debug("Exiting getDisplayName method");
