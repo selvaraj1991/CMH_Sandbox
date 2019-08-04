@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE TaskDefinition PUBLIC "sailpoint.dtd" "sailpoint.dtd">
-<TaskDefinition formPath="/monitor/tasks/accountGroupAggregationTask.xhtml" name="AD Group Aggregation" resultAction="Delete" subType="task_item_type_acct_grp_aggregation" type="AccountGroupAggregation">
+<TaskDefinition formPath="/monitor/tasks/accountGroupAggregationTask.xhtml" name="AD Group Aggregation" resultAction="Rename" subType="task_item_type_acct_grp_aggregation" type="AccountGroupAggregation">
   <Attributes>
     <Map>
       <entry key="TaskDefinition.runLengthAverage" value="1"/>
@@ -11,6 +11,7 @@
       <entry key="applications" value="%%CMH-AD-ApplicationName%%"/>
       <entry key="checkDeleted" value="true"/>
       <entry key="deltaAggregation" value="false"/>
+      <entry key="descriptionLocale" value="en_US"/>
       <entry key="groupSchema"/>
       <entry key="taskCompletionEmailNotify" value="Disabled"/>
       <entry key="taskCompletionEmailRecipients"/>

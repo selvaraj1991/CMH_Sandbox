@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE TaskDefinition PUBLIC "sailpoint.dtd" "sailpoint.dtd">
-<TaskDefinition name="CMH Read Cerner Username" resultAction="Delete" subType="task_item_type_generic" type="Generic">
+<TaskDefinition name="CMH Read Cerner Username" resultAction="Rename" subType="task_item_type_generic" type="Generic">
   <Attributes>
     <Map>
+      <entry key="TaskDefinition.runLengthAverage" value="0"/>
+      <entry key="TaskDefinition.runLengthTotal" value="0"/>
+      <entry key="TaskDefinition.runs" value="4"/>
       <entry key="TaskSchedule.host"/>
+      <entry key="ruleConfig" value="path,/home/labuser/Cerner.csv"/>
       <entry key="ruleName" value="CMH-Read-Cerner-Record-Rule"/>
       <entry key="taskCompletionEmailNotify" value="Disabled"/>
       <entry key="taskCompletionEmailRecipients"/>

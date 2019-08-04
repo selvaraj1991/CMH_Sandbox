@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE TaskDefinition PUBLIC "sailpoint.dtd" "sailpoint.dtd">
-<TaskDefinition formPath="/monitor/tasks/accountAggregationTask.xhtml" name="Infor HR Database Aggregation" resultAction="Delete" subType="task_item_type_acct_aggregation" type="AccountAggregation">
+<TaskDefinition formPath="/monitor/tasks/accountAggregationTask.xhtml" name="Infor HR Database Aggregation" resultAction="Rename" subType="task_item_type_acct_aggregation" type="AccountAggregation">
   <Attributes>
     <Map>
       <entry key="TaskDefinition.runLengthAverage" value="3"/>
@@ -15,13 +15,14 @@
       <entry key="correlateOnly" value="false"/>
       <entry key="correlateScope" value="false"/>
       <entry key="deltaAggregation" value="false"/>
-      <entry key="enablePartitioning" value="false"/>
+      <entry key="enablePartitioning" value="true"/>
       <entry key="haltOnMaxError" value="false"/>
       <entry key="logAllowedActions" value="CorrelateMaintain, CorrelateNewAccount, CorrelateReassign, Create, Ignore"/>
       <entry key="noAutoCreateApplications" value="false"/>
       <entry key="noAutoCreateScopes" value="false"/>
       <entry key="noNeedsRefresh" value="false"/>
       <entry key="noOptimizeReaggregation" value="false"/>
+      <entry key="objectsPerPartition" value="1000"/>
       <entry key="promoteManagedAttributes" value="false"/>
       <entry key="refreshCertifications" value="false"/>
       <entry key="refreshScorecard" value="false"/>
