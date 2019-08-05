@@ -17,7 +17,6 @@
       <entry key="deltaAggregation" value="false"/>
       <entry key="enablePartitioning" value="true"/>
       <entry key="haltOnMaxError" value="false"/>
-      <entry key="logAllowedActions" value="CorrelateMaintain, CorrelateNewAccount, CorrelateReassign, Create, Ignore"/>
       <entry key="noAutoCreateApplications" value="false"/>
       <entry key="noAutoCreateScopes" value="false"/>
       <entry key="noNeedsRefresh" value="false"/>
