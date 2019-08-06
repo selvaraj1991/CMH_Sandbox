@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE TaskDefinition PUBLIC "sailpoint.dtd" "sailpoint.dtd">
-<TaskDefinition formPath="/monitor/tasks/accountAggregationTask.xhtml" name="AD Delta Account Aggregation" resultAction="Delete" subType="task_item_type_acct_aggregation" type="AccountAggregation">
+<TaskDefinition formPath="/monitor/tasks/accountAggregationTask.xhtml" name="AD Delta Account Aggregation" resultAction="Rename" subType="task_item_type_acct_aggregation" type="AccountAggregation">
   <Attributes>
     <Map>
       <entry key="TaskDefinition.runLengthAverage" value="2"/>
@@ -11,11 +11,11 @@
       <entry key="checkDeleted" value="false"/>
       <entry key="checkHistory" value="false"/>
       <entry key="checkPolicies" value="false"/>
-      <entry key="correlateEntitlements" value="false"/>
+      <entry key="correlateEntitlements" value="false"/> 
       <entry key="correlateOnly" value="false"/>
       <entry key="correlateScope" value="false"/>
       <entry key="deltaAggregation" value="true"/>
-      <entry key="enablePartitioning" value="false"/>
+      <entry key="enablePartitioning" value="true"/>
       <entry key="haltOnMaxError" value="false"/>
       <entry key="noAutoCreateApplications" value="false"/>
       <entry key="noAutoCreateScopes" value="false"/>
@@ -28,6 +28,7 @@
       <entry key="taskCompletionEmailNotify" value="Disabled"/>
       <entry key="taskCompletionEmailRecipients"/>
       <entry key="taskCompletionEmailTemplate"/>
+	  <entry key="objectsPerPartition" value="1000"/>
     </Map>
   </Attributes>
   <Description>Task template for application account scanning.</Description>
