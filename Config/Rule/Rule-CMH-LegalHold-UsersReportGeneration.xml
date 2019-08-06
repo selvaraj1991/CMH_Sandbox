@@ -47,10 +47,6 @@
 		List filterList = new ArrayList();
 		List userNameList = new ArrayList();
 
-		String userName = "";
-		String email = "";
-		String assignmentType = "";
-		String employeeId = "";
 		String identityRetention = "YES";
 		Filter stat = Filter.eq("identityRetention", identityRetention);
 		filterList.add(stat);
@@ -67,10 +63,10 @@
 		if (identityIterator != null) {
 			while (identityIterator.hasNext()) {
 				Identity identity = (Identity) identityIterator.next();
-				userName = identity.getAttribute("userName");
-				email = identity.getAttribute("email");
-				assignmentType = identity.getAttribute("assignmentType");
-				employeeId = identity.getAttribute("employeeId");
+				String userName = identity.getName();
+				String email = identity.getEmail();
+				String assignmentType = (String)identity.getAttribute("assignmentType");
+				String employeeId = (String)identity.getAttribute("employeeId");
 				if (userName != null) {
 					Map attrDetails = new HashMap();
 					attrDetails.put("Username", userName);

@@ -1056,7 +1056,7 @@ public String filterSpecialCharacter(String attrValue) {
 	return filterString;
 }
 
-
+/**Method acquires lock on identity object to update the identity attributes**/
 public Identity acquireLockOnIdentity(String identityName) {
 	log.debug("Entering acquireLockOnIdentity method");
 	int WAIT_TIMEOUT = 5;
@@ -1071,6 +1071,21 @@ public Identity acquireLockOnIdentity(String identityName) {
 	}
 	log.debug("Exiting acquireLockOnIdentity method");
 	return lockedIden;
+}
+
+/**Method is used to convert the Date from String type to Date type**/
+public Date getEpochDate(String customAttrName, String existingDate){
+	log.debug("Entering getEpochDate method");
+	Date newDate = null;
+	if(Util.isNotNullOrEmpty(customAttrName)){
+		String dateFormat = getCustomObject(customAttrName, "CMH-DateFormat");
+		if(Util.isNotNullOrEmpty(dateFormat)){
+			SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
+			newDate = sdf.parse(existingDate);
+		}
+	}
+	log.debug("Exiting getEpochDate method");
+	return newDate;
 }
   ]]></Source>
 </Rule>

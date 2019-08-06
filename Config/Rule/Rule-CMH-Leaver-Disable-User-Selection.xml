@@ -49,21 +49,9 @@
 		String empId = identity.getStringAttribute("employeeId");
 		String uName = identity.getName();
 		if(Util.isNotNullOrEmpty(empId) && Util.isNotNullOrEmpty(uName)) {
-			if(uName.contains("_old")){
-				uName = uName.substring(0,uName.indexOf("_old")).trim();
-				QueryOptions ops = new QueryOptions();
-				Filter userFilter = Filter.eq("otherEmpId",empId);
-				Filter userNameFilter = Filter.eq("userName",uName);
-				Filter finalFilter = Filter.and(userFilter,userNameFilter);
-				ops.add(finalFilter);
-				int count = context.countObjects(Identity.class,ops);
-				if(count>0){
-					disableUser = false; //User is conversion user
-				}
-			}else{
+			if(!uName.contains("_old")){
 				disableUser = true;   //User is not a conversion user
 			}
-
 		}
 	}
     log.debug("Proceed with Leaver Disable process for the user? :"+disableUser);

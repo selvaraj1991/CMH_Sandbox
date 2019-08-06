@@ -357,7 +357,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 			     finalUsername =finalUsername.toLowerCase();
 				 identity.setName(finalUsername);
 				 identity.setDisplayName(finalUsername);
-				 identity.setAttribute("userName",finalUsername);
+				 //identity.setAttribute("userName",finalUsername);
 				 if(hasEmail) {
 					identity.setAttribute("email",finalUsername + "%%CMH-Mail-Domain%%");
 				  }
