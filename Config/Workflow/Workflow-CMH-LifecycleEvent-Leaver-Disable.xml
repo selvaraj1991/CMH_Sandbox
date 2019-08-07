@@ -300,7 +300,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 			    	String deleteDate = sdf.format(deletetionDate);
 			    	log.debug("CMH-LifecycleEvent-Leaver-Disable :deleteDate : "+deleteDate);
 
-			    	iden.setAttribute("deletionDate",deleteDate);
+			    	iden.setAttribute("deletionDate",deletetionDate);
 			    	if(Util.nullSafeCaseInsensitiveEq(immeTermStat,"YES")) {
 			    	   iden.setAttribute("immediateOffboarder","NO");
 			    	}

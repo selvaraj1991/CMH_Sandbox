@@ -63,12 +63,13 @@
                         if (Util.nullSafeCaseInsensitiveEq(userStatus, "ACTIVE")) {
                             triggerConversion = true;
                         } else if (Util.nullSafeCaseInsensitiveEq(userStatus, "PREHIRE")) {
-                            String startDate = newIdentity.getStringAttribute("startDate");
+                            //String startDate = newIdentity.getStringAttribute("startDate");
+							Date startDate = newIdentity.getStringAttribute("startDate");
                             try {
-                                if (Util.isNotNullOrEmpty(startDate)) {
-                                    Date stDate = sdf.parse(startDate);
+                                if (startDate!=null) {
+                                    //Date stDate = sdf.parse(startDate);
                                     Date currDate = new Date();
-                                    int daysDiff = Util.getDaysDifference(stDate, currDate);
+                                    int daysDiff = Util.getDaysDifference(startDate, currDate);
                                     if (daysDiff > 0 && daysDiff <= 30) {
                                         triggerConversion = true;
                                     }

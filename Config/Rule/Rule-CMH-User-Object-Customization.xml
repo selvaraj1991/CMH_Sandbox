@@ -68,7 +68,7 @@
 
 	Logger log = Logger.getLogger("Rule.CMH-User-Object-Customization-Rule");
 	
-	public boolean isConversionWithFutureDate(String oldEmpId, String usrName, String startDate) {
+	public boolean isConversionWithFutureDate(String oldEmpId, String usrName, Date startDate) {
 		log.debug("Entering isConversionWithFutureDate method");
 		Custom customObj = context.getObjectByName(Custom.class, "CMH-DateFormat");
 		if (customObj != null) {
@@ -78,9 +78,9 @@
 				Date stDate = null;
 				Date currDate = new Date();
 				try {
-					if (Util.isNotNullOrEmpty(startDate)) {
-						stDate = sdf.parse(startDate);
-						if (Util.isNotNullOrEmpty(oldEmpId) && Util.isNotNullOrEmpty(usrName) && stDate.after(currDate)) {
+					if (startDate!=null) {
+						//stDate = sdf.parse(startDate);
+						if (Util.isNotNullOrEmpty(oldEmpId) && Util.isNotNullOrEmpty(usrName) && startDate.after(currDate)) {
 							return true;
 						}
 					}
@@ -187,7 +187,8 @@
 		} else {
 			String oldEmpId = object.getStringAttribute("OtherEmpId");
 			String usrName = object.getStringAttribute("Username");
-			String startDate = object.getStringAttribute("StartDate");
+			//String startDate = object.getStringAttribute("StartDate");
+			Date startDate = object.getAttribute("StartDate");
 			if (isConversionWithFutureDate(oldEmpId, usrName, startDate)) {
 				Custom fUsrObj = context.getObjectByName(Custom.class, "CMH-Custom-Future-Conversion-Users");
 				if (fUsrObj == null) {

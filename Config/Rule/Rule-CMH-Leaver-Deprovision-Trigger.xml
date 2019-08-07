@@ -63,12 +63,13 @@
 				String deletionStatus = newIdentity.getStringAttribute("deletionStatus");
 				String identityRetention = newIdentity.getStringAttribute("identityRetention");
 				if(Util.nullSafeCaseInsensitiveEq(status,"TERMINATED")){
-					String deletionDate = newIdentity.getStringAttribute("deletionDate");
-					if(Util.isNotNullOrEmpty(deletionDate)){
+					//String deletionDate = newIdentity.getStringAttribute("deletionDate");
+					Date deletionDate = newIdentity.getAttribute("deletionDate");
+					if(deletionDate!=null){
 						try{
-							Date delDate = sdf.parse(deletionDate);
+							//Date delDate = sdf.parse(deletionDate);
 							Date currDate = new Date();
-							if(currDate.after(delDate) && 
+							if(currDate.after(deletionDate) && 
 								!Util.nullSafeCaseInsensitiveEq(deletionStatus,"deleted") &&
 								!Util.nullSafeCaseInsensitiveEq(identityRetention,"YES")){
 								triggerStatus = true;

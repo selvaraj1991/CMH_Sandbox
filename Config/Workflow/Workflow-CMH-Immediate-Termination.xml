@@ -239,7 +239,7 @@
 					user.setInactive(true);
 					user.setAttribute("status","TERMINATED");
 					user.setAttribute("terminationDate", terminationDate);
-					user.setAttribute("deletionDate", deletionDateStr);
+					user.setAttribute("deletionDate", deletionDate);
 					user.setAttribute("immediateOffboarder","YES");
 					context.saveObject(user);
 					context.commitTransaction();

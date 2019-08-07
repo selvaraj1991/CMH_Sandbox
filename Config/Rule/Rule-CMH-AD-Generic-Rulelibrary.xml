@@ -727,18 +727,18 @@ public List doTargetedAggregation(String nativeId, String appName, String identi
 				 * @return true, if successful
 				 */
 
-public boolean startDateCheck(String startDate) {
+public boolean startDateCheck(Date startDate) {
 	log.debug("Entering startDateCheck method");
 	boolean flag = false;
 	if (null != startDate) {
-		Date userStartDate = null;
+		/*Date userStartDate = null;
 		try {
 			userStartDate = new SimpleDateFormat("MM/dd/yyyy").parse(startDate);
 		} catch(ParseException e) {
 			log.error("Error in startDateCheck method : " + e.getMessage());
-		}
+		}*/
 		Date currentDate = new Date();
-		int days = Util.getDaysDifference(userStartDate, currentDate);
+		int days = Util.getDaysDifference(startDate, currentDate);
 		if (days <= 30) {
 			flag = true;
 		} else {
