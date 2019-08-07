@@ -8,7 +8,12 @@
   </Attributes>
   <QuickLinkOptions allowSelf="true">
     <DynamicScopeRef>
-      <Reference class="sailpoint.object.DynamicScope" name="Everyone"/>
+      <Reference class="sailpoint.object.DynamicScope" name="CMH-LegalHoldAdmin-Scope"/>
+    </DynamicScopeRef>
+  </QuickLinkOptions>
+  <QuickLinkOptions allowSelf="true">
+    <DynamicScopeRef>
+      <Reference class="sailpoint.object.DynamicScope" name="CMH-IAMAdmin-Scope"/>
     </DynamicScopeRef>
   </QuickLinkOptions>
 </QuickLink>
