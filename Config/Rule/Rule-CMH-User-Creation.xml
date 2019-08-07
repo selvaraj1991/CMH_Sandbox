@@ -74,6 +74,7 @@
 			identity.setName(finalUsername);
 			account.setAttribute(usrName, finalUsername);
 			account.setDisplayName(finalUsername);
+			account.setIdentity(finalUsername);
 			if(Util.nullSafeCaseInsensitiveEq(userType,"Employee")){
 				account.setAttribute(workEmail, finalUsername + domain);
 			}else if (Util.nullSafeCaseInsensitiveEq(userType,"NonEmployee") && Util.nullSafeCaseInsensitiveEq(mailRequired,"Yes")) {
@@ -186,6 +187,10 @@
 						}
 						account.setAttribute(usrName, oldIdentityName);
 						account.setDisplayName(oldIdentityName);
+						account.setIdentity(oldIdentityName);
+					}else{
+						log.debug("Username & OtherEmpId is not null and user with OtherEmpId Status is Terminated, but username is different from the existing user, so creating user with unique name for identity "+employeeId);
+						createNewUser(firstName,lastName,middInitial,employeeId,userType,mailRequired,status);
 					}
 				}else{
 					log.debug("Username & OtherEmpId is not null and user with OtherEmpId Status is not Terminated, so creating user with unique name for identity "+employeeId);

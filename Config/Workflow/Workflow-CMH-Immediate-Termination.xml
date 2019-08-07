@@ -208,7 +208,7 @@
 			validationErrors = new ArrayList();
         }
         
-		Identity user = (Identity) context.getObjectByName(Identity.class,identityName);         	
+		/*Identity user = (Identity) context.getObjectByName(Identity.class,identityName);         	
 	    if (user != null) {
 	    	try {
 				String dateFormat = getCustomObject("terminationDateFormat", "CMH-DateFormat");
@@ -247,7 +247,7 @@
 			} catch (GeneralException e) {
 	            log.error("Error in updating identity attributes "+ e.getMessage());
 	        }
-        }
+        }*/
 
         if (isDebugEnabled) {
           	log.debug("CMH-Immediate-Termination: Updating Identity Attributes for "+ employeeId + " completed");
@@ -312,7 +312,7 @@
 								if(!Util.nullSafeCaseInsensitiveEq(userOnLegalHold,"YES")){
 									acctReq.add(new AttributeRequest("AC_NewParent",ProvisioningPlan.Operation.Set,terminatedOU));
 								}
-								acctReq.add(new AttributeRequest("mailNickname",ProvisioningPlan.Operation.Set,""));
+								//acctReq.add(new AttributeRequest("mailNickname",ProvisioningPlan.Operation.Set,"")); //uncomment this line of code once exchange is enabled
 								accountRequests.add(acctReq);
 							}
 						}
