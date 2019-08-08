@@ -3,13 +3,10 @@
 <sailpoint>
     <ImportAction name="merge">
         <ObjectConfig name="Identity">
-            <ObjectAttribute displayName="Deletion Date" editMode="ReadOnly" name="deletionDate" standard="true"
-                             type="string"/>
-            <ObjectAttribute displayName="Deletion Status" editMode="ReadOnly" extendedNumber="12" name="deletionStatus"
-                             standard="true" type="string"/>
-			<ObjectAttribute displayName="Immediate Offboarder" editMode="ReadOnly" extendedNumber="17" name="immediateOffboarder" type="string"/>
-            <ObjectAttribute displayName="att_first_name" editMode="ReadOnly" name="firstname" standard="true"
-                             type="string">
+            <ObjectAttribute displayName="Deletion Date" editMode="ReadOnly" name="deletionDate" standard="true" type="string"/>
+            <ObjectAttribute displayName="Deletion Status" editMode="ReadOnly" extendedNumber="2" name="deletionStatus" standard="true" type="string"/>
+			<ObjectAttribute displayName="Immediate Offboarder" editMode="ReadOnly" name="immediateOffboarder" type="string"/>
+            <ObjectAttribute displayName="att_first_name" editMode="ReadOnly" name="firstname" standard="true" type="string">
                 <AttributeSource name="FirstName">
                     <ApplicationRef>
                         <Reference class="sailpoint.object.Application" name="%%CMH-Infor-ApplicationName%%"/>
@@ -23,8 +20,7 @@
                     </AttributeTarget>
                 </AttributeTargets>
             </ObjectAttribute>
-            <ObjectAttribute displayName="att_last_name" editMode="ReadOnly" name="lastname" standard="true"
-                             type="string">
+            <ObjectAttribute displayName="att_last_name" editMode="ReadOnly" name="lastname" standard="true" type="string">
                 <AttributeSource name="LastName">
                     <ApplicationRef>
                         <Reference class="sailpoint.object.Application" name="%%CMH-Infor-ApplicationName%%"/>
@@ -66,16 +62,14 @@
 				  </AttributeTarget>
 				</AttributeTargets>
             </ObjectAttribute>
-            <ObjectAttribute displayName="Employee Created Date" editMode="ReadOnly" name="dateEmployeeRecordCreated"
-                             type="string">
+            <ObjectAttribute displayName="Employee Created Date" editMode="ReadOnly" name="dateEmployeeRecordCreated" type="string">
                 <AttributeSource name="DateEmployeeRecordCreated">
                     <ApplicationRef>
                         <Reference class="sailpoint.object.Application" name="%%CMH-Infor-ApplicationName%%"/>
                     </ApplicationRef>
                 </AttributeSource>
             </ObjectAttribute>
-            <ObjectAttribute displayName="Employee Updated Date" editMode="ReadOnly" name="dateEmployeeRecordUpdated"
-                             type="string">
+            <ObjectAttribute displayName="Employee Updated Date" editMode="ReadOnly" name="dateEmployeeRecordUpdated" type="string">
                 <AttributeSource name="DateEmployeeRecordUpdated">
                     <ApplicationRef>
                         <Reference class="sailpoint.object.Application" name="%%CMH-Infor-ApplicationName%%"/>
@@ -98,15 +92,14 @@
                     </ApplicationRef>
                 </AttributeSource>
             </ObjectAttribute>
-            <ObjectAttribute displayName="Display Name" editMode="ReadOnly" name="displayName" standard="true"
-                             type="string">
+            <ObjectAttribute displayName="Display Name" editMode="ReadOnly" name="displayName" standard="true" type="string">
                 <AttributeSource name="Username">
                     <ApplicationRef>
                         <Reference class="sailpoint.object.Application" name="%%CMH-Infor-ApplicationName%%"/>
                     </ApplicationRef>
                 </AttributeSource>
             </ObjectAttribute>
-            <ObjectAttribute displayName="Division" editMode="ReadOnly" name="division" type="string">
+            <ObjectAttribute displayName="Division" editMode="ReadOnly" namedColumn="true" name="division" type="string">
                 <AttributeSource name="Division">
                     <ApplicationRef>
                         <Reference class="sailpoint.object.Application" name="%%CMH-Infor-ApplicationName%%"/>
@@ -127,8 +120,7 @@
                     </ApplicationRef>
                 </AttributeSource>
             </ObjectAttribute>
-            <ObjectAttribute displayName="Location from PRIMARY_EDL" editMode="ReadOnly" name="glLocation"
-                             type="string">
+            <ObjectAttribute displayName="Location from PRIMARY_EDL" editMode="ReadOnly" name="glLocation" type="string">
                 <AttributeSource name="GLLocation">
                     <ApplicationRef>
                         <Reference class="sailpoint.object.Application" name="%%CMH-Infor-ApplicationName%%"/>
@@ -149,15 +141,14 @@
                     </ApplicationRef>
                 </AttributeSource>
             </ObjectAttribute>
-            <ObjectAttribute displayName="Employee ID" editMode="ReadOnly" extendedNumber="1" name="employeeId"
-                             type="string">
+            <ObjectAttribute displayName="Employee ID" editMode="ReadOnly" namedColumn="true" name="employeeId" type="string">
                 <AttributeSource name="Employee">
                     <ApplicationRef>
                         <Reference class="sailpoint.object.Application" name="%%CMH-Infor-ApplicationName%%"/>
                     </ApplicationRef>
                 </AttributeSource>
             </ObjectAttribute>
-            <ObjectAttribute displayName="Job Level" editMode="ReadOnly" name="jobLevel" type="string">
+            <ObjectAttribute displayName="Job Level" editMode="ReadOnly" namedColumn="true" name="jobLevel" type="string">
                 <AttributeSource name="JobLevel">
                     <ApplicationRef>
                         <Reference class="sailpoint.object.Application" name="%%CMH-Infor-ApplicationName%%"/>
@@ -192,8 +183,7 @@
                     </ApplicationRef>
                 </AttributeSource>
             </ObjectAttribute>
-            <ObjectAttribute displayName="Work Location" editMode="ReadOnly" extendedNumber="3" name="location"
-                             type="string">
+            <ObjectAttribute displayName="Work Location" editMode="ReadOnly" namedColumn="true" name="location" type="string">
                 <AttributeSource name="WorkLocation">
                     <ApplicationRef>
                         <Reference class="sailpoint.object.Application" name="%%CMH-Infor-ApplicationName%%"/>
@@ -207,7 +197,7 @@
                     </ApplicationRef>
                 </AttributeSource>
             </ObjectAttribute>
-            <ObjectAttribute displayName="Primary Work Assignment" editMode="ReadOnly" extendedNumber="4"
+            <ObjectAttribute displayName="Primary Work Assignment" editMode="ReadOnly"
                              name="primaryWork" type="string">
                 <AttributeSource name="PrimaryWorkAssignment">
                     <ApplicationRef>
@@ -215,15 +205,14 @@
                     </ApplicationRef>
                 </AttributeSource>
             </ObjectAttribute>
-            <ObjectAttribute displayName="Status" editMode="ReadOnly" extendedNumber="5" name="status" type="string">
+            <ObjectAttribute displayName="Status" editMode="ReadOnly" namedColumn="true" name="status" type="string">
                 <AttributeSource name="RelationshipStatus">
                     <ApplicationRef>
                         <Reference class="sailpoint.object.Application" name="%%CMH-Infor-ApplicationName%%"/>
                     </ApplicationRef>
                 </AttributeSource>
             </ObjectAttribute>
-            <ObjectAttribute displayName="User Type" editMode="ReadOnly" extendedNumber="6" name="userType"
-                             type="string">
+            <ObjectAttribute displayName="User Type" editMode="ReadOnly" namedColumn="true" name="userType" type="string">
                 <AttributeSource name="RelationshipToOrganization">
                     <ApplicationRef>
                         <Reference class="sailpoint.object.Application" name="%%CMH-Infor-ApplicationName%%"/>
@@ -245,15 +234,14 @@
                     </ApplicationRef>
                 </AttributeSource>
             </ObjectAttribute>
-            <ObjectAttribute displayName="Start Date" editMode="ReadOnly" extendedNumber="7" name="startDate"
-                             type="string">
+            <ObjectAttribute displayName="Start Date" editMode="ReadOnly" namedColumn="true" name="startDate" type="string">
                 <AttributeSource name="StartDate">
                     <ApplicationRef>
                         <Reference class="sailpoint.object.Application" name="%%CMH-Infor-ApplicationName%%"/>
                     </ApplicationRef>
                 </AttributeSource>
             </ObjectAttribute>
-            <ObjectAttribute displayName="Termination Date" editMode="ReadOnly" extendedNumber="8" name="terminationDate" type="string">
+            <ObjectAttribute displayName="Termination Date" editMode="ReadOnly" namedColumn="true" name="terminationDate" type="string">
 				<AttributeSource name="TerminationDate">
 				  <ApplicationRef>
 					<Reference class="sailpoint.object.Application" name="%%CMH-Infor-ApplicationName%%"/>
@@ -270,31 +258,21 @@
 				  </AttributeTarget>
 				</AttributeTargets>
 			</ObjectAttribute>
-            <ObjectAttribute displayName="UserName" editMode="ReadOnly" extendedNumber="9" name="userName"
-                             type="string">
-                <AttributeSource name="Username">
-                    <ApplicationRef>
-                        <Reference class="sailpoint.object.Application" name="%%CMH-Infor-ApplicationName%%"/>
-                    </ApplicationRef>
-                </AttributeSource>
-            </ObjectAttribute>
-            <ObjectAttribute displayName="Other Employee ID" editMode="ReadOnly" extendedNumber="15" name="otherEmpId"
-                             type="string">
+            <ObjectAttribute displayName="Other Employee ID" editMode="ReadOnly" namedColumn="true" name="otherEmpId" type="string">
                 <AttributeSource name="OtherEmpId">
                     <ApplicationRef>
                         <Reference class="sailpoint.object.Application" name="%%CMH-Infor-ApplicationName%%"/>
                     </ApplicationRef>
                 </AttributeSource>
             </ObjectAttribute>
-            <ObjectAttribute displayName="Manager ID" editMode="ReadOnly" extendedNumber="10" name="managerId"
-                             type="string">
+            <ObjectAttribute displayName="Manager ID" editMode="ReadOnly" namedColumn="true" name="managerId" type="string">
                 <AttributeSource name="Supervisor">
                     <ApplicationRef>
                         <Reference class="sailpoint.object.Application" name="%%CMH-Infor-ApplicationName%%"/>
                     </ApplicationRef>
                 </AttributeSource>
             </ObjectAttribute>
-            <ObjectAttribute displayName="att_email" editMode="UntilFeedValueChanges" name="email" standard="true"
+            <ObjectAttribute displayName="att_email" editMode="ReadOnly" name="email" standard="true"
                              type="string">
                 <AttributeSource name="WorkEmail">
                     <ApplicationRef>
@@ -302,24 +280,23 @@
                     </ApplicationRef>
                 </AttributeSource>
             </ObjectAttribute>
-            <ObjectAttribute displayName="att_manager" editMode="ReadOnly" groupFactory="true" name="manager"
-                             standard="true" type="sailpoint.object.Identity">
+            <ObjectAttribute displayName="att_manager" editMode="ReadOnly" groupFactory="true" name="manager" standard="true" type="sailpoint.object.Identity">
                 <AttributeSource name="SupvEmployeeID">
                     <ApplicationRef>
                         <Reference class="sailpoint.object.Application" name="%%CMH-Infor-ApplicationName%%"/>
                     </ApplicationRef>
                 </AttributeSource>
             </ObjectAttribute>
-            <ObjectAttribute displayName="Rehired" editMode="ReadOnly" extendedNumber="11" name="rehire" type="string">
+            <ObjectAttribute displayName="Rehired" editMode="ReadOnly" namedColumn="true" name="rehire" type="string">
                 <AttributeSource name="Rehire">
                     <ApplicationRef>
                         <Reference class="sailpoint.object.Application" name="%%CMH-Infor-ApplicationName%%"/>
                     </ApplicationRef>
                 </AttributeSource>
             </ObjectAttribute>
-            <ObjectAttribute displayName="Identity Retention" editMode="ReadOnly" extendedNumber="13"
+            <ObjectAttribute displayName="Identity Retention" editMode="ReadOnly" extendedNumber="3"
                              name="identityRetention" standard="true" type="string"/>
-            <ObjectAttribute displayName="Assignment Type" editMode="ReadOnly" extendedNumber="2" name="assignmentType"
+            <ObjectAttribute displayName="Assignment Type" editMode="ReadOnly" namedColumn="true" name="assignmentType"
                              type="string">
                 <AttributeSource name="AssignmentType">
                     <ApplicationRef>
@@ -327,9 +304,8 @@
                     </ApplicationRef>
                 </AttributeSource>
             </ObjectAttribute>
-            <ObjectAttribute displayName="User Conversion Processed" editMode="ReadOnly" extendedNumber="14"
-                             name="isConversionProcessed" type="string"/>
-            <ObjectAttribute displayName="Middle Initial" editMode="ReadOnly" extendedNumber="16" name="middleInitial"
+            <ObjectAttribute displayName="User Conversion Processed" editMode="ReadOnly" name="isConversionProcessed" type="string"/>
+            <ObjectAttribute displayName="Middle Initial" editMode="ReadOnly" name="middleInitial"
                              type="string">
                 <AttributeSource name="MiddleInitial">
                     <ApplicationRef>
@@ -344,7 +320,7 @@
                     </AttributeTarget>
                 </AttributeTargets>
             </ObjectAttribute>
-            <ObjectAttribute displayName="Preferred Email" editMode="ReadOnly" name="preferredEmail" type="string">
+            <ObjectAttribute displayName="Preferred Email" editMode="ReadOnly" extendedNumber="1" name="preferredEmail" type="string">
     		<AttributeSource name="OtherEmail">
                     <ApplicationRef>
                         <Reference class="sailpoint.object.Application" name="%%CMH-Infor-ApplicationName%%"/>
@@ -413,7 +389,7 @@
 				  </ApplicationRef>
 				</AttributeSource>
 			</ObjectAttribute>
-			   <ObjectAttribute displayName="PersonIsSupv" editMode="ReadOnly" extendedNumber="1" name="personIsSupv"
+			<ObjectAttribute displayName="PersonIsSupv" editMode="ReadOnly" name="personIsSupv"
                              type="string">
                 <AttributeSource name="PersonIsSupv">
                     <ApplicationRef>
