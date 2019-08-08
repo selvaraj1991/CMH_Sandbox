@@ -6,6 +6,9 @@
     Initially designed for non-rule based connectors to add SPPrivileged flag to an object, but could be used to do any transformations.
 	
 	This rule runs during infor aggregation and it runs prior to the Creation rule. It validates the user data and if the required data is missing then it will generate an audit for the user and the user won't be created in IIQ</Description>
+  <ReferencedRules>
+    <Reference class="sailpoint.object.Rule" name="CMH-AD-Generic-Rulelibrary"/>
+  </ReferencedRules>
   <Signature returnType="ResourceObject">
     <Inputs>
       <Argument name="log">
@@ -47,9 +50,6 @@
       </Argument>
     </Returns>
   </Signature>
-  <ReferencedRules>
-    <Reference class="sailpoint.object.Rule" name="CMH-AD-Generic-Rulelibrary"/>
-  </ReferencedRules>
   <Source><![CDATA[
 	import java.text.ParseException;
 	import java.text.SimpleDateFormat;
@@ -152,6 +152,27 @@
 	
 	log.debug("Validating the user details in CMH-User-Object-Customization-Rule fro the user: "+employeeId);
 	
+	
+	String CUSTOM_ATTR_NAME = "genericDateFormat";
+	String START_DATE = "StartDate";
+	String ORIENTATION_DATE= "OrientationDate";
+	String TERMINATION_DATE= "TerminationDate";
+	if(Util.isNotNullOrEmpty(object.getAttribute(START_DATE))){
+		String sDate = (String)object.getAttribute(START_DATE);
+		Date newDate = getEpochDate(CUSTOM_ATTR_NAME,sDate);
+		object.setAttribute(START_DATE,newDate);
+	}
+	if(Util.isNotNullOrEmpty(object.getAttribute(ORIENTATION_DATE))){
+		String sDate = (String)object.getAttribute(ORIENTATION_DATE);
+		Date newDate = getEpochDate(CUSTOM_ATTR_NAME,sDate);
+		object.setAttribute(ORIENTATION_DATE,newDate);
+	}
+	if(Util.isNotNullOrEmpty(object.getAttribute(TERMINATION_DATE))){
+		String sDate = (String)object.getAttribute(TERMINATION_DATE);
+		Date newDate = getEpochDate(CUSTOM_ATTR_NAME,sDate);
+		object.setAttribute(TERMINATION_DATE,newDate);
+	}
+	
 	if (isAttributeMissing) {
 		String attrValue = null;
 		Map map = new HashMap();
@@ -187,8 +208,7 @@
 		} else {
 			String oldEmpId = object.getStringAttribute("OtherEmpId");
 			String usrName = object.getStringAttribute("Username");
-			//String startDate = object.getStringAttribute("StartDate");
-			Date startDate = object.getAttribute("StartDate");
+    		Date startDate = object.getAttribute(START_DATE);
 			if (isConversionWithFutureDate(oldEmpId, usrName, startDate)) {
 				Custom fUsrObj = context.getObjectByName(Custom.class, "CMH-Custom-Future-Conversion-Users");
 				if (fUsrObj == null) {

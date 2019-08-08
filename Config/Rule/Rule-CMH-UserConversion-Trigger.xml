@@ -64,7 +64,7 @@
                             triggerConversion = true;
                         } else if (Util.nullSafeCaseInsensitiveEq(userStatus, "PREHIRE")) {
                             //String startDate = newIdentity.getStringAttribute("startDate");
-							Date startDate = newIdentity.getStringAttribute("startDate");
+							Date startDate = newIdentity.getAttribute("startDate");
                             try {
                                 if (startDate!=null) {
                                     //Date stDate = sdf.parse(startDate);
