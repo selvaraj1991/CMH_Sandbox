@@ -16,6 +16,8 @@
                     </entry>
                     <entry key="redirectingEmailNotifierAddress" value="admin@example.com"/>
                     <entry key="redirectingEmailNotifierFilename" value="C:\Log\Sailpoint\Email.log"/>
+				   <entry key="identitySnapshotMaxAge" value="365"/>
+				   <entry key="taskResultMaxAge" value="15"/>
                 </Map>
             </Attributes>
         </Configuration>
