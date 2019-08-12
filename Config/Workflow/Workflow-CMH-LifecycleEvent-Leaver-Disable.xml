@@ -232,9 +232,9 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   			   "disabled user OU in custom object is missing");
   			}
   			if(!Util.isEmpty(errorList)) {
-  			  log.error("CMH-LifecycleEvent-Leaver-Disable: Errors Found :"+Util.listToCsv(errorList));
+  			  log.error("Errors Found :"+Util.listToCsv(errorList));
   			}else if(isDebugEnabled){
-  				log.debug("CMH-LifecycleEvent-Leaver-Disable: Validation Successful");
+  				log.debug("Validation Successful");
   			}
   			return errorList;
 
@@ -264,10 +264,10 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   			Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-Leaver-Disable");
   			List connectedApps = getAppsToProcess(identityName,"CMH-Leaver-Custom-Object","connectedApplications");
   			if(connectedApps==null || connectedApps.size()<=0){
-  				log.info("CMH-LifecycleEvent-Leaver-Disable: There are no connected Apps associated with the user");
+  				log.info("There are no connected Apps associated with the user");
   			}
   			else if(isDebugEnabled){
-  				log.debug("CMH-LifecycleEvent-Leaver-Disable: List of Connected Apps to be deleted: "+connectedApps.toString());
+  				log.debug("List of Connected Apps to be deleted: "+connectedApps.toString());
   			}
   			return connectedApps;
 
@@ -282,11 +282,12 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
             import java.text.SimpleDateFormat;
             import org.apache.log4j.Logger;
   			import sailpoint.object.Identity;
+  			import sailpoint.api.ObjectUtil;
   			import sailpoint.tools.Util;
 
   			Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-Leaver-Disable");
 
-  			Identity iden = context.getObjectByName(Identity.class,identityName);
+  			Identity iden = acquireLockOnIdentity(identityName);
   			String immeTermStat = iden.getStringAttribute("immediateOffboarder");
   			if(iden != null){
   				iden.setInactive(true);
@@ -307,10 +308,12 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 	  				context.saveObject(iden);
 	  				context.commitTransaction();
   				}
+  			 }
+  			 ObjectUtil.unlockIdentity(context,iden);
   				if(isDebugEnabled){
-  					log.debug("CMH-LifecycleEvent-Leaver-Disable: Identity status "+identityName+" disabled succesfully");
+  			    log.debug("Identity status "+identityName+" disabled succesfully");
   				}
-  			}
+  			
       ]]></Source>
     </Script>
     <Transition to="Disable AD Application"/>
@@ -364,7 +367,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 				adPlan.setAccountRequests(accountRequests);
 			    adPlan.setIdentity(identity);
 			    if(isDebugEnabled){
-	  				log.debug("CMH-LifecycleEvent-Leaver-Disable: Plan created to Disable the AD account for the user : "+identityName);
+	  				log.debug("Plan created to Disable the AD account for the user : "+identityName);
 	  			}
 
   			   return adPlan;
@@ -444,7 +447,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 				Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-Leaver-Disable");
 
 		        if (isDebugEnabled) {
-		          log.debug("CMH-LifecycleEvent-Leaver-Disable: Creating ServiceNow Ticket on disablement of user");
+		          log.debug("Creating ServiceNow Ticket on disablement of user");
 		        }
 				if(validationErrors==null){
 				validationErrors = new ArrayList();
@@ -484,7 +487,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 			  	Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-Leaver-Disable");
 
 			  	if (isDebugEnabled) {
-		          log.debug("CMH-LifecycleEvent-Leaver-Disable: Single Account Aggregation");
+		          log.debug("Single Account Aggregation");
 		        }
 
 		        if (validationErrors == null) {
@@ -513,7 +516,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 					}
 				 }
 			    if(isDebugEnabled){
-	  				log.debug("CMH-LifecycleEvent-Leaver-Disable: Exiting Single Account Aggregation");
+	  				log.debug("Exiting Single Account Aggregation");
 	  			 }
   			 return validationErrors;
       ]]></Source>
@@ -546,7 +549,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 				validationErrors = new ArrayList();
 			}
 			if(wfcontext.getRootWorkflowCase().getMessages() != null && null != wfcontext.getRootWorkflowCase().getMessagesByType(Message.Type.Error)){
-				log.error("CMH-LifecycleEvent-Leaver-Disable: Error occured in leaver process: "+wfcontext.getRootWorkflowCase().getMessagesByType(Message.Type.Error));
+				log.error("Error occured in leaver process: "+wfcontext.getRootWorkflowCase().getMessagesByType(Message.Type.Error));
 				List errorMessagesList = wfcontext.getRootWorkflowCase().getMessagesByType(Message.Type.Error);
 				String errorMessagesFromWfc = Util.listToCsv(errorMessagesList);
 				validationErrors.add(errorMessagesFromWfc);
@@ -569,7 +572,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   			}
 
   			if(isDebugEnabled){
-  			    log.debug("CMH-LifecycleEvent-Leaver-Disable: Check Status step : Audit Event Generated");
+  			    log.debug("Check Status step : Audit Event Generated");
 				log.debug("Ending the LifecycleEvent-Leaver-Disable Workflow for the user "+identityName);
   			}
 

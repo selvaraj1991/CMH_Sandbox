@@ -36,10 +36,10 @@
   				validationErrors = new ArrayList();
   			}
   			if(Util.isNullOrEmpty(identityName)){
-  				validationErrors.add("CMH-Create-AD-Account-Workflow: identityName is null, not referenced properly from the parent workflow");
+  				validationErrors.add("identityName is null, not referenced properly from the parent workflow");
   			}
   			if(Util.isNullOrEmpty(adAppName)){
-  				validationErrors.add("CMH-Create-AD-Account-Workflow: adAppName is null, not referenced properly from the parent workflow");
+  				validationErrors.add("adAppName is null, not referenced properly from the parent workflow");
   			}
   			return validationErrors;
   		]]>
@@ -57,7 +57,7 @@
 		
 		Logger log = Logger.getLogger("Workflow.CMH-Create-AD-Account");
 		
-		log.info("CMH-Create-AD-Account-Workflow: Building Plan to create AD account");
+		log.info("Building Plan to create AD account");
 		
 		List acctReqs = new ArrayList();
 		Identity iden = context.getObjectByName(Identity.class, identityName);
@@ -70,7 +70,7 @@
 		adPlan.setAccountRequests(acctReqs);
 		adPlan.setIdentity(iden);
 		
-		log.info("CMH-Create-AD-Account-Workflow: Plan is generated to create AD account");
+		log.info("Plan is generated to create AD account");
 		
 		return adPlan;
 		]]>

@@ -235,9 +235,9 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   			    errorList.add("User manager must have email , Manager mail cannot be null");
   			}
   			if(!Util.isEmpty(errorList)) {
-  			  log.error("CMH-LifecycleEvent-Joiner: Errors Found :"+Util.listToCsv(errorList));
+  			  log.error("Errors Found :"+Util.listToCsv(errorList));
   			}else if(isDebugEnabled){
-  				log.debug("CMH-LifecycleEvent-Joiner: Validation Successful");
+  				log.debug("Validation Successful");
   			}
   			return errorList;
 			  
@@ -417,7 +417,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 			   validationErrors.add("AD Link does exists");
 			}
 			if(wfcontext.getRootWorkflowCase().getMessages() != null && null != wfcontext.getRootWorkflowCase().getMessagesByType(Message.Type.Error)){
-				log.error("CMH-LifecycleEvent-Joiner: Error occured in leaver process: "+wfcontext.getRootWorkflowCase().getMessagesByType(Message.Type.Error));
+				log.error("Error occured in leaver process: "+wfcontext.getRootWorkflowCase().getMessagesByType(Message.Type.Error));
 				List errorMessagesList = wfcontext.getRootWorkflowCase().getMessagesByType(Message.Type.Error);
 				String errorMessagesFromWfc = Util.listToCsv(errorMessagesList);
 				validationErrors.add(errorMessagesFromWfc);
@@ -439,7 +439,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   			
   			
   			if(isDebugEnabled){
-  			    log.debug("CMH-LifecycleEvent-Joiner: Check Status step : Audit Event Generated");
+  			    log.debug("Check Status step : Audit Event Generated");
   			    log.debug("Ending the CMH-LifecycleEvent-Joiner Workflow for the user "+identityName);
   			}
 		

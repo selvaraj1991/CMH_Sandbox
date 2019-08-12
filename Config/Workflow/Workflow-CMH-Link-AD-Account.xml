@@ -45,7 +45,7 @@
 			Logger log = Logger.getLogger("Workflow.CMH-Link-AD-Account");
 			
 			if(isDebugEnabled){
-				log.debug("CMH-Link-AD-Account: Building the plan to link the AD application account from User: "+oldIdentityName+" To User: "+newIdentityName);
+				log.debug("Building the plan to link the AD application account from User: "+oldIdentityName+" To User: "+newIdentityName);
 			}
 			
 			Identity srcObj = context.getObjectByName(Identity.class, oldIdentityName);  
@@ -82,7 +82,7 @@
 			plan.setSource(sailpoint.object.Source.LCM);    
 			
 			if(isDebugEnabled){
-				log.debug("CMH-Link-AD-Account: Plan generated to link the existing AD account of "+oldIdentityName+" to new User : "+newIdentityName);
+				log.debug("Plan generated to link the existing AD account of "+oldIdentityName+" to new User : "+newIdentityName);
 			} 
  
 			Provisioner provisioner = new Provisioner(context);  

@@ -116,7 +116,7 @@
 				if(iden!=null){
 					userName = iden.getName();
 					if(isDebugEnabled)	{
-						log.debug("CMH-Immediate-Termination-Process-Workflow:User selected :"+userName);
+						log.debug("User selected :"+userName);
 					}
 					if(Util.isNotNullOrEmpty(userName)){
 						wfcontext.getRootWorkflowCase().put("identityName",userName);
@@ -143,20 +143,20 @@
   			
   			Logger log = Logger.getLogger("Workflow.CMH-Immediate-Termination");;
 			if(isDebugEnabled)	{
-				log.debug("CMH-Immediate-Termination-Process-Workflow: Validating the Data");
+				log.debug("Validating the Data");
 			}
   			List errorList = new ArrayList();
   			if(Util.isNullOrEmpty(adAppName) || Util.isNullOrEmpty(terminatedOU)){
-  				log.error("CMH-Immediate-Termination-Process-Workflow: Custom object not configured properly");
-  				errorList.add("CMH-Immediate-Termination-Process-Workflow: Custom object not configured properly");
+  				log.error("Custom object not configured properly");
+  				errorList.add("Custom object not configured properly");
   			}
   			if(Util.isNullOrEmpty(identityName)){
-  				log.error("CMH-Immediate-Termination-Process-Workflow: identityName is null");
-  				errorList.add("CMH-Immediate-Termination-Process-Workflow: identityName is null");
+  				log.error("identityName is null");
+  				errorList.add("identityName is null");
   			}
   			if(Util.isNullOrEmpty(employeeId)){
-  				log.error("CMH-Immediate-Termination-Process-Workflow: employeeId is null");
-  				errorList.add("CMH-Immediate-Termination-Process-Workflow: employeeId is null");
+  				log.error("employeeId is null");
+  				errorList.add("employeeId is null");
   			}
   			return errorList;
   		]]>
@@ -170,12 +170,12 @@
   				Logger log = Logger.getLogger("Workflow.CMH-Immediate-Termination");;
   				if(validationErrors==null || validationErrors.size()<=0){
 					if(isDebugEnabled)	{
-						log.debug("CMH-Immediate-Termination-Process-Workflow: No Validation Errors");
+						log.debug("No Validation Errors");
 					}
   					return true;
   				}
 				if(isDebugEnabled)	{
-					log.debug("CMH-Immediate-Termination-Process-Workflow: There is a Validation Errors");
+					log.debug("There is a Validation Errors");
 				}
   				return false;
   			]]>
@@ -201,7 +201,7 @@
        	Logger log = Logger.getLogger("Workflow.CMH-Immediate-Termination");;
 
         if (isDebugEnabled) {
-			log.debug("CMH-Immediate-Termination: Updating Identity Attributes for "+ employeeId);
+			log.debug("Updating Identity Attributes for "+ employeeId);
         }
 
         if (validationErrors == null) {
@@ -250,7 +250,7 @@
         }*/
 
         if (isDebugEnabled) {
-          	log.debug("CMH-Immediate-Termination: Updating Identity Attributes for "+ employeeId + " completed");
+          	log.debug("Updating Identity Attributes for "+ employeeId + " completed");
         }
         return validationErrors;
         
@@ -277,7 +277,7 @@
         Logger log = Logger.getLogger("Workflow.CMH-Immediate-Termination");;
 		
         if (isDebugEnabled) {
-        	log.debug("CMH-Immediate-Termination: Disable AD Account for "+ employeeId + " started");
+        	log.debug("Disable AD Account for "+ employeeId + " started");
         }
 
         if (validationErrors == null) {
@@ -288,14 +288,14 @@
 		
 		Identity user = context.getObjectByName(Identity.class,identityName);
 		if(isDebugEnabled)	{
-			log.debug("CMH-Immediate-Termination: identityName :"+identityName);
+			log.debug("identityName :"+identityName);
 		}
         if (null != user) {
         	try {
               	Application app = context.getObjectByName(Application.class,adAppName);
                 List accountRequests = new ArrayList();
 				if(isDebugEnabled)	{
-					log.debug("CMH-Immediate-Termination: adAppName :"+adAppName);
+					log.debug("adAppName :"+adAppName);
 				}
                 if (app != null) {
                		IdentityService idnService = new IdentityService(context);
@@ -328,7 +328,7 @@
 		} 
 
         if (isDebugEnabled) {
-          log.debug("CMH-Immediate-Termination: Plan for disabling the AD account is generated for the user : "+identityName);
+          log.debug("Plan for disabling the AD account is generated for the user : "+identityName);
         }
         return adPlan;
     ]]>
@@ -413,7 +413,7 @@
 		Logger log = Logger.getLogger("Workflow.CMH-Immediate-Termination");;
 		
 		if(isDebugEnabled){
-			log.debug("CMH-Immediate-Termination: Generating service now ticket for disconnected applications");
+			log.debug("Generating service now ticket for disconnected applications");
 		}
 		
 		Object ticketObj = generateSnowTicket(identityName, "CMH-Service-Ticket-Configuration-Object", "DISABLE");
@@ -424,7 +424,7 @@
 			}else if(ticketObj instanceof String) {
 				String snowTicketId = (String) ticketObj;	
 				if(isDebugEnabled)	{
-					log.debug("CMH-Immediate-Termination: Service Now ID :  "+snowTicketId);
+					log.debug("Service Now ID :  "+snowTicketId);
 				}
 	            wfcontext.getWorkflowCase().put("snowTicketId",snowTicketId);					  
 	      	}else {
@@ -531,7 +531,7 @@
   			auditWrite(action,source,target,attrName,attrVal,strMap);
   			
 			if(isDebugEnabled)	{
-				log.debug("CMH_ImmediateTermination: Check Status step : Audit Event Generated");
+				log.debug("Check Status step : Audit Event Generated");
 				log.debug("Ending the CMH_ImmediateTermination Workflow for the user "+identityName);
 			}
   			

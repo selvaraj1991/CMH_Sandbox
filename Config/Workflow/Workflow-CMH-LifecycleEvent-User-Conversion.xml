@@ -376,9 +376,9 @@
 
   			if(!Util.isEmpty(errorList))
   			{
-  				log.error("CMH-LifecycleEvent-User-Conversion: Errors Found :"+Util.listToCsv(errorList));
+  				log.error("Errors Found :"+Util.listToCsv(errorList));
   			}else if(isDebugEnabled){
-  				log.debug("CMH-LifecycleEvent-User-Conversion: Validation Successful");
+  				log.debug("Validation Successful");
   			}
 
   			return errorList;
@@ -403,16 +403,16 @@
   <Step icon="Default" name="Update Identity" posX="285" posY="210">
     <Script>
       <Source><![CDATA[
-
+            import sailpoint.api.ObjectUtil;
   			import sailpoint.object.Identity;
 
-  			Identity iden = context.getObjectByName(Identity.class,identityName);
+  			Identity iden = acquireLockOnIdentity(identityName);
   			if(iden!=null){
   				iden.setAttribute("isConversionProcessed","YES");
   				context.saveObject(iden);
   				context.commitTransaction();
   			}
-
+            ObjectUtil.unlockIdentity(context,iden);
   		]]></Source>
     </Script>
     <Transition to="Check AD Status"/>
@@ -429,7 +429,7 @@
 
   			Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-User-Conversion");
 
-  			log.debug("CMH-LifecycleEvent-User-Conversion: Check if the AD account of previous user is disabled");
+  			log.debug("Check if the AD account of previous user is disabled");
   			boolean isADdisabled = false;
   			if(oldEmpName!=null){
   				Identity iden = context.getObjectByName(Identity.class,oldEmpName);
@@ -680,7 +680,7 @@
   			Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-User-Conversion");
 
   			if(isDebugEnabled){
-  				log.debug("CMH-LifecycleEvent-User-Conversion: Check Status step : Checking for errors");
+  				log.debug("Check Status step : Checking for errors");
   			}
 
   			if(wfcontext.getRootWorkflowCase().getMessages()!=null && wfcontext.getRootWorkflowCase().getMessagesByType(Message.Type.Error)!=null){
@@ -692,7 +692,7 @@
   				validationErrors.add(errorMessage);
 
   				if(isDebugEnabled){
-	  				log.debug("CMH-LifecycleEvent-User-Conversion: Check Status step : Errors Found : "+Util.listToCsv(validationErrors));
+	  				log.debug("Check Status step : Errors Found : "+Util.listToCsv(validationErrors));
 	  			}
   			}
 

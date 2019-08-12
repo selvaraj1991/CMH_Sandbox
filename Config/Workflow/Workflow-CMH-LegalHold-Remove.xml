@@ -139,7 +139,7 @@
 				}
   			}
   			if (isDebugEnabled) {
-				log.debug("CMH-LegalHold-Remove-Workflow: Legal Hold user's username "+identityName);
+				log.debug("Legal Hold user's username "+identityName);
 			}
   		]]>
   		</Source>
@@ -157,24 +157,24 @@
   			
   			List errorMessages = new ArrayList();
 			if(Util.isNullOrEmpty(identityName)){
-				log.error("CMH-LegalHold-Remove-Workflow: identityName is NULL");
-				errorMessages.add("CMH-LegalHold-Remove-Workflow: identityName is NULL");
+				log.error("identityName is NULL");
+				errorMessages.add("identityName is NULL");
 			}
 			if(Util.isNullOrEmpty(assignmentType)){
-				log.error("CMH-LegalHold-Remove-Workflow: assignmentType is NULL");
-				errorMessages.add("CMH-LegalHold-Remove-Workflow: assignmentType is NULL");
+				log.error("assignmentType is NULL");
+				errorMessages.add("assignmentType is NULL");
 			}
 			if(Util.isNullOrEmpty(userStatus)){
-				log.error("CMH-LegalHold-Remove-Workflow: userStatus is NULL");
-				errorMessages.add("CMH-LegalHold-Remove-Workflow: userStatus is NULL");
+				log.error("userStatus is NULL");
+				errorMessages.add("userStatus is NULL");
 			}
 			if(Util.isNullOrEmpty(employeeId)){
-				log.error("CMH-LegalHold-Remove-Workflow: employeeId is NULL");
-				errorMessages.add("CMH-LegalHold-Remove-Workflow: employeeId is NULL");
+				log.error("employeeId is NULL");
+				errorMessages.add("employeeId is NULL");
 			}
 			if(Util.isNullOrEmpty(LegalHold_Group)){
-				log.error("CMH-LegalHold-Remove-Workflow: Custom object is not configured properly-Unable to get the LegalHold group");
-				errorMessages.add("CMH-LegalHold-Remove-Workflow: Custom object is not configured properly-Unable to get the LegalHold group");
+				log.error("Custom object is not configured properly-Unable to get the LegalHold group");
+				errorMessages.add("Custom object is not configured properly-Unable to get the LegalHold group");
 			}
 			return errorMessages;
   		]]>
@@ -276,7 +276,7 @@
 			
 			Logger log = Logger.getLogger("Workflow.CMH-LegalHold-Remove");
 			if (isDebugEnabled) {
-				log.debug("CMH-LegalHold-Remove-Workflow: Generating plan to move the user AD account to appropriate OU");
+				log.debug("Generating plan to move the user AD account to appropriate OU");
 			}
 			ProvisioningPlan plan = new ProvisioningPlan();
 			Identity iden = context.getObjectByName(Identity.class,identityName);
@@ -396,13 +396,14 @@
       <Source>
       <![CDATA[
   			import org.apache.log4j.Logger;
+  			import sailpoint.api.ObjectUtil;
   			import sailpoint.object.Identity;
   			import sailpoint.tools.Message;
   			import sailpoint.tools.Util;
   			
   			Logger log = Logger.getLogger("Workflow.CMH-LegalHold-Remove");
   		
-  			log.debug("CMH-LegalHold-Remove-Workflow: Check Status step : Checking for errors");
+  			log.debug("Check Status step : Checking for errors");
   			
   			
   			if(wfcontext.getRootWorkflowCase().getMessages()!=null && wfcontext.getRootWorkflowCase().getMessagesByType(Message.Type.Error)!=null){
@@ -411,12 +412,13 @@
   				log.error("CMH_ImmediateTermination: Check Status step : Errors Found : "+errorMessage);	
   			}else{
   				if(identityName!=null){
-				Identity iden = context.getObjectByName(Identity.class,identityName);
+				    Identity iden = acquireLockOnIdentity(identityName);
 					if(iden!=null){					
 						iden.setAttribute("identityRetention","NO");
 						context.saveObject(iden);
 						context.commitTransaction();
 					}
+					ObjectUtil.unlockIdentity(context,iden);
 				}
   			}
 			

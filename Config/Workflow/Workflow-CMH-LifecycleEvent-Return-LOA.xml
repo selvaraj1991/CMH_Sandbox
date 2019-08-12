@@ -186,20 +186,20 @@
   			
   			List errorMessages = new ArrayList();
 			if(Util.isNullOrEmpty(userType)){
-				log.error("CMH-LifeycycleEvent-Return-LOA-Workflow: userType is NULL");
-				errorMessages.add("CMH-LifeycycleEvent-Return-LOA-Workflow: userType is NULL");
+				log.error("userType is NULL");
+				errorMessages.add("userType is NULL");
 			}
 			if(Util.isNullOrEmpty(LOA_Group)){
-				log.error("CMH-LifeycycleEvent-Return-LOA-Workflow: LOA_Group is NULL : Custom object is not configured properly");
-				errorMessages.add("CMH-LifeycycleEvent-Return-LOA-Workflow: LOA_Group is NULL : Custom object is not configured properly");
+				log.error("LOA_Group is NULL : Custom object is not configured properly");
+				errorMessages.add("LOA_Group is NULL : Custom object is not configured properly");
 			}
 			if(Util.isNullOrEmpty(adAppName)){
-				log.error("CMH-LifeycycleEvent-Return-LOA-Workflow: adAppName is NULL : Custom object is not configured properly");
-				errorMessages.add("CMH-LifeycycleEvent-Return-LOA-Workflow: adAppName is NULL : Custom object is not configured properly");
+				log.error("adAppName is NULL : Custom object is not configured properly");
+				errorMessages.add("adAppName is NULL : Custom object is not configured properly");
 			}
 			if(Util.isNullOrEmpty(employeeId)){
-				log.error("CMH-LifeycycleEvent-Return-LOA-Workflow: employeeId is NULL");
-				errorMessages.add("CMH-LifeycycleEvent-Return-LOA-Workflow: employeeId is NULL");
+				log.error("employeeId is NULL");
+				errorMessages.add("employeeId is NULL");
 			}
 			return errorMessages;
   		]]>
@@ -223,14 +223,16 @@
   	<Script>
   		<Source>
   		<![CDATA[
+  		    import sailpoint.api.ObjectUtil;
   			import sailpoint.object.Identity;
   			
-  			Identity iden = context.getObjectByName(Identity.class,identityName);
+  			Identity iden =acquireLockOnIdentity(identityName);
   			if(iden!=null){
   				iden.setInactive(false);
   				context.saveObject(iden);
   				context.commitTransaction();
   			}
+  			ObjectUtil.unlockIdentity(context,iden);
   		]]>
   		</Source>
   	</Script>
@@ -246,10 +248,10 @@
   			Logger log = Logger.getLogger("Workflow.CMH-LifeycycleEvent-Return-LOA");
   			List connectedApps = getAppsToProcess(identityName,"CMH-Leaver-Custom-Object","connectedApplications");
   			if(connectedApps==null || connectedApps.size()<=0){
-  				log.info("CMH-LifeycycleEvent-Return-LOA-Workflow: There are no connected Apps associated with the user");
+  				log.info("There are no connected Apps associated with the user");
   			}
   			else if(isDebugEnabled){
-  				log.debug("CMH-LifeycycleEvent-Return-LOA-Workflow: List of Connected Apps associated with the user: "+connectedApps.toString());
+  				log.debug("List of Connected Apps associated with the user: "+connectedApps.toString());
   			}
   			return connectedApps;
   		]]>
@@ -287,7 +289,7 @@
 			
 			Logger log = Logger.getLogger("Workflow.CMH-LifeycycleEvent-Return-LOA");
 			if (isDebugEnabled) {
-				log.debug("CMH-LifeycycleEvent-Return-LOA-Workflow: Generating plan to move the user AD account to appropriate OU");
+				log.debug("Generating plan to move the user AD account to appropriate OU");
 			}
 			ProvisioningPlan plan = new ProvisioningPlan();
 			List accountRequests = new ArrayList();
@@ -400,7 +402,7 @@
   			Logger log = Logger.getLogger("Workflow.CMH-LifeycycleEvent-Return-LOA");
   			
   			if(isDebugEnabled){
-  				log.debug("CMH-LifeycycleEvent-Return-LOA-Workflow: Generating service now ticket");
+  				log.debug("Generating service now ticket");
   			}
   			Object ticketObj = generateSnowTicket(identityName, "CMH-Service-Ticket-Configuration-Object", "Enable");
   			String snowId = null;
@@ -411,7 +413,7 @@
 				}else if(ticketObj instanceof String) {
 					snowId = (String) ticketObj;	
 					if(isDebugEnabled)	{
-						log.debug("CMH-LifeycycleEvent-Return-LOA-Workflow: Service Now ID :  "+snowId);
+						log.debug("Service Now ID :  "+snowId);
 					}
 		            wfcontext.getWorkflowCase().put("snowTicketId",snowId);					  
 		      	}else {
@@ -437,7 +439,7 @@
   			
   			Logger log = Logger.getLogger("Workflow.CMH-LifeycycleEvent-Return-LOA");
   		
-  			log.debug("CMH-LifeycycleEvent-Return-LOA-Workflow: Check Status step : Checking for errors");
+  			log.debug("Check Status step : Checking for errors");
   			
   			if(validationErrors==null){
   				validationErrors = new ArrayList();
@@ -446,10 +448,10 @@
   			if(wfcontext.getRootWorkflowCase().getMessages()!=null && wfcontext.getRootWorkflowCase().getMessagesByType(Message.Type.Error)!=null){
   				List errorMessagesList = wfcontext.getRootWorkflowCase().getMessagesByType(Message.Type.Error);
   				String errorMessage = Util.listToCsv(errorMessagesList);
-  				log.error("CMH-LifeycycleEvent-Return-LOA-Workflow: Check Status step : Errors Found : "+errorMessage);
+  				log.error("Check Status step : Errors Found : "+errorMessage);
   				validationErrors.add(errorMessage);	
   			}else if(!Util.isEmpty(validationErrors)){
-  				log.error("CMH-LifeycycleEvent-Return-LOA-Workflow: Check Status step : Errors Found : "+Util.listToCsv(validationErrors));
+  				log.error("Check Status step : Errors Found : "+Util.listToCsv(validationErrors));
   			}
 			
 			String action = null;
