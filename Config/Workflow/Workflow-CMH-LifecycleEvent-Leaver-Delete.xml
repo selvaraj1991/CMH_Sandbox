@@ -147,14 +147,14 @@
   			List errorList = new ArrayList(); 
   			Custom custom = context.getObjectByName(Custom.class,"CMH-Leaver-Custom-Object");
   			if(custom==null || custom.getList("connectedApplications")==null){
-  				errorList.add("CMH-LifecycleEvent-Leaver-Delete:Custom Object => CMH-Leaver-Custom-Object  is not configured properly");
+  				errorList.add("Custom Object => CMH-Leaver-Custom-Object  is not configured properly");
   			}
   			  						
   			if(!Util.isEmpty(errorList))
   			{
-  				log.error("CMH-LifecycleEvent-Leaver-Delete: Errors Found :"+Util.listToCsv(errorList));
+  				log.error("Errors Found :"+Util.listToCsv(errorList));
   			}else if(isDebugEnabled){
-  				log.debug("CMH-LifecycleEvent-Leaver-Delete: Validation Successful");
+  				log.debug("Validation Successful");
   			}
   			
   			return errorList;
@@ -200,10 +200,10 @@
   			Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-Leaver-Delete");
   			List connectedApps = getAppsToProcess(identityName,"CMH-Leaver-Custom-Object","connectedApplications");
   			if(connectedApps==null || connectedApps.size()<=0){
-  				log.info("CMH-LifecycleEvent-Leaver-Delete: There are no connected Apps associated with the user");
+  				log.info("There are no connected Apps associated with the user");
   			}
   			else if(isDebugEnabled){
-  				log.debug("CMH-LifecycleEvent-Leaver-Delete: List of Connected Apps to be deleted: "+connectedApps.toString());
+  				log.debug("List of Connected Apps to be deleted: "+connectedApps.toString());
   			}
   			return connectedApps;
   		]]>
@@ -226,7 +226,7 @@
   			Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-Leaver-Delete");
   			
   			if(isDebugEnabled){
-  				log.debug("CMH-LifecycleEvent-Leaver-Delete: Building Provisioning Plan for deleting the accounts of User: "+identityName);
+  				log.debug("Building Provisioning Plan for deleting the accounts of User: "+identityName);
   			}
   			
   			ProvisioningPlan plan = new ProvisioningPlan();
@@ -256,7 +256,7 @@
 	  		plan.setAccountRequests(accountRequests);
   			
   			if(isDebugEnabled){
-  				log.debug("CMH-LifecycleEvent-Leaver-Delete: Plan created to delete the AD accounts of User : "+identityName);
+  				log.debug("Plan created to delete the AD accounts of User : "+identityName);
   			}
   			
   			return plan;
@@ -327,7 +327,7 @@
   			Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-Leaver-Delete");
   			
   			if(isDebugEnabled){
-  				log.debug("CMH-LifecycleEvent-Leaver-Delete: Generating service now ticket");
+  				log.debug("Generating service now ticket");
   			}
   			
   			if(validationErrors==null){
@@ -341,12 +341,12 @@
   				if(snowResponse instanceof String){
   					snowId = (String)snowResponse;
   					if(isDebugEnabled){
-		  				log.debug("CMH-LifecycleEvent-Leaver-Delete: Service Now ticket generated successfully");
+		  				log.debug("Service Now ticket generated successfully");
 		  			}
   				}else if(snowResponse instanceof List){
   					List errList = (List)snowResponse;
   					validationErrors.add(errList);
-		  			log.error("CMH-LifecycleEvent-Leaver-Delete: Error occured while generating the serive now ticket "+Util.listToCsv(validationErrors));
+		  			log.error("Error occured while generating the serive now ticket "+Util.listToCsv(validationErrors));
   				}
   			}
   			wfcontext.getWorkflowCase().put("validationErrors",validationErrors);
@@ -371,7 +371,7 @@
   			Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-Leaver-Delete");
   			
   			if(isDebugEnabled){
-  				log.debug("CMH-LifecycleEvent-Leaver-Delete: Check Status step : Checking for errors");
+  				log.debug("Check Status step : Checking for errors");
   			}
   			
   			if(wfcontext.getRootWorkflowCase().getMessages()!=null && wfcontext.getRootWorkflowCase().getMessagesByType(Message.Type.Error)!=null){
@@ -383,7 +383,7 @@
   				validationErrors.add(errorMessage);
   				
   				if(isDebugEnabled){
-	  				log.debug("CMH-LifecycleEvent-Leaver-Delete: Check Status step : Errors Found : "+Util.listToCsv(validationErrors));
+	  				log.debug("Check Status step : Errors Found : "+Util.listToCsv(validationErrors));
 	  			}
   			}
   			
@@ -416,7 +416,7 @@
   			
   			
   			if(isDebugEnabled){
-  				log.debug("CMH-LifecycleEvent-Leaver-Delete: Check Status step : Audit Event Generated");
+  				log.debug("Check Status step : Audit Event Generated");
   				log.debug("Ending the Leaver Deprovisioning Workflow for the user "+identityName);
   			}
   			

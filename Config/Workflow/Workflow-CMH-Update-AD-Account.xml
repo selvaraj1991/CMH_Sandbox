@@ -43,24 +43,24 @@
   				validationErrors = new ArrayList();
   			}
   			if(Util.isNullOrEmpty(identityName)){
-  				validationErrors.add("CMH-Update-AD-Account-Workflow: identityName is null, not referenced properly from the parent workflow");
+  				validationErrors.add("identityName is null, not referenced properly from the parent workflow");
   			}
   			if(Util.isNullOrEmpty(adAppName)){
-  				validationErrors.add("CMH-Update-AD-Account-Workflow: adAppName is null, not referenced properly from the parent workflow");
+  				validationErrors.add("adAppName is null, not referenced properly from the parent workflow");
   			}
   			if(Util.isNullOrEmpty(newUserOU)){
-  				validationErrors.add("CMH-Update-AD-Account-Workflow: newUserOU is null, not referenced properly from the parent workflow");
+  				validationErrors.add("newUserOU is null, not referenced properly from the parent workflow");
   			}
   			if(Util.isNullOrEmpty(userStatus)){
-  				validationErrors.add("CMH-Update-AD-Account-Workflow: userStatus is null, not referenced properly from the parent workflow");
+  				validationErrors.add("userStatus is null, not referenced properly from the parent workflow");
   			}
   			if(Util.isNullOrEmpty(assignmentType)){
-  				validationErrors.add("CMH-Update-AD-Account-Workflow: assignmentType is null, not referenced properly from the parent workflow");
+  				validationErrors.add("assignmentType is null, not referenced properly from the parent workflow");
   			}
   			if(Util.nullSafeCaseInsensitiveEq(assignmentType,"EMPLOYEE") && Util.isNullOrEmpty(eMail)){
-  				validationErrors.add("CMH-Update-AD-Account-Workflow: The email for the user is not configured, hence cannot proceed with user conversion for the user "+identityName);
+  				validationErrors.add("The email for the user is not configured, hence cannot proceed with user conversion for the user "+identityName);
   			}else if(Util.nullSafeCaseInsensitiveEq(emailRequired,"YES") && Util.isNullOrEmpty(eMail)){
-  				validationErrors.add("CMH-Update-AD-Account-Workflow: The email for the user is not configured, hence cannot proceed with user conversion for the user "+identityName);
+  				validationErrors.add("The email for the user is not configured, hence cannot proceed with user conversion for the user "+identityName);
   			}
   			return validationErrors;
   		]]>
@@ -98,7 +98,7 @@
   			Logger log = Logger.getLogger("Workflow.CMH-Update-AD-Account");
   			
   			if(isDebugEnabled){
-  				log.debug("CMH-LifecycleEvent-User-Conversion: Building Provisioning Plan for enabling the AD account of User: "+identityName);
+  				log.debug("Building Provisioning Plan for enabling the AD account of User: "+identityName);
   			}
   			
   			ProvisioningPlan adPlan = new ProvisioningPlan();
@@ -150,7 +150,7 @@
   			adPlan.setIdentity(iden);
   			
   			if(isDebugEnabled){
-  				log.debug("CMH-LifecycleEvent-User-Conversion: Plan created to update the AD account of the User : "+identityName);
+  				log.debug("Plan created to update the AD account of the User : "+identityName);
   			}
   			return adPlan;
 		

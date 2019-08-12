@@ -38,13 +38,13 @@
   				validationErrors = new ArrayList();
   			}
   			if(Util.isNullOrEmpty(identityName)){
-  				validationErrors.add("CMH-Provision-O365-License-Workflow: identityName is null, not referenced properly from the parent workflow");
+  				validationErrors.add("identityName is null, not referenced properly from the parent workflow");
   			}
   			if(Util.isNullOrEmpty(adAppName)){
-  				validationErrors.add("CMH-Provision-O365-License-Workflow: adAppName is null, not referenced properly from the parent workflow");
+  				validationErrors.add("adAppName is null, not referenced properly from the parent workflow");
   			}
   			if(Util.isEmpty(O365Lic)){
-  				validationErrors.add("CMH-Provision-O365-License-Workflow: O365Lic is null, not referenced properly from the parent workflow");
+  				validationErrors.add("O365Lic is null, not referenced properly from the parent workflow");
   			}
   			return validationErrors;
   		]]>
@@ -109,7 +109,7 @@
   			Logger log = Logger.getLogger("Workflow.CMH-Provision-O365-License");
   			
   			if(isDebugEnabled){
-  				log.debug("CMH-Provision-O365-License-Workflow: Building Provisioning Plan for enabling the AD account of User: "+identityName);
+  				log.debug("Building Provisioning Plan for enabling the AD account of User: "+identityName);
   			}
   			
   			ProvisioningPlan adPlan = new ProvisioningPlan();
@@ -140,7 +140,7 @@
   			adPlan.setIdentity(iden);
   			
   			if(isDebugEnabled){
-  				log.debug("CMH-Provision-O365-License-Workflow: Plan created to provision O365 licences for the User : "+identityName);
+  				log.debug("Plan created to provision O365 licences for the User : "+identityName);
   			}
   			return adPlan;
 		

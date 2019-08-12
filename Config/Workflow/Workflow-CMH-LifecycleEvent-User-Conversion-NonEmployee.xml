@@ -219,9 +219,9 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   			   "user OU in custom object is missing");
   			}
   			if(!Util.isEmpty(errorList)) {
-  			  log.error("CMH-LifecycleEvent-User-Conversion-Non-Employee: Errors Found :"+Util.listToCsv(errorList));
+  			  log.error("Errors Found :"+Util.listToCsv(errorList));
   			}else if(isDebugEnabled){
-  				log.debug("CMH-LifecycleEvent-User-Conversion-Non-Employee: Validation Successful");
+  				log.debug("Validation Successful");
   			}
   			return errorList;
 			  
@@ -356,7 +356,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 		          }
 			      adPlan.setIdentity(identity);
 			      if(isDebugEnabled){
-	  				log.debug("CMH-LifecycleEvent-User-Conversion-Non-Employee: Plan created to update OU and other information as per new assignmentType for the User: "+identityName);
+	  				log.debug("Plan created to update OU and other information as per new assignmentType for the User: "+identityName);
 	  			  }
   			    wfcontext.getWorkflowCase().put("validationErrors",validationErrors);
   			    return adPlan;
@@ -442,7 +442,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 			  	Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-User-Conversion-Non-Employee");
 			  	
 			  	if (isDebugEnabled) {
-		          log.debug("CMH-LifecycleEvent-User-Conversion-Non-Employee: Single Account Aggregation");
+		          log.debug("Single Account Aggregation");
 		        }
 	
 		        if (validationErrors == null) {
@@ -471,7 +471,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 					}
 				 }
 			    if(isDebugEnabled){
-	  				log.debug("CMH-LifecycleEvent-User-Conversion-Non-Employee: Exiting Single Account Aggregation");
+	  				log.debug("Exiting Single Account Aggregation");
 	  			 }
   			 return validationErrors;
       ]]></Source>
@@ -499,7 +499,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 			   validationErrors.add("AD Link does exists");
 			}
 			if(wfcontext.getRootWorkflowCase().getMessages() != null && null != wfcontext.getRootWorkflowCase().getMessagesByType(Message.Type.Error)){
-				log.error("CMH-LifecycleEvent-User-Conversion-Non-Employee: Error occured in leaver process: "+wfcontext.getRootWorkflowCase().getMessagesByType(Message.Type.Error));
+				log.error("Error occured in leaver process: "+wfcontext.getRootWorkflowCase().getMessagesByType(Message.Type.Error));
 				List errorMessagesList = wfcontext.getRootWorkflowCase().getMessagesByType(Message.Type.Error);
 				String errorMessagesFromWfc = Util.listToCsv(errorMessagesList);
 				validationErrors.add(errorMessagesFromWfc);
@@ -521,7 +521,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   			
   			
   			if(isDebugEnabled){
-  			    log.debug("CMH-LifecycleEvent-User-Conversion-Non-Employee: Check Status step : Audit Event Generated");
+  			    log.debug("Check Status step : Audit Event Generated");
   			    log.debug("Ending the LifecycleEvent-User-Conversion-Non-Employee for the user "+identityName);
   			}
  

@@ -3,12 +3,12 @@
 <Workflow explicitTransitions="true" libraries="Identity,IdentityRequest" name="CMH-Immediate-Termination-Workflow" type="LCM">
   <Variable initializer="true" input="true" name="trace"/>
   <Variable name="plan" type="sailpoint.object.ProvisioningPlan">
-    <Description>The provisioning plan which is built during the workflow.  
+    <Description>The provisioning plan which is built during the workflow.
 	</Description>
   </Variable>
   <Variable name="project" type="ProvisioningProject">
-    <Description>  
-		ProvisioningProject which is just a compiled version of the ProvisioningPlan.  
+    <Description>
+		ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 	</Description>
   </Variable>
   <Variable name="identityRequestId">
@@ -55,7 +55,7 @@
   		<Source>
   		<![CDATA[
   			import sailpoint.object.Custom;
-  			
+
   			Custom custom = context.getObjectByName(Custom.class,"CMH-Custom-Object-AD-Application");
   			String appName = null;
   			if(custom!=null){
@@ -71,7 +71,7 @@
   		<Source>
   		<![CDATA[
   			import sailpoint.object.Custom;
-  			
+
   			Custom custom = context.getObjectByName(Custom.class,"CMH-Custom-Object-AD-Application");
   			String disabledOU = null;
   			if(custom!=null){
@@ -103,8 +103,8 @@
   			import org.apache.log4j.Logger;
   			import sailpoint.object.Identity;
 			import sailpoint.tools.Util;
-  			
-  			Logger log = Logger.getLogger("Workflow.CMH-Immediate-Termination");;	
+
+  			Logger log = Logger.getLogger("Workflow.CMH-Immediate-Termination");;
   			String userName = null;
   			String employeeId = null;
   			String userOnLegalHold = null;
@@ -113,7 +113,7 @@
 				if(iden!=null){
 					userName = iden.getName();
 					if(isDebugEnabled)	{
-						log.debug("CMH-Immediate-Termination-Process-Workflow:User selected :"+userName);
+						log.debug("User selected :"+userName);
 					}
 					if(Util.isNotNullOrEmpty(userName)){
 						wfcontext.getRootWorkflowCase().put("identityName",userName);
@@ -137,23 +137,23 @@
   		<![CDATA[
   			import org.apache.log4j.Logger;
   			import sailpoint.tools.Util;
-  			
+
   			Logger log = Logger.getLogger("Workflow.CMH-Immediate-Termination");;
 			if(isDebugEnabled)	{
-				log.debug("CMH-Immediate-Termination-Process-Workflow: Validating the Data");
+				log.debug("Validating the Data");
 			}
   			List errorList = new ArrayList();
   			if(Util.isNullOrEmpty(adAppName) || Util.isNullOrEmpty(terminatedOU)){
-  				log.error("CMH-Immediate-Termination-Process-Workflow: Custom object not configured properly");
-  				errorList.add("CMH-Immediate-Termination-Process-Workflow: Custom object not configured properly");
+  				log.error("Custom object not configured properly");
+  				errorList.add("Custom object not configured properly");
   			}
   			if(Util.isNullOrEmpty(identityName)){
-  				log.error("CMH-Immediate-Termination-Process-Workflow: identityName is null");
-  				errorList.add("CMH-Immediate-Termination-Process-Workflow: identityName is null");
+  				log.error("identityName is null");
+  				errorList.add("identityName is null");
   			}
   			if(Util.isNullOrEmpty(employeeId)){
-  				log.error("CMH-Immediate-Termination-Process-Workflow: employeeId is null");
-  				errorList.add("CMH-Immediate-Termination-Process-Workflow: employeeId is null");
+  				log.error("employeeId is null");
+  				errorList.add("employeeId is null");
   			}
   			return errorList;
   		]]>
@@ -187,10 +187,10 @@
       <![CDATA[
         import org.apache.log4j.Logger;
         import sailpoint.object.Identity;
-              
+
        	Logger log = Logger.getLogger("Workflow.CMH-Immediate-Termination");
-        
-		Identity user = context.getObjectByName(Identity.class,identityName);         	
+
+		Identity user = context.getObjectByName(Identity.class,identityName);
 	    if (user != null) {
 			user.setAttribute("immediateOffboarder","YES");
 			context.saveObject(user);
@@ -198,7 +198,7 @@
 			if (isDebugEnabled) {
 				log.debug("Updated immediateOffboarder status for the user: "+ identityName);
 			}
-		}        
+		}
      ]]>
      </Source>
     </Script>
@@ -210,60 +210,53 @@
       <![CDATA[
       	import org.apache.log4j.Logger;
       	import sailpoint.api.IdentityService;
-		import sailpoint.object.Application;
+		    import sailpoint.object.Application;
         import sailpoint.object.Identity;
         import sailpoint.object.Link;
         import sailpoint.object.ProvisioningPlan;
-        import sailpoint.tools.GeneralException;
         import sailpoint.object.ProvisioningPlan.AccountRequest;
         import sailpoint.object.ProvisioningPlan.AttributeRequest;
-		import sailpoint.tools.Util;
-           
+		    import sailpoint.tools.Util;
+
         Logger log = Logger.getLogger("Workflow.CMH-Immediate-Termination");
-		
-        if (isDebugEnabled) {
-        	log.debug("CMH-Immediate-Termination: Building plan to Disable AD Account for "+employeeId);
-        }
-        
-        ProvisioningPlan adPlan = new ProvisioningPlan();
-		
-		Identity user = context.getObjectByName(Identity.class,identityName);
-		if(isDebugEnabled)	{
-			log.debug("CMH-Immediate-Termination: identityName :"+identityName);
-		}
-        if (null != user) {
-			Application app = context.getObjectByName(Application.class,adAppName);
-			List accountRequests = new ArrayList();
-			if(isDebugEnabled)	{
-				log.debug("CMH-Immediate-Termination: adAppName :"+adAppName);
-			}
-			if (app != null) {
-				IdentityService idnService = new IdentityService(context);
-				List adLinks = idnService.getLinks(user, app);
-				if(adLinks!=null && adLinks.size()>0){
-					for (Link adLink : adLinks) {
-						if (adLink != null) {
-							AccountRequest acctReq = new AccountRequest();
-							acctReq.setApplication(adAppName);
-							acctReq.setOperation(ProvisioningPlan.AccountRequest.Operation.Disable);
-							acctReq.setNativeIdentity(adLink.getNativeIdentity());
-							acctReq.add(new AttributeRequest("IIQDisabled",ProvisioningPlan.Operation.Set,true));
-							acctReq.add(new AttributeRequest("pwdLastSet",ProvisioningPlan.Operation.Set,true));
-							if(!Util.nullSafeCaseInsensitiveEq(userOnLegalHold,"YES")){
-								acctReq.add(new AttributeRequest("AC_NewParent",ProvisioningPlan.Operation.Set,terminatedOU));
-							}
-							//acctReq.add(new AttributeRequest("mailNickname",ProvisioningPlan.Operation.Set,"")); //uncomment this line of code once exchange is enabled
-							accountRequests.add(acctReq);
-						}
-					}
-				}
-				adPlan.setAccountRequests(accountRequests);
-			}
-			adPlan.setIdentity(user);
-		} 
 
         if (isDebugEnabled) {
-          log.debug("CMH-Immediate-Termination: Plan for disabling the AD account is generated for the user : "+identityName);
+        	log.debug("Building Plan to disable the AD account for the User "+identityName);
+        }
+
+        ProvisioningPlan adPlan = new ProvisioningPlan();
+
+		    Identity user = context.getObjectByName(Identity.class,identityName);
+        if (null != user) {
+    			Application app = context.getObjectByName(Application.class,adAppName);
+    			List accountRequests = new ArrayList();
+    			if (app != null) {
+    				IdentityService idnService = new IdentityService(context);
+    				List adLinks = idnService.getLinks(user, app);
+    				if(adLinks!=null && adLinks.size()>0){
+    					for (Link adLink : adLinks) {
+    						if (adLink != null) {
+    							AccountRequest acctReq = new AccountRequest();
+    							acctReq.setApplication(adAppName);
+    							acctReq.setOperation(ProvisioningPlan.AccountRequest.Operation.Disable);
+    							acctReq.setNativeIdentity(adLink.getNativeIdentity());
+    							acctReq.add(new AttributeRequest("IIQDisabled",ProvisioningPlan.Operation.Set,true));
+    							acctReq.add(new AttributeRequest("pwdLastSet",ProvisioningPlan.Operation.Set,true));
+    							if(!Util.nullSafeCaseInsensitiveEq(userOnLegalHold,"YES")){
+    								acctReq.add(new AttributeRequest("AC_NewParent",ProvisioningPlan.Operation.Set,terminatedOU));
+    							}
+    							//acctReq.add(new AttributeRequest("mailNickname",ProvisioningPlan.Operation.Set,"")); //uncomment this line of code once exchange is enabled
+    							accountRequests.add(acctReq);
+    						}
+    					}
+    				}
+    				adPlan.setAccountRequests(accountRequests);
+    			}
+  			adPlan.setIdentity(user);
+  		}
+
+        if (isDebugEnabled) {
+          log.debug("Plan for disabling the AD account is generated for the user : "+identityName);
         }
         return adPlan;
     ]]>
@@ -292,13 +285,13 @@
     <Arg name="source" value="ref:source"/>
     <Arg name="optimisticProvisioning" value="string:false"/>
     <Arg name="plan" value="ref:plan"/>
-    <Description>Compile the provisioning plan into a provisioning project.  
-                 If you need to pass in provisioner options like "noFiltering"  
-                 or "noRoleDeprovisioning" you must pass them as explicit  
-                 arguments to the call.  
-                 The evaluation options "requester" and "source" are commonly  
-                 set here.               
-                 You can also pass things into the Template and Field scripts by  
+    <Description>Compile the provisioning plan into a provisioning project.
+                 If you need to pass in provisioner options like "noFiltering"
+                 or "noRoleDeprovisioning" you must pass them as explicit
+                 arguments to the call.
+                 The evaluation options "requester" and "source" are commonly
+                 set here.
+                 You can also pass things into the Template and Field scripts by
                  defining Args in this step.</Description>
     <Transition to="Create Identity Request"/>
   </Step>
@@ -348,9 +341,9 @@
 			import sailpoint.object.Identity;
 			import sailpoint.object.Link;
 			import sailpoint.tools.Util;
-			
+
 			Logger log = Logger.getLogger("Workflow.CMH-Immediate-Termination");
-		
+
 			if (isDebugEnabled) {
 				log.debug("Invoking Single Account Aggregation method to update the OU information in IIQ");
 			}
@@ -393,14 +386,14 @@
 			import sailpoint.server.Auditor;
   			import sailpoint.tools.Message;
   			import sailpoint.tools.Util;
-  			
+
   			Logger log = Logger.getLogger("Workflow.CMH-Immediate-Termination");;
-			
+
 			if(isDebugEnabled)	{
 				log.debug("CMH_ImmediateTermination: Check Status step : Checking for errors");
 			}
-  			
-  			
+
+
   			if(wfcontext.getRootWorkflowCase().getMessages()!=null && wfcontext.getRootWorkflowCase().getMessagesByType(Message.Type.Error)!=null){
   				List errorMessagesList = wfcontext.getRootWorkflowCase().getMessagesByType(Message.Type.Error);
   				String errorMessage = Util.listToCsv(errorMessagesList);
@@ -408,9 +401,9 @@
   					validationErrors = new ArrayList();
   				}
   				validationErrors.add(errorMessage);
-  				log.error("CMH_ImmediateTermination: Check Status step : Errors Found : "+Util.listToCsv(validationErrors));	
+  				log.error("CMH_ImmediateTermination: Check Status step : Errors Found : "+Util.listToCsv(validationErrors));
   			}
-  			
+
   			String action = null;
   			String source = "UI";
   			String target = identityName;
@@ -427,15 +420,15 @@
   				strMap.put("setString2",Util.listToCsv(validationErrors));
   			}
   			auditWrite(action,source,target,attrName,attrVal,strMap);
-  			
+
 			if(isDebugEnabled)	{
-				log.debug("CMH_ImmediateTermination: Check Status step : Audit Event Generated");
+				log.debug("Check Status step : Audit Event Generated");
 				log.debug("Ending the CMH_ImmediateTermination Workflow for the user "+identityName);
 			}
-  			
+
   			context.commitTransaction();
-  			return validationErrors;	 
-    ]]>    
+  			return validationErrors;
+    ]]>
     </Source>
     </Script>
     <Transition to="Stop"/>

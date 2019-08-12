@@ -313,9 +313,9 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   			   "user OU in custom object is missing");
   			}
   			if(!Util.isEmpty(errorList)) {
-  			  log.error("CMH-LifecycleEvent-Rehire: Errors Found :"+Util.listToCsv(errorList));
+  			  log.error("Errors Found :"+Util.listToCsv(errorList));
   			}else if(isDebugEnabled){
-  				log.debug("CMH-LifecycleEvent-Rehire: Validation Successful");
+  				log.debug("Validation Successful");
   			}
   			return errorList;
 			  
@@ -344,10 +344,10 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   			Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-Rehire");
   			List connectedApps = getAppsToProcess(identityName,"CMH-Leaver-Custom-Object","connectedApplications");
   			if(connectedApps==null || connectedApps.size()<=0){
-  				log.info("CMH-LifecycleEvent-Rehire: There are no connected Apps associated with the user");
+  				log.info("There are no connected Apps associated with the user");
   			}
   			else if(isDebugEnabled){
-  				log.debug("CMH-LifecycleEvent-Rehire: List of Connected Apps to be deleted: "+connectedApps.toString());
+  				log.debug("List of Connected Apps to be deleted: "+connectedApps.toString());
   			}
   			return connectedApps;
   		]]></Source>
@@ -413,11 +413,12 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
       <Source><![CDATA[
 			  
                import org.apache.log4j.Logger;
+               import sailpoint.api.ObjectUtil;
   			   import sailpoint.object.Identity;
   			   import sailpoint.tools.Util;
   			   Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-Rehire");
                
-               Identity identity = context.getObjectByName(Identity.class,identityName);
+               Identity identity = acquireLockOnIdentity(identityName);
                if( null !=identity) {
                     
                     if(Util.nullSafeCaseInsensitiveEq("Active",status)) {
@@ -430,8 +431,9 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 	  				context.saveObject(identity);
 	  				context.commitTransaction();
                }
+               ObjectUtil.unlockIdentity(context,identity);
                if(isDebugEnabled){
-  					log.debug("CMH-LifecycleEvent-Rehire: Identity "+identityName+" enabled succesfully");
+  					log.debug("Identity "+identityName+" enabled succesfully");
   				}
   			   			 
       ]]></Source>
@@ -525,7 +527,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 		          }
 			      adPlan.setIdentity(identity);
 			      if(isDebugEnabled){
-	  				log.debug("CMH-LifecycleEvent-Rehire: Plan created successfully with Prehire status for the Rehire User : "+identityName);
+	  				log.debug("Plan created successfully with Prehire status for the Rehire User : "+identityName);
 	  			  }
   			    wfcontext.getWorkflowCase().put("validationErrors",validationErrors);
   			    return adPlan;	
@@ -617,7 +619,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 		          }
 			      adPlan.setIdentity(identity);
 			      if(isDebugEnabled){
-	  				log.debug("CMH-LifecycleEvent-Rehire: Plan created successfully with Active status for the Rehire User  "+identityName);
+	  				log.debug("Plan created successfully with Active status for the Rehire User  "+identityName);
 	  			  }
   			    wfcontext.getWorkflowCase().put("validationErrors",validationErrors);
   			    return adPlan;
@@ -808,7 +810,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 			   validationErrors.add("AD Link does exists");
 			}
 			if(wfcontext.getRootWorkflowCase().getMessages()!=null && null!=wfcontext.getRootWorkflowCase().getMessagesByType(Message.Type.Error)){
-				log.error("CMH-LifecycleEvent-Rehire: Error occured in rehire process: "+wfcontext.getRootWorkflowCase().getMessagesByType(Message.Type.Error));
+				log.error("Error occured in rehire process: "+wfcontext.getRootWorkflowCase().getMessagesByType(Message.Type.Error));
 				List errorMessagesList = wfcontext.getRootWorkflowCase().getMessagesByType(Message.Type.Error);
 				String errorMessagesFromWfc = Util.listToCsv(errorMessagesList);
 				validationErrors.add(errorMessagesFromWfc);
@@ -829,7 +831,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   			}
   			
   			if(isDebugEnabled){
-  			    log.debug("CMH-LifecycleEvent-Rehire: Check Status step : Audit Event Generated");
+  			    log.debug("Check Status step : Audit Event Generated");
   			    log.debug("Ending the CMH-LifecycleEvent-Rehire for the user "+identityName);
   			}
   			

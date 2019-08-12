@@ -254,9 +254,9 @@
   			
   			if(!Util.isEmpty(errorList))
   			{
-  				log.error("CMH-LifeycycleEvent-Prehire: Errors Found :"+Util.listToCsv(errorList));
+  				log.error("Errors Found :"+Util.listToCsv(errorList));
   			}else if(isDebugEnabled){
-  				log.debug("CMH-LifeycycleEvent-Prehire: Validation Successful");
+  				log.debug("Validation Successful");
   			}
   			
   			return errorList;
@@ -283,11 +283,12 @@
   		<Source>
   		<![CDATA[
   			import org.apache.log4j.Logger;
+  			import sailpoint.api.ObjectUtil;
   			import sailpoint.object.Identity;
   			
   			Logger log = Logger.getLogger("Workflow.CMH_LifecycleEvent_Prehire");
   			
-  			Identity iden = context.getObjectByName(Identity.class,identityName);
+  			Identity iden = acquireLockOnIdentity(identityName);
   			if(iden!=null){
   				iden.setInactive(false);
   				iden.setAttribute("status","ACTIVE");
@@ -298,6 +299,7 @@
   					log.debug("CMH-LifeycycleEvent-Prehire: Identity "+identityName+" enabled succesfully");
   				}
   			}
+  			ObjectUtil.unlockIdentity(context,iden);
   		]]>
   		</Source>
   	</Script>
@@ -320,7 +322,7 @@
   			Logger log = Logger.getLogger("Workflow.CMH_LifecycleEvent_Prehire");
   			
   			if(isDebugEnabled){
-  				log.debug("CMH_LifecycleEvent_Prehire: Building Provisioning Plan for enabling the AD account of User: "+identityName);
+  				log.debug("Building Provisioning Plan for enabling the AD account of User: "+identityName);
   			}
   			
   			ProvisioningPlan adPlan = new ProvisioningPlan();
@@ -357,7 +359,7 @@
   			}
   			adPlan.setAccountRequests(accountRequests);
   			if(isDebugEnabled){
-  				log.debug("CMH_LifecycleEvent_Prehire: AD Plan to disable the AD account for the Prehire User Created : "+identityName);
+  				log.debug("AD Plan to disable the AD account for the Prehire User Created : "+identityName);
   			}
   			
   			return adPlan;
@@ -438,7 +440,7 @@
   			Logger log = Logger.getLogger("Workflow.CMH_LifecycleEvent_Prehire");
   			
   			if(isDebugEnabled){
-  				log.debug("CMH_LifecycleEvent_Prehire: Check Status step : Checking for errors");
+  				log.debug("Check Status step : Checking for errors");
   			}
   			
   			if(wfcontext.getRootWorkflowCase().getMessages()!=null && wfcontext.getRootWorkflowCase().getMessagesByType(Message.Type.Error)!=null){
@@ -450,7 +452,7 @@
   				validationErrors.add(errorMessage);
   				
   				if(isDebugEnabled){
-	  				log.debug("CMH_LifecycleEvent_Prehire: Check Status step : Errors Found : "+Util.listToCsv(validationErrors));
+	  				log.debug("Check Status step : Errors Found : "+Util.listToCsv(validationErrors));
 	  			}
   			}
   			  			
@@ -471,7 +473,7 @@
   			auditWrite(action,source,target,attrName,attrVal,strMap);
   			
   			if(isDebugEnabled){
-  				log.debug("CMH_LifecycleEvent_Prehire: Check Status step : Audit Event Generated");
+  				log.debug("Check Status step : Audit Event Generated");
   			}
   			  			
   			
@@ -491,7 +493,7 @@
   				try{
   					context.sendEmailNotification(template,options);
   				}catch(EmailException e){
-  					log.error("CMH_LifecycleEvent_Prehire: Error in Sending email : "+e.getMessage());
+  					log.error("Error in Sending email : "+e.getMessage());
   				}
   			}  
   			

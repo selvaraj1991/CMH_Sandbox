@@ -299,9 +299,9 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   			    errorList.add("Manager doesn't have email, the manager must have email");
   			}
   			if(!Util.isEmpty(errorList)) {
-  			  log.error("CMH-LifecycleEvent-Name-Change: Errors Found :"+Util.listToCsv(errorList));
+  			  log.error("Errors Found :"+Util.listToCsv(errorList));
   			}else if(isDebugEnabled){
-  				log.debug("CMH-LifecycleEvent-Name-Change: Validation Successful");
+  				log.debug("Validation Successful");
   			}
   			return errorList;
 			  
@@ -325,11 +325,11 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   <Step icon="Task" name="Generate User Name" posX="233" posY="234">
     <Script>
       <Source><![CDATA[
+              import sailpoint.api.ObjectUtil;
   		      import sailpoint.object.Identity;
   		      import sailpoint.tools.Util;
   		      
-  		      ResourceObject account = new ResourceObject();
-  		      Identity identity = context.getObjectByName(Identity.class,identityName);
+  		      Identity identity =  acquireLockOnIdentity(identityName);
   		      String firstName = identity.getFirstname();
   		      String lastName = identity.getLastname();
   		      String middInitial = identity.getStringAttribute("middleInitial");
@@ -345,14 +345,14 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   		      if(Util.isNotNullOrEmpty(middInitial)) {
   		          middInitial.trim();
   		      }
-  		      log.info("CMH-LifecycleEvent-Name-Change: Creating a new user by generating username & email from firstname & lastname of the user");
+  		      log.info("Creating a new user by generating username & email from firstname & lastname of the user");
 			  String finalUsername =null;
 			  String genUsername = userNameGenerator(firstName,lastName,middInitial,employeeId);	//Generate a username based on firstname,lastname, middleInitial
 		      log.debug("Generated Username "+genUsername);		
 			  if(Util.isNotNullOrEmpty(genUsername)) {
 				 finalUsername=finalUserName(genUsername,firstName,lastName,middInitial,employeeId);	//Validate the generated username for the uniqueness
 			   }
-			  log.debug("CMH-LifecycleEvent-Name-Change: finalUsername : "+finalUsername);
+			  log.debug("finalUsername : "+finalUsername);
 			  if(Util.isNotNullOrEmpty(finalUsername)) {
 			     finalUsername =finalUsername.toLowerCase();
 				 identity.setName(finalUsername);
@@ -367,7 +367,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 				  log.error("The username for the user is NULL");
 				  validationErrors.add("The username for the user is NULL");
 				}
-				
+				ObjectUtil.unlockIdentity(context,identity);
 				wfcontext.getWorkflowCase().put("newIdentityName",finalUsername);
 			
   		]]></Source>
@@ -398,7 +398,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
                 import sailpoint.tools.Util;
                 
                 if (isDebugEnabled) {
-		          log.debug("CMH-LifecycleEvent-Name-Change: Updating custom Object");
+		          log.debug("Updating custom Object");
 		        }
 		        if (validationErrors == null) {
 		          validationErrors = new ArrayList();
@@ -436,7 +436,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 				   validationErrors.add("ERROR : Unable to search the the user with newIdentityName");
 				}  
 		        if (isDebugEnabled) {
-		          log.debug("CMH-LifecycleEvent-Name-Change: Exiting custom Object");
+		          log.debug("Exiting custom Object");
 		        }
 		        wfcontext.getWorkflowCase().put("newEmail",email);
 		        return validationErrors;
@@ -465,7 +465,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 						if(links!=null && links.size()>0){
 							Link hrLink = links.get(0);
 							if(hrLink!=null){
-								log.debug("CMH-LifecycleEvent-Name-Change: Updating infor details");
+								log.debug("Updating infor details");
 								hrLink.setNativeIdentity(newIdentityName);
 								hrLink.setDisplayName(newIdentityName);
 								hrLink.setAttribute("Username",newIdentityName);
@@ -536,7 +536,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 		          }
 			      adPlan.setIdentity(identity);
 			      if(isDebugEnabled){
-	  				log.debug("CMH-LifecycleEvent-Name-Change: Name change Plan created for the user : "+identityName);
+	  				log.debug("Name change Plan created for the user : "+identityName);
 	  			  }
   			    wfcontext.getWorkflowCase().put("validationErrors",validationErrors);
   			    return adPlan;	
@@ -649,7 +649,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 			   Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-Name-Change");
 			   
 			   if (isDebugEnabled) {
-		          log.debug("CMH-LifecycleEvent-Name-Change: Update Role Account Name");
+		          log.debug("Update Role Account Name");
 		        }
 	            Identity iden = context.getObjectByName(Identity.class, newIdentityName);
 					
@@ -666,7 +666,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 					  }
 			      }
 		       }
-		     log.debug("CMH-LifecycleEvent-Name-Change: Update Role Account Name");
+		     log.debug("Update Role Account Name");
       ]]>
       </Source>
    </Script>
@@ -685,7 +685,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 			  	Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-Name-Change");
 			  	
 			  	if (isDebugEnabled) {
-		          log.debug("CMH-LifecycleEvent-Name-Change: Single Account Aggregation");
+		          log.debug("Single Account Aggregation");
 		        }
 	
 		        if (validationErrors == null) {
@@ -711,7 +711,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 				}
 				
 			    if(isDebugEnabled){
-	  				log.debug("CMH-LifecycleEvent-Name-Change: Exiting Single Account Aggregation");
+	  				log.debug("Exiting Single Account Aggregation");
 	  			 }
   			 return validationErrors;
       ]]></Source>
@@ -743,7 +743,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 				validationErrors = new ArrayList();
 			}
 			if(wfcontext.getRootWorkflowCase().getMessages()!=null && null!=wfcontext.getRootWorkflowCase().getMessagesByType(Message.Type.Error)){
-				log.error("CMH-LifecycleEvent-Name-Change: Error occured in Name Change process: "+wfcontext.getRootWorkflowCase().getMessagesByType(Message.Type.Error));
+				log.error("Error occured in Name Change process: "+wfcontext.getRootWorkflowCase().getMessagesByType(Message.Type.Error));
 				List errorMessagesList = wfcontext.getRootWorkflowCase().getMessagesByType(Message.Type.Error);
 				String errorMessagesFromWfc = Util.listToCsv(errorMessagesList);
 				validationErrors.add(errorMessagesFromWfc);
@@ -764,7 +764,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   			}
   			
   			if(isDebugEnabled){
-  			    log.debug("CMH-LifecycleEvent-Name-Change: Check Status step : Audit Event Generated");
+  			    log.debug("Check Status step : Audit Event Generated");
   			    log.debug("Ending the CMH-LifecycleEvent-Name-Change for the user "+identityName);
   			}
   			
