@@ -69,29 +69,18 @@
     </Returns>
   </Signature>
   <Source><![CDATA[
-  import org.apache.log4j.Logger;
-  import java.text.SimpleDateFormat;
-  import sailpoint.tools.Util;
+	import org.apache.log4j.Logger;
 
-  Logger log = Logger.getLogger("Rule.CMH-AD-AccountExpire-Update-Rule");
+	Logger log = Logger.getLogger("Rule.CMH-AD-AccountExpire-Update-Rule");
 
-  log.debug("Entering CMH-AD-AccountExpire-Update-Rule to update accountExpires attribute in AD for the User:"+identity!=null?identity.getName():"");
-  String dateFormat = getCustomObject("terminationDateFormat", "CMH-DateFormat");
-  if(Util.isNotNullOrEmpty(dateFormat)){
-    SimpleDateFormat formatter = new SimpleDateFormat(dateFormat);
-    if(value instanceof String){
-      try{
-        Date expDate = (Date)formatter.parse(value.toString());
-        long longDate = expDate.getTime();
-        longDate = (longDate * 10000L) + 116444736000000000L;
-        value =  String.valueOf(longDate);
-      }catch(ParseException e){
-        log.error("Error occured while parsing date in CMH-AD-AccountExpire-Update-Rule "+e.getMessage());
-      }
-
-    }
-  }
-  log.debug("Exiting CMH-AD-AccountExpire-Update-Rule");
-  return value;
+	log.debug("Entering CMH-AD-AccountExpire-Update-Rule to update accountExpires attribute in AD for the User:"+identity!=null?identity.getName():"");
+	attributeValue = null;
+	if(value instanceof java.util.Date){
+		long longDate = value.getTime();
+		longDate = (longDate * 10000L) + 116444736000000000L;
+		attributeValue =  String.valueOf(longDate);
+	}
+	log.debug("Exiting CMH-AD-AccountExpire-Update-Rule");
+	return attributeValue;
   ]]></Source>
 </Rule>

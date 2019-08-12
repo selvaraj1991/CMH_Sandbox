@@ -3,16 +3,12 @@
 <Custom name="CMH-DateFormat">
   <Attributes>
     <Map>
-      <entry key="conversionTimestamp" value="MM/dd/yyyy"/>
-      <entry key="leaverDeleteTimestamp" value="MM/dd/yyyy"/>
       <entry key="legalHoldTimestamp" value="yyyy-MM-dd hh:mm:ss.a"/>
       <entry key="preIterationTimestamp" value="yyyy-MM-dd hh:mm:ss"/>
-      <entry key="ruleLibraryGenerateTimestamp" value="ddMMMyyyy"/>
+      <entry key="renameUserTimestamp" value="ddMMMyyyy"/>
       <entry key="userNameFileNameTimestamp" value="yyyy-MM-dd.hh.mm.ss.a"/>
       <entry key="userNameGenerationTimestamp" value="yyyy-MM-dd hh:mm:ss a"/>
-      <entry key="startDateFormat" value="MM/dd/yyyy HH:mm:ss a z"/>
 	  <entry key="genericDateFormat" value="MM/dd/yyyy HH:mm:ss a z"/>
-	  <entry key="terminationDateFormat" value="MM/dd/yyyy HH:mm:ss a z"/>
     </Map>
   </Attributes>
 </Custom>

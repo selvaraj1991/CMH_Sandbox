@@ -8,7 +8,27 @@
   </Attributes>
   <Description>Identity for Termination</Description>
   <Section name="Choose Identity">
-    <Field displayName="Select Identity" filterString="inactive == false" name="terminatingUserId" postBack="true" required="true" type="sailpoint.object.Identity"/>
+    <Field displayName="Select Identity" name="terminatingUserId" postBack="true" required="true" type="sailpoint.object.Identity">
+		<Attributes>
+        <Map>
+          <entry key="filterString">
+            <value>
+              <Script>
+                <Source><![CDATA[
+                                    
+					import sailpoint.object.Filter;
+					
+					Filter filter = Filter.and(Filter.or(Filter.isnull("immediateOffboarder"),Filter.ignoreCase(Filter.eq("immediateOffboarder", "NO"))),Filter.ignoreCase(Filter.eq("status","ACTIVE")));
+					
+					field.setFilterString(filter.toString());
+				
+                ]]></Source>
+              </Script>
+            </value>
+          </entry>
+        </Map>
+      </Attributes>
+	</Field>
     <Field displayName="Do you want to proceed with terminating this user?" name="terminateUserChkBox" required="true" type="boolean"/>
   </Section>
   <Section name="htmlSection" type="text">

@@ -51,43 +51,25 @@
     </Returns>
   </Signature>
   <Source><![CDATA[
-	import java.text.ParseException;
-	import java.text.SimpleDateFormat;
 	import org.apache.commons.lang.StringUtils;
 	import org.apache.log4j.Logger;
 	import sailpoint.api.IdentityService;
 	import sailpoint.object.Attributes;
-	import sailpoint.object.AuditEvent;
 	import sailpoint.object.Custom;
 	import sailpoint.object.Filter;
 	import sailpoint.object.Identity;
 	import sailpoint.object.Link;
 	import sailpoint.object.QueryOptions;
-	import sailpoint.server.Auditor;
 	import sailpoint.tools.Util;
 
 	Logger log = Logger.getLogger("Rule.CMH-User-Object-Customization-Rule");
 	
 	public boolean isConversionWithFutureDate(String oldEmpId, String usrName, Date startDate) {
 		log.debug("Entering isConversionWithFutureDate method");
-		Custom customObj = context.getObjectByName(Custom.class, "CMH-DateFormat");
-		if (customObj != null) {
-			String dateFormat = customObj.getString("startDateFormat");
-			if (Util.isNotNullOrEmpty(dateFormat)) {
-				SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
-				Date stDate = null;
-				Date currDate = new Date();
-				try {
-					if (startDate!=null) {
-						//stDate = sdf.parse(startDate);
-						if (Util.isNotNullOrEmpty(oldEmpId) && Util.isNotNullOrEmpty(usrName) && startDate.after(currDate)) {
-							return true;
-						}
-					}
-				} catch(ParseException e) {
-					log.error("Parse Error in isConversionWithFutureDate method " + e.getMessage());
-				}
-
+		Date currDate = new Date();
+		if (startDate!=null) {
+			if (Util.isNotNullOrEmpty(oldEmpId) && Util.isNotNullOrEmpty(usrName) && startDate.after(currDate)) {
+				return true;
 			}
 		}
 		log.debug("Exiting isConversionWithFutureDate method");

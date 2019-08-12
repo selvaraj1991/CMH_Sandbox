@@ -99,7 +99,7 @@
                     </ApplicationRef>
                 </AttributeSource>
             </ObjectAttribute>
-            <ObjectAttribute displayName="Division" editMode="ReadOnly" namedColumn="true" name="division" type="string">
+            <ObjectAttribute displayName="Division" editMode="ReadOnly" name="division" type="string">
                 <AttributeSource name="Division">
                     <ApplicationRef>
                         <Reference class="sailpoint.object.Application" name="%%CMH-Infor-ApplicationName%%"/>
@@ -148,7 +148,7 @@
                     </ApplicationRef>
                 </AttributeSource>
             </ObjectAttribute>
-            <ObjectAttribute displayName="Job Level" editMode="ReadOnly" namedColumn="true" name="jobLevel" type="string">
+            <ObjectAttribute displayName="Job Level" editMode="ReadOnly" name="jobLevel" type="string">
                 <AttributeSource name="JobLevel">
                     <ApplicationRef>
                         <Reference class="sailpoint.object.Application" name="%%CMH-Infor-ApplicationName%%"/>

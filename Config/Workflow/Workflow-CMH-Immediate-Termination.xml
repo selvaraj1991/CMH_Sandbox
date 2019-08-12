@@ -47,9 +47,6 @@
   		</Source>
   	</Script>
   </Variable>
-  <Variable initializer="script:new Integer(30);" name="numberOfDays" type="Integer">
-    <Description>Number of days after which deletion date has to be set</Description>
-  </Variable>
   <Variable name="identityName"/>
   <Variable name="userOnLegalHold"/>
   <Variable name="employeeId"/>
@@ -125,7 +122,7 @@
 					if(Util.isNotNullOrEmpty(employeeId)){
 						wfcontext.getWorkflowCase().put("employeeId",employeeId);
 					}
-					userOnLegalHold = iden.getStringAttribute("userOnLegalHold");
+					userOnLegalHold = iden.getStringAttribute("identityRetention");
 					wfcontext.getWorkflowCase().put("userOnLegalHold",userOnLegalHold);
 				}
           	}
@@ -170,12 +167,12 @@
   				Logger log = Logger.getLogger("Workflow.CMH-Immediate-Termination");;
   				if(validationErrors==null || validationErrors.size()<=0){
 					if(isDebugEnabled)	{
-						log.debug("CMH-Immediate-Termination-Process-Workflow: No Validation Errors");
+						log.debug("No Validation Errors");
 					}
   					return true;
   				}
 				if(isDebugEnabled)	{
-					log.debug("CMH-Immediate-Termination-Process-Workflow: There is a Validation Errors");
+					log.debug("There is a Validation Errors");
 				}
   				return false;
   			]]>
@@ -184,76 +181,24 @@
   	</Transition>
   	<Transition to="Stop"/>
   </Step>
-  <Step icon="Task" name="Update Identity" posX="575" posY="222" resultVariable="validationErrors">
+  <Step icon="Task" name="Update Identity" posX="575" posY="222">
     <Script>
       <Source>
       <![CDATA[
-      	import java.text.DateFormat;
-  		import java.text.SimpleDateFormat;
         import org.apache.log4j.Logger;
-        import sailpoint.api.IdentityService;
-        import sailpoint.object.Application;
         import sailpoint.object.Identity;
-        import sailpoint.object.Link;
-        import sailpoint.tools.GeneralException;
-        import sailpoint.tools.Util;
               
-       	Logger log = Logger.getLogger("Workflow.CMH-Immediate-Termination");;
-
-        if (isDebugEnabled) {
-			log.debug("CMH-Immediate-Termination: Updating Identity Attributes for "+ employeeId);
-        }
-
-        if (validationErrors == null) {
-			validationErrors = new ArrayList();
-        }
+       	Logger log = Logger.getLogger("Workflow.CMH-Immediate-Termination");
         
-		/*Identity user = (Identity) context.getObjectByName(Identity.class,identityName);         	
+		Identity user = context.getObjectByName(Identity.class,identityName);         	
 	    if (user != null) {
-	    	try {
-				String dateFormat = getCustomObject("terminationDateFormat", "CMH-DateFormat");
-				if(Util.isNotNullOrEmpty(dateFormat)){
-					DateFormat terminationDateFormat = new SimpleDateFormat(dateFormat);
-					Date currentDate = new Date();
-					String terminationDate = terminationDateFormat.format(currentDate);
-					
-					Date deletionDate = Util.incrementDateByDays(currentDate,numberOfDays);
-					DateFormat deletionDateFormat = new SimpleDateFormat(dateFormat);
-					String deletionDateStr = deletionDateFormat.format(deletionDate);
-					
-					if(Util.isNotNullOrEmpty(inforAppName)){
-						Application inforApp = context.getObjectByName(Application.class,inforAppName);
-						if(inforApp!=null){
-							IdentityService iser = new IdentityService(context);
-							List appLinks = iser.getLinks(user,inforApp);
-							if(appLinks!=null && appLinks.size()>0){
-								Link inforLink = appLinks.get(0);
-								if(inforLink!=null){
-									inforLink.setAttribute("RelationshipStatus","TERMINATED");
-									inforLink.setAttribute("TerminationDate",terminationDate);
-									context.saveObject(inforLink);
-								}
-							}
-						}
-					}   	
-					user.setInactive(true);
-					user.setAttribute("status","TERMINATED");
-					user.setAttribute("terminationDate", terminationDate);
-					user.setAttribute("deletionDate", deletionDate);
-					user.setAttribute("immediateOffboarder","YES");
-					context.saveObject(user);
-					context.commitTransaction();
-				}				
-			} catch (GeneralException e) {
-	            log.error("Error in updating identity attributes "+ e.getMessage());
-	        }
-        }*/
-
-        if (isDebugEnabled) {
-          	log.debug("CMH-Immediate-Termination: Updating Identity Attributes for "+ employeeId + " completed");
-        }
-        return validationErrors;
-        
+			user.setAttribute("immediateOffboarder","YES");
+			context.saveObject(user);
+			context.commitTransaction();
+			if (isDebugEnabled) {
+				log.debug("Updated immediateOffboarder status for the user: "+ identityName);
+			}
+		}        
      ]]>
      </Source>
     </Script>
@@ -274,14 +219,10 @@
         import sailpoint.object.ProvisioningPlan.AttributeRequest;
 		import sailpoint.tools.Util;
            
-        Logger log = Logger.getLogger("Workflow.CMH-Immediate-Termination");;
+        Logger log = Logger.getLogger("Workflow.CMH-Immediate-Termination");
 		
         if (isDebugEnabled) {
-        	log.debug("CMH-Immediate-Termination: Disable AD Account for "+ employeeId + " started");
-        }
-
-        if (validationErrors == null) {
-          	validationErrors = new ArrayList();
+        	log.debug("CMH-Immediate-Termination: Building plan to Disable AD Account for "+employeeId);
         }
         
         ProvisioningPlan adPlan = new ProvisioningPlan();
@@ -291,40 +232,34 @@
 			log.debug("CMH-Immediate-Termination: identityName :"+identityName);
 		}
         if (null != user) {
-        	try {
-              	Application app = context.getObjectByName(Application.class,adAppName);
-                List accountRequests = new ArrayList();
-				if(isDebugEnabled)	{
-					log.debug("CMH-Immediate-Termination: adAppName :"+adAppName);
-				}
-                if (app != null) {
-               		IdentityService idnService = new IdentityService(context);
-               		List adLinks = idnService.getLinks(user, app);
-					if(adLinks!=null && adLinks.size()>0){
-						for (Link adLink : adLinks) {
-							if (adLink != null) {
-								AccountRequest acctReq = new AccountRequest();
-								acctReq.setApplication(adAppName);
-								acctReq.setOperation(ProvisioningPlan.AccountRequest.Operation.Disable);
-								acctReq.setNativeIdentity(adLink.getNativeIdentity());
-								acctReq.add(new AttributeRequest("IIQDisabled",ProvisioningPlan.Operation.Set,true));
-								acctReq.add(new AttributeRequest("pwdLastSet",ProvisioningPlan.Operation.Set,true));
-								if(!Util.nullSafeCaseInsensitiveEq(userOnLegalHold,"YES")){
-									acctReq.add(new AttributeRequest("AC_NewParent",ProvisioningPlan.Operation.Set,terminatedOU));
-								}
-								//acctReq.add(new AttributeRequest("mailNickname",ProvisioningPlan.Operation.Set,"")); //uncomment this line of code once exchange is enabled
-								accountRequests.add(acctReq);
+			Application app = context.getObjectByName(Application.class,adAppName);
+			List accountRequests = new ArrayList();
+			if(isDebugEnabled)	{
+				log.debug("CMH-Immediate-Termination: adAppName :"+adAppName);
+			}
+			if (app != null) {
+				IdentityService idnService = new IdentityService(context);
+				List adLinks = idnService.getLinks(user, app);
+				if(adLinks!=null && adLinks.size()>0){
+					for (Link adLink : adLinks) {
+						if (adLink != null) {
+							AccountRequest acctReq = new AccountRequest();
+							acctReq.setApplication(adAppName);
+							acctReq.setOperation(ProvisioningPlan.AccountRequest.Operation.Disable);
+							acctReq.setNativeIdentity(adLink.getNativeIdentity());
+							acctReq.add(new AttributeRequest("IIQDisabled",ProvisioningPlan.Operation.Set,true));
+							acctReq.add(new AttributeRequest("pwdLastSet",ProvisioningPlan.Operation.Set,true));
+							if(!Util.nullSafeCaseInsensitiveEq(userOnLegalHold,"YES")){
+								acctReq.add(new AttributeRequest("AC_NewParent",ProvisioningPlan.Operation.Set,terminatedOU));
 							}
+							//acctReq.add(new AttributeRequest("mailNickname",ProvisioningPlan.Operation.Set,"")); //uncomment this line of code once exchange is enabled
+							accountRequests.add(acctReq);
 						}
 					}
-                  	adPlan.setAccountRequests(accountRequests);
-                }
-                adPlan.setIdentity(user);
-            } catch (GeneralException e) {
-            	String errMsg = "Error in Disabling User Accounts:"+ e.getMessage();
-              	log.error(errMsg);
-              	validationErrors.add(errMsg);
-            }
+				}
+				adPlan.setAccountRequests(accountRequests);
+			}
+			adPlan.setIdentity(user);
 		} 
 
         if (isDebugEnabled) {
@@ -346,7 +281,7 @@
   		</Source>
       </Script>
     </Transition>
-    <Transition to="Create ServiceNow Ticket"/>
+    <Transition to="Stop"/>
   </Step>
   <Step action="call:compileProvisioningProject" icon="Task" name="Compile Project" posX="982" posY="219" resultVariable="project">
     <Arg name="requester" value="string:spadmin"/>
@@ -377,7 +312,7 @@
     <Transition to="Provision"/>
   </Step>
   <Step action="call:provisionProject" icon="Provision" name="Provision" posX="1212" posY="219">
-    <Arg name="background" value="false"/>
+    <Arg name="background" value="true"/>
     <Arg name="project" value="ref:project"/>
     <Transition to="Complete Identity Request"/>
   </Step>
@@ -385,16 +320,16 @@
     <Arg name="autoVerify" value="false"/>
     <Arg name="project" value="ref:project"/>
     <Arg name="identityRequestId" value="ref:identityRequestId"/>
-    <Transition to="Create ServiceNow Ticket">
+    <Transition to="Do Target Aggregation">
     	<Script>
     		<Source>
     		<![CDATA[
     			import sailpoint.tools.Message;
-    			
-    			if(validationErrors==null || validationErrors.size()<=0){
-    				return true;
-    			}else if(wfcontext.getRootWorkflowCase().getMessages()==null || wfcontext.getRootWorkflowCase().getMessagesByType(Message.Type.Error)==null){
-    				return true;
+    			import sailpoint.tools.Util;
+    			if(wfcontext.getRootWorkflowCase().getMessages()==null || wfcontext.getRootWorkflowCase().getMessagesByType(Message.Type.Error)==null){
+					if(!Util.nullSafeCaseInsensitiveEq(userOnLegalHold,"YES")){
+						return true;
+					}
     			}
     			return false;
     		]]>
@@ -403,51 +338,22 @@
     </Transition>
     <Transition to="Stop"/>
   </Step>
-  <Step icon="Provision" name="Create ServiceNow Ticket" posX="1110" posY="69">
-    <Script>
-      <Source>
-      <![CDATA[
-        import org.apache.log4j.Logger;
-  			
-		//method to generate service now ticket
-		Logger log = Logger.getLogger("Workflow.CMH-Immediate-Termination");;
-		
-		if(isDebugEnabled){
-			log.debug("CMH-Immediate-Termination: Generating service now ticket for disconnected applications");
-		}
-		
-		Object ticketObj = generateSnowTicket(identityName, "CMH-Service-Ticket-Configuration-Object", "DISABLE");
-        if(null != ticketObj) {
-        	if(ticketObj instanceof List) {
-		        List errList  = (List) ticketObj;
-				validationErrors.add(errList);
-			}else if(ticketObj instanceof String) {
-				String snowTicketId = (String) ticketObj;	
-				if(isDebugEnabled)	{
-					log.debug("CMH-Immediate-Termination: Service Now ID :  "+snowTicketId);
-				}
-	            wfcontext.getWorkflowCase().put("snowTicketId",snowTicketId);					  
-	      	}else {
-	     		validationErrors.add("The Object Type is NOT List OR String");					 
-	      	}
-			validationErrors.add("NULL : Unable to generate ticket");				   
-  	    }
-		wfcontext.getWorkflowCase().put("validationErrors",validationErrors);		
-    	]]>    
-    	</Source>
-    </Script>
-    <Transition to="Do Target Aggregation"/>
-  </Step>
   <Step icon="Task" name="Do Target Aggregation" posX="1277" posY="69" resultVariable="validationErrors">
   	<Script>
   		<Source>
   		<![CDATA[
+			import org.apache.log4j.Logger;
   			import sailpoint.api.IdentityService;
 			import sailpoint.object.Application;
 			import sailpoint.object.Identity;
 			import sailpoint.object.Link;
 			import sailpoint.tools.Util;
+			
+			Logger log = Logger.getLogger("Workflow.CMH-Immediate-Termination");
 		
+			if (isDebugEnabled) {
+				log.debug("Invoking Single Account Aggregation method to update the OU information in IIQ");
+			}
 			if(validationErrors==null){
 				validationErrors = new ArrayList();
 			}
@@ -475,14 +381,6 @@
   		]]>
   		</Source>
   	</Script>
-    <Transition to="Refresh Identity"/>
-  </Step>
-  <Step action="call:refreshIdentity" icon="Task" name="Refresh Identity" posX="1417" posY="95">
-    <Arg name="refreshRoleMetadata" value="true"/>
-    <Arg name="identityName" value="ref:identityName"/>
-    <Arg name="provision" value="true"/>
-    <Arg name="correlateEntitlements" value="true"/>
-    <Arg name="refreshIdentityEntitlements" value="true"/>
   	<Transition to="Stop"/>
   </Step>
   <Step catches="complete" icon="Catches" name="Check Status" posX="156" posY="19" resultVariable="validationErrors">

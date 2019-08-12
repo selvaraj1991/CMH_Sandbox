@@ -279,7 +279,6 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
     <Script>
       <Source><![CDATA[
 
-            import java.text.SimpleDateFormat;
             import org.apache.log4j.Logger;
   			import sailpoint.object.Identity;
   			import sailpoint.tools.Util;
@@ -293,20 +292,13 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   				iden.setAttribute("status","TERMINATED");
 
   				Date today = new Date();
-  				String format = getCustomObject("leaverDeleteTimestamp","CMH-DateFormat");
-  				if(Util.isNotNullOrEmpty(format)) {
-			    	SimpleDateFormat sdf = new SimpleDateFormat(format);
-			    	Date deletetionDate =  Util.incrementDateByDays(today, numberOfDays);
-			    	String deleteDate = sdf.format(deletetionDate);
-			    	log.debug("CMH-LifecycleEvent-Leaver-Disable :deleteDate : "+deleteDate);
-
-			    	iden.setAttribute("deletionDate",deletetionDate);
-			    	if(Util.nullSafeCaseInsensitiveEq(immeTermStat,"YES")) {
-			    	   iden.setAttribute("immediateOffboarder","NO");
-			    	}
-	  				context.saveObject(iden);
-	  				context.commitTransaction();
-  				}
+				Date deletetionDate =  Util.incrementDateByDays(today, numberOfDays);
+				iden.setAttribute("deletionDate",deletetionDate);
+				if(Util.nullSafeCaseInsensitiveEq(immeTermStat,"YES")) {
+				   iden.setAttribute("immediateOffboarder","NO");
+				}
+				context.saveObject(iden);
+				context.commitTransaction();
   				if(isDebugEnabled){
   					log.debug("CMH-LifecycleEvent-Leaver-Disable: Identity status "+identityName+" disabled succesfully");
   				}

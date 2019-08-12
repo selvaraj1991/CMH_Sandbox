@@ -248,7 +248,7 @@ public String userNameConcat(String username, int count) {
 public String generateTimeStamp() {
 	log.debug("Entering generateTimeStamp method");
 	String strDate = null;
-	String format = getCustomObject("ruleLibraryGenerateTimestamp", "CMH-DateFormat");
+	String format = getCustomObject("renameUserTimestamp", "CMH-DateFormat");
 	if (Util.isNotNullOrEmpty(format)) {
 		SimpleDateFormat formatter = new SimpleDateFormat(format);
 		Date date = new Date();

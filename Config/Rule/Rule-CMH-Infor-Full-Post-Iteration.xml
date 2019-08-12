@@ -60,8 +60,8 @@
 					          context.saveObject(app);
 							  context.commitTransaction();
 							} catch (GeneralException e) {
-								 log.error("Error: "+e.getMessage());
-						    };
+								 log.error("Error in CMH-Infor-Full-Post-Iteration-Rule: "+e.getMessage());
+						    }
 					   }
                    }
                }

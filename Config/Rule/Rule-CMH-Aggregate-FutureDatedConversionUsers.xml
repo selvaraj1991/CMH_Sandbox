@@ -4,12 +4,10 @@
 <Description>The rule is run by the Future Dated conversion users task. This rule checks for the conversion case users who are not created before because of Future Start date, and if the current date is their start date then this will trigger the infor aggregation for those users.</Description>
   <Source><![CDATA[
     import org.apache.log4j.Logger;
-  	import java.text.SimpleDateFormat;
   	import sailpoint.api.TaskManager;
   	import sailpoint.object.Attributes;
   	import sailpoint.object.Application;
   	import sailpoint.object.Custom; 
-  	import sailpoint.object.Identity;
   	import sailpoint.tools.Util;
   	
   	public boolean runAggregation(String usersStr){
@@ -66,40 +64,35 @@
   	log.debug("Entering CMH-Aggregate-FutureDated-Conversion-Users-Rule");
   	Custom stCustomObj = context.getObjectByName(Custom.class,"CMH-DateFormat");
   	List usersList = null;
-  	String custObjName = "CMH-Custom-Future-Conversion-Users";
+  	String CUSTOM_OBJ_NAME = "CMH-Custom-Future-Conversion-Users";
   	if(stCustomObj!=null){
-  		String dateFormat = stCustomObj.getString("startDateFormat");
-  		if(Util.isNotNullOrEmpty(dateFormat)){
-  			SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
-  			Custom customObj = context.getObjectByName(Custom.class,custObjName);
-		  	if(customObj!=null){
-		  		Attributes attrs = customObj.getAttributes();
-		  		if(attrs!=null){
-			  		List empIds = attrs.getKeys();
-			  		if(!Util.isEmpty(empIds)){
-			  			usersList = new ArrayList();
-			  			for(String empId : empIds){
-			  				String sDate = customObj.getString(empId);
-			  				Date stDate = sdf.parse(sDate);
-			  				Date currDate = new Date();
-			  				if(!stDate.after(currDate)){
-			  					usersList.add(empId);
-			  				}
-			  			}
-			  		}
-			  		if(!Util.isEmpty(usersList)){
-			  			String usersStr = Util.listToCsv(usersList);
-			  			if(Util.isNotNullOrEmpty(usersStr)){
-			  				boolean status = runAggregation(usersStr);
-			  				if(status){
-			  					updateCustomObject(custObjName,usersList);
-			  				}	  				 
-			  			}
-			  		}
-		  		}
-		  	}
-  		}
-  	}
+		Custom customObj = context.getObjectByName(Custom.class,CUSTOM_OBJ_NAME);
+		if(customObj!=null){
+			Attributes attrs = customObj.getAttributes();
+			if(attrs!=null){
+				List empIds = attrs.getKeys();
+				if(!Util.isEmpty(empIds)){
+					usersList = new ArrayList();
+					for(String empId : empIds){
+						Date stDate = (Date)customObj.get(empId);
+						Date currDate = new Date();
+						if(!stDate.after(currDate)){
+							usersList.add(empId);
+						}
+					}
+				}
+				if(!Util.isEmpty(usersList)){
+					String usersStr = Util.listToCsv(usersList);
+					if(Util.isNotNullOrEmpty(usersStr)){
+						boolean status = runAggregation(usersStr);
+						if(status){
+							updateCustomObject(CUSTOM_OBJ_NAME,usersList);
+						}	  				 
+					}
+				}
+			}
+		}
+	}
   	log.debug("Exiting CMH-Aggregate-FutureDated-Conversion-Users-Rule");
   	return "Success";
 
