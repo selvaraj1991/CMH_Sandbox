@@ -174,7 +174,7 @@
   			</Source>
   		</Script>
   	</Transition>
-  	<Transition to="Stop"/>
+  	<Transition to="Add Error Message"/>
   </Step>
   <Step icon="Task" name="Update Identity" posX="238" posY="229">
   	<Script>

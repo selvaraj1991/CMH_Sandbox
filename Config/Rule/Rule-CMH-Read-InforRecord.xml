@@ -34,8 +34,7 @@
 				}
 			}
 		} else {
-        throw new sailpoint.tools.GeneralException("CMH-Read-Infor-Record-Rule :Rule Config must contain complete" 
-                                          +"CSV filepath with token as [path] like 'path,<Complete filepath>");			
+        throw new sailpoint.tools.GeneralException("CMH-Read-Infor-Record-Rule :Rule Config must contain complete "+" CSV filepath with token as [path] like 'path,<Complete filepath>");			
 		}
 		log.debug("Exiting CMH-Read-Infor-Record-Rule");
 		if (isSuccess) {

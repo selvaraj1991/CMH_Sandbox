@@ -256,7 +256,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   			]]></Source>
       </Script>
     </Transition>
-    <Transition to="end"/>
+    <Transition to="Add Error Message"/>
   </Step>
   <Step icon="Default" name="Check User Status" posX="252" posY="237" resultVariable="isUserActive">
     <Arg name="userStatus" value="ref:userStatus"/>

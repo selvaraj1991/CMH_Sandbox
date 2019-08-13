@@ -253,7 +253,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   			]]></Source>
       </Script>
     </Transition>
-    <Transition to="end"/>
+    <Transition to="Add Error Message"/>
   </Step>
   <Step icon="Task" name="Get Connected Apps" posX="266" posY="210" resultVariable="connectedApps">
     <Script>

@@ -360,10 +360,6 @@
   				errorList.add("The Custom Object is not configured properly with O365 License. Either Custom object or License entry in custom object is missing");
   			}
 
-  			/*if(!oldUserAdExists){
-  				errorList.add("The AD account for the other user is not present in IIQ, so cannot proceed with linking the AD account with new User");
-  			}*/
-
   			if(Util.isNullOrEmpty(newUserOU)){
   				errorList.add("The Custom Object is not configured properly with OU details. Either Custom object or OU entry in custom object is missing");
   			}
@@ -398,7 +394,7 @@
   			]]></Source>
       </Script>
     </Transition>
-    <Transition to="Stop"/>
+    <Transition to="Add Error Message"/>
   </Step>
   <Step icon="Default" name="Update Identity" posX="285" posY="210">
     <Script>
@@ -454,14 +450,14 @@
     </Script>
     <Transition to="Link AD Account" when="script:oldUserAdExists"/>
     <Transition to="Create New AD Account" when="script:!oldUserAdExists &amp;&amp; !newUserAdExists"/>
-    <Transition to="Stop">
+    <Transition to="Add Error Message">
       <Script>
         <Source><![CDATA[
 
   				if(validationErrors==null){
   					validationErrors = new ArrayList();
   				}
-  				validationErrors.add("The existing User  "+oldEmpName+" ("+oldEmployeeId+" ) is not having AD account. Hence cannot proceed with User conversion.");
+  				validationErrors.add("The existing User  "+oldEmpName+" ("+oldEmployeeId+" ) is not having AD account and the new User "+identityName+" ("+employeeId+") is having an AD account. Hence cannot proceed with User conversion.");
   				wfcontext.getRootWorkflowCase().put("validationErrors",validationErrors);
   				return true;
 
@@ -516,6 +512,18 @@
 			]]></Source>
       </Script>
     </Transition>
+	<Transition to="Add Error Message">
+		<Script>
+			<Source>
+			<![CDATA[
+				if(validationErrors!=null && validationErrors.size()>0){
+					return true;
+				}
+				return false;
+			]]>
+			</Source>
+		</Script>
+	</Transition>
     <Transition to="Stop"/>
   </Step>
   <Step icon="Task" name="Create New AD Account" posX="546" posY="302">
@@ -562,6 +570,18 @@
 			]]></Source>
       </Script>
     </Transition>
+	<Transition to="Add Error Message">
+		<Script>
+			<Source>
+			<![CDATA[
+				if(validationErrors!=null && validationErrors.size()>0){
+					return true;
+				}
+				return false;
+			]]>
+			</Source>
+		</Script>
+	</Transition>
     <Transition to="Stop"/>
   </Step>
   <Step icon="Task" name="Provision O365 License" posX="987" posY="425">
@@ -595,6 +615,18 @@
 			]]></Source>
       </Script>
     </Transition>
+	<Transition to="Add Error Message">
+		<Script>
+			<Source>
+			<![CDATA[
+				if(validationErrors!=null && validationErrors.size()>0){
+					return true;
+				}
+				return false;
+			]]>
+			</Source>
+		</Script>
+	</Transition>
     <Transition to="Stop"/>
   </Step>
   <Step action="call:refreshIdentity" icon="Default" name="Refresh Identity" posX="1299" posY="252">
@@ -602,8 +634,36 @@
     <Arg name="correlateEntitlements" value="true"/>
     <Arg name="provision" value="true"/>
     <Arg name="refreshRoleMetadata" value="true"/>
-	  <Arg name="refreshIdentityEntitlements" value="true"/>
+	<Arg name="refreshIdentityEntitlements" value="true"/>
+	<Transition to="Add Error Message">
+		<Script>
+			<Source>
+			<![CDATA[
+				if(validationErrors!=null && validationErrors.size()>0){
+					return true;
+				}
+				return false;
+			]]>
+			</Source>
+		</Script>
+	</Transition>
     <Transition to="Stop"/>
+  </Step>
+  <Step action="call:addMessage" name="Add Error Message">
+	<Arg name="message">
+		<value>
+			<Script>
+				<Source>
+				<![CDATA[
+					import sailpoint.tools.Util;
+					return Util.listToCsv(validationErrors);
+				]]>
+				</Source>
+			</Script>
+		</value>
+	</Arg>
+	<Arg name="type" value="Error"/>
+	<Transition to="Stop"/>
   </Step>
   <Step icon="Default" name="Do Target Aggregation" posX="922" posY="334" resultVariable="validationErrors">
     <Script>
@@ -667,6 +727,18 @@
 			]]></Source>
       </Script>
     </Transition>
+	<Transition to="Add Error Message">
+		<Script>
+			<Source>
+			<![CDATA[
+				if(validationErrors!=null && validationErrors.size()>0){
+					return true;
+				}
+				return false;
+			]]>
+			</Source>
+		</Script>
+	</Transition>
     <Transition to="Stop"/>
   </Step>
   <Step catches="complete" icon="Catches" name="Check Status" posX="94" posY="6">

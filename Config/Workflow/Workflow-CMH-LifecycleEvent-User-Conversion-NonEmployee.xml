@@ -240,7 +240,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   			]]></Source>
       </Script>
     </Transition>
-    <Transition to="end"/>
+    <Transition to="Add Error Message"/>
   </Step>
   <Step icon="Default" name="Check AD Application" posX="272" posY="246">
     <Script>

@@ -173,7 +173,7 @@
   			</Source>
   		</Script>
   	</Transition>
-  	<Transition to="Stop"/>
+  	<Transition to="Add Error Message"/>
   </Step>
   <Step icon="Task" name="Check AD Exists" posX="540" posY="218" resultVariable="adExists">
   	<Script>
@@ -374,7 +374,35 @@
   	<Arg name="correlateEntitlements" value="true"/>
     <Arg name="refreshRoleMetadata" value="true"/>
     <Arg name="refreshIdentityEntitlements" value="true"/>
+	<Transition to="Add Error Message">
+		<Script>
+			<Source>
+			<![CDATA[
+				if(validationErrors!=null && validationErrors.size()>0){
+					return true;
+				}
+				return false;
+			]]>
+			</Source>
+		</Script>
+	</Transition>
   	<Transition to="Stop"/>
+  </Step>
+  <Step action="call:addMessage" name="Add Error Message">
+	<Arg name="message">
+		<value>
+			<Script>
+				<Source>
+				<![CDATA[
+					import sailpoint.tools.Util;
+					return Util.listToCsv(validationErrors);
+				]]>
+				</Source>
+			</Script>
+		</value>
+	</Arg>
+	<Arg name="type" value="Error"/>
+	<Transition to="Stop"/>
   </Step>
   <Step catches="complete" icon="Catches" name="Check Status" posX="159" posY="26">
     <Script>

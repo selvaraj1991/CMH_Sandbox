@@ -217,7 +217,7 @@
   			</Source>
   		</Script>
   	</Transition>
-  	<Transition to="Stop"/>
+  	<Transition to="Add Error Message"/>
   </Step>
   <Step icon="Default" name="Update Identity" posX="258" posY="243">
   	<Script>
@@ -427,7 +427,35 @@
   		]]>
   		</Source>
   	</Script>
+	<Transition to="Add Error Message">
+		<Script>
+			<Source>
+			<![CDATA[
+				if(validationErrors!=null && validationErrors.size()>0){
+					return true;
+				}
+				return false;
+			]]>
+			</Source>
+		</Script>
+	</Transition>
   	<Transition to="Stop"/>
+  </Step>
+  <Step action="call:addMessage" name="Add Error Message">
+	<Arg name="message">
+		<value>
+			<Script>
+				<Source>
+				<![CDATA[
+					import sailpoint.tools.Util;
+					return Util.listToCsv(validationErrors);
+				]]>
+				</Source>
+			</Script>
+		</value>
+	</Arg>
+	<Arg name="type" value="Error"/>
+	<Transition to="Stop"/>
   </Step>
   <Step catches="complete" icon="Catches" name="Check Status" posX="51" posY="22">
     <Script>
