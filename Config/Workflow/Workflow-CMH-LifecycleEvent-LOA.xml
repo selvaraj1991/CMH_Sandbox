@@ -223,13 +223,15 @@
   	<Script>
   		<Source>
   		<![CDATA[
+  		    import sailpoint.api.ObjectUtil;
   			import sailpoint.object.Identity;
   			
-  			Identity iden = context.getObjectByName(Identity.class,identityName);
+  			Identity iden = acquireLockOnIdentity(identityName);
   			if(iden!=null){
   				iden.setInactive(true);
   				context.saveObject(iden);
   				context.commitTransaction();
+  				ObjectUtil.unlockIdentity(context,iden);
   			}
   		]]>
   		</Source>
@@ -478,7 +480,7 @@
   				log.error("CMH_ImmediateTermination: Check Status step : Errors Found : "+errorMessage);
   				validationErrors.add(errorMessage);	
   			}else if(!Util.isEmpty(validationErrors)){
-  				log.error("CMH_ImmediateTermination: Check Status step : Errors Found : "+Util.listToCsv(validationErrors));
+  				log.error("Check Status step : Errors Found : "+Util.listToCsv(validationErrors));
   			}
 			
 			String action = null;

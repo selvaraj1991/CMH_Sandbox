@@ -570,7 +570,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 				validationErrors.add(errorMessagesFromWfc);
 			}
 			if(isDebugEnabled){
-				log.debug("CMH-LifecycleEvent-Leaver-Disable : Errors recorded in Leaver process: "+validationErrors.toString());
+				log.debug("Errors recorded in Leaver process: "+validationErrors.toString());
 			}
 			if(Util.isEmpty(validationErrors)){
 			    Map map = new HashMap();

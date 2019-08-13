@@ -329,19 +329,15 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   		      import sailpoint.object.Identity;
   		      import sailpoint.tools.Util;
   		      
-  		      Identity identity =  acquireLockOnIdentity(identityName);
-  		      String firstName = identity.getFirstname();
-  		      String lastName = identity.getLastname();
-  		      String middInitial = identity.getStringAttribute("middleInitial");
-  		      
-  		      if (isDebugEnabled) {
-		          log.debug("CMH-LifecycleEvent-Name-Change");
-		      }
-	
 		      if (validationErrors == null) {
 		          validationErrors = new ArrayList();
 		      }
-		        
+  		      Identity identity =  acquireLockOnIdentity(identityName);
+  		      if(null != identity) {
+  		      String firstName = identity.getFirstname();
+  		      String lastName = identity.getLastname();
+  		      String middInitial = identity.getStringAttribute("middleInitial");
+	  		     
   		      if(Util.isNotNullOrEmpty(middInitial)) {
   		          middInitial.trim();
   		      }
@@ -357,7 +353,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 			     finalUsername =finalUsername.toLowerCase();
 				 identity.setName(finalUsername);
 				 identity.setDisplayName(finalUsername);
-				 //identity.setAttribute("userName",finalUsername);
+					 
 				 if(hasEmail) {
 					identity.setAttribute("email",finalUsername + "%%CMH-Mail-Domain%%");
 				  }
@@ -369,6 +365,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 				}
 				ObjectUtil.unlockIdentity(context,identity);
 				wfcontext.getWorkflowCase().put("newIdentityName",finalUsername);
+				  }
 			
   		]]></Source>
     </Script>
@@ -385,7 +382,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
     ]]></Source>
       </Script>
     </Transition>
-    <Transition to="end"/>
+    <Transition to="Custom Error Message"/>
   </Step>
   <Step icon="Default" name="update Custom object" posX="299" posY="344" resultVariable="validationErrors">
     <Script>
@@ -752,6 +749,18 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
    </Arg>
    <Arg name="type" value="Error"/>
     <Transition to="end"/>
+  </Step>
+  <Step icon="Default" name="Custom Error Message" posX="479" posY="430">
+    <Script>
+      <Source><![CDATA[
+		    if(validationErrors==null){
+				validationErrors = new ArrayList();
+			}
+			validationErrors.add("New username is not generated for the user");
+			wfcontext.getWorkflowCase().put("validationErrors",validationErrors);
+		]]></Source>
+    </Script>
+    <Transition to="Add Error Message"/>
   </Step>
   <Step catches="complete" icon="Catches" name="Check Status" posX="32" posY="10">
     <Arg name="attributeName" value="string:Employee ID"/>

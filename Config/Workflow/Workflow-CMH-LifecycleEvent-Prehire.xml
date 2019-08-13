@@ -298,8 +298,9 @@
   				if(isDebugEnabled){
   					log.debug("CMH-LifeycycleEvent-Prehire: Identity "+identityName+" enabled succesfully");
   				}
+  				ObjectUtil.unlockIdentity(context,iden);
   			}
-  			ObjectUtil.unlockIdentity(context,iden);
+  			
   		]]>
   		</Source>
   	</Script>

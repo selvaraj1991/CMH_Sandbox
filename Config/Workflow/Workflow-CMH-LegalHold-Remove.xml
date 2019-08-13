@@ -437,7 +437,7 @@
   			if(wfcontext.getRootWorkflowCase().getMessages()!=null && wfcontext.getRootWorkflowCase().getMessagesByType(Message.Type.Error)!=null){
   				List errorMessagesList = wfcontext.getRootWorkflowCase().getMessagesByType(Message.Type.Error);
   				String errorMessage = Util.listToCsv(errorMessagesList);
-  				log.error("CMH_ImmediateTermination: Check Status step : Errors Found : "+errorMessage);	
+  				log.error("Check Status step : Errors Found : "+errorMessage);	
   			}else{
   				if(identityName!=null){
 				    Identity iden = acquireLockOnIdentity(identityName);
@@ -445,8 +445,9 @@
 						iden.setAttribute("identityRetention","NO");
 						context.saveObject(iden);
 						context.commitTransaction();
+						ObjectUtil.unlockIdentity(context,iden);
 					}
-					ObjectUtil.unlockIdentity(context,iden);
+					
 				}
   			}
 			

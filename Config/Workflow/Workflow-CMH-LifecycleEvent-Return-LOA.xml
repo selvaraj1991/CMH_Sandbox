@@ -231,8 +231,8 @@
   				iden.setInactive(false);
   				context.saveObject(iden);
   				context.commitTransaction();
+  				ObjectUtil.unlockIdentity(context,iden);
   			}
-  			ObjectUtil.unlockIdentity(context,iden);
   		]]>
   		</Source>
   	</Script>

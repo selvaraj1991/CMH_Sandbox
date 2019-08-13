@@ -190,7 +190,7 @@
 
        	Logger log = Logger.getLogger("Workflow.CMH-Immediate-Termination");
 
-		Identity user = context.getObjectByName(Identity.class,identityName);
+		Identity user = acquireLockOnIdentity(identityName);
 	    if (user != null) {
 			user.setAttribute("immediateOffboarder","YES");
 			context.saveObject(user);
@@ -198,6 +198,7 @@
 			if (isDebugEnabled) {
 				log.debug("Updated immediateOffboarder status for the user: "+ identityName);
 			}
+			ObjectUtil.unlockIdentity(context,user);
 		}
      ]]>
      </Source>
@@ -429,7 +430,7 @@
   					validationErrors = new ArrayList();
   				}
   				validationErrors.add(errorMessage);
-  				log.error("CMH_ImmediateTermination: Check Status step : Errors Found : "+Util.listToCsv(validationErrors));
+  				log.error("Check Status step : Errors Found : "+Util.listToCsv(validationErrors));
   			}
 
   			String action = null;

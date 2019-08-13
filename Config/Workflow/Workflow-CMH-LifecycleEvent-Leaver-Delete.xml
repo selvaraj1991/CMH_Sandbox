@@ -180,12 +180,15 @@
   	<Script>
   		<Source>
   		<![CDATA[
+  		    import sailpoint.api.ObjectUtil;
   			import sailpoint.object.Identity;
-  			Identity iden = context.getObjectByName(Identity.class,identityName);
+  			
+  			Identity iden = acquireLockOnIdentity(identityName);
 			if(iden!=null){
 				iden.setAttribute("deletionStatus","deleted");
 				context.saveObject(iden);
 				context.commitTransaction();
+				ObjectUtil.unlockIdentity(context,iden);
 			}
   		]]>
   		</Source>

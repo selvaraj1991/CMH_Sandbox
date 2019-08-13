@@ -272,7 +272,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
             ]]></Source>
     </Script>
     <Transition to="Check AD Application" when="return (isUserActive==true)"/>
-    <Transition to="end" when="return (isUserActive==false)"/>
+    <Transition to="Custom Error Message" when="return (isUserActive==false)"/>
   </Step>
   <Step icon="Default" name="Check AD Application" posX="319" posY="326">
     <Script>
@@ -312,7 +312,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
       ]]></Source>
     </Script>
     <Transition to="Increase Retry Count" when="return ((adLinkExist==false) &amp;&amp; retries &lt; 3)"/>
-    <Transition to="end" when="return ((adLinkExist==false) &amp;&amp; retries &gt;= 3)"/>
+    <Transition to="Custom Error Message" when="return ((adLinkExist==false) &amp;&amp; retries &gt;= 3)"/>
     <Transition to="Notify Manager" when="return (adLinkExist==true)"/>
   </Step>
   <Step icon="Default" name="Increase Retry Count" posX="479" posY="430" wait="1">
@@ -425,6 +425,23 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
    <Arg name="type" value="Error"/>
    <Transition to="end"/>
   </Step>
+  <Step icon="Default" name="Custom Error Message" posX="479" posY="430">
+    <Script>
+      <Source><![CDATA[
+		    if(validationErrors==null){
+				validationErrors = new ArrayList();
+			}
+			if(adLinkExist == false){
+			   validationErrors.add("User does not have AD account,AD Link does exists");
+			}
+			if(!isUserActive){
+			   validationErrors.add("User status is not ACTIVE");
+			}
+			wfcontext.getWorkflowCase().put("validationErrors",validationErrors);
+		]]></Source>
+    </Script>
+    <Transition to="Add Error Message"/>
+  </Step>
   <Step catches="complete" icon="Catches" name="Check Status" posX="656" posY="22">
     <Arg name="attributeName" value="string:Employee ID"/>
     <Arg name="source" value="string:CMH-LifecycleEvent-Joiner"/>
@@ -441,9 +458,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 			if(validationErrors==null){
 				validationErrors = new ArrayList();
 			}
-			if(adLinkExist == false){
-			   validationErrors.add("AD Link does exists");
-			}
+			
 			if(wfcontext.getRootWorkflowCase().getMessages() != null && null != wfcontext.getRootWorkflowCase().getMessagesByType(Message.Type.Error)){
 				log.error("Error occured in leaver process: "+wfcontext.getRootWorkflowCase().getMessagesByType(Message.Type.Error));
 				List errorMessagesList = wfcontext.getRootWorkflowCase().getMessagesByType(Message.Type.Error);
@@ -451,9 +466,9 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 				validationErrors.add(errorMessagesFromWfc);
 			}
 			if(isDebugEnabled){
-				log.debug("CMH-LifecycleEvent-Joiner : Errors recorded in Leaver process: "+validationErrors.toString());
+				log.debug("Errors recorded in Leaver process: "+validationErrors.toString());
 			}
-			if(Util.isEmpty(validationErrors) && adLinkExist == true){
+			if(Util.isEmpty(validationErrors)){
 			    Map map = new HashMap();
 			    map.put("setString1","Joiner is successfully completed" );
   				auditWrite("Joiner Success",source,target,attributeName,attributeValue,map);
