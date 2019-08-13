@@ -648,23 +648,23 @@ public Object generateSnowTicket(String identityName, String customName, String 
 									}
 								}
 							} else {
-								errorList.add("Check is not successfull: " + responseValidateCheckOutPost);
+								errorList.add("Error:ServiceNow-Checkout is not successfull: " + responseValidateCheckOutPost);
 							}
 						} else {
-							errorList.add("Checkout espose is map is NULL or empty");
+							errorList.add("Error:ServiceNow-Checkout respose is map is NULL or empty");
 						}
 					} else {
-						errorList.add("No request is created: " + responseValidateAddCart);
+						errorList.add("Error:ServiceNow-No request is created: " + responseValidateAddCart);
 					}
 				} else {
-					errorList.add("Add to cart respose is map is NULL or empty");
+					errorList.add("Error:ServiceNow-Add to cart respose is map is NULL or empty");
 				}
 			} else {
-				errorList.add("Custom object is NULL or empty");
+				errorList.add("Error:ServiceNow-Custom object is NULL or empty");
 			}
 		} catch(Exception e) {
 			log.error("Error in generateSnowTicket method: " + e.getMessage());
-			errorList.add("Error:" + e.getMessage());
+			errorList.add("Error:ServiceNow-" + e.getMessage());
 		} finally {
 			httpclient.close();
 		}
