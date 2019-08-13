@@ -788,18 +788,18 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
     <Arg name="refreshIdentityEntitlements" value="true"/>
     <Arg name="synchronizeAttributes" value="true"/>
     <Transition to="Add Error Message">
-   <Script>
-	<Source>
-		<![CDATA[
-			if(validationErrors!=null && validationErrors.size()>0){
-			return true;
-			}
-			return false;
-		]]>
-	</Source>
-	</Script>
+		<Script>
+			<Source>
+				<![CDATA[
+					if(validationErrors!=null && validationErrors.size()>0){
+					return true;
+					}
+					return false;
+				]]>
+			</Source>
+		</Script>
 	</Transition>
- <Transition to="end"/>
+	<Transition to="end"/>
   </Step>
   <Step action="call:addMessage" name="Add Error Message">
    <Arg name="message">
