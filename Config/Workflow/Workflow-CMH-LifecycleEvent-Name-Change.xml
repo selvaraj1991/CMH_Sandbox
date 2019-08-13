@@ -723,7 +723,19 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
     <Arg name="correlateEntitlements" value="true"/>
     <Arg name="refreshRoleMetadata" value="true"/>
     <Arg name="refreshIdentityEntitlements" value="true"/>
-    <Transition to="Add Error Message"/>
+       <Transition to="Add Error Message">
+   <Script>
+	<Source>
+		<![CDATA[
+			if(validationErrors!=null && validationErrors.size()>0){
+			return true;
+			}
+			return false;
+		]]>
+	</Source>
+	</Script>
+	</Transition>
+ <Transition to="end"/>
   </Step>
   <Step action="call:addMessage" name="Add Error Message">
    <Arg name="message">
