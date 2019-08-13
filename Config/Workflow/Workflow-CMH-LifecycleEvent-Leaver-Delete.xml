@@ -185,6 +185,7 @@
 			if(iden!=null){
 				iden.setAttribute("deletionStatus","deleted");
 				context.saveObject(iden);
+				context.commitTransaction();
 			}
   		]]>
   		</Source>

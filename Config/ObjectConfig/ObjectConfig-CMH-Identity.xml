@@ -397,6 +397,20 @@
                     </ApplicationRef>
                 </AttributeSource>
             </ObjectAttribute>
+			<ObjectAttribute displayName="CellPhone" editMode="ReadOnly" name="cellphone" namedColumn="true" type="string">
+				<AttributeSource name="CellPhone">
+				  <ApplicationRef>
+					<Reference class="sailpoint.object.Application" name="%%CMH-Infor-ApplicationName%%"/>
+				  </ApplicationRef>
+				</AttributeSource>
+				<AttributeTargets>
+				  <AttributeTarget name="mobile" provisionAllAccounts="true">
+					<ApplicationRef>
+					  <Reference class="sailpoint.object.Application" name="%%CMH-AD-ApplicationName%%"/>
+					</ApplicationRef>
+				  </AttributeTarget>
+				</AttributeTargets>
+			</ObjectAttribute>
 		</ObjectConfig>
     </ImportAction>
 </sailpoint>
