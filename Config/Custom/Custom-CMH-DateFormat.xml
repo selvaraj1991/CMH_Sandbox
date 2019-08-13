@@ -6,7 +6,7 @@
       <entry key="legalHoldTimestamp" value="yyyy-MM-dd hh:mm:ss.a"/>
       <entry key="preIterationTimestamp" value="yyyy-MM-dd hh:mm:ss"/>
       <entry key="renameUserTimestamp" value="ddMMMyyyy"/>
-      <entry key="userNameFileNameTimestamp" value="yyyy-MM-dd.hh.mm.ss.a"/>
+      <entry key="userNameFileNameTimestamp" value="yyyy-MM-dd"/>
       <entry key="userNameGenerationTimestamp" value="yyyy-MM-dd hh:mm:ss a"/>
 	  <entry key="genericDateFormat" value="MM/dd/yyyy HH:mm:ss a z"/>
     </Map>

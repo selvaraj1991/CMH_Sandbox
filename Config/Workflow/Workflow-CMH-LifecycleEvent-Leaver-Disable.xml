@@ -452,13 +452,8 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 					  validationErrors.add(errList);
 				   }else if(ticketObj instanceof String) {
 		              snowTicketId = (String) ticketObj;
-					  log.debug("CMH-LifecycleEvent-Leaver-Disable:Ticket Created:"+snowTicketId);
-
-		           }else {
-		    	     validationErrors.add("The Object Type is NOT List OR String");
+					  log.debug("ServiceNow Ticket Created:"+snowTicketId);
 		           }
-    	        }else {
-				   validationErrors.add("NULL : Unable to generate ticket");
     	        }
 				wfcontext.getWorkflowCase().put("validationErrors",validationErrors);
 				return snowTicketId;
@@ -521,6 +516,22 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
     <Arg name="provision" value="true"/>
     <Arg name="correlateEntitlements" value="true"/>
     <Arg name="refreshIdentityEntitlements" value="true"/>
+    <Transition to="Add Error Message"/>
+  </Step>
+  <Step action="call:addMessage" name="Add Error Message">
+   <Arg name="message">
+     <value>
+       <Script>
+         <Source>
+			<![CDATA[
+				import sailpoint.tools.Util;
+				return Util.listToCsv(validationErrors);
+          ]]>
+         </Source>
+       </Script>
+     </value>
+   </Arg>
+   <Arg name="type" value="Error"/>
     <Transition to="end"/>
   </Step>
   <Step catches="complete" icon="Catches" name="Check Status" posX="78" posY="10">

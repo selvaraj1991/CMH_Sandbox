@@ -224,7 +224,7 @@
 			    if(Util.isNotNullOrEmpty(format)) {
 					DateFormat currentDateFormatWithTime = new SimpleDateFormat(format);
 					String strCurrentDateTime = currentDateFormatWithTime.format(endTime);
-					String filename = "UsernameEmailDetails" + strCurrentDateTime + ".csv";
+					String filename = "SailPointADGHRInbound_" + strCurrentDateTime + ".csv";
 					String FILE_HEADER = "EmployeeID,Username,UseForWorkEmail,Action,Supervisor";
 					Map map = null;
 					String filepath = getCustomObject("filepath", "CMH-Custom-Generic-Filepath");
