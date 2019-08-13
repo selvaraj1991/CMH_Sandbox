@@ -72,13 +72,13 @@
 		if(null !=finalUsername) {
 		    finalUsername = finalUsername.toLowerCase();
 			identity.setName(finalUsername);
-			account.setAttribute(usrName, finalUsername);
+			account.setAttribute(USER_NAME, finalUsername);
 			account.setDisplayName(finalUsername);
 			account.setIdentity(finalUsername);
 			if(Util.nullSafeCaseInsensitiveEq(userType,"Employee")){
-				account.setAttribute(workEmail, finalUsername + domain);
+				account.setAttribute(WORK_EMAIL, finalUsername + DOMAIN);
 			}else if (Util.nullSafeCaseInsensitiveEq(userType,"NonEmployee") && Util.nullSafeCaseInsensitiveEq(mailRequired,"Yes")) {
-				account.setAttribute(workEmail, finalUsername + domain);
+				account.setAttribute(WORK_EMAIL, finalUsername + DOMAIN);
 			}
 		}
 		log.debug("Exiting createNewUser method");
@@ -88,10 +88,10 @@
 	Logger log = Logger.getLogger("Rule.CMH-User-Creation-Rule");
     log.debug("Entering CMH-User-Creation-Rule");
 	
-	String workEmail = "WorkEmail";
-	String usrName = "Username";
-	String oldFormat = "_old";
-	String domain = "@cmhad.com";
+	String WORK_EMAIL = "WorkEmail";
+	String USER_NAME = "Username";
+	String OLD_FORMAT = "_old";
+	String DOMAIN = "@cmhad.com";
 	
     String firstName = account.getStringAttribute("FirstName");
     if(Util.isNotNullOrEmpty(firstName)){
@@ -121,11 +121,11 @@
 	if(Util.isNotNullOrEmpty(mailRequired)){
     	mailRequired = mailRequired.trim();
     }
-	String username = account.getStringAttribute(usrName);
+	String username = account.getStringAttribute(USER_NAME);
 	if(Util.isNotNullOrEmpty(username)){
     	username = username.trim();
     }
-	String email = account.getStringAttribute(workEmail);
+	String email = account.getStringAttribute(WORK_EMAIL);
 	if(Util.isNotNullOrEmpty(email)){
     	email = email.trim();
     }
@@ -150,19 +150,19 @@
 					String oldIdentityMail = oldIden.getEmail();
 					if (Util.nullSafeCaseInsensitiveEq(oldIdentityName,username)) {
 						String timestamp = generateTimeStamp();
-						oldIden.setName(oldIdentityName + oldFormat + timestamp);
-						oldIden.setDisplayName(oldIdentityName + oldFormat + timestamp);
-						oldIden.setAttribute(usrName, oldIdentityName + oldFormat + timestamp);
+						oldIden.setName(oldIdentityName + OLD_FORMAT + timestamp);
+						oldIden.setDisplayName(oldIdentityName + OLD_FORMAT + timestamp);
+						oldIden.setAttribute(USER_NAME, oldIdentityName + OLD_FORMAT + timestamp);
 						oldIden.setInactive(true);
 						IdentityService identityService = new IdentityService(context);
 						List links = identityService.getLinks(oldIden,application);
 						if(links!=null && links.size()>0){
 							Link hrLink = links.get(0);
 							if(hrLink!=null){
-								hrLink.setDisplayName(oldIdentityName + oldFormat + timestamp);
-								hrLink.setAttribute(usrName,oldIdentityName + oldFormat + timestamp);
+								hrLink.setDisplayName(oldIdentityName + OLD_FORMAT + timestamp);
+								hrLink.setAttribute(USER_NAME,oldIdentityName + OLD_FORMAT + timestamp);
 								if(Util.isNotNullOrEmpty(oldIdentityMail)){
-									hrLink.setAttribute(workEmail,oldIdentityMail + oldFormat + timestamp);
+									hrLink.setAttribute(WORK_EMAIL,oldIdentityMail + OLD_FORMAT + timestamp);
 								}
 								context.saveObject(hrLink);
 							}
@@ -174,18 +174,18 @@
 						identity.setDisplayName(oldIdentityName);
 						if(Util.nullSafeCaseInsensitiveEq(userType,"NonEmployee") && Util.nullSafeCaseInsensitiveEq(mailRequired,"Yes")){
 							if (StringUtils.isBlank(email) && !StringUtils.isBlank(oldIdentityMail)) {
-								account.setAttribute(workEmail, oldIdentityMail);
+								account.setAttribute(WORK_EMAIL, oldIdentityMail);
 							} else if (StringUtils.isBlank(email) && StringUtils.isBlank(oldIdentityMail)){
-								account.setAttribute(workEmail, oldIdentityName + domain);
+								account.setAttribute(WORK_EMAIL, oldIdentityName + DOMAIN);
 							}
 						}else if(Util.nullSafeCaseInsensitiveEq(userType,"Employee")){
 							if (StringUtils.isBlank(email) && !StringUtils.isBlank(oldIdentityMail)) {
-								account.setAttribute(workEmail, oldIdentityMail);
+								account.setAttribute(WORK_EMAIL, oldIdentityMail);
 							} else if (StringUtils.isBlank(email) && StringUtils.isBlank(oldIdentityMail)){
-								account.setAttribute(workEmail, oldIdentityName + domain);
+								account.setAttribute(WORK_EMAIL, oldIdentityName + DOMAIN);
 							}
 						}
-						account.setAttribute(usrName, oldIdentityName);
+						account.setAttribute(USER_NAME, oldIdentityName);
 						account.setDisplayName(oldIdentityName);
 						account.setIdentity(oldIdentityName);
 					}else{
