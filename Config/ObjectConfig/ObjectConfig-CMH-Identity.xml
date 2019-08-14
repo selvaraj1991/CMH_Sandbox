@@ -5,7 +5,7 @@
         <ObjectConfig name="Identity">
             <ObjectAttribute displayName="Deletion Date" editMode="ReadOnly" name="deletionDate" standard="true" type="string"/>
             <ObjectAttribute displayName="Deletion Status" editMode="ReadOnly" extendedNumber="2" name="deletionStatus" standard="true" type="string"/>
-			<ObjectAttribute displayName="Immediate Offboarder" editMode="ReadOnly" name="immediateOffboarder" type="string"/>
+			<ObjectAttribute displayName="Immediate Offboarder" editMode="ReadOnly" extendedNumber="4" name="immediateOffboarder" type="string"/>
             <ObjectAttribute displayName="att_first_name" editMode="ReadOnly" name="firstname" standard="true" type="string">
                 <AttributeSource name="FirstName">
                     <ApplicationRef>
