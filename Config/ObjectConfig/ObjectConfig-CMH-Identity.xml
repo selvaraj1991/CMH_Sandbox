@@ -375,7 +375,7 @@
                     </ApplicationRef>
                 </AttributeSource>
             </ObjectAttribute>
-			<ObjectAttribute displayName="Credential" editMode="ReadOnly" name="credential" type="string">
+			<ObjectAttribute displayName="Credential" editMode="ReadOnly" namedColumn="true" name="credential" type="string">
 				<AttributeSource name="Credential">
 				  <ApplicationRef>
 					<Reference class="sailpoint.object.Application" name="%%CMH-Infor-ApplicationName%%"/>
