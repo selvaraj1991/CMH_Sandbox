@@ -11,6 +11,9 @@
 		import java.text.DateFormat;
 		import java.text.ParseException;
 		import java.text.SimpleDateFormat;
+		import net.schmizz.sshj.SSHClient;
+        import net.schmizz.sshj.sftp.SFTPClient;
+		import net.schmizz.sshj.transport.verification.PromiscuousVerifier;
 	    import org.apache.log4j.Logger;
 		import sailpoint.object.Attributes;
 		import sailpoint.object.Custom;
@@ -22,6 +25,9 @@
 
 		Logger log = Logger.getLogger("Rule.CMH-Username-Email-Report-Generator-Rule");
 		String nameCustomObjName = "CMH-NameChange-UsernameAndEmail";
+		String filename = null;
+		String filepath = null;
+		
         
         //This method fetches the last timestamp of the this task 
 		public Date getCustomObjectTimestamp(String customObjectName, String customName) {
@@ -56,6 +62,7 @@
 				customObj = context.getObject(Custom.class, customName);
 			} catch(GeneralException e) {
 				log.error("Error in getCustom method " + e.getMessage());
+				throw new sailpoint.tools.GeneralException("Error in searching custom object:"+e.getMessage());				
 			}
 			log.debug("Exiting getCustom method");
 			return customObj;
@@ -124,6 +131,7 @@
 
 				} catch(GeneralException e) {
 					log.error("Error in updateCustomNameChangeData method"+e.getMessage());
+					throw new sailpoint.tools.GeneralException("Error in updateCustomNameChangeData method"+e.getMessage());
 				}
 			} else {
 				log.debug("Custom dataList does not have any value");
@@ -147,13 +155,13 @@
 					}
 				} catch(GeneralException e) {
 					log.error("ERROR in updateCustomTimeStamp" + e.getMessage());
+					throw new sailpoint.tools.GeneralException("Error in updateCustomNameChangeData method"+e.getMessage());
 				}
 			} else {
 				log.debug("lastTimeStamp is null");
 			}
 			log.debug("Exiting updateCustomTimeStamp method");
 		}
-
 		public Date getDateTime() {
 			log.debug("Entering getDateTime method");
 			String format = getCustomObject("userNameGenerationTimestamp","CMH-DateFormat");
@@ -224,10 +232,10 @@
 			    if(Util.isNotNullOrEmpty(format)) {
 					DateFormat currentDateFormatWithTime = new SimpleDateFormat(format);
 					String strCurrentDateTime = currentDateFormatWithTime.format(endTime);
-					String filename = "SailPointADGHRInbound_" + strCurrentDateTime + ".csv";
+					filename = "SailPointADGHRInbound_" + strCurrentDateTime + ".csv";
 					String FILE_HEADER = "EmployeeID,Username,UseForWorkEmail,Action,Supervisor";
 					Map map = null;
-					String filepath = getCustomObject("filepath", "CMH-Custom-Generic-Filepath");
+					filepath = getCustomObject("filepath", "CMH-Custom-Generic-Filepath");
 					if (Util.isNotNullOrEmpty(filepath) && new File(filepath).exists()) {
 						try {
 							fileWriter = new FileWriter(filepath + filename);
@@ -279,7 +287,67 @@
 			log.debug("Exiting generateReport method");
 			return isSuccess;
 		}
+		//Checking whether the generated file exists in that location
+		public boolean ifFileExists(String filepath, String filename) {
+		log.debug("Entering ifFileExists");
+		boolean exists = false;
+		if(Util.isNotNullOrEmpty(filepath) && Util.isNotNullOrEmpty(filename)) {
+			File tempFile = new File(filepath+filename);
+			log.debug(filepath+filename);
+			exists = tempFile.exists();
+		}
+		log.debug("Exiting ifFileExists exists ?:"+exists);
+		return exists;
+	    }
+	    //Uploading using SFTP
+		public boolean uploadFileUsingSFTP(String filepath,String filename) {
+		    log.debug("Entering uploadFileUsingSFTP");
+		    boolean isUploadSuccess = false;
+		   // boolean fileExists = ifFileExists(filepath,filename);
+		   // if(fileExists) {
+				SSHClient sshc = new SSHClient();
+				try {
+				    sshc.addHostKeyVerifier(new PromiscuousVerifier());
+				    sshc.setConnectTimeout(1000);			
+					sshc.connect("%%CMH-SFTP-HOST%%", 22);
+					if (sshc != null && sshc.isConnected()) {
+						log.debug("SFTP Connection established successfully");
+						sshc.authPassword("%%CMH-SFTP-USER%%", (String)context.decrypt("%%CMH-SFTP-PASSWORD%%"));
+						if(sshc.isAuthenticated()) {
+							log.debug("SFTP authentication is established successfully");
+							final SFTPClient sftp = sshc.newSFTPClient();
+							sftp.put(filepath+filename, "%%CMH-SFTP-DESTDIR%%");
+							isUploadSuccess =true;
+						}
+					}
 		
+				} catch (IOException e) {
+					log.error("IOException in uploading the file "+e.getMessage());
+				} finally {
+					if (sshc != null && sshc.isConnected()) {
+						try {
+							 log.debug("Disconnecting and Closing SSH Session");
+							 sshc.disconnect();
+							 sshc.close();
+						} catch (IOException e) {
+							log.error("IOException in uploading the file "+e.getMessage());
+						}
+					}
+				}
+		//	}
+			log.debug("Exiting uploadFileUsingSFTP,isUploadSuccess ?:"+isUploadSuccess);
+			return isUploadSuccess;
+		}
+		public void postFileGenerationOperation(Date lastTimeStamp,Date endTime) {
+		    log.debug("Entering postFileGenerationOperation");
+		    lastTimeStamp = endTime;
+		    updateCustomTimeStamp(lastTimeStamp, "CMH-Last-Generated-Timestamp-Report");
+			List dataList = getCustomNameChangeData(nameCustomObjName);
+			if (null != dataList && dataList.size() > 0) {
+				updateCustomNameChangeData(dataList, nameCustomObjName);
+			}		
+			log.debug("Exiting postFileGenerationOperation");   
+		}
 		//Rule starts from here
 		log.debug("Entering CMH-Username-Email-Report-Generator-Rule");
 		Date lastTimeStamp = getCustomObjectTimestamp("Timestamp", "CMH-Last-Generated-Timestamp-Report");
@@ -302,13 +370,17 @@
 		if (null != startTime && null != endTime) {
 			boolean success = generateReport(startTime, endTime);
 			if (success) {
-				lastTimeStamp = endTime;
-				updateCustomTimeStamp(lastTimeStamp, "CMH-Last-Generated-Timestamp-Report");
-				List dataList = getCustomNameChangeData(nameCustomObjName);
-				if (null != dataList && dataList.size() > 0) {
-					updateCustomNameChangeData(dataList, nameCustomObjName);
-				}
-				flag = true;
+			    boolean fileExists = ifFileExists(filepath,filename);
+			    if(fileExists) {
+			       boolean isUploadToServer = uploadFileUsingSFTP(filepath,filename);
+			       if(isUploadToServer) {
+					    postFileGenerationOperation(lastTimeStamp,endTime);
+						flag = true;
+				    }			       
+			    }else {
+			        postFileGenerationOperation(lastTimeStamp,endTime);
+					flag = true;
+			   }
 			} else {
 				flag = false;
 			}
@@ -319,7 +391,7 @@
 		}
 		
 		log.debug("Exiting CMH-Username-Email-Report-Generator-Rule");
-		return "Failed";
+		throw new sailpoint.tools.GeneralException("Report Generation Failed, please see logs for more details");
 
  ]]></Source>
 </Rule>

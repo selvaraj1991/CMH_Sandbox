@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE Custom PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<Custom name="CMH-Last-Generated-Timestamp-Report">
+  <Attributes>
+    <Map>
+      <entry key="Timestamp"/>
+    </Map>
+  </Attributes>
+</Custom>
