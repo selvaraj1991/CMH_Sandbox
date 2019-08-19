@@ -9,7 +9,7 @@
             <entry key="COMMUNITYPROVIDEROTH" value="%%CMH-AD-CommunityPhysicians-OU%%"/>
             <entry key="CONTRACTAAANDNA" value="%%CMH-AD-Contractors-OU%%"/>
             <entry key="CONTRACTCCTRANSPORT" value="%%CMH-AD-Contractors-OU%%"/>
-            <entry key="CONTRACTCODER" value="%%CMH-AD-Contractors-OU%%"/>
+            <entry key="CONTRACTCODER" value="%%CMH-AD-Coders-OU%%"/>
             <entry key="CONTRACTEEWELLCNTR" value="%%CMH-AD-Contractors-OU%%"/>
             <entry key="CONTRACTEQUIPTECH" value="%%CMH-AD-Contractors-OU%%"/>
             <entry key="CONTRACTFACILITIES" value="%%CMH-AD-Contractors-OU%%"/>
