@@ -83,6 +83,17 @@
 		}
 		log.debug("Exiting createNewUser method");
 	}
+	
+	
+	public boolean checkIfUserExistsWithUsername(String userName){
+		if(Util.isNotNullOrEmpty(userName)){
+			Identity iden = context.getObjectByName(Identity.class,userName);
+			if(iden!=null){
+				return true;
+			}
+		}
+		return false;
+	}
 
 	//Rule starts from here
 	Logger log = Logger.getLogger("Rule.CMH-User-Creation-Rule");
@@ -133,9 +144,11 @@
 	if(Util.isNotNullOrEmpty(employeeId)){
 	    employeeId = employeeId.trim();
 	}
+	
+	
     if (!StringUtils.isBlank(oldemployeeId) && !StringUtils.isBlank(username)) {	//User conversion Case, Update the existing user's name to _old+timestamp and create the new user with same
 
-    	log.debug("Proceeding with updating existing user's name _old+timestamp and create the new user with same username for the user:"+employeeId);
+    	log.debug("OtherEmpId and username is not null. Check if it is a conversion case for the user :"+employeeId);
 		QueryOptions ops = new QueryOptions();
 		Filter filter = Filter.eq("employeeId", oldemployeeId);
 		ops.addFilter(filter);
@@ -162,7 +175,7 @@
 							if(hrLink!=null){
 								hrLink.setDisplayName(oldIdentityName + OLD_FORMAT + timestamp);
 								hrLink.setAttribute(USER_NAME,oldIdentityName + OLD_FORMAT + timestamp);
-									hrLink.setNativeIdentity(oldIdentityName + OLD_FORMAT + timestamp);
+								hrLink.setNativeIdentity(oldIdentityName + OLD_FORMAT + timestamp);
 								if(Util.isNotNullOrEmpty(oldIdentityMail)){
 									hrLink.setAttribute(WORK_EMAIL,oldIdentityMail + OLD_FORMAT + timestamp);
 								}
@@ -196,18 +209,28 @@
 						createNewUser(firstName,lastName,middInitial,employeeId,userType,mailRequired,status);
 					}
 				}else{
-					log.debug("Username & OtherEmpId is not null and user with OtherEmpId is having different username, so creating user with infor username for identity "+employeeId);
+					if(checkIfUserExistsWithUsername(username)){
+						log.debug("User already exists with the same username "+username+", so creating new username for the user "+employeeId);
+						createNewUser(firstName,lastName,middInitial,employeeId,userType,mailRequired,status);
+					}else{
+						log.debug("Username & OtherEmpId is not null and user with OtherEmpId is having different username, so creating user with infor username for identity "+employeeId);
+						identity.setName(username);//Creating new user with same name from infor
+						identity.setDisplayName(username);
+						account.setDisplayName(username);
+						account.setIdentity(username);
+					}
+				}
+			}else{
+				if(checkIfUserExistsWithUsername(username)){
+					log.debug("User already exists with the same username "+username+", so creating new username for the user "+employeeId);
+					createNewUser(firstName,lastName,middInitial,employeeId,userType,mailRequired,status);
+				}else{
+					log.debug("Username & OtherEmpId is not null and user with OtherEmpId is not present in IIQ, so creating user with infor username for identity "+employeeId);
 					identity.setName(username);//Creating new user with same name from infor
 					identity.setDisplayName(username);
 					account.setDisplayName(username);
 					account.setIdentity(username);
 				}
-			}else{
-				log.debug("Username & OtherEmpId is not null and user with OtherEmpId is not present in IIQ, so creating user with infor username for identity "+employeeId);
-				identity.setName(username);//Creating new user with same name from infor
-				identity.setDisplayName(username);
-				account.setDisplayName(username);
-				account.setIdentity(username);
 			}
 		} catch (GeneralException e) {
 			log.error("Exception occured while searching for the existing user with EmployeeID: "+oldemployeeId+" in IIQ :"+e.getMessage());
@@ -218,11 +241,16 @@
 			}
 		}
 	}else if (!StringUtils.isBlank(username)) {
-		log.debug("Username is not null from infor, so creating user with infor username for identity "+employeeId);
-		identity.setName(username);//Creating new user with same name from infor
-		identity.setDisplayName(username);
-		account.setDisplayName(username);
-		account.setIdentity(username);
+		if(checkIfUserExistsWithUsername(username)){
+			log.debug("User already exists with the same username "+username+", so creating new username for the user "+employeeId);
+			createNewUser(firstName,lastName,middInitial,employeeId,userType,mailRequired,status);
+		}else{
+			log.debug("Username is not null from infor, so creating user with infor username for identity "+employeeId);
+			identity.setName(username);//Creating new user with same name from infor
+			identity.setDisplayName(username);
+			account.setDisplayName(username);
+			account.setIdentity(username);
+		}
 	} else {
 		log.debug("Username is null, so creating user with unique name");
 		createNewUser(firstName,lastName,middInitial,employeeId,userType,mailRequired,status);

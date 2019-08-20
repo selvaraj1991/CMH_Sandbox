@@ -176,7 +176,7 @@ public boolean checkLength(String username) {
 				 * @return int
 				 */
 
-public int checkUnique(String username, String firstName, String lastName, String middInitial, String empId) {
+public int checkUnique(String username, String lastName, String empId) {
 	log.debug("Entering checkUnique method");
 	int count = 0;
 	List userList = null;
@@ -294,12 +294,12 @@ public String userNameGenerator(String firstName, String lastName, String middIn
 	}
 	if (Util.isNotNullOrEmpty(uname)) {
 		int count = 0;
-		count = checkUnique(uname, firstName, lastName, middInitial, empId);
+		count = checkUnique(uname, lastName, empId);
 		if (count > 0) {
 			temp = userNameConcat(uname, count);
 			uname = temp;
 		}
-		finalUsername = userNameCreationValidationCheck(uname, firstName, lastName, middInitial, empId);
+		finalUsername = userNameCreationValidationCheck(uname, lastName, empId);
 	}
 	log.debug("Exiting userNameGenerator method");
 	return finalUsername;
@@ -317,7 +317,7 @@ public String userNameGenerator(String firstName, String lastName, String middIn
 				 * @return string
 				 */
 
-public String userNameCreationValidationCheck(String username, String firstName, String lastName, String middInitial, String empId) {
+public String userNameCreationValidationCheck(String username, String lastName, String empId) {
 	log.debug("Entering userNameCreationValidationCheck method");
 	String uname = username;
 	String temp = null;
@@ -345,7 +345,7 @@ public String userNameCreationValidationCheck(String username, String firstName,
 			}
 
 		} while (!checkLength(uname));
-		count = checkUnique(uname, firstName, lastName, middInitial, empId);
+		count = checkUnique(uname, lastName, empId);
 		if (count > 0) {
 			count++;
 			temp = userNameConcat(uname, count);
@@ -423,7 +423,7 @@ public String finalUserName(String username, String firstname, String lastname, 
 					temp = uname + 1;
 					uname = temp;
 				}
-				userNameCreationValidationCheck(uname, firstname, lastname, middleInitial, empId);
+				userNameCreationValidationCheck(uname, lastname, empId);
 			} while ( checkUsernameInCustomObject ( uname , "CMH-Cerner-Usernames") || checkUsernameInCustomObject(uname, "CMH-Infor-Usernames"));
 		}
 
