@@ -35,9 +35,6 @@
         </Returns>
     </Signature>
     <Source><![CDATA[
-	import sailpoint.object.Identity;
-	import sailpoint.object.Filter;
-	import sailpoint.object.QueryOptions;
 	import sailpoint.tools.Util;
 	import org.apache.log4j.Logger;
 

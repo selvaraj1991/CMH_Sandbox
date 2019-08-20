@@ -91,7 +91,7 @@
 	String WORK_EMAIL = "WorkEmail";
 	String USER_NAME = "Username";
 	String OLD_FORMAT = "_old";
-	String DOMAIN = "@cmhad.com";
+	String DOMAIN = "%%CMH-Mail-Domain%%";
 	
     String firstName = account.getStringAttribute("FirstName");
     if(Util.isNotNullOrEmpty(firstName)){
@@ -144,6 +144,7 @@
 			userItr = context.search(Identity.class, ops);
 			if (userItr != null && userItr.hasNext()) {
 				Identity oldIden = (Identity) userItr.next();
+				if(Util.nullSafeCaseInsensitiveEq(oldIden.getName(),username)){
 				String oldIdentityStatus = oldIden.getStringAttribute("status");
 				if(Util.nullSafeCaseInsensitiveEq(oldIdentityStatus,"Terminated")){
 					String oldIdentityName = oldIden.getName();
@@ -161,6 +162,7 @@
 							if(hrLink!=null){
 								hrLink.setDisplayName(oldIdentityName + OLD_FORMAT + timestamp);
 								hrLink.setAttribute(USER_NAME,oldIdentityName + OLD_FORMAT + timestamp);
+									hrLink.setNativeIdentity(oldIdentityName + OLD_FORMAT + timestamp);
 								if(Util.isNotNullOrEmpty(oldIdentityMail)){
 									hrLink.setAttribute(WORK_EMAIL,oldIdentityMail + OLD_FORMAT + timestamp);
 								}
@@ -188,25 +190,41 @@
 						account.setAttribute(USER_NAME, oldIdentityName);
 						account.setDisplayName(oldIdentityName);
 						account.setIdentity(oldIdentityName);
+						}
 					}else{
-						log.debug("Username & OtherEmpId is not null and user with OtherEmpId Status is Terminated, but username is different from the existing user, so creating user with unique name for identity "+employeeId);
+						log.debug("Username & OtherEmpId is not null and user with OtherEmpId Status is not Terminated, so creating user with unique name for identity "+employeeId);
 						createNewUser(firstName,lastName,middInitial,employeeId,userType,mailRequired,status);
 					}
 				}else{
-					log.debug("Username & OtherEmpId is not null and user with OtherEmpId Status is not Terminated, so creating user with unique name for identity "+employeeId);
-					createNewUser(firstName,lastName,middInitial,employeeId,userType,mailRequired,status);
+					log.debug("Username & OtherEmpId is not null and user with OtherEmpId is having different username, so creating user with infor username for identity "+employeeId);
+					identity.setName(username);//Creating new user with same name from infor
+					identity.setDisplayName(username);
+					account.setDisplayName(username);
+					account.setIdentity(username);
 				}
 			}else{
-				log.debug("Username & OtherEmpId is not null and user with OtherEmpId "+oldemployeeId+" is not found in Sailpoint, so creating user with unique name for the user"+employeeId);
-				createNewUser(firstName,lastName,middInitial,employeeId,userType,mailRequired,status);
+				log.debug("Username & OtherEmpId is not null and user with OtherEmpId is not present in IIQ, so creating user with infor username for identity "+employeeId);
+				identity.setName(username);//Creating new user with same name from infor
+				identity.setDisplayName(username);
+				account.setDisplayName(username);
+				account.setIdentity(username);
 			}
 		} catch (GeneralException e) {
-			log.error("Exception occured while searching for the existing user in IIQ :"+e.getMessage());
+			log.error("Exception occured while searching for the existing user with EmployeeID: "+oldemployeeId+" in IIQ :"+e.getMessage());
+      		throw new GeneralException("CMH-User-Creation-Rule:Exception occured while searching for the existing user with EmployeeID: "+oldemployeeId+" in IIQ :"+e.getMessage());
 		} finally {
+			if(userItr!=null){
 			sailpoint.tools.Util.flushIterator(userItr);
+			}
 		}
+	}else if (!StringUtils.isBlank(username)) {
+		log.debug("Username is not null from infor, so creating user with infor username for identity "+employeeId);
+		identity.setName(username);//Creating new user with same name from infor
+		identity.setDisplayName(username);
+		account.setDisplayName(username);
+		account.setIdentity(username);
 	} else {
-		log.debug("Either Username or OtherEmpId is null, so creating user with unique name");
+		log.debug("Username is null, so creating user with unique name");
 		createNewUser(firstName,lastName,middInitial,employeeId,userType,mailRequired,status);
 	}
 
