@@ -252,7 +252,7 @@
 			account.setIdentity(username);
 		}
 	} else {
-		log.debug("Username is null, so creating user with unique name");
+		log.debug("Username is null from Infor, so creating user with unique name");
 		createNewUser(firstName,lastName,middInitial,employeeId,userType,mailRequired,status);
 	}
 
