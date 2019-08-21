@@ -218,6 +218,11 @@
 						identity.setDisplayName(username);
 						account.setDisplayName(username);
 						account.setIdentity(username);
+						if(Util.nullSafeCaseInsensitiveEq(userType,"NonEmployee") && Util.nullSafeCaseInsensitiveEq(mailRequired,"Yes")){
+							account.setAttribute(WORK_EMAIL, username + DOMAIN);
+						}else if(Util.nullSafeCaseInsensitiveEq(userType,"Employee")){
+							account.setAttribute(WORK_EMAIL, username + DOMAIN);
+						}
 					}
 				}
 			}else{
@@ -230,6 +235,11 @@
 					identity.setDisplayName(username);
 					account.setDisplayName(username);
 					account.setIdentity(username);
+					if(Util.nullSafeCaseInsensitiveEq(userType,"NonEmployee") && Util.nullSafeCaseInsensitiveEq(mailRequired,"Yes")){
+						account.setAttribute(WORK_EMAIL, username + DOMAIN);
+					}else if(Util.nullSafeCaseInsensitiveEq(userType,"Employee")){
+						account.setAttribute(WORK_EMAIL, username + DOMAIN);
+					}
 				}
 			}
 		} catch (GeneralException e) {
@@ -250,6 +260,11 @@
 			identity.setDisplayName(username);
 			account.setDisplayName(username);
 			account.setIdentity(username);
+			if(Util.nullSafeCaseInsensitiveEq(userType,"NonEmployee") && Util.nullSafeCaseInsensitiveEq(mailRequired,"Yes")){
+				account.setAttribute(WORK_EMAIL, username + DOMAIN);
+			}else if(Util.nullSafeCaseInsensitiveEq(userType,"Employee")){
+				account.setAttribute(WORK_EMAIL, username + DOMAIN);
+			}
 		}
 	} else {
 		log.debug("Username is null from Infor, so creating user with unique name");
