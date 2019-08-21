@@ -853,10 +853,10 @@ public boolean writeToCustomObject(List unameList, String customName) {
 }
 
 /***Method checks if the user is for the conversion case***/
-public boolean isConversionCase(String oldEmpId) {
+public boolean isConversionCase(String oldEmpId, String newUserName) {
 	log.debug("Entering isConversionCase method");
 	boolean isConverted = false;
-	if (Util.isNotNullOrEmpty(oldEmpId)) {
+	if (Util.isNotNullOrEmpty(oldEmpId) && Util.isNotNullOrEmpty(newUserName)) {
 		log.debug("Check if the old user is having the name appended with _old "+oldEmpId);
 		QueryOptions ops = new QueryOptions();
 		Filter filter = Filter.eq("employeeId", oldEmpId);
@@ -868,10 +868,11 @@ public boolean isConversionCase(String oldEmpId) {
 				Identity iden = (Identity) existingUsers.next();
 				String uName = iden.getName();
 				String status = iden.getStringAttribute("status");
-				if (Util.isNotNullOrEmpty(uName) && uName.contains("_old") && Util.nullSafeCaseInsensitiveEq(status, "TERMINATED")) {
-					isConverted = true;
-				} else {
-					isConverted = false;
+				if (Util.isNotNullOrEmpty(uName) && uName.contains("_old")){
+					String oldUserName = uName.substring(0, uName.indexOf("_old")).trim();
+					if(Util.nullSafeCaseInsensitiveEq(oldUserName,newUserName) && Util.nullSafeCaseInsensitiveEq(status, "TERMINATED")){ 
+						isConverted = true;
+					}
 				}
 			}
 		} catch(GeneralException e) {
@@ -879,8 +880,6 @@ public boolean isConversionCase(String oldEmpId) {
 		} finally {
 			sailpoint.tools.Util.flushIterator(existingUsers);
 		}
-	} else {
-		isConverted = false;
 	}
 	log.debug("Exiting isConversionCase method: Is it Conversion Case? " + isConverted);
 	return isConverted;

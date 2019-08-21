@@ -50,8 +50,9 @@
 	boolean triggerConversion = false;
 	if (newIdentity != null) {
 		String oldEmpId = newIdentity.getStringAttribute("otherEmpId");
+		String identityName = newIdentity.getName();
 		if (Util.isNotNullOrEmpty(oldEmpId)) {
-			if (isConversionCase(oldEmpId)) {
+			if (isConversionCase(oldEmpId,identityName)) {
 				String userStatus = newIdentity.getStringAttribute("status");
 				String isConversionProcessed = newIdentity.getStringAttribute("isConversionProcessed");
 				if (!Util.nullSafeCaseInsensitiveEq(isConversionProcessed, "YES")) {
