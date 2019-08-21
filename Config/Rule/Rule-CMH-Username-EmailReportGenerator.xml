@@ -303,8 +303,7 @@
 		public boolean uploadFileUsingSFTP(String filepath,String filename) {
 		    log.debug("Entering uploadFileUsingSFTP");
 		    boolean isUploadSuccess = false;
-		   // boolean fileExists = ifFileExists(filepath,filename);
-		   // if(fileExists) {
+		   
 				SSHClient sshc = new SSHClient();
 				try {
 				    sshc.addHostKeyVerifier(new PromiscuousVerifier());
@@ -334,7 +333,7 @@
 						}
 					}
 				}
-		//	}
+		
 			log.debug("Exiting uploadFileUsingSFTP,isUploadSuccess ?:"+isUploadSuccess);
 			return isUploadSuccess;
 		}
