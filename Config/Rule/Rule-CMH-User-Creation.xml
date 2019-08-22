@@ -158,11 +158,10 @@
 			if (userItr != null && userItr.hasNext()) {
 				Identity oldIden = (Identity) userItr.next();
 				if(Util.nullSafeCaseInsensitiveEq(oldIden.getName(),username)){
-				String oldIdentityStatus = oldIden.getStringAttribute("status");
-				if(Util.nullSafeCaseInsensitiveEq(oldIdentityStatus,"Terminated")){
-					String oldIdentityName = oldIden.getName();
-					String oldIdentityMail = oldIden.getEmail();
-					if (Util.nullSafeCaseInsensitiveEq(oldIdentityName,username)) {
+					String oldIdentityStatus = oldIden.getStringAttribute("status");
+					if(Util.nullSafeCaseInsensitiveEq(oldIdentityStatus,"Terminated")){
+						String oldIdentityName = oldIden.getName();
+						String oldIdentityMail = oldIden.getEmail();
 						String timestamp = generateTimeStamp();
 						oldIden.setName(oldIdentityName + OLD_FORMAT + timestamp);
 						oldIden.setDisplayName(oldIdentityName + OLD_FORMAT + timestamp);
@@ -203,7 +202,6 @@
 						account.setAttribute(USER_NAME, oldIdentityName);
 						account.setDisplayName(oldIdentityName);
 						account.setIdentity(oldIdentityName);
-						}
 					}else{
 						log.debug("Username & OtherEmpId is not null and user with OtherEmpId Status is not Terminated, so creating user with unique name for identity "+employeeId);
 						createNewUser(firstName,lastName,middInitial,employeeId,userType,mailRequired,status);
@@ -218,10 +216,12 @@
 						identity.setDisplayName(username);
 						account.setDisplayName(username);
 						account.setIdentity(username);
-						if(Util.nullSafeCaseInsensitiveEq(userType,"NonEmployee") && Util.nullSafeCaseInsensitiveEq(mailRequired,"Yes")){
-							account.setAttribute(WORK_EMAIL, username + DOMAIN);
-						}else if(Util.nullSafeCaseInsensitiveEq(userType,"Employee")){
-							account.setAttribute(WORK_EMAIL, username + DOMAIN);
+						if(Util.isNullOrEmpty(email)){
+							if(Util.nullSafeCaseInsensitiveEq(userType,"NonEmployee") && Util.nullSafeCaseInsensitiveEq(mailRequired,"Yes")){
+								account.setAttribute(WORK_EMAIL, username + DOMAIN);
+							}else if(Util.nullSafeCaseInsensitiveEq(userType,"Employee")){
+								account.setAttribute(WORK_EMAIL, username + DOMAIN);
+							}
 						}
 					}
 				}
@@ -235,10 +235,12 @@
 					identity.setDisplayName(username);
 					account.setDisplayName(username);
 					account.setIdentity(username);
-					if(Util.nullSafeCaseInsensitiveEq(userType,"NonEmployee") && Util.nullSafeCaseInsensitiveEq(mailRequired,"Yes")){
-						account.setAttribute(WORK_EMAIL, username + DOMAIN);
-					}else if(Util.nullSafeCaseInsensitiveEq(userType,"Employee")){
-						account.setAttribute(WORK_EMAIL, username + DOMAIN);
+					if(Util.isNullOrEmpty(email)){
+						if(Util.nullSafeCaseInsensitiveEq(userType,"NonEmployee") && Util.nullSafeCaseInsensitiveEq(mailRequired,"Yes")){
+							account.setAttribute(WORK_EMAIL, username + DOMAIN);
+						}else if(Util.nullSafeCaseInsensitiveEq(userType,"Employee")){
+							account.setAttribute(WORK_EMAIL, username + DOMAIN);
+						}
 					}
 				}
 			}
@@ -260,10 +262,12 @@
 			identity.setDisplayName(username);
 			account.setDisplayName(username);
 			account.setIdentity(username);
-			if(Util.nullSafeCaseInsensitiveEq(userType,"NonEmployee") && Util.nullSafeCaseInsensitiveEq(mailRequired,"Yes")){
-				account.setAttribute(WORK_EMAIL, username + DOMAIN);
-			}else if(Util.nullSafeCaseInsensitiveEq(userType,"Employee")){
-				account.setAttribute(WORK_EMAIL, username + DOMAIN);
+			if(Util.isNullOrEmpty(email)){
+				if(Util.nullSafeCaseInsensitiveEq(userType,"NonEmployee") && Util.nullSafeCaseInsensitiveEq(mailRequired,"Yes")){
+					account.setAttribute(WORK_EMAIL, username + DOMAIN);
+				}else if(Util.nullSafeCaseInsensitiveEq(userType,"Employee")){
+					account.setAttribute(WORK_EMAIL, username + DOMAIN);
+				}
 			}
 		}
 	} else {
