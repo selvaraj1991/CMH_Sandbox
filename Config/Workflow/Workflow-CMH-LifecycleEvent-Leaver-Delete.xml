@@ -374,7 +374,6 @@
   </Step>
   <Step action="call:addMessage" name="Add Error Message">
     <Arg name="message">
-      <value>
         <Script>
           <Source>
 		  <![CDATA[
@@ -383,7 +382,6 @@
 		  ]]>
           </Source>
         </Script>
-      </value>
     </Arg>
     <Arg name="type" value="Error"/>
     <Transition to="Stop"/>

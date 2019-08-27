@@ -652,16 +652,14 @@
   </Step>
   <Step action="call:addMessage" name="Add Error Message">
 	<Arg name="message">
-		<value>
-			<Script>
-				<Source>
-				<![CDATA[
-					import sailpoint.tools.Util;
-					return Util.listToCsv(validationErrors);
-				]]>
-				</Source>
-			</Script>
-		</value>
+		<Script>
+			<Source>
+			<![CDATA[
+				import sailpoint.tools.Util;
+				return Util.listToCsv(validationErrors);
+			]]>
+			</Source>
+		</Script>
 	</Arg>
 	<Arg name="type" value="Error"/>
 	<Transition to="Stop"/>

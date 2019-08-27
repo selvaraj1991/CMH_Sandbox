@@ -736,7 +736,6 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   </Step>
   <Step action="call:addMessage" name="Add Error Message">
    <Arg name="message">
-     <value>
        <Script>
          <Source>
 			<![CDATA[
@@ -745,7 +744,6 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
           ]]>
          </Source>
        </Script>
-     </value>
    </Arg>
    <Arg name="type" value="Error"/>
     <Transition to="end"/>

@@ -411,16 +411,14 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   </Step>
   <Step action="call:addMessage" name="Add Error Message">
    <Arg name="message">
-     <value>
-       <Script>
-         <Source>
+		<Script>
+			<Source>
 			<![CDATA[
 				import sailpoint.tools.Util;
 				return Util.listToCsv(validationErrors);
-          ]]>
-         </Source>
-       </Script>
-     </value>
+			]]>
+			</Source>
+		</Script>
    </Arg>
    <Arg name="type" value="Error"/>
    <Transition to="end"/>
