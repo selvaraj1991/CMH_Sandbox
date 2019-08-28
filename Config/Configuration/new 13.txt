@@ -1,0 +1,54 @@
+
+
+
+
+		<entry key="triggerSnapshots">
+			   <value>
+				 <Map>
+				   <entry key="AttributeChange">
+					 <value>
+					   <Attributes>
+						 <Map>
+								      <entry key="adDepartment"/>
+      <entry key="adPhysicalDeliveryOfficeName"/>
+      <entry key="assignmentType" value="CONTRACTCODER"/>
+      <entry key="birthMonthDay" value="04-29"/>
+      <entry key="credential" value="CC"/>
+      <entry key="dateEmployeeRecordCreated" value="8/19/2019 21:46:24 PM UTC"/>
+      <entry key="dateEmployeeRecordUpdated" value="8/19/2019 21:51:11 PM UTC"/>
+      <entry key="displayName" value="oplunger"/>
+      <entry key="employeeId" value="3041230002"/>
+      <entry key="firstname" value="Oscar"/>
+      <entry key="lastname" value="Plunger"/>
+      <entry key="orientationDate">
+        <value>
+          <Date>1555372800000</Date>
+        </value>
+      </entry>
+      <entry key="primaryWork" value="Yes"/>
+      <entry key="rehire" value="NO"/>
+      <entry key="startDate">
+        <value>
+          <Date>1555372800000</Date>
+        </value>
+      </entry>
+      <entry key="status" value="ACTIVE"/>
+      <entry key="terminationDate">
+        <value>
+          <Date>1589760000000</Date>
+        </value>
+      </entry>
+      <entry key="triggerSnapshots"/>
+      <entry key="userType" value="NONEMPLOYEE"/>
+      <entry key="workAssignment" value="0"/>
+      <entry key="workAssignmentCount" value="0"/>
+						 </Map>
+					   </Attributes>
+					 </value>
+				   </entry>
+				 </Map>
+			   </value>
+			 </entry>
+	 
+	 
+	   

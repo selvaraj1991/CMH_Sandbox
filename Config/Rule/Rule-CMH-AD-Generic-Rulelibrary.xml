@@ -209,14 +209,14 @@ public int checkUnique(String username, String lastName, String empId) {
 				Matcher matcher = p.matcher((String) userList.get(i));
 				if (matcher.find()) {
 					String number = matcher.group();
-					numberList.add(number);
+					numberList.add(Integer.parseInt(number));
 				} else {
 					count = 1;
 				}
 			}
 			if (!Util.isEmpty(numberList)) {
 				Collections.sort(numberList, Collections.reverseOrder());
-				count = Integer.parseInt((String) numberList.get(0)) + 1;
+				count =  (int)numberList.get(0) + 1;
 			}
 		}
 	}
@@ -423,7 +423,7 @@ public String finalUserName(String username, String firstname, String lastname, 
 					temp = uname + 1;
 					uname = temp;
 				}
-				userNameCreationValidationCheck(uname, lastname, empId);
+				uname = userNameCreationValidationCheck(uname, lastname, empId);
 			} while ( checkUsernameInCustomObject ( uname , "CMH-Cerner-Usernames") || checkUsernameInCustomObject(uname, "CMH-Infor-Usernames"));
 		}
 

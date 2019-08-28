@@ -10,27 +10,27 @@
          <entry key="CONTRACTAAANDNA" value="Contractor and Temps Business Role"/>
          <entry key="CONTRACTCCTRANSPORT" value="Contractor and Temps Business Role"/>
          <entry key="CONTRACTCODER" value="Coder Business Role"/>
-         <entry key="CONTRACTEEWELLCNTR" value="Contractor and Temps Business Role"/>
-         <entry key="CONTRACTEQUIPTECH" value="Contractor and Temps Business Role"/>
-         <entry key="CONTRACTFACILITIES" value="Contractor and Temps Business Role"/>
-         <entry key="CONTRACTPHYSICIAN" value="Contractor and Temps Business Role"/>
-         <entry key="CONTRACTWORKER" value="Contractor and Temps Business Role"/>
-         <entry key="CONTRACTWORKEROS" value="Contractor and Temps Business Role"/>
-         <entry key="CONTRACTWORKERST" value="Contractor and Temps Business Role"/>
+         <entry key="CONTRACTEEWELLCNTR" value="Contractors and Temps Business Role"/>
+         <entry key="CONTRACTEQUIPTECH" value="Contractors and Temps Business Role"/>
+         <entry key="CONTRACTFACILITIES" value="Contractors and Temps Business Role"/>
+         <entry key="CONTRACTPHYSICIAN" value="Contractors and Temps Business Role"/>
+         <entry key="CONTRACTWORKER" value="Contractors and Temps Business Role"/>
+         <entry key="CONTRACTWORKEROS" value="Contractors and Temps Business Role"/>
+         <entry key="CONTRACTWORKERST" value="Contractors and Temps Business Role"/>
          <entry key="EMERITUSFACULTY" value="Honorary Business Role"/>
          <entry key="EMPLOYEE" value="Employee Business Role"/>
          <entry key="FELLOWFLOAT" value="Residents Business Role"/>
-         <entry key="FINANCECONTRACTOR" value="Contractor and Temps Business Role"/>
-         <entry key="FOODVENDNOTSODEXHO" value="Contractor and Temps Business Role"/>
+         <entry key="FINANCECONTRACTOR" value="Contractors and Temps Business Role"/>
+         <entry key="FOODVENDNOTSODEXHO" value="Contractors and Temps Business Role"/>
          <entry key="FOODVENDSODEXHO" value="Food Vendor Sodexo Business Role"/>
          <entry key="FOUNDATIONBOARD" value="Board Members Business Role"/>
          <entry key="HONORARYSTAFF" value="Honorary Business Role"/>
-         <entry key="INSTRUCTORTRNGCNTR" value="Contractor and Temps Business Role"/>
+         <entry key="INSTRUCTORTRNGCNTR" value="Contractors and Temps Business Role"/>
          <entry key="INTLOBSERVER" value="Residents Business Role"/>
          <entry key="IRBMEMBER" value="IRB Business Role"/>
-         <entry key="OFFSITEISCONTRACTOR" value="Contractor and Temps Business Role"/>
-         <entry key="ORGANDONATIONORGREP" value="Contractor and Temps Business Role"/>
-         <entry key="RESEARCHFACULTY" value="Contractor and Temps Business Role"/>
+         <entry key="OFFSITEISCONTRACTOR" value="Contractors and Temps Business Role"/>
+         <entry key="ORGANDONATIONORGREP" value="Contractors and Temps Business Role"/>
+         <entry key="RESEARCHFACULTY" value="Contractors and Temps Business Role"/>
          <entry key="RESEARCHMONITOR" value="Research Monitor Business Role"/>
          <entry key="RESIDENT" value="Residents Business Role"/>
          <entry key="RESIDENTFLOAT" value="Residents Business Role"/>
@@ -42,8 +42,8 @@
          <entry key="STUDENTNURSEAPRN" value="Student Nurses Business Role"/>
          <entry key="STUDENTNURSECCCAP" value="Student Nurses Business Role"/>
          <entry key="STUDENTNURSEINSTRUCT" value="Student Nurses Business Role"/>
-         <entry key="SUPPLYCHAINVENDOR" value="Contractor and Temps Business Role"/>
-         <entry key="TEMPWORKER" value="Contractor and Temps Business Role"/>
+         <entry key="SUPPLYCHAINVENDOR" value="Contractors and Temps Business Role"/>
+         <entry key="TEMPWORKER" value="Contractors and Temps Business Role"/>
          <entry key="TRAVELER" value="Traveler Business Role"/>
          <entry key="VOLUNTEER" value="Volunteer Business Role"/>
 		 <entry key="OTHEREMPLOYEEROLE">

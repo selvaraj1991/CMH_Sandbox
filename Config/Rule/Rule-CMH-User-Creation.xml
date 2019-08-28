@@ -67,6 +67,7 @@
 		String finalUsername =null;
 		String genUsername = userNameGenerator(firstName,lastName,middInitial,employeeId);	//Generate a username based on firstname,lastname, middleInitial
 		if(null !=genUsername) {
+		    genUsername = genUsername.toLowerCase();
 			finalUsername=finalUserName(genUsername,firstName,lastName,middInitial,employeeId);	//Validate the generated username for the uniqueness
 		}
 		if(null !=finalUsername) {
