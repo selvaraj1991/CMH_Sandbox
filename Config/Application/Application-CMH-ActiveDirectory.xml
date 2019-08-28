@@ -286,7 +286,7 @@
                 <Field displayName="primaryGroupID" name="primaryGroupID" type="string"/>
         <Field displayName="userPrincipalName" name="userPrincipalName" type="string">
           <Script>
-            <Source><![CDATA[return identity.getEmail();]]></Source>
+            <Source><![CDATA[return identity.getName()+"%%CMH-AD-DomainDN%%";]]></Source>
           </Script>
         </Field>
             </Section>
