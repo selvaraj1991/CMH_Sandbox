@@ -384,7 +384,7 @@
 				<AttributeTargets>
 				  <AttributeTarget name="displayName" provisionAllAccounts="true">
 					<ApplicationRef>
-					  <Reference class="sailpoint.object.Application" name="CMH-AD-ApplicationName%%"/>
+					  <Reference class="sailpoint.object.Application" name="%%CMH-AD-ApplicationName%%"/>
 					</ApplicationRef>
 				  </AttributeTarget>
 				</AttributeTargets>
