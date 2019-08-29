@@ -782,11 +782,9 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
     <Arg name="identityName" value="ref:identityName"/>
     <Arg name="correlateEntitlements" value="true"/>
     <Arg name="provision" value="true"/>
-    <Arg name="promoteAttributes" value="true"/>
     <Arg name="refreshRoleMetadata" value="true"/>
-    <Arg name="refreshScorecard" value="true"/>
     <Arg name="refreshIdentityEntitlements" value="true"/>
-    <Arg name="synchronizeAttributes" value="true"/>
+	<Arg name="noResetNeedsRefresh" value="true"/>
     <Transition to="Add Error Message">
 		<Script>
 			<Source>

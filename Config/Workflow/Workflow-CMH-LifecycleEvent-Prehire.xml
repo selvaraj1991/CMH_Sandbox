@@ -425,6 +425,7 @@
   	<Arg name="correlateEntitlements" value="true"/>
     <Arg name="refreshRoleMetadata" value="true"/>
 	<Arg name="refreshIdentityEntitlements" value="true"/>
+	<Arg name="noResetNeedsRefresh" value="true"/>
 	<Transition to="Add Error Message">
 		<Script>
 			<Source>

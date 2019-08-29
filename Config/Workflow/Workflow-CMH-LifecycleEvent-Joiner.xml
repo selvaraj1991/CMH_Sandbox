@@ -395,6 +395,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
     <Arg name="correlateEntitlements" value="true"/>
     <Arg name="refreshRoleMetadata" value="true"/>
     <Arg name="refreshIdentityEntitlements" value="true"/>
+	<Arg name="noResetNeedsRefresh" value="true"/>
 	<Transition to="Add Error Message">
 		<Script>
 			<Source>
