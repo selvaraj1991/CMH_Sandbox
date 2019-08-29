@@ -23,7 +23,7 @@
       <Source>
       <![CDATA[
   			import org.apache.log4j.Logger;
-  			Logger log = Logger.getLogger("Workflow.CMH-Immediate-Termination");;
+  			Logger log = Logger.getLogger("Workflow.CMH-Immediate-Termination");
   			if(log.isDebugEnabled()){
   				return true;
   			}
@@ -82,6 +82,7 @@
   		</Source>
   	</Script>
   </Variable>
+  <Variable initializer="string:YES" name="isSubmitted"/>
   <Description>This workflow is used to immediately disabling a user identity, disable AD account, generate ServiceNow ticket for unmanaged accounts.</Description>
   <RuleLibraries>
 	<Reference class="sailpoint.object.Rule" name="CMH-AD-Generic-Rulelibrary"/>
@@ -94,7 +95,15 @@
       <Arg name="workItemDescription" value="string:Immediate Termination"/>
       <Arg name="workItemForm" value="string:CMH-Immediate-Termination-Form"/>
     </Approval>
-    <Transition to="Retrieve Identity Info"/>
+    <Transition to="Retrieve Identity Info" when="approved"/>
+    <Transition to="Stop">
+      <Script>
+        <Source>
+          wfcontext.getWorkflowCase().put("isSubmitted","NO");
+          return true;
+        </Source>
+      </Script>
+    </Transition>
   </Step>
   <Step icon="Task" name="Retrieve Identity Info" posX="399" posY="126">
   	<Script>
@@ -104,7 +113,7 @@
   			import sailpoint.object.Identity;
 			import sailpoint.tools.Util;
 
-  			Logger log = Logger.getLogger("Workflow.CMH-Immediate-Termination");;
+  			Logger log = Logger.getLogger("Workflow.CMH-Immediate-Termination");
   			String userName = null;
   			String employeeId = null;
   			String userOnLegalHold = null;
@@ -138,7 +147,7 @@
   			import org.apache.log4j.Logger;
   			import sailpoint.tools.Util;
 
-  			Logger log = Logger.getLogger("Workflow.CMH-Immediate-Termination");;
+  			Logger log = Logger.getLogger("Workflow.CMH-Immediate-Termination");
 			if(isDebugEnabled)	{
 				log.debug("Validating the Data");
 			}
@@ -164,7 +173,7 @@
   			<Source>
   			<![CDATA[
   				import org.apache.log4j.Logger;
-  				Logger log = Logger.getLogger("Workflow.CMH-Immediate-Termination");;
+  				Logger log = Logger.getLogger("Workflow.CMH-Immediate-Termination");
   				if(validationErrors==null || validationErrors.size()<=0){
 					if(isDebugEnabled)	{
 						log.debug("No Validation Errors");
@@ -243,10 +252,6 @@
     							acctReq.setNativeIdentity(adLink.getNativeIdentity());
     							acctReq.add(new AttributeRequest("IIQDisabled",ProvisioningPlan.Operation.Set,true));
     							acctReq.add(new AttributeRequest("pwdLastSet",ProvisioningPlan.Operation.Set,true));
-    							if(!Util.nullSafeCaseInsensitiveEq(userOnLegalHold,"YES")){
-    								acctReq.add(new AttributeRequest("AC_NewParent",ProvisioningPlan.Operation.Set,terminatedOU));
-    							}
-    							//acctReq.add(new AttributeRequest("mailNickname",ProvisioningPlan.Operation.Set,"")); //uncomment this line of code once exchange is enabled
     							accountRequests.add(acctReq);
     						}
     					}
@@ -321,9 +326,7 @@
     			import sailpoint.tools.Message;
     			import sailpoint.tools.Util;
     			if(wfcontext.getRootWorkflowCase().getMessages()==null || wfcontext.getRootWorkflowCase().getMessagesByType(Message.Type.Error)==null){
-					if(!Util.nullSafeCaseInsensitiveEq(userOnLegalHold,"YES")){
-						return true;
-					}
+					return true;
     			}
     			return false;
     		]]>
@@ -414,46 +417,47 @@
   			import sailpoint.tools.Message;
   			import sailpoint.tools.Util;
 
-  			Logger log = Logger.getLogger("Workflow.CMH-Immediate-Termination");;
+			if(Util.nullSafeCaseInsensitiveEq(isSubmitted,"YES")){
+			
+				Logger log = Logger.getLogger("Workflow.CMH-Immediate-Termination");
+			
+				if(isDebugEnabled)	{
+					log.debug("CMH_ImmediateTermination: Check Status step : Checking for errors");
+				}
 
-			if(isDebugEnabled)	{
-				log.debug("CMH_ImmediateTermination: Check Status step : Checking for errors");
+				if(wfcontext.getRootWorkflowCase().getMessages()!=null && wfcontext.getRootWorkflowCase().getMessagesByType(Message.Type.Error)!=null){
+					List errorMessagesList = wfcontext.getRootWorkflowCase().getMessagesByType(Message.Type.Error);
+					String errorMessage = Util.listToCsv(errorMessagesList);
+					if(validationErrors==null){
+						validationErrors = new ArrayList();
+					}
+					validationErrors.add(errorMessage);
+					log.error("Check Status step : Errors Found : "+Util.listToCsv(validationErrors));
+				}
+
+				String action = null;
+				String source = "UI";
+				String target = identityName;
+				String attrName = "Employee ID";
+				String attrVal = employeeId;
+				Map strMap = new HashMap();
+				if(Util.isEmpty(validationErrors)){
+					action = "ImmediateTermination-Success";
+					strMap.put("setString1","Immediate Termination Completed succesfully");
+					strMap.put("setString2","AD/Exchange accounts Disabled and Service now ticket raised for unmanaged accounts successfully");
+				}else{
+					action = "ImmediateTermination-Failure";
+					strMap.put("setString1","Immediate Termination failed due to errors");
+					strMap.put("setString2",Util.listToCsv(validationErrors));
+				}
+				auditWrite(action,source,target,attrName,attrVal,strMap);
+
+				if(isDebugEnabled)	{
+					log.debug("Check Status step : Audit Event Generated");
+					log.debug("Ending the CMH_ImmediateTermination Workflow for the user "+identityName);
+				}
+				context.commitTransaction();
 			}
-
-
-  			if(wfcontext.getRootWorkflowCase().getMessages()!=null && wfcontext.getRootWorkflowCase().getMessagesByType(Message.Type.Error)!=null){
-  				List errorMessagesList = wfcontext.getRootWorkflowCase().getMessagesByType(Message.Type.Error);
-  				String errorMessage = Util.listToCsv(errorMessagesList);
-  				if(validationErrors==null){
-  					validationErrors = new ArrayList();
-  				}
-  				validationErrors.add(errorMessage);
-  				log.error("Check Status step : Errors Found : "+Util.listToCsv(validationErrors));
-  			}
-
-  			String action = null;
-  			String source = "UI";
-  			String target = identityName;
-  			String attrName = "Employee ID";
-  			String attrVal = employeeId;
-  			Map strMap = new HashMap();
-  			if(Util.isEmpty(validationErrors)){
-  				action = "ImmediateTermination-Success";
-  				strMap.put("setString1","Immediate Termination Completed succesfully");
-  				strMap.put("setString2","AD/Exchange accounts Disabled and Service now ticket raised for unmanaged accounts successfully");
-  			}else{
-  				action = "ImmediateTermination-Failure";
-  				strMap.put("setString1","Immediate Termination failed due to errors");
-  				strMap.put("setString2",Util.listToCsv(validationErrors));
-  			}
-  			auditWrite(action,source,target,attrName,attrVal,strMap);
-
-			if(isDebugEnabled)	{
-				log.debug("Check Status step : Audit Event Generated");
-				log.debug("Ending the CMH_ImmediateTermination Workflow for the user "+identityName);
-			}
-
-  			context.commitTransaction();
   			return validationErrors;
     ]]>
     </Source>

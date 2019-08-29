@@ -1062,6 +1062,7 @@ public Identity acquireLockOnIdentity(String identityName) {
 	Identity lockedIden = null;
 	if(Util.isNotNullOrEmpty(identityName)) {
 		try {
+			ObjectUtil.unlockIfNecessary(context,context.getObjectByName(Identity.class, identityName));
 			lockedIden = ObjectUtil.lockIdentityByName(context, identityName, WAIT_TIMEOUT);
 			log.debug("Successfully acquired lock on the identity object");
 		}catch(Exception e) {

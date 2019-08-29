@@ -75,6 +75,7 @@
   <Variable name="adOU"/>
   <Variable name="adExists" type="boolean"/>
   <Variable name="validationErrors" type="java.util.List"/>
+  <Variable initializer="string:YES" name="isSubmitted"/>
   <RuleLibraries>
 	<Reference class="sailpoint.object.Rule" name="CMH-AD-Generic-Rulelibrary"/>
   </RuleLibraries>
@@ -86,7 +87,15 @@
       <Arg name="workItemDescription" value="string:Legal Hold"/>
       <Arg name="workItemForm" value="string:CMH-Legal-Hold-Add-Form"/>
     </Approval>
-    <Transition to="Retrieve Identity Info"/>
+    <Transition to="Retrieve Identity Info" when="approved"/>
+	<Transition to="Stop">
+      <Script>
+        <Source>
+          wfcontext.getWorkflowCase().put("isSubmitted","NO");
+          return true;
+        </Source>
+      </Script>
+    </Transition>
   </Step>
   <Step name="Retrieve Identity Info" posX="373" posY="125">
   	<Script>
@@ -411,44 +420,48 @@
   			import sailpoint.object.Identity;
   			import sailpoint.tools.Message;
   			import sailpoint.tools.Util;
-  			
-  			Logger log = Logger.getLogger("Workflow.CMH-LegalHold-Add");
-  		
-  			log.debug("Check Status step : Checking for errors");
-  			
-  			
-  			if(wfcontext.getRootWorkflowCase().getMessages()!=null && wfcontext.getRootWorkflowCase().getMessagesByType(Message.Type.Error)!=null){
-  				List errorMessagesList = wfcontext.getRootWorkflowCase().getMessagesByType(Message.Type.Error);
-  				String errorMessage = Util.listToCsv(errorMessagesList);
-  				log.error("Check Status step : Errors Found : "+errorMessage);	
-  			}else{
-  				if(identityName!=null){
-					Identity iden = acquireLockOnIdentity(identityName);
-					if(iden!=null){					
-						iden.setAttribute("identityRetention","YES");
-						context.saveObject(iden);
-						context.commitTransaction();
-						ObjectUtil.unlockIdentity(context,iden);
-					}
-					
+			
+			if(Util.nullSafeCaseInsensitiveEq(isSubmitted,"YES")){
+				
+				Logger log = Logger.getLogger("Workflow.CMH-LegalHold-Add");
+				if (isDebugEnabled) {
+					log.debug("Check Status step : Checking for errors");
 				}
-  			}
+				
+				
+				if(wfcontext.getRootWorkflowCase().getMessages()!=null && wfcontext.getRootWorkflowCase().getMessagesByType(Message.Type.Error)!=null){
+					List errorMessagesList = wfcontext.getRootWorkflowCase().getMessagesByType(Message.Type.Error);
+					String errorMessage = Util.listToCsv(errorMessagesList);
+					log.error("Check Status step : Errors Found : "+errorMessage);	
+				}else{
+					if(identityName!=null){
+						Identity iden = acquireLockOnIdentity(identityName);
+						if(iden!=null){					
+							iden.setAttribute("identityRetention","YES");
+							context.saveObject(iden);
+							context.commitTransaction();
+							ObjectUtil.unlockIdentity(context,iden);
+						}
+						
+					}
+				}
 
-			String action = null;
-  			String source = "UI";
-  			String target = identityName;
-  			String attrName = "Employee ID";
-  			String attrVal = employeeId;
-  			Map strMap = new HashMap();
-  			if(Util.isEmpty(validationErrors)){
-  				action = "Legal-Hold-Success";
-  				strMap.put("setString1","Legal Hold Completed succesfully");
-  			}else{
-  				action = "Legal-Hold-Failure";
-  				strMap.put("setString1","Legal Hold failed due to errors");
-  				strMap.put("setString2",Util.listToCsv(validationErrors));
-  			}
-  			auditWrite(action,source,target,attrName,attrVal,strMap);
+				String action = null;
+				String source = "UI";
+				String target = identityName;
+				String attrName = "Employee ID";
+				String attrVal = employeeId;
+				Map strMap = new HashMap();
+				if(Util.isEmpty(validationErrors)){
+					action = "Legal-Hold-Success";
+					strMap.put("setString1","Legal Hold Completed succesfully");
+				}else{
+					action = "Legal-Hold-Failure";
+					strMap.put("setString1","Legal Hold failed due to errors");
+					strMap.put("setString2",Util.listToCsv(validationErrors));
+				}
+				auditWrite(action,source,target,attrName,attrVal,strMap);
+			}
     ]]>    
     </Source>
     </Script>

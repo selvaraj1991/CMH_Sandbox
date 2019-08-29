@@ -287,8 +287,8 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   			Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-Leaver-Disable");
 
   			Identity iden = acquireLockOnIdentity(identityName);
-  			String immeTermStat = iden.getStringAttribute("immediateOffboarder");
   			if(iden != null){
+				String immeTermStat = iden.getStringAttribute("immediateOffboarder");
   				iden.setInactive(true);
   				iden.setAttribute("status","TERMINATED");
 
@@ -300,11 +300,11 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 				}
 				context.saveObject(iden);
 				context.commitTransaction();
-        ObjectUtil.unlockIdentity(context,iden);
-        }
-  				if(isDebugEnabled){
-  			    log.debug("Identity status "+identityName+" disabled succesfully");
-  				}
+				ObjectUtil.unlockIdentity(context,iden);
+			}
+			if(isDebugEnabled){
+				log.debug("Identity status "+identityName+" disabled succesfully");
+			}
 
       ]]></Source>
     </Script>
