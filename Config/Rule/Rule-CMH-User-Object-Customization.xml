@@ -51,6 +51,8 @@
     </Returns>
   </Signature>
   <Source><![CDATA[
+    import java.util.regex.Matcher;
+    import java.util.regex.Pattern;
 	import org.apache.commons.lang.StringUtils;
 	import org.apache.log4j.Logger;
 	import sailpoint.api.IdentityService;
@@ -90,6 +92,18 @@
 			}
 		}
 		log.debug("Exiting updateCustomobj method");
+	}
+	
+	//check if birthMonthDay has valid format
+	public boolean validateFormat(String dob) {
+	    boolean isMatch = false;
+		String regex =  "^[0-9]{2}-[0-9]{2}$";
+		Pattern pattern = Pattern.compile(regex);
+		Matcher matcher = pattern.matcher(dob);
+		if(matcher.find()) {
+			isMatch = true;
+		}
+		return isMatch;
 	}
 
 	//Rule starts from here
@@ -161,6 +175,12 @@
 		map.put("setString1", attrName + " is mandatory attribute that cannot be null or empty");
 		auditWrite("Infor-Mandatory-Attributes", "CMH-User-Object-Customization-Rule", employeeId, attrName, attrValue, map);
 		object = null;
+	} else if(!validateFormat(birthMonthDay)) {
+	     String attrValue = birthMonthDay;
+		 Map map = new HashMap();
+		 map.put("setString1", "BirthMonthDay format is invalid,it should be in mm-dd format");
+		 auditWrite("Infor-Mandatory-Attributes", "CMH-User-Object-Customization-Rule", employeeId, "birthMonthDay", attrValue, map);
+		 object = null;	       	    
 	} else {
 		QueryOptions ops = new QueryOptions();
 		Filter usrFilter = Filter.eq("employeeId", employeeId);

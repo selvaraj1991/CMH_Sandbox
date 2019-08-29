@@ -18,6 +18,13 @@
                     <entry key="redirectingEmailNotifierFilename" value="C:\Log\Sailpoint\Email.log"/>
 				   <entry key="identitySnapshotMaxAge" value="365"/>
 				   <entry key="taskResultMaxAge" value="15"/>
+				   <entry key="loginPassThrough">
+                      <value>
+                          <List>
+                            <Reference class="sailpoint.object.Application" name="%%CMH-AD-ApplicationName%%"/>
+                          </List>
+                      </value>
+                   </entry>
                 </Map>
             </Attributes>
         </Configuration>

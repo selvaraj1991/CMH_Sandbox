@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='UTF-8'?>
 <!DOCTYPE Rule PUBLIC "sailpoint.dtd" "sailpoint.dtd">
 <Rule language="beanshell" name="CMH-LegalHold-Users-Report-Generation-Rule">
-<Description>This rule is used to generate a report of the users who are on Legal Hold. The rule will generate the report at some specified server location.</Description>
+  <Description>This rule is used to generate a report of the users who are on Legal Hold. The rule will generate the report at some specified server location.</Description>
   <ReferencedRules>
     <Reference class="sailpoint.object.Rule" name="CMH-AD-Generic-Rulelibrary"/>
   </ReferencedRules>
@@ -132,18 +132,16 @@
 			custom = context.getObject(Custom.class, "CMH-Custom-Generic-Filepath");
 			if (custom != null) {
 				Date date = new Date();
-				String format = getCustomObject("legalHoldTimestamp", "CMH-DateFormat");
-				if (Util.isNotNullOrEmpty(format)) {
-					SimpleDateFormat formatter = new SimpleDateFormat(format);
-					String strDate = formatter.format(date);
-					String p = custom.get("filepath");
-					String path = p + "LegalHoldUsers" + strDate + ".csv";
-
+				SimpleDateFormat formatter = new SimpleDateFormat("MM-dd-yyyy");
+				SimpleDateFormat formatter1 = new SimpleDateFormat("HH-mm-ss");  
+				String p = custom.get("reportpath");
+				log.debug("Report path from custom obj"+p);
+				String path=p+"LegalHoldUsers"+formatter.format(date)+"_"+formatter1.format(date)+".csv";
 					try {
 						writer = new FileWriter(path);
 						List values = new ArrayList();
 						String s = "";
-						String sp = "\n";
+						String sp = "\r\n";
 						if (count == 0) {
 							values = getHeader();
 							s = getListAsCsvString(values);
@@ -170,12 +168,13 @@
 							log.error("Error while flushing/closing fileWriter !!!"+e.getMessage());
 						}
 					} //end of finally   
-				} //end of if
-				else {
-					log.debug("There are no users are on Legal Hold");
-				}
+				
+				
 			}
 		}
+    else {
+					log.debug("There are no users are on Legal Hold");
+				}
 	}
 	log.debug("Entering CMH-LegalHold-Users-Report-Generation-Rule");
 	private static int count = 0;
