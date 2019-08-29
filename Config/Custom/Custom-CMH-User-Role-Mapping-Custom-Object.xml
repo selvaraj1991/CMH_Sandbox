@@ -37,9 +37,9 @@
          <entry key="RESIDENTMEDPEDS" value="Residents Business Role"/>
          <entry key="STUDENT" value="Students and Interns Business Role"/>
          <entry key="STUDENTMEDICAL" value="Students and Interns Business Role"/>
-         <entry key="STUDENTMSNLDSHP" value="Student Nurses Business Role"/>
+         <entry key="STUDENTMSNLDSHP" value="Student Nurses BOE Business Role"/>
          <entry key="STUDENTNURSE" value="Student Nurses Business Role"/>
-         <entry key="STUDENTNURSEAPRN" value="Student Nurses Business Role"/>
+         <entry key="STUDENTNURSEAPRN" value="Student Nurses BOE Business Role"/>
          <entry key="STUDENTNURSECCCAP" value="Student Nurses Business Role"/>
          <entry key="STUDENTNURSEINSTRUCT" value="Student Nurses Business Role"/>
          <entry key="SUPPLYCHAINVENDOR" value="Contractors and Temps Business Role"/>
