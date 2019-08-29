@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Bundle PUBLIC "sailpoint.dtd" "sailpoint.dtd">
-<Bundle displayName="Student Nurses Business Role" name="Student Nurses Business Role" type="business">
+<Bundle displayName="Student Nurses BOE Business Role" name="Student Nurses BOE Business Role" type="business">
     <Attributes>
         <Map>
             <entry key="accountSelectorRules"/>
@@ -23,6 +23,7 @@
         <Reference class="sailpoint.object.Identity" name="spadmin"/>
     </Owner>
     <Requirements>
+        <Reference class="sailpoint.object.Bundle" name="BOE_Users IT Role"/>
         <Reference class="sailpoint.object.Bundle" name="Inteleraduser IT Role"/>
         <Reference class="sailpoint.object.Bundle" name="Internet and QPM IT Role"/>
     </Requirements>
