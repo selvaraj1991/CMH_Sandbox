@@ -916,7 +916,7 @@ public String getHomeDirectoryPath() {
 }
 
 /***Method to check if the user required homedirectory***/
-public boolean isHomeDirectoryReq(String assignType) {
+public boolean isHomeDirectoryReq(String assignType,String email) {
 	log.debug("Entering isHomeDirectoryReq method");
 	boolean homeDirReq = false;
 	Custom custom = context.getObjectByName(Custom.class, "CMH-Custom-HomeDirectory-UserTypes");
@@ -926,8 +926,8 @@ public boolean isHomeDirectoryReq(String assignType) {
 		if (!Util.isEmpty(nMailReqList) && nMailReqList.contains(assignType)) {
 			homeDirReq = true;
 		} else {
-			List mailReqList = custom.getList("RequiredMail");
-			if (!Util.isEmpty(mailReqList) && mailReqList.contains(assignType)) {
+			List mailReqList = (List) userMap.get("RequiredMail");
+			if (!Util.isEmpty(mailReqList) && mailReqList.contains(assignType) && Util.isNotNullOrEmpty(email)) {
 				homeDirReq = true;
 			}
 		}
@@ -944,10 +944,11 @@ public String getHomeDirectory(String identityName) {
 		Identity identity = context.getObjectByName(Identity.class, identityName);
 		if (identity != null) {
 			String assignType = identity.getStringAttribute("assignmentType");
+			String email = identity.getEmail();
 			if (Util.isNotNullOrEmpty(assignType)) {
-				String homeDirPath = getHomeDirectoryPath();
-				if (Util.isNotNullOrEmpty(homeDirPath)) {
-					if (isHomeDirectoryReq(assignType)) {
+				if (isHomeDirectoryReq(assignType,email)) {
+					String homeDirPath = getHomeDirectoryPath();
+					if (Util.isNotNullOrEmpty(homeDirPath)) {
 						homeDirVal = homeDirPath.concat(identityName);
 					}
 				}
