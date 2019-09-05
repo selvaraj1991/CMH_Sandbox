@@ -36,7 +36,7 @@
 			
 			//Rule starts from here
 			log.debug("Entering CMH-Infor-Full-Post-Iteration-Rule");
-            Custom custom = context.getObjectByName(Custom.class,"CMH-Infor-Full-Aggregation-Custom-Object");
+            Custom custom = context.getObjectByName(Custom.class,"CMH-Infor-Aggregation-Custom-Object");
             if(custom != null) {
                String taskName = (String) custom.get("taskName");
                boolean istaskSuccess = taskSucessStatus(taskName); 

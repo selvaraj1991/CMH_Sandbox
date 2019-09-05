@@ -2,13 +2,13 @@
 <!DOCTYPE Custom PUBLIC "sailpoint.dtd" "sailpoint.dtd">
 <Custom name="CMH-DateFormat">
   <Attributes>
-    <Map>
-      <entry key="legalHoldTimestamp" value="yyyy-MM-dd hh:mm:ss.a"/>
+    <Map>     
       <entry key="preIterationTimestamp" value="yyyy-MM-dd hh:mm:ss"/>
       <entry key="renameUserTimestamp" value="ddMMMyyyy"/>
       <entry key="userNameFileNameTimestamp" value="yyyyMMdd"/>
       <entry key="userNameGenerationTimestamp" value="yyyy-MM-dd hh:mm:ss a"/>
 	  <entry key="genericDateFormat" value="MM/dd/yyyy HH:mm:ss a z"/>
+	  <entry key="legalHoldTimestamp" value="yyyy-MM-dd_hh-mm-ss.a"/>
     </Map>
   </Attributes>
 </Custom>

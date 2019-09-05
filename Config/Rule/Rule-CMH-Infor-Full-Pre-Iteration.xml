@@ -17,7 +17,7 @@
 		log.debug("Entering CMH-Infor-Full-Pre-Iteration-Rule");
 		
 		//updates the timestamp of the task in custom object
-		Custom custom = context.getObjectByName(Custom.class,"CMH-Infor-Full-Aggregation-Custom-Object");
+		Custom custom = context.getObjectByName(Custom.class,"CMH-Infor-Aggregation-Custom-Object");
 		String format = getCustomObject("preIterationTimestamp","CMH-DateFormat");
 		try {
 			if(Util.isNotNullOrEmpty(format)) {
