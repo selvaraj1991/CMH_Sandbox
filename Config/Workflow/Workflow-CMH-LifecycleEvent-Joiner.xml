@@ -431,7 +431,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 				validationErrors = new ArrayList();
 			}
 			if(adLinkExist == false){
-			   validationErrors.add("User does not have AD account,AD Link does exists");
+			   validationErrors.add("User is not provisioned to AD.Hence AD account not found");
 			}
 			if(!isUserActive){
 			   validationErrors.add("User status is not ACTIVE");

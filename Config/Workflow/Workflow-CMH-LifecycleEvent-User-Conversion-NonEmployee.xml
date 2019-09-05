@@ -168,11 +168,9 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   			if(null != identity) {
   			    String assignmentType = identity.getStringAttribute("assignmentType");
 	  			if(Util.isNotNullOrEmpty(assignmentType)) {
-		  			Custom custom = context.getObjectByName(Custom.class,"CMH-User-OU-Mapping-Custom-Object");
-		  			if(custom != null){
-		  				newUserOU = custom.getString(assignmentType);
+		  			newUserOU = generatePrimaryGroupDN(assignmentType);
 		  			}
-		  	     }
+		  	    
 		    }
 	  		return newUserOU;
   		

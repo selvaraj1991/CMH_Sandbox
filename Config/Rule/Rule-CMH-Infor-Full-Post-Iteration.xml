@@ -42,9 +42,9 @@
                boolean istaskSuccess = taskSucessStatus(taskName); 
                String timeStamp = null;
                if(istaskSuccess) {
-                  timeStamp = (String) custom.get("lastRunTimeStamp");
+                  timeStamp = (String) custom.get("lastRunTimeFullTimeStamp");
                }else {
-                  timeStamp = (String) custom.get("oldRunTimeStamp");
+                  timeStamp = (String) custom.get("lastRunIncrementalTimeStamp");
                }
                if(Util.isNotNullOrEmpty(timeStamp)) {
                   String appName = (String) custom.get("applicationName");

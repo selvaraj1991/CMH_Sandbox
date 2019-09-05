@@ -19,22 +19,18 @@
 		//updates the timestamp of the task in custom object
 		Custom custom = context.getObjectByName(Custom.class,"CMH-Infor-Full-Aggregation-Custom-Object");
 		String format = getCustomObject("preIterationTimestamp","CMH-DateFormat");
-		String incrementalAggrTime = getCustomObject("lastRunTimeStamp","CMH-Infor-Incremental-Aggregation-Custom-Object");
 		try {
 			if(Util.isNotNullOrEmpty(format)) {
 				SimpleDateFormat sdf = new SimpleDateFormat(format);
 				String newLastRunTimeStamp = sdf.format(new Date());
 				if(custom!=null){
-				    if(Util.isNotNullOrEmpty(incrementalAggrTime)) {
-				       custom.put("oldRunTimeStamp",incrementalAggrTime);
-				    }
-				    custom.put("lastRunTimeStamp",newLastRunTimeStamp);
+				    custom.put("lastRunTimeFullTimeStamp",newLastRunTimeStamp);
 					context.saveObject(custom);
 					String appName = (String) custom.get("applicationName");
 					if(Util.isNotNullOrEmpty(appName)) {
 					   Application app = context.getObjectByName(Application.class,appName);
 					   if(app != null) {
-					      String sqlQuery = (String) custom.get("sqlQuery");
+					      String sqlQuery = (String) custom.get("sqlQueryFull");
 					      if(Util.isNotNullOrEmpty(sqlQuery)){
 					         app.setAttribute("SQL",sqlQuery);
 					      }

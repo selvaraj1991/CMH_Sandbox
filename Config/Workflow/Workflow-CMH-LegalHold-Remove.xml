@@ -236,10 +236,7 @@
   			
   			String adOU = null;
   			if(Util.nullSafeCaseInsensitiveEq(userStatus,"ACTIVE")){
-  				Custom custom = context.getObjectByName(Custom.class,"CMH-User-OU-Mapping-Custom-Object");
-  				if(custom!=null){
-  					adOU = custom.getString(assignmentType);
-  				}
+  				adOU = generatePrimaryGroupDN(assignmentType);
   			}else if(Util.nullSafeCaseInsensitiveEq(userStatus,"TERMINATED")){
   				adOU=disabledOU;
   			}

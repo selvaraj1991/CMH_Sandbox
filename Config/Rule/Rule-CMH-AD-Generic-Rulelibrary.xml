@@ -67,8 +67,8 @@ public String generatePrimaryGroupDN(String userType) {
 public String generateAccountDN(String username, String userType) {
 	log.debug("Entering generateAccountDN method");
 	String finalCn = null;
-	if (Util.isNotNullOrEmpty(userType) && Util.isNotNullOrEmpty(username)) {
-		String userOU = getCustomObject(userType.toUpperCase(), "CMH-User-OU-Mapping-Custom-Object");
+	if (Util.isNotNullOrEmpty(username)) {
+		String userOU = generatePrimaryGroupDN(userType);
 		if (Util.isNotNullOrEmpty(userOU)) {
 			finalCn = "cn=" + username + "," + userOU;
 		}
@@ -366,7 +366,7 @@ public String userNameCreationValidationCheck(String username, String lastName, 
 				 * @param customName
 				 * @return true
 				 */
-public boolean checkUsernameInCustomObject(String username, String customName) {
+public boolean checkUsernameInCustomObject(String username, String customName,String token) {
 	log.debug("Entering checkUsernameInCustomObject method");
 	boolean userNameExists = false;
 	Custom custom = null;
@@ -376,7 +376,7 @@ public boolean checkUsernameInCustomObject(String username, String customName) {
 		log.error("Error checking cerner username in custom object : " + e.getMessage());
 	}
 	if (custom != null) {
-		List arr = custom.getList("USERNAMES");
+		List arr = custom.getList(token);
 		if (!Util.isEmpty(arr)) {
 			if (arr.contains(username)) {
 				userNameExists = true;
@@ -404,8 +404,8 @@ public String finalUserName(String username, String firstname, String lastname, 
 	if (Util.isNotNullOrEmpty(username)) {
 		uname = username;
 		String temp = null;
-		boolean cernerFlag = checkUsernameInCustomObject(uname, "CMH-Cerner-Usernames");
-		boolean inforFlag = checkUsernameInCustomObject(uname, "CMH-Infor-Usernames");
+		boolean cernerFlag = checkUsernameInCustomObject(uname, "CMH-Cerner-Usernames","USERNAMES");
+		boolean inforFlag = checkUsernameInCustomObject(uname, "CMH-Infor-Usernames","USERNAMES");
 		if (cernerFlag || inforFlag) {
 			do {
 				Pattern pattern = Pattern.compile("-?\\d+");
@@ -424,7 +424,7 @@ public String finalUserName(String username, String firstname, String lastname, 
 					uname = temp;
 				}
 				uname = userNameCreationValidationCheck(uname, lastname, empId);
-			} while ( checkUsernameInCustomObject ( uname , "CMH-Cerner-Usernames") || checkUsernameInCustomObject(uname, "CMH-Infor-Usernames"));
+			} while ( checkUsernameInCustomObject ( uname , "CMH-Cerner-Usernames","USERNAMES") || checkUsernameInCustomObject(uname, "CMH-Infor-Usernames","USERNAMES"));
 		}
 
 	}
@@ -891,7 +891,7 @@ public boolean isRoleMatching(String assignmentType, String roleName) {
 	boolean roleStatus = false;
 	if (Util.isNotNullOrEmpty(assignmentType)) {
 		assignmentType = assignmentType.trim();
-		if (!Util.nullSafeCaseInsensitiveEq(assignmentType, "Valet")) {
+		if(!checkUsernameInCustomObject(assignmentType,"CMH-User-OU-Mapping-Custom-Object","NON_MAP_ASSIGNMENT_TYPE")) {
 			String userRole = getCustomObject(assignmentType.toUpperCase(), "CMH-User-Role-Mapping-Custom-Object");
 			if (Util.nullSafeCaseInsensitiveEq(userRole, roleName)) {
 				roleStatus = true;

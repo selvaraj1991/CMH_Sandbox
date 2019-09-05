@@ -174,7 +174,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   				}
   			}
   			if(Util.isNotNullOrEmpty(assignmentType)) {
-                enabledUserOU = getCustomObject(assignmentType,"CMH-User-OU-Mapping-Custom-Object" );
+                enabledUserOU = generatePrimaryGroupDN(assignmentType);
   			    if(Util.isNotNullOrEmpty(enabledUserOU)){
   				   return enabledUserOU;
   			     }
