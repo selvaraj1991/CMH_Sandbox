@@ -7,8 +7,9 @@
       <entry key="renameUserTimestamp" value="ddMMMyyyy"/>
       <entry key="userNameFileNameTimestamp" value="yyyyMMdd"/>
       <entry key="userNameGenerationTimestamp" value="yyyy-MM-dd hh:mm:ss a"/>
-	  <entry key="genericDateFormat" value="MM/dd/yyyy HH:mm:ss a z"/>
+	  <entry key="genericDateFormat" value="MM-dd-yyyy"/>
 	  <entry key="legalHoldTimestamp" value="yyyy-MM-dd_hh-mm-ss.a"/>
+	  <entry key="genericViewDateFormat" value="yyyy-MM-dd"/>
     </Map>
   </Attributes>
 </Custom>
