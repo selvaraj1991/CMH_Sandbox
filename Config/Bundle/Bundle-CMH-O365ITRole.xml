@@ -32,8 +32,6 @@
           <Value>
             <List>
               <String>%%CMH-Email-Enabled-Group%%</String>
-              <String>%%CMH-AD-O365E5Lic%%</String>
-              <String>%%CMH-AD-O365EMSLic%%</String>
             </List>
           </Value>
         </Filter>

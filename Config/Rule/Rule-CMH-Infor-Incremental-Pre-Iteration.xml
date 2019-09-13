@@ -15,13 +15,13 @@
         Logger log = Logger.getLogger("Rule.CMH-Infor-Incremental-Pre-Iteration-Rule");
 		log.debug("Entering CMH-Infor-Incremental-Pre-Iteration-Rule");
 		//updates the timestamp of the task in custom object
-		Custom custom = context.getObjectByName(Custom.class,"CMH-Infor-Incremental-Aggregation-Custom-Object");
+		Custom custom = context.getObjectByName(Custom.class,"CMH-Infor-Aggregation-Custom-Object");
 		String format = getCustomObject("preIterationTimestamp","CMH-DateFormat");
 		if(Util.isNotNullOrEmpty(format)) {
 			SimpleDateFormat sdf = new SimpleDateFormat(format);
 			String newLastRunTimeStamp = sdf.format(new Date());
 			if(custom!=null){
-				custom.put("lastRunTimeStamp",newLastRunTimeStamp);
+				custom.put("lastIncrementalAggregationTimeStamp",newLastRunTimeStamp);
 				context.saveObject(custom);
 				context.commitTransaction();
 		    }

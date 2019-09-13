@@ -2,6 +2,9 @@
 <!DOCTYPE Rule PUBLIC "sailpoint.dtd" "sailpoint.dtd">
 <Rule language="beanshell" name="CMH-Joiner-Users-Selection-Rule" type="IdentitySelector">
     <Description>This rule is used to filter out the conversion users, since the joiner should not be triggered to those users.</Description>
+    <ReferencedRules>
+        <Reference class="sailpoint.object.Rule" name="CMH-AD-Generic-Rulelibrary"/>
+    </ReferencedRules>
     <Signature returnType="boolean">
         <Inputs>
             <Argument name="log">
@@ -70,6 +73,8 @@
 		log.debug("Entering CMH-Joiner-Users-Selection-Rule for user "+identity!=null?identity.getName():"");
 		boolean success = false;
 		if (null != identity) {
+		    String assignmentType = identity.getStringAttribute("assignmentType");
+		    if(Util.isNotNullOrEmpty(assignmentType) && !checkUsernameInCustomObject(assignmentType,"CMH-User-OU-Mapping-Custom-Object","NON_MAP_ASSIGNMENT_TYPE")) {
 			String status = identity.getStringAttribute("status");
 			if (!StringUtils.isBlank(status) && StringUtils.equalsIgnoreCase("Active", status)) {
 				String rehire = identity.getStringAttribute("rehire");
@@ -86,6 +91,7 @@
 					success = false;
 				}
 			}
+		}
 		}
 		log.debug("Proceed with Joiner? " + success);
 		log.debug("Exiting Joiner-Users-Selection-Rule");

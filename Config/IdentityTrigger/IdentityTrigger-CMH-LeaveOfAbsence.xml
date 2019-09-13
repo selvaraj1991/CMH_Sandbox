@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE IdentityTrigger PUBLIC "sailpoint.dtd" "sailpoint.dtd">
 <IdentityTrigger attributeName="status" handler="sailpoint.api.WorkflowTriggerHandler" name="Leave Of Absence(LOA)"
-                 newValueFilter="LIMITED SCOPE" oldValueFilter="ACTIVE" type="AttributeChange">
+                 newValueFilter="Limited Scope" oldValueFilter="ACTIVE" type="AttributeChange">
     <Description>User is on Leave of Absence, hence assign the security group to AD account</Description>
     <Owner>
         <Reference class="sailpoint.object.Identity" name="spadmin"/>

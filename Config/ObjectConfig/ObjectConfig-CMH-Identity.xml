@@ -386,6 +386,9 @@
 					<ApplicationRef>
 					  <Reference class="sailpoint.object.Application" name="%%CMH-AD-ApplicationName%%"/>
 					</ApplicationRef>
+					<RuleRef>
+                       <Reference class="sailpoint.object.Rule"  name="CMH-AD-UpdateDisplayName-Rule"/>
+                  </RuleRef>
 				  </AttributeTarget>
 				</AttributeTargets>
             </ObjectAttribute>

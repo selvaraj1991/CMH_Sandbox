@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE IdentityTrigger PUBLIC "sailpoint.dtd" "sailpoint.dtd">
 <IdentityTrigger attributeName="status" handler="sailpoint.api.WorkflowTriggerHandler"
-                 name="Return From Leave of Absence(LOA)" newValueFilter="ACTIVE" oldValueFilter="LIMITED SCOPE"
+                 name="Return From Leave of Absence(LOA)" newValueFilter="ACTIVE" oldValueFilter="Limited Scope"
                  type="AttributeChange">
     <Description>Enable all the accounts on return from LOA</Description>
     <Owner>

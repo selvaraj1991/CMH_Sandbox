@@ -13,19 +13,19 @@
 		    Logger log = Logger.getLogger("Rule.CMH-Infor-Incremental-Post-Iteration-Rule");
 		    log.debug("Entering CMH-Infor-Post-Iteration-Rule");
             //Updates the last run timestamp of the task in custom object
-            Custom custom = context.getObjectByName(Custom.class,"CMH-Infor-Incremental-Aggregation-Custom-Object");
+            Custom custom = context.getObjectByName(Custom.class,"CMH-Infor-Aggregation-Custom-Object");
             String lastRunTimeStamp = null;
             Application app = null;
             String appName = null;
             String sqlQuery = null;
             String whereClause = null;
             if(custom!=null){
-            lastRunTimeStamp = (String)custom.get("lastRunTimeStamp");
+            lastRunTimeStamp = (String)custom.get("lastIncrementalAggregationTimeStamp");
 				if(Util.isNotNullOrEmpty(lastRunTimeStamp)){
 					appName = (String)custom.get("applicationName");
 					if(Util.isNotNullOrEmpty(appName)){
 						app = context.getObjectByName(Application.class,appName);
-						sqlQuery = custom.getString("sqlQuery");
+						sqlQuery = custom.getString("sqlQueryIncremental");
 						if(Util.isNotNullOrEmpty(sqlQuery) && app!=null){
 							if(sqlQuery.contains("TIME_STAMP")){
 								sqlQuery = sqlQuery.replace("TIME_STAMP",lastRunTimeStamp);

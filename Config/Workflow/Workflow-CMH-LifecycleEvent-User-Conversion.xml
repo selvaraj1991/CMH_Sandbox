@@ -305,10 +305,7 @@
   			import sailpoint.tools.Util;
 
   			String newOU = null;
-  			Custom custom = context.getObjectByName(Custom.class,"CMH-User-OU-Mapping-Custom-Object");
-  			if(custom!=null && Util.isNotNullOrEmpty(assignmentType)){
-  				newOU = custom.getString(assignmentType);
-  			}
+  			newOU = generatePrimaryGroupDN(assignmentType);
   			return newOU;
 
   		]]></Source>
