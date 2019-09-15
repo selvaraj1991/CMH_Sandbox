@@ -50,7 +50,7 @@ The transformed value that will be pushed to the target.
       import sailpoint.tools.Util;
       
       Logger log = Logger.getLogger("Rule.CMH-AD-UpdateDisplayName-Rule");
-      log.debug("Entering for the user:"+identity.getName());
+      log.debug("Entering rule for identity:"+identity!=null?identity.getName():"");
 	  String displayName = null;
 	  if(identity!=null){
 	  	String lastName = identity.getLastname();
@@ -59,7 +59,7 @@ The transformed value that will be pushed to the target.
 	    String credential = identity.getStringAttribute("credential");
 	    attributeValue = getDisplayName(firstName,lastName,initials,credential);
 	  }
-	  log.debug("Exiting for the user:"+identity.getName()");
+	  log.debug("Exiting rule for identity:"+identity!=null?identity.getName():"");
 	  return attributeValue;	
   ]]></Source>
 </Rule>

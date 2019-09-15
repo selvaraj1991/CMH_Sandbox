@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE Custom PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<Custom name="CMH-WorkGroup-HomeTiles-Mapping-Object">
+  <Attributes>
+    <Map>
+      <entry key="CMH HR Immediate Termination Admin">
+        <value>
+          <List>
+            <String>CMH Immediate Termination</String>
+          </List>
+        </value>
+      </entry>
+	  <entry key="CMH Legal Hold Admin">
+        <value>
+          <List>
+            <String>CMH-Quicklink-Legal-Hold</String>
+			<String>CMH-Quicklink-Remove-Legal-Hold</String>
+          </List>
+        </value>
+      </entry>
+	  <entry key="CMH IAM Admin Workgroup">
+        <value>
+          <List>
+            <String>CMH Immediate Termination</String>
+			<String>CMH-Quicklink-Legal-Hold</String>
+			<String>CMH-Quicklink-Remove-Legal-Hold</String>
+          </List>
+        </value>
+      </entry>
+    </Map>
+  </Attributes>
+</Custom>

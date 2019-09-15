@@ -718,6 +718,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   <Step action="call:refreshIdentity" icon="Task" name="Refresh Identity" posX="1586" posY="425">
     <Arg name="identityName" value="ref:newIdentityName"/>
     <Arg name="correlateEntitlements" value="true"/>
+	<Arg name="provision" value="true"/>
     <Arg name="refreshRoleMetadata" value="true"/>
     <Arg name="refreshIdentityEntitlements" value="true"/>
 	<Arg name="noResetNeedsRefresh" value="true"/>

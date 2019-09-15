@@ -3,9 +3,6 @@
 <TaskDefinition formPath="/monitor/tasks/accountAggregationTask.xhtml" name="Infor HR Database Aggregation" resultAction="Rename" subType="task_item_type_acct_aggregation" type="AccountAggregation">
   <Attributes>
     <Map>
-      <entry key="TaskDefinition.runLengthAverage" value="3"/>
-      <entry key="TaskDefinition.runLengthTotal" value="1230"/>
-      <entry key="TaskDefinition.runs" value="312"/>
       <entry key="TaskSchedule.host"/>
       <entry key="applications" value="%%CMH-Infor-ApplicationName%%"/>
       <entry key="checkDeleted" value="false"/>

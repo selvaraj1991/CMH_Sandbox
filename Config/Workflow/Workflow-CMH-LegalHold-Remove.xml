@@ -391,6 +391,7 @@
   <Step action="call:refreshIdentity" icon="Task" name="Refresh Identity" posX="1353" posY="421">
   	<Arg name="identityName" value="ref:identityName"/>
   	<Arg name="correlateEntitlements" value="true"/>
+	<Arg name="provision" value="true"/>
     <Arg name="refreshRoleMetadata" value="true"/>
     <Arg name="refreshIdentityEntitlements" value="true"/>
 	<Transition to="Add Error Message">
@@ -446,7 +447,7 @@
 					if(identityName!=null){
 						Identity iden = acquireLockOnIdentity(identityName);
 						if(iden!=null){					
-							iden.setAttribute("identityRetention","NO");
+							iden.setAttribute("identityRetention","");
 							context.saveObject(iden);
 							context.commitTransaction();
 							ObjectUtil.unlockIdentity(context,iden);

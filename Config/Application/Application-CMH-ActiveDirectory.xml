@@ -12,12 +12,12 @@
             <entry key="IQServicePort" value="%%CMH-AD-IQServicePort%%"/>
             <entry key="acctAggregationEnd">
                 <value>
-                    <Date>1557299282598</Date>
+                    <Date></Date>
                 </value>
             </entry>
             <entry key="acctAggregationStart">
                 <value>
-                    <Date>1557299282245</Date>
+                    <Date></Date>
                 </value>
             </entry>
             <entry key="afterProvisioningRule"/>
@@ -86,36 +86,6 @@
                     <Boolean/>
                 </value>
             </entry>
-            <entry key="exchangeSettings">
-                <value>
-                    <List>
-                        <Map>
-                            <entry key="ExchHost">
-                                <value>
-                                    <List>
-                                        <String>%%CMH-AD-ExchHost%%</String>
-                                    </List>
-                                </value>
-                            </entry>
-                            <entry key="accountForestList">
-                                <value>
-                                    <List>
-                                        <String>%%CMH-AD-ExchAcctForest%%</String>
-                                    </List>
-                                </value>
-                            </entry>
-                            <entry key="exchangeForest" value="defaultName"/>
-                            <entry key="password" value="%%CMH-AD-ExchPassword%%"/>
-                            <entry key="useTLS">
-                                <value>
-                                    <Boolean/>
-                                </value>
-                            </entry>
-                            <entry key="user" value="%%CMH-AD-ExchUsername%%"/>
-                        </Map>
-                    </List>
-                </value>
-            </entry>
             <entry key="forestSettings">
                 <value>
                     <List>
@@ -172,6 +142,16 @@
                 </value>
             </entry>
             <entry key="nativeChangeDetectionOperations"/>
+      <entry key="nativeRules">
+        <value>
+          <List>
+            <String>CMH-AD-CreateMailbox-Rule</String>
+            <String>CMH-AD-DisableMailbox-Rule</String>
+            <String>CMH-AD-EnableMailbox-Rule</String>
+            <String>CMH-AD-DeleteMailbox-Rule</String>
+          </List>
+        </value>
+      </entry>
             <entry key="pageSize" value="100"/>
 			<entry key="provisioningRetryThreshold" value="%%CMH-AD-ProvisioningThreshold%%"/>
             <entry key="searchDNs">
@@ -286,7 +266,7 @@
                 <Field displayName="primaryGroupID" name="primaryGroupID" type="string"/>
         <Field displayName="userPrincipalName" name="userPrincipalName" type="string">
           <Script>
-            <Source><![CDATA[return identity.getName()+"%%CMH-AD-DomainDN%%";]]></Source>
+            <Source><![CDATA[return identity.getName()+"%%CMH-Mail-Domain%%";]]></Source>
           </Script>
         </Field>
             </Section>
@@ -377,39 +357,11 @@
                        section="Dial-in" type="string"/>
             </Section>
             <Section label="Exchange" name="Exchange">
-                <Field displayName="con_prov_policy_ad_homeMDB" helpKey="help_con_prov_policy_ad_homeMDB" name="homeMDB"
-                       section="Exchange" type="string"/>
-                <Field displayName="con_prov_policy_ad_mailNickname" helpKey="help_con_prov_policy_ad_mailNickname" name="mailNickname" section="Exchange" type="string">
-					<Script>
-						<Source>
-							<![CDATA[
-								import sailpoint.tools.Util;
-								if(Util.isNotNullOrEmpty(identity.getEmail())){
-									return identity.getName();
-								}
-								return null;
-							]]>
-						</Source>
-					</Script>
-				</Field>
-                <Field displayName="con_prov_policy_ad_msExchHideFromAddressLists"
-                       helpKey="help_con_prov_policy_ad_msExchHideFromAddressLists" name="msExchHideFromAddressLists"
-                       section="Exchange" type="boolean"/>
+        <Field displayName="con_prov_policy_ad_homeMDB" helpKey="help_con_prov_policy_ad_homeMDB" name="homeMDB" section="Exchange" type="string"/>
+        <Field displayName="con_prov_policy_ad_mailNickname" helpKey="help_con_prov_policy_ad_mailNickname" name="mailNickname" section="Exchange" type="string"/>
+        <Field displayName="con_prov_policy_ad_msExchHideFromAddressLists" helpKey="help_con_prov_policy_ad_msExchHideFromAddressLists" name="msExchHideFromAddressLists" section="Exchange" type="boolean"/>
                 <Field displayName="msExchHomeServerName" name="msExchHomeServerName" type="string"/>
-        <Field displayName="msExchOmaAdminWirelessEnable" name="msExchOmaAdminWirelessEnable" type="string">
-          <Script>
-            <Source><![CDATA[
-        		
-        			String val = null;
-					String mail = identity.getEmail();
-        			if(mail!=null && !mail.isEmpty()){
-        				val = "5";
-        			}
-        			return val;
-        		
-        		]]></Source>
-          </Script>
-        </Field>
+		        <Field displayName="msExchOmaAdminWirelessEnable" name="msExchOmaAdminWirelessEnable" type="string"/>
             </Section>
             <Section label="Skype for Business" name="Skype for Business">
                 <Field displayName="con_prov_policy_ad_SipAddress" helpKey="help_con_prov_policy_ad_SipAddress"

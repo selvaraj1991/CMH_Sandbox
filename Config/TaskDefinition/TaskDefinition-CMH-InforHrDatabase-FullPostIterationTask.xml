@@ -3,9 +3,6 @@
 <TaskDefinition name="Infor HR Database -  Full PostIteration Task" resultAction="Rename" subType="task_item_type_generic" type="Generic">
   <Attributes>
     <Map>
-      <entry key="TaskDefinition.runLengthAverage" value="0"/>
-      <entry key="TaskDefinition.runLengthTotal" value="0"/>
-      <entry key="TaskDefinition.runs" value="6"/>
       <entry key="TaskSchedule.host"/>
       <entry key="ruleName" value="CMH-Infor-Full-Post-Iteration-Rule"/>
       <entry key="taskCompletionEmailNotify" value="Disabled"/>

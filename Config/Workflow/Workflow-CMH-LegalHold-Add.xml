@@ -381,6 +381,7 @@
   <Step action="call:refreshIdentity" icon="Task" name="Refresh Identity" posX="1508" posY="317">
   	<Arg name="identityName" value="ref:identityName"/>
   	<Arg name="correlateEntitlements" value="true"/>
+	<Arg name="provision" value="true"/>
     <Arg name="refreshRoleMetadata" value="true"/>
     <Arg name="refreshIdentityEntitlements" value="true"/>
 	<Transition to="Add Error Message">

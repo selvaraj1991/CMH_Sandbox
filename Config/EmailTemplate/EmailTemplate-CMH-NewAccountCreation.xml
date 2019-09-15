@@ -2,33 +2,29 @@
 <!DOCTYPE EmailTemplate PUBLIC "sailpoint.dtd" "sailpoint.dtd">
 <EmailTemplate name="New Account Creation">
     <Body>
-        <![CDATA[
-	<html>
-	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	</head>
-	<body style="background:#FFF;margin:0;padding:0;text-align:left;">
-		<font face="calibri">
+  &lt;html&gt;
+	&lt;head&gt;
+		&lt;meta http-equiv="Content-Type" content="text/html; charset=UTF-8"&gt;
+	&lt;/head&gt;
+	&lt;body style="background:#FFF;margin:0;padding:0;text-align:left;"&gt;
+		&lt;font face="calibri"&gt;
   
-	<p>Hello $managername</p>
-	&amp;lt;p&gt;
-	A network login has been created for $identityName. Here are the details about this account :&amp;lt;br/&gt;&amp;lt;br/&gt;
-	&amp;lt;b&gt;User: $identityName&amp;lt;/b&gt;&amp;lt;br/&gt;
-	&amp;lt;b&gt;Username: $userName&amp;lt;/b&gt;&amp;lt;br/&gt;
-	&amp;lt;b&gt;Employee ID: $employeeId&amp;lt;/b&gt;&amp;lt;br/&gt;
-	&amp;lt;b&gt;User Type: $userType&amp;lt;/b&gt;&amp;lt;br/&gt;&amp;lt;br/&gt;
-	The initial temporary password is: First initial of user’s first name in lower case followed by first initial of user’s last name in lower case followed by month of user’s birthdate in MM format followed by day of user’s birthdate in DD format followed by last 4 digits of user’s employee number.&amp;lt;br/&gt;&amp;lt;br/&gt;
-	User will be prompted to reset the initial password.
-	If user has any issues with the new password and is unable to login, please contact the Helpdesk at (816) 234-3454 or ext. 53454 for assistance.
-	DO NOT REPLY TO THIS EMAIL. THIS IS AN AUTOMATED MESSAGE.
-    If you have any questions, contact the IAM team atIAMSVCMB@stgcmh.com
-	Thanks,&amp;lt;br/&gt; The Identity Management Team
-	&amp;lt;/p&gt;
-  
-  		&amp;lt;/font&gt;
-	&amp;lt;/body&gt;
-&amp;lt;/html&gt;
- ]]>
+	&lt;p&gt;Hello $managername,&lt;/p&gt;
+	
+	&lt;p&gt;A network login has been created for $identityName. Here are the details about this account :&lt;/p&gt;
+	&lt;b&gt;User: $identityName&lt;/b&gt;&lt;br/&gt;
+	&lt;b&gt;Username: $userName&lt;/b&gt;&lt;br/&gt;
+	&lt;b&gt;Employee ID: $employeeId&lt;/b&gt;&lt;br/&gt;
+	&lt;b&gt;User Type: $userType&lt;/b&gt;&lt;br/&gt;
+	The initial temporary password is: First initial of user’s first name in lower case followed by first initial of user’s last name in lower case followed by month of user’s birthdate in MM format followed by day of user’s birthdate in DD format followed by last 4 digits of user’s employee number.&lt;br/&gt;
+	User will be prompted to reset the initial password.&lt;br/&gt;
+	If user has any issues with the new password and is unable to login, please contact the Helpdesk at (816) 234-3454 or ext. 53454 for assistance.&lt;br/&gt;&lt;/p&gt;
+	DO NOT REPLY TO THIS EMAIL. THIS IS AN AUTOMATED MESSAGE.&lt;br/&gt;
+    If you have any questions, contact the IAM team atIAMSVCMB@stgcmh.com.&lt;br/&gt;
+	&lt;p&gt;Thanks,&lt;br/&gt; The Identity Management Team &lt;/p&gt;
+	 		&lt;/font&gt;
+	&lt;/body&gt;
+&lt;/html&gt;
     </Body>
     <Description>
         Email Template for New Account Creation.

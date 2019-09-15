@@ -3,9 +3,6 @@
 <TaskDefinition name="Identity Refresh - Birthright Provisioning" resultAction="Rename" subType="task_item_type_identity" type="Identity">
   <Attributes>
     <Map>
-      <entry key="TaskDefinition.runLengthAverage" value="224"/>
-      <entry key="TaskDefinition.runLengthTotal" value="224"/>
-      <entry key="TaskDefinition.runs" value="1"/>
       <entry key="TaskSchedule.host"/>
       <entry key="checkHistory" value="false"/>
       <entry key="checkPolicies" value="false"/>
@@ -17,16 +14,16 @@
       <entry key="enableManualAccountSelection" value="false"/>
       <entry key="enablePartitioning" value="true"/>
       <entry key="excludeInactive" value="false"/>
-      <entry key="filterNeedsRefresh" value="false"/>
+      <entry key="filterNeedsRefresh" value="true"/>
       <entry key="forceWorkflow" value="false"/>
       <entry key="includeWindowModified" value="false"/>
       <entry key="keepInactiveViolations" value="false"/>
       <entry key="markDormantScopes" value="false"/>
       <entry key="noAutoCreateScopes" value="false"/>
       <entry key="noMaintenanceWindowRetry" value="false"/>
-      <entry key="noResetNeedsRefresh" value="false"/>
+      <entry key="noResetNeedsRefresh" value="true"/>
       <entry key="noRoleDeprovisioning" value="false"/>
-      <entry key="partitions" value="1000"/>
+      <entry key="partitions" value="24"/>
       <entry key="processTriggers" value="false"/>
       <entry key="promoteAttributes" value="true"/>
       <entry key="promoteManagedAttributes" value="false"/>

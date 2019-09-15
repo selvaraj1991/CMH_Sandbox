@@ -98,9 +98,10 @@
                String jobCode = identity.getStringAttribute("jobCode");
 				String identityName = identity.getName();
 	           if(Util.isNullOrEmpty(oldEmpId) || !isConversionCase(oldEmpId,identityName) || Util.nullSafeCaseInsensitiveEq(isConversionProcessed, "YES")) {
-				  Date startDate = identity.getAttribute("startDate");
-	              if (!status.equalsIgnoreCase("Prehire") || (startDate!=null && startDateCheck(startDate))) {
-	              roleAssign = isGrantRole(roleName,roleNameCustomObject,jobLevel,cmhDept,jobCode,jobFamily);
+				  String stDate =identity.getAttribute("startDate");
+				  Date startDate =  getDate("genericViewDateFormat",stDate); 
+	              if (!status.equalsIgnoreCase("Prehire") || (startDate!=null && dateCheck(startDate))) {
+		              roleAssign = isGrantRole(roleName,roleNameCustomObject,jobLevel,cmhDept,jobCode,jobFamily);
 	              }
 	           } 
 	        }

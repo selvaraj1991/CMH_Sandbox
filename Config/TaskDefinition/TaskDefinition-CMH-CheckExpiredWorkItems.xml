@@ -3,9 +3,6 @@
 <TaskDefinition executor="sailpoint.task.WorkItemExpirationScanner" name="Check Expired Work Items" resultAction="Rename" subType="task_item_type_system" type="System">
   <Attributes>
     <Map>
-      <entry key="TaskDefinition.runLengthAverage" value="0"/>
-      <entry key="TaskDefinition.runLengthTotal" value="0"/>
-      <entry key="TaskDefinition.runs" value="39"/>
       <entry key="TaskSchedule.host"/>
       <entry key="taskCompletionEmailNotify" value="Disabled"/>
       <entry key="taskCompletionEmailRecipients"/>

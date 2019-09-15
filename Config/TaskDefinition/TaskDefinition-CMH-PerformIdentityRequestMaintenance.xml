@@ -3,9 +3,6 @@
 <TaskDefinition name="Perform Identity Request Maintenance" resultAction="Rename" subType="task_item_type_system" type="System">
   <Attributes>
     <Map>
-      <entry key="TaskDefinition.runLengthAverage" value="64"/>
-      <entry key="TaskDefinition.runLengthTotal" value="2968"/>
-      <entry key="TaskDefinition.runs" value="46"/>
       <entry key="TaskSchedule.host"/>
       <entry key="maxAge" value="0"/>
       <entry key="maxVerificationDays" value="7"/>

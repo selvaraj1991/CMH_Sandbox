@@ -11,12 +11,12 @@
       <entry key="SQL" value="SELECT * FROM users where PrimaryWorkAssignment='YES';"/>
             <entry key="acctAggregationEnd">
                 <value>
-                    <Date>1557314245171</Date>
+                    <Date></Date>
                 </value>
             </entry>
             <entry key="acctAggregationStart">
                 <value>
-                    <Date>1557314244830</Date>
+                    <Date></Date>
                 </value>
             </entry>
             <entry key="afterProvisioningRule"/>
@@ -30,7 +30,6 @@
             <entry key="deltaTable"/>
             <entry key="driverClass" value="com.mysql.jdbc.Driver"/>
             <entry key="getDeltaSQL"/>
-      		<entry key="getObjectSQL"/>
             <entry key="isPermissionEnabled">
                 <value>
                     <Boolean/>
@@ -165,6 +164,9 @@
 			<AttributeDefinition name="Credential" type="string"/>
 			<AttributeDefinition name="PersonIsSupv" type="string"/>
 			<AttributeDefinition name="CellPhone" type="string"/>
+			<AttributeDefinition name="JobTitle" type="string"/>
+			<AttributeDefinition name="AssignmentTypeDescription" type="string"/>
+			<AttributeDefinition name="DepartmentNumber" type="string"/>
         </Schema>
     </Schemas>
     <ApplicationScorecard/>

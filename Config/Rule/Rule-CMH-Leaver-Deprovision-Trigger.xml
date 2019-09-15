@@ -58,7 +58,8 @@
 			String deletionStatus = newIdentity.getStringAttribute("deletionStatus");
 			String identityRetention = newIdentity.getStringAttribute("identityRetention");
 			if(Util.nullSafeCaseInsensitiveEq(status,"TERMINATED")){
-				Date deletionDate = newIdentity.getAttribute("deletionDate");
+				String delDate = newIdentity.getAttribute("deletionDate");
+				Date deletionDate = getDate("genericViewDateFormat",delDate); 
 				if(deletionDate!=null){
 					Date currDate = new Date();
 					if(currDate.after(deletionDate) && 

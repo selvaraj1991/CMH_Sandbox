@@ -280,6 +280,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
       <Source><![CDATA[
 
             import org.apache.log4j.Logger;
+            import java.text.DateFormat;
   			import sailpoint.object.Identity;
   			import sailpoint.api.ObjectUtil;
   			import sailpoint.tools.Util;
@@ -294,7 +295,14 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 
   				Date today = new Date();
 				Date deletetionDate =  Util.incrementDateByDays(today, numberOfDays);
-				iden.setAttribute("deletionDate",deletetionDate);
+  				String dateFormat = getCustomObject("genericViewDateFormat", "CMH-DateFormat");
+  				String date = null;
+  				if(Util.isNotNullOrEmpty(dateFormat)) {
+  				   date = new SimpleDateFormat(dateFormat).format(deletetionDate);
+  				}
+  				if(Util.isNotNullOrEmpty(date)) {
+				   iden.setAttribute("deletionDate",date);
+				}
 				if(Util.nullSafeCaseInsensitiveEq(immeTermStat,"YES")) {
 				   iden.setAttribute("immediateOffboarder","NO");
 				}

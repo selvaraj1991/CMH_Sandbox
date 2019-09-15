@@ -3,9 +3,6 @@
 <TaskDefinition name="Username And Email Report Generator" resultAction="Rename" subType="task_item_type_generic" type="Generic">
   <Attributes>
     <Map>
-      <entry key="TaskDefinition.runLengthAverage" value="0"/>
-      <entry key="TaskDefinition.runLengthTotal" value="0"/>
-      <entry key="TaskDefinition.runs" value="20"/>
       <entry key="TaskSchedule.host"/>
       <entry key="ruleName" value="CMH-Username-Email-Report-Generator-Rule"/>
       <entry key="taskCompletionEmailNotify" value="Disabled"/>

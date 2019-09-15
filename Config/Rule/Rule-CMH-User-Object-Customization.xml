@@ -149,24 +149,24 @@
 	log.debug("Validating the user details in CMH-User-Object-Customization-Rule fro the user: "+employeeId);
 	
 	
-	String CUSTOM_ATTR_NAME = "genericDateFormat";
+	String CUSTOM_ATTR_NAME = "genericViewDateFormat";
 	String START_DATE = "StartDate";
 	String ORIENTATION_DATE= "OrientationDate";
 	String TERMINATION_DATE= "TerminationDate";
 	if(Util.isNotNullOrEmpty(object.getAttribute(START_DATE))){
 		String sDate = (String)object.getAttribute(START_DATE);
-		Date newDate = getEpochDate(CUSTOM_ATTR_NAME,sDate);
-		object.setAttribute(START_DATE,newDate);
+		String cDate = dateFormatted(CUSTOM_ATTR_NAME,sDate);
+		object.setAttribute(START_DATE,cDate);
 	}
 	if(Util.isNotNullOrEmpty(object.getAttribute(ORIENTATION_DATE))){
 		String sDate = (String)object.getAttribute(ORIENTATION_DATE);
-		Date newDate = getEpochDate(CUSTOM_ATTR_NAME,sDate);
-		object.setAttribute(ORIENTATION_DATE,newDate);
+		String cDate = dateFormatted(CUSTOM_ATTR_NAME,sDate);
+		object.setAttribute(ORIENTATION_DATE,cDate);
 	}
 	if(Util.isNotNullOrEmpty(object.getAttribute(TERMINATION_DATE))){
 		String sDate = (String)object.getAttribute(TERMINATION_DATE);
-		Date newDate = getEpochDate(CUSTOM_ATTR_NAME,sDate);
-		object.setAttribute(TERMINATION_DATE,newDate);
+		String cDate = dateFormatted(CUSTOM_ATTR_NAME,sDate);
+		object.setAttribute(TERMINATION_DATE,cDate);
 	}
 	
 	if (isAttributeMissing) {
@@ -210,7 +210,8 @@
 		} else {
 			String oldEmpId = object.getStringAttribute("OtherEmpId");
 			String usrName = object.getStringAttribute("Username");
-    		Date startDate = object.getAttribute(START_DATE);
+    		String stDate = object.getAttribute(START_DATE);
+    		Date startDate =  getDate("genericViewDateFormat",stDate);
 			if (isConversionWithFutureDate(oldEmpId, usrName, startDate)) {
 				Custom fUsrObj = context.getObjectByName(Custom.class, "CMH-Custom-Future-Conversion-Users");
 				if (fUsrObj == null) {

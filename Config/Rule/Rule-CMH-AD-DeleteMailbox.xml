@@ -1,0 +1,109 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE Rule PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<Rule language="beanshell" name="CMH-AD-DeleteMailbox-Rule" type="ConnectorAfterDelete">
+  <Attributes>
+    <Map>
+      <entry key="ObjectOrientedScript" value="true"/>
+      <entry key="disabled" value="false"/>
+      <entry key="extension" value=".ps1"/>
+      <entry key="program" value="powershell.exe"/>
+      <entry key="timeout" value="4000"/>
+    </Map>
+  </Attributes>
+  <Description>This rule assign ACL to user’s home folder and perform DF Map</Description>
+  <Signature>
+    <Inputs>
+      <Argument name="log">
+        <Description>
+                    The log object associated with the SailPointContext.
+                </Description>
+      </Argument>
+      <Argument name="context">
+        <Description>
+                    A sailpoint.api.SailPointContext object that can be used to query the database if necessary.
+                </Description>
+      </Argument>
+      <Argument name="plan">
+        <Description>
+                    The ProvisioningPlan object on its way to the Connector.
+                </Description>
+      </Argument>
+      <Argument name="application">
+        <Description>
+                    The application object that references this before/after script.
+                </Description>
+      </Argument>
+      <Argument name="result">
+        <Description>
+			The ProvisioningResult object returned by the connectors provision method. This can be null and in
+			many cases the connector will not return a result and instead will annotate the plans
+			ProvisioningResult either at the plan or account level.
+        </Description>
+      </Argument>
+    </Inputs>
+  </Signature>
+  <Source>
+Import-Module ActiveDirectory
+Add-type -path  C:\\Software\\IQService\\Utils.dll
+
+$logRootDirectory = "C:\Software\Log\";
+
+$sReader = New-Object System.IO.StringReader([System.String]$env:Request);
+
+#Form the xml reader objects
+$xmlReader = [System.xml.XmlTextReader]([sailpoint.utils.xml.XmlUtil]::getReader($sReader));
+
+#Create SailPoint objects
+$requestObject = New-Object Sailpoint.Utils.objects.AccountRequest($xmlReader);
+
+if($requestObject)
+{
+	$oper=$null
+	$dn=$requestObject.NativeIdentity
+	$requestedOperation=$requestObject.Operation
+}
+
+if($dn -and $requestedOperation -and ($requestedOperation -eq "Delete")){
+	$logFile = $logRootDirectory+"Delete-$(get-date -f 'MMddyyyy-hhmmss').log";
+	Add-Content -path $logFile -value "$(get-date -f 'MM-dd-yyy HH:mm:ss') : [DEBUG] adAfterCreatePowerShell: Entering the script";
+	Try
+	{
+		$EXOSession = New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri %%CONNECTIONURI%% -Authentication Kerberos
+		Import-PSSession $EXOSession -DisableNameChecking;
+		Add-Content -path $logFile -value "$(get-date -f 'MM-dd-yyy HH:mm:ss') : [DEBUG] Session created and import is complete";
+	}
+	Catch
+	{
+		$ErrorMessage = $_.Exception.Message;
+		$ErrorActionPreference="Continue";
+		Add-Content -path $logFile -value "$(get-date -f 'MM-dd-yyy HH:mm:ss') : [ERROR] Error in creating Session=====> $ErrorMessage";
+	}
+	
+	if([bool](Get-RemoteMailbox -Identity $dn))
+	{
+		Try
+		{
+			Remove-RemoteMailbox -Identity $dn -confirm:$false
+			Add-Content -path $logFile -value "$(get-date -f 'MM-dd-yyy HH:mm:ss') : [DEBUG] Remote Mailbox Renamed and Hidden successfully";
+		}
+		Catch
+		{
+			Add-Content -path $logFile -value "$(get-date -f 'MM-dd-yyy HH:mm:ss') : [DEBUG] Remote Mailbox Renamed and Hidden successfully";
+		}
+	}
+	
+	Try
+	{
+		Remove-PSSession $EXOSession;
+		Add-Content -path $logFile -value "$(get-date -f 'MM-dd-yyy HH:mm:ss') : [DEBUG] Removed PS Session";
+	}
+	Catch
+	{
+		$ErrorMessage = $_.Exception.Message;
+		Add-Content -path $logFile -value "$(get-date -f 'MM-dd-yyy HH:mm:ss') : [ERROR] Error while Removing PS Session=====> $ErrorMessage";
+		$ErrorActionPreference="Stop";
+	}
+}
+  
+</Source>
+</Rule>

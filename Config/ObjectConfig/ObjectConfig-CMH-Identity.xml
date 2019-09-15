@@ -155,20 +155,6 @@
                     </ApplicationRef>
                 </AttributeSource>
             </ObjectAttribute>
-			<ObjectAttribute displayName="Job Title" editMode="ReadOnly" name="jobTitle" type="string">
-				<AttributeSource name="PositionTitle">
-				  <ApplicationRef>
-					<Reference class="sailpoint.object.Application" name="%%CMH-Infor-ApplicationName%%"/>
-				  </ApplicationRef>
-				</AttributeSource>
-				<AttributeTargets>
-				  <AttributeTarget name="title" provisionAllAccounts="true">
-					<ApplicationRef>
-					  <Reference class="sailpoint.object.Application" name="%%CMH-AD-ApplicationName%%"/>
-					</ApplicationRef>
-				  </AttributeTarget>
-				</AttributeTargets>
-			</ObjectAttribute>
             <ObjectAttribute displayName="Email Required" editMode="ReadOnly" name="mailReqd" type="string">
                 <AttributeSource name="EmailRequired">
                     <ApplicationRef>
@@ -294,7 +280,7 @@
                     </ApplicationRef>
                 </AttributeSource>
             </ObjectAttribute>
-            <ObjectAttribute displayName="Identity Retention" editMode="ReadOnly" extendedNumber="3"
+            <ObjectAttribute displayName="Legal Hold" editMode="ReadOnly" extendedNumber="3"
                              name="identityRetention" standard="true" type="string"/>
             <ObjectAttribute displayName="Assignment Type" editMode="ReadOnly" namedColumn="true" name="assignmentType"
                              type="string">
@@ -421,6 +407,44 @@
 				  </AttributeTarget>
 				</AttributeTargets>
 			</ObjectAttribute>
+			<ObjectAttribute displayName="PositionTitle" editMode="ReadOnly" name="positionTitle" type="string">
+    <AttributeSource name="PositionTitle">
+      <ApplicationRef>
+        <Reference class="sailpoint.object.Application" name="%%CMH-Infor-ApplicationName%%"/>
+      </ApplicationRef>
+    </AttributeSource>
+  </ObjectAttribute>
+  <ObjectAttribute displayName="AssignmentTypeDescription" editMode="ReadOnly" name="assignmentTypeDescription" type="string">
+    <AttributeSource name="AssignmentTypeDescription">
+      <ApplicationRef>
+        <Reference class="sailpoint.object.Application" name="%%CMH-Infor-ApplicationName%%"/>
+      </ApplicationRef>
+    </AttributeSource>
+  </ObjectAttribute>
+  <ObjectAttribute displayName="DepartmentNumber" editMode="ReadOnly" name="departmentNumber" type="string">
+    <AttributeSource name="DepartmentNumber">
+      <ApplicationRef>
+        <Reference class="sailpoint.object.Application" name="%%CMH-Infor-ApplicationName%%"/>
+      </ApplicationRef>
+    </AttributeSource>
+  </ObjectAttribute>
+  <ObjectAttribute displayName="Job Title" editMode="ReadOnly" name="jobTitle" type="string">
+    <AttributeSource name="AppRule: CMH-AD-GenerateTitle-Rule %%CMH-Infor-ApplicationName%%">
+      <ApplicationRef>
+        <Reference class="sailpoint.object.Application" name="%%CMH-Infor-ApplicationName%%"/>
+      </ApplicationRef>
+      <RuleRef>
+        <Reference class="sailpoint.object.Rule" name="CMH-AD-GenerateTitle-Rule"/>
+      </RuleRef>
+    </AttributeSource>
+    <AttributeTargets>
+      <AttributeTarget name="title" provisionAllAccounts="true">
+        <ApplicationRef>
+          <Reference class="sailpoint.object.Application" name="%%CMH-AD-ApplicationName%%"/>
+        </ApplicationRef>
+      </AttributeTarget>
+    </AttributeTargets>
+  </ObjectAttribute>
 		</ObjectConfig>
     </ImportAction>
 </sailpoint>

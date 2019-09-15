@@ -3,9 +3,6 @@
 <TaskDefinition formPath="/monitor/tasks/sequentialTask.xhtml" name="Infor HR Database Sequential Full Aggregation" resultAction="Rename" subType="task_item_type_generic" type="Generic">
   <Attributes>
     <Map>
-      <entry key="TaskDefinition.runLengthAverage" value="15"/>
-      <entry key="TaskDefinition.runLengthTotal" value="75"/>
-      <entry key="TaskDefinition.runs" value="5"/>
       <entry key="TaskSchedule.host"/>
       <entry key="exitOnError" value="false"/>
       <entry key="taskCompletionEmailNotify" value="Disabled"/>

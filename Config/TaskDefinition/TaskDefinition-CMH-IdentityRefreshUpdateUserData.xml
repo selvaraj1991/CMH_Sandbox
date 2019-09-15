@@ -3,9 +3,6 @@
 <TaskDefinition name="Identity Refresh - Update User Data" resultAction="Rename" subType="task_item_type_identity" type="Identity">
   <Attributes>
     <Map>
-      <entry key="TaskDefinition.runLengthAverage" value="172"/>
-      <entry key="TaskDefinition.runLengthTotal" value="172"/>
-      <entry key="TaskDefinition.runs" value="1"/>
       <entry key="TaskSchedule.host"/>
       <entry key="checkHistory" value="true"/>
       <entry key="checkPolicies" value="true"/>
@@ -17,7 +14,7 @@
       <entry key="enableManualAccountSelection" value="false"/>
       <entry key="enablePartitioning" value="true"/>
       <entry key="excludeInactive" value="false"/>
-      <entry key="filterNeedsRefresh" value="false"/>
+      <entry key="filterNeedsRefresh" value="true"/>
       <entry key="forceWorkflow" value="false"/>
       <entry key="includeWindowModified" value="false"/>
       <entry key="keepInactiveViolations" value="false"/>
@@ -26,7 +23,7 @@
       <entry key="noMaintenanceWindowRetry" value="false"/>
       <entry key="noResetNeedsRefresh" value="false"/>
       <entry key="noRoleDeprovisioning" value="false"/>
-      <entry key="partitions" value="1000"/>
+      <entry key="partitions" value="24"/>
       <entry key="processTriggers" value="false"/>
       <entry key="promoteAttributes" value="false"/>
       <entry key="promoteManagedAttributes" value="false"/>

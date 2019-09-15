@@ -59,7 +59,8 @@
 					if (Util.nullSafeCaseInsensitiveEq(userStatus, "ACTIVE")) {
 						triggerConversion = true;
 					} else if (Util.nullSafeCaseInsensitiveEq(userStatus, "PREHIRE")) {
-						Date startDate = newIdentity.getAttribute("startDate");
+						String stDate = newIdentity.getAttribute("startDate");
+						Date startDate = getDate("genericViewDateFormat",stDate); 
 						if (startDate!=null) {
 							Date currDate = new Date();
 							int daysDiff = Util.getDaysDifference(startDate, currDate);

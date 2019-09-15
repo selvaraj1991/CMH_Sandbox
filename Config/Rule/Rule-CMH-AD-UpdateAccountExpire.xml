@@ -75,10 +75,13 @@
 
 	log.debug("Entering CMH-AD-AccountExpire-Update-Rule to update accountExpires attribute in AD for the User:"+identity!=null?identity.getName():"");
 	attributeValue = null;
-	if(value instanceof java.util.Date){
-		long longDate = value.getTime();
-		longDate = (longDate * 10000L) + 116444736000000000L;
-		attributeValue =  String.valueOf(longDate);
+	Date termDate = getDate("genericViewDateFormat",value); 
+	if(null != termDate) {
+		if(termDate instanceof java.util.Date){
+			long longDate = termDate.getTime();
+			longDate = (longDate * 10000L) + 116444736000000000L;
+			attributeValue =  String.valueOf(longDate);
+		 }
 	}
 	log.debug("Exiting CMH-AD-AccountExpire-Update-Rule");
 	return attributeValue;

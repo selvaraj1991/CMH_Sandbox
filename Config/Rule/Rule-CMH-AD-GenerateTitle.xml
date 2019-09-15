@@ -1,13 +1,11 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='UTF-8'?>
 <!DOCTYPE Rule PUBLIC "sailpoint.dtd" "sailpoint.dtd">
-<Rule language="beanshell" name="CMH-AD-Department-Rule" type="IdentityAttribute">
+<Rule name="CMH-AD-GenerateTitle-Rule" type="IdentityAttribute">
   <Description>Identity attribute rules are used when the value is not simply a copy of an application account attribute value.  A transformation may be necessary on the account attribute, or several account attributes may need to be combined to produce the identity attribute.
 
-This rule can be called in two ways: as a global mapping rule and an application mapping rule.  A global mapping rule is called whenever the identity is refreshed.  The rule can look at any account attributes.  An application mapping rule is called only when the identity contains an account link for that application, this link is passed in the "link" argument which is not passed in global mapping rules.
-
-This rule is used to generate and provision the department attribute to AD</Description>
+This rule can be called in two ways: as a global mapping rule and an application mapping rule.  A global mapping rule is called whenever the identity is refreshed.  The rule can look at any account attributes.  An application mapping rule is called only when the identity contains an account link for that application, this link is passed in the "link" argument which is not passed in global mapping rules.</Description>
   <Signature returnType="String">
-  	<Inputs>
+    <Inputs>
       <Argument name="log">
         <Description>
           The log object associated with the SailPointContext.
@@ -60,20 +58,32 @@ This rule is used to generate and provision the department attribute to AD</Desc
       </Argument>
     </Returns>
   </Signature>
-  <Source><![CDATA[
-    import org.apache.log4j.Logger; 
-	import sailpoint.tools.Util;
-    Logger log = Logger.getLogger("Rule.CMH-AD-Department-Rule");
-    log.debug("Entering rule for identity:"+identity!=null?identity.getName():"");
-  	String department = null;
-	if(identity!=null){
-        String deptNo = identity.getStringAttribute("departmentNumber");
-		String divisionDesc = identity.getStringAttribute("divisionDesc");
-        if(Util.isNotNullOrEmpty(deptNo) && Util.isNotNullOrEmpty(divisionDesc)) { 
-          department = deptNo.concat("-").concat(divisionDesc);
-		}
-	}
-	log.debug("Exiting rule for identity:"+identity!=null?identity.getName():"");
-	return department;
-	]]></Source>
+  <Source> <![CDATA[
+       import org.apache.log4j.Logger;
+       import sailpoint.object.Link;
+       import sailpoint.object.Attributes;
+       import sailpoint.tools.Util;
+             
+       Logger log = Logger.getLogger("Rule.CMH-AD-GenerateTitle-Rule");
+       
+       log.debug("Entering for identity:"+identity!=null?identity.getName():"");
+       
+       String title = null;
+       if(null != identity) {
+           String userType =identity.getStringAttribute("userType");
+
+           if(Util.nullSafeCaseInsensitiveEq(userType,"EMPLOYEE")) {
+              Attributes attrs = link.getAttributes();
+              if (attrs != null ) {
+                  title=attrs.get("JobTitle");
+              }
+           }
+           if(Util.nullSafeCaseInsensitiveEq(userType,"NONEMPLOYEE")) {
+              title=identity.getStringAttribute("assignmentTypeDescription");
+           }
+       }
+       log.debug("Exiting for identity:"+identity!=null?identity.getName():"");
+       return title; 
+	   ]]>
+  </Source>
 </Rule>

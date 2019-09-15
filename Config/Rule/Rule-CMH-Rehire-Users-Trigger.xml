@@ -53,9 +53,9 @@
 				String rehire = newIdentity.getStringAttribute("rehire");
 				if(Util.nullSafeCaseInsensitiveEq("TERMINATED",prevIdenStatus) && Util.nullSafeCaseInsensitiveEq("PREHIRE",newIdenStatus)
 						        && Util.nullSafeCaseInsensitiveEq("YES",rehire)) {
-					//String startdate = newIdentity.getStringAttribute("startDate");
-					Date startdate = newIdentity.getAttribute("startDate");
-					boolean flag = startDateCheck(startdate);
+					String stDate = newIdentity.getStringAttribute("startDate");
+					Date startdate = getDate("genericViewDateFormat",stDate); 
+					boolean flag = dateCheck(startdate);
 					if (flag) {
 						rehired = true;
 					} else {

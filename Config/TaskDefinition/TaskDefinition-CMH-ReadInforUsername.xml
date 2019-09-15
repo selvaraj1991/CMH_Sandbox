@@ -3,9 +3,6 @@
 <TaskDefinition name="CMH Read Infor Username" resultAction="Rename" subType="task_item_type_generic" type="Generic">
   <Attributes>
     <Map>
-      <entry key="TaskDefinition.runLengthAverage" value="0"/>
-      <entry key="TaskDefinition.runLengthTotal" value="0"/>
-      <entry key="TaskDefinition.runs" value="1"/>
       <entry key="TaskSchedule.host"/>
       <entry key="ruleConfig" value="path,/home/labuser/abc.csv"/>
       <entry key="ruleName" value="CMH-Read-Infor-Record-Rule"/>

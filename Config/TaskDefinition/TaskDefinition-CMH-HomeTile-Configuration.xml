@@ -1,16 +1,16 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='UTF-8'?>
 <!DOCTYPE TaskDefinition PUBLIC "sailpoint.dtd" "sailpoint.dtd">
-<TaskDefinition name="Legal Hold Users" resultAction="Rename" subType="task_item_type_generic" type="Generic">
+<TaskDefinition name="CMH-HomeTile-Configuration-Task" resultAction="Delete" subType="task_item_type_generic" type="Generic">
   <Attributes>
     <Map>
       <entry key="TaskSchedule.host"/>
-      <entry key="ruleName" value="LegalHoldUsers"/>
+      <entry key="ruleName" value="CMH-UIPreference-Update-Rule"/>
       <entry key="taskCompletionEmailNotify" value="Disabled"/>
       <entry key="taskCompletionEmailRecipients"/>
       <entry key="taskCompletionEmailTemplate"/>
     </Map>
   </Attributes>
-  <Description>A task that can be used to generate a report of all Legal Hold enabled users.</Description>
+  <Description>A task that can be used to run an arbitrary rule.</Description>
   <Owner>
     <Reference class="sailpoint.object.Identity" name="spadmin"/>
   </Owner>
