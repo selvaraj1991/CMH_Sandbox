@@ -12,10 +12,10 @@
 		import sailpoint.object.Custom;
 		import sailpoint.tools.Util;
 		import sailpoint.object.Application;
-		
+
         Logger log = Logger.getLogger("Rule.CMH-Infor-Full-Pre-Iteration-Rule");
 		log.debug("Entering CMH-Infor-Full-Pre-Iteration-Rule");
-		
+
 		//updates the timestamp of the task in custom object
 		Custom custom = context.getObjectByName(Custom.class,"CMH-Infor-Aggregation-Custom-Object");
 		String format = getCustomObject("preIterationTimestamp","CMH-DateFormat");
