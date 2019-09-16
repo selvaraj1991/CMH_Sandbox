@@ -188,6 +188,7 @@
 		Iterator existingUsers = context.search(Identity.class, ops);
 		if (existingUsers != null && existingUsers.hasNext()) {
 			Identity iden = (Identity) existingUsers.next();
+			sailpoint.tools.Util.flushIterator(existingUsers);
 			if (iden != null && application != null) {
 				IdentityService identityService = new IdentityService(context);
 				List links = identityService.getLinks(iden, application);

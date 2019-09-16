@@ -56,12 +56,13 @@
 				Iterator itr = context.search(Identity.class, q0);
 				if (null != itr && itr.hasNext()) {
 					Identity identity = (Identity) itr.next();
+					sailpoint.tools.Util.flushIterator(itr);
 					String status = identity.getStringAttribute("status");
 					if (!StringUtils.isBlank(status) && StringUtils.equalsIgnoreCase(status, "Active")) {
 						isStatus = true;
 					} else {
 						isStatus = false;
-					}
+					}					
 				}
 			}
 			log.debug("Exiting checkOldEmployeeIdUserStatus method");

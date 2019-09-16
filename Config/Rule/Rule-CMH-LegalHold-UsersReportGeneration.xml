@@ -63,6 +63,7 @@
 		if (identityIterator != null) {
 			while (identityIterator.hasNext()) {
 				Identity identity = (Identity) identityIterator.next();
+				sailpoint.tools.Util.flushIterator(identityIterator);
 				String userName = identity.getName();
 				String email = identity.getEmail();
 				String assignmentType = (String)identity.getAttribute("assignmentType");
@@ -75,7 +76,7 @@
 					attrDetails.put("Assignment Type", assignmentType);
 					userNameList.add(attrDetails);
 				}
-			}
+			}			
 		}
 		log.debug("Exiting getLegalHoldUsers method");
 		return userNameList;

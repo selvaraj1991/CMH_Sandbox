@@ -202,6 +202,7 @@ public int checkUnique(String username, String lastName, String empId) {
 				userList.add(identity.getName());
 			}
 		}
+		sailpoint.tools.Util.flushIterator(itr);
 		if (!Util.isEmpty(userList)) {
 			List numberList = new ArrayList();
 			Pattern p = Pattern.compile("-?\\d+");
@@ -598,11 +599,8 @@ public Object generateSnowTicket(String identityName, String customName, String 
 		Map jsonMap = new HashMap();
 		jsonMap.put("sysparm_quantity", "1");
 		Map varMap = new HashMap();
-		varMap.put("color", "Black");
-		varMap.put("storage", "64GB");
-		varMap.put("var_tsk_short_desc", "short_description---value");
-		//varMap.put("username", "kdhyani"); //put username
-		//varMap.put("description", "User "+operation);
+		varMap.put("username", identityName); 
+		varMap.put("description", "User "+operation);
 		jsonMap.put("variables", varMap);
 		JsonUtil jUtil = new JsonUtil();
 		String jsonString = jUtil.render(jsonMap);
