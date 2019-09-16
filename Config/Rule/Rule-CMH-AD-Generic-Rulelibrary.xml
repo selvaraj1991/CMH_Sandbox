@@ -722,30 +722,25 @@ public List doTargetedAggregation(String nativeId, String appName, String identi
 
 /**
 				 * Start date check.
-				 * Description: this method checks if startdate is <= 30 days of current day
+				 * Description: this method checks if startdate is <= %%CMH-THRESHOLDDAYS%% days of current day
 				 * @param startDate
 				 * @return true, if successful
 				 */
 
-public boolean startDateCheck(Date startDate) {
-	log.debug("Entering startDateCheck method");
+public boolean dateCheck(Date startDate) {
+	log.debug("Entering dateCheck method");
 	boolean flag = false;
 	if (null != startDate) {
-		/*Date userStartDate = null;
-		try {
-			userStartDate = new SimpleDateFormat("MM/dd/yyyy").parse(startDate);
-		} catch(ParseException e) {
-			log.error("Error in startDateCheck method : " + e.getMessage());
-		}*/
+		
 		Date currentDate = new Date();
 		int days = Util.getDaysDifference(startDate, currentDate);
-		if (days <= 30) {
+		if (days <= %%CMH-THRESHOLDDAYS%%) {
 			flag = true;
 		} else {
 			flag = false;
 		}
 	}
-	log.debug("Exiting startDateCheck method: Start date is within 30 days from now? " + flag);
+	log.debug("Exiting dateCheck method: Start date is within 30 days from now? " + flag);
 	return flag;
 }
 /**
@@ -1075,18 +1070,32 @@ public Identity acquireLockOnIdentity(String identityName) {
 }
 
 /**Method is used to convert the Date from String type to Date type**/
-public Date getEpochDate(String customAttrName, String existingDate){
-	log.debug("Entering getEpochDate method");
+public Date getDate(String customAttrName, String existingDate){
+	log.debug("Entering getDate method");
 	Date newDate = null;
-	if(Util.isNotNullOrEmpty(customAttrName)){
+	if(Util.isNotNullOrEmpty(customAttrName) && Util.isNotNullOrEmpty(existingDate)){
 		String dateFormat = getCustomObject(customAttrName, "CMH-DateFormat");
 		if(Util.isNotNullOrEmpty(dateFormat)){
 			SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
 			newDate = sdf.parse(existingDate);
 		}
 	}
-	log.debug("Exiting getEpochDate method");
+	log.debug("Exiting getDate method");
 	return newDate;
+}
+public String dateFormatted(String customAttrName, String existingDate) {
+   log.debug("Entering dateFormatted method");
+   String formattedDate= null;
+   if(Util.isNotNullOrEmpty(customAttrName)) {
+      String dateFormat = getCustomObject(customAttrName, "CMH-DateFormat");
+      Date convertedDate = getDate("genericDateFormat",existingDate);
+      if(null != convertedDate && Util.isNotNullOrEmpty(dateFormat)){
+         formattedDate = new SimpleDateFormat(dateFormat).format(convertedDate);
+         log.debug("formattedDate:"+formattedDate);
+      }
+   }
+   return formattedDate;
+   log.debug("Exiting dateFormatted method");
 }
   ]]></Source>
 </Rule>

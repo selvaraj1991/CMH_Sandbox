@@ -176,22 +176,6 @@
   		</Source>
   	</Script>
   </Variable>
-  <Variable name="o365Licenses" type="java.util.List">
-  	<Script>
-  		<Source>
-  		<![CDATA[
-  			import sailpoint.object.Custom;
-  			
-  			Custom custom = context.getObjectByName(Custom.class,"CMH-Custom-Object-AD-Application");
-  			List license = new ArrayList();
-  			if(custom!=null){
-  				license = custom.getList("O365License");
-  			}
-  			return license;
-  		]]>
-  		</Source>
-  	</Script>
-  </Variable>
   <Variable name="managerName">
   	<Script>
   		<Source>
@@ -242,10 +226,6 @@
   			List errorList = new ArrayList();
   			if(Util.isNullOrEmpty(adAppName)){
   				errorList.add("The Custom Object is not configured properly with AD app name. Either Custom object or AD application name in custom object is missing");
-  			}
-  			
-  			if(Util.isEmpty(o365Licenses)){
-  				errorList.add("The Custom Object is not configured properly with O365 License. Either Custom object or License entry in custom object is missing");
   			}
   			
   			if(!adExists){
@@ -340,20 +320,6 @@
   						acctReq.setOperation(ProvisioningPlan.AccountRequest.Operation.Enable);
   						acctReq.setNativeIdentity(adLink.getNativeIdentity());
   						accountRequests.add(acctReq);
-  						
-  						AccountRequest acctReqGrp = new AccountRequest();
-  						acctReqGrp.setApplication(adAppName);
-  						acctReqGrp.setOperation(ProvisioningPlan.AccountRequest.Operation.Modify);
-  						acctReqGrp.setNativeIdentity(adLink.getNativeIdentity());
-  						acctReqGrp.add(new AttributeRequest("IIQDisabled",ProvisioningPlan.Operation.Set,false));
-  						if(Util.isNotNullOrEmpty(assignmentType)){
-  							if(Util.nullSafeCaseInsensitiveEq(assignmentType,"EMPLOYEE")){
-  								//Provision o365Licenses
-  							}else if(Util.nullSafeCaseInsensitiveEq(emailRequired,"Yes")){
-  								//Provision o365Licenses
-  							}
-  						}
-  						accountRequests.add(acctReqGrp);
   					}
   				}
 				adPlan.setIdentity(iden);

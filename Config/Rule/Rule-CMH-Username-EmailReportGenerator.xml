@@ -341,8 +341,20 @@
 			log.debug("Exiting uploadFileUsingSFTP,isUploadSuccess ?:"+isUploadSuccess);
 			return isUploadSuccess;
 		}
-		public void postFileGenerationOperation(Date lastTimeStamp,Date endTime) {
+		public void deleteFile(String filepath,String filename) {
+			log.debug("Entering deleteFile");
+			boolean isDeleted= false;
+			ifFileExists(filepath,filename) {
+				File file = new File(filepath+filename);
+				if(file.delete()) {
+					log.debug("File Deleted Successfully from drive");
+				}
+			}
+		    log.debug("Exiting deleteFile");
+		}
+		public void postFileGenerationOperation(Date lastTimeStamp,Date endTime,String filepath,String filename) {
 		    log.debug("Entering postFileGenerationOperation");
+			deleteFile(filepath,filename);
 		    lastTimeStamp = endTime;
 		    updateCustomTimeStamp(lastTimeStamp, "CMH-Last-Generated-Timestamp-Report");
 			List dataList = getCustomNameChangeData(nameCustomObjName);
@@ -377,11 +389,11 @@
 			    if(fileExists) {
 			       boolean isUploadToServer = uploadFileUsingSFTP(filepath,filename);
 			       if(isUploadToServer) {
-					    postFileGenerationOperation(lastTimeStamp,endTime);
+					    postFileGenerationOperation(lastTimeStamp,endTime,filepath,filename);
 						flag = true;
 				    }			       
 			    }else {
-			        postFileGenerationOperation(lastTimeStamp,endTime);
+			        postFileGenerationOperation(lastTimeStamp,endTime,filepath,filename);
 					flag = true;
 			   }
 			} else {

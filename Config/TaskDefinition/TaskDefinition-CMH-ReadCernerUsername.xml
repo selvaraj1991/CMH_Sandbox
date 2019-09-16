@@ -4,7 +4,7 @@
   <Attributes>
     <Map>
       <entry key="TaskSchedule.host"/>
-      <entry key="ruleConfig" value="path,/home/labuser/Cerner.csv"/>
+      <entry key="ruleConfig" value="path,"/>
       <entry key="ruleName" value="CMH-Read-Cerner-Record-Rule"/>
       <entry key="taskCompletionEmailNotify" value="Disabled"/>
       <entry key="taskCompletionEmailRecipients"/>

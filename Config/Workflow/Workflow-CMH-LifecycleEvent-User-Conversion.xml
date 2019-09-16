@@ -263,22 +263,6 @@
   		]]></Source>
     </Script>
   </Variable>
-  <Variable name="o365Licenses" type="java.util.List">
-    <Script>
-      <Source><![CDATA[
-
-  			import sailpoint.object.Custom;
-
-  			Custom custom = context.getObjectByName(Custom.class,"CMH-Custom-Object-AD-Application");
-  			List license = new ArrayList();
-  			if(custom!=null){
-  				license = custom.getList("O365License");
-  			}
-  			return license;
-
-  		]]></Source>
-    </Script>
-  </Variable>
   <Variable name="userStatus">
     <Script>
       <Source><![CDATA[
@@ -351,10 +335,6 @@
   			}
   			if(Util.isNullOrEmpty(adAppName)){
   				errorList.add("The Custom Object is not configured properly with AD app name. Either Custom object or AD application name in custom object is missing");
-  			}
-
-  			if(Util.isEmpty(o365Licenses)){
-  				errorList.add("The Custom Object is not configured properly with O365 License. Either Custom object or License entry in custom object is missing");
   			}
 
   			if(Util.isNullOrEmpty(newUserOU)){
@@ -537,66 +517,6 @@
     <WorkflowRef>
       <Reference class="sailpoint.object.Workflow" name="CMH-Create-AD-Account-Workflow"/>
     </WorkflowRef>
-    <Transition to="Provision O365 License">
-      <Script>
-        <Source><![CDATA[
-
-  				import sailpoint.tools.Util;
-  				if(Util.nullSafeCaseInsensitiveEq(userStatus,"ACTIVE")){
-	  				if(Util.nullSafeCaseInsensitiveEq(assignmentType,"EMPLOYEE") || Util.nullSafeCaseInsensitiveEq(emailRequired,"Yes")){
-	  					return true;
-	  				}
-  				}
-  				return false;
-
-  			]]></Source>
-      </Script>
-    </Transition>
-    <Transition to="Refresh Identity">
-      <Script>
-        <Source><![CDATA[
-
-				import sailpoint.tools.Message;
-
-				if(validationErrors==null || validationErrors.size()<=0){
-					return true;
-				}else if(wfcontext.getRootWorkflowCase().getMessages()==null || wfcontext.getRootWorkflowCase().getMessagesByType(Message.Type.Error)==null){
-					return true;
-				}
-				return false;
-
-			]]></Source>
-      </Script>
-    </Transition>
-	<Transition to="Add Error Message">
-		<Script>
-			<Source>
-			<![CDATA[
-				if(validationErrors!=null && validationErrors.size()>0){
-					return true;
-				}
-				return false;
-			]]>
-			</Source>
-		</Script>
-	</Transition>
-    <Transition to="Stop"/>
-  </Step>
-  <Step icon="Task" name="Provision O365 License" posX="987" posY="425">
-    <Arg name="identityName" value="ref:identityName"/>
-    <Arg name="adExists"/>
-    <Arg name="O365Lic" value="ref:o365Licenses"/>
-    <Arg name="project"/>
-    <Arg name="identityRequestId"/>
-    <Arg name="source" value="ref:source"/>
-    <Arg name="isDebugEnabled"/>
-    <Arg name="plan"/>
-    <Arg name="flow" value="ref:flow"/>
-    <Arg name="adAppName" value="ref:adAppName"/>
-    <Return merge="true" name="validationErrors" to="validationErrors"/>
-   <!-- <WorkflowRef>
-       <Reference class="sailpoint.object.Workflow" name="CMH-Provision-O365-License-Workflow"/>  //uncommented when O365 is implemented
-    </WorkflowRef>-->
     <Transition to="Refresh Identity">
       <Script>
         <Source><![CDATA[
@@ -697,21 +617,6 @@
 
   		]]></Source>
     </Script>
-    <Transition to="Provision O365 License">
-      <Script>
-        <Source><![CDATA[
-
-  				import sailpoint.tools.Util;
-  				if(Util.nullSafeCaseInsensitiveEq(userStatus,"ACTIVE") && !oldMailExists){
-	  				if(Util.nullSafeCaseInsensitiveEq(assignmentType,"EMPLOYEE") || Util.nullSafeCaseInsensitiveEq(emailRequired,"Yes")){
-	  					return true;
-	  				}
-  				}
-  				return false;
-
-  			]]></Source>
-      </Script>
-    </Transition>
     <Transition to="Refresh Identity">
       <Script>
         <Source><![CDATA[

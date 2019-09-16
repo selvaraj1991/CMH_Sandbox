@@ -3,15 +3,7 @@
 <Custom name="CMH-Custom-Object-AD-Application">
     <Attributes>
         <Map>
-	    <entry key="homeDirPath" value="%%CMH-AD-HomeDirectory-Path%%"/>
-            <entry key="O365License">
-                <value>
-                    <List>
-                        <String>%%CMH-AD-O365E5Lic%%</String>
-                        <String>%%CMH-AD-O365EMSLic%%</String>
-                    </List>
-                </value>
-            </entry>
+			<entry key="homeDirPath" value="%%CMH-AD-HomeDirectory-Path%%"/>
             <entry key="adApplication" value="%%CMH-AD-ApplicationName%%"/>
             <entry key="disabledOU" value="%%CMH-AD-DisabledOU%%"/>
             <entry key="activEmployeeOU" value="%%CMH-AD-ActiveUser-LegalHold%%"/>
