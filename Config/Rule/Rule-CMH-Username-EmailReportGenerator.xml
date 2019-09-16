@@ -244,7 +244,7 @@
 							for (int i = 0; i < finalList.size(); i++) {
 								map = (Map) finalList.get(i);
 								if (null != (map.get("EmployeeID"))) {
-								fileWriter.append(map.get("EmployeeID").toString());
+									fileWriter.append(map.get("EmployeeID").toString());
 								} else {
 									fileWriter.append("NULL");
 								}
