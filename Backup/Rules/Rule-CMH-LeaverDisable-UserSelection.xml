@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Rule PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<Rule language="beanshell" name="CMH-Leaver-Disable-User-Selection-Rule" type="IdentitySelector">
+    <Description>This rule is used to avoids disabling of the AD account for the conversion user(only when the new user is present in IIQ), since the AD account is linked from old user to new user.</Description>
+    <Signature returnType="boolean">
+        <Inputs>
+            <Argument name="log">
+                <Description>
+                    The log object associated with the SailPointContext.
+                </Description>
+            </Argument>
+            <Argument name="context">
+                <Description>
+                    A sailpoint.api.SailPointContext object that can be used to query the database if necessary.
+                </Description>
+            </Argument>
+            <Argument name="identity" type="Identity">
+                <Description>
+                    The identity.
+                </Description>
+            </Argument>
+            <Argument name="roleName" type="String">
+                <Description>
+                    The name of the sailpoint.object.Bundle (role) that is being selected for the Identity.
+                    If roles are not applicable to this Identity selection, this value will be void.
+                </Description>
+            </Argument>
+        </Inputs>
+        <Returns>
+            <Argument name="success">
+                <Description>
+                    True if the selection was successful; false otherwise.
+                </Description>
+            </Argument>
+        </Returns>
+    </Signature>
+    <Source><![CDATA[
+	import sailpoint.tools.Util;
+	import org.apache.log4j.Logger;
+
+    Logger log = Logger.getLogger("Rule.CMH-Leaver-Disable-User-Selection-Rule");
+
+    log.debug("Entering CMH-Leaver-Disable-User-Selection-Rule for identity: "+identity!=null?identity.getName():"");
+    boolean disableUser = false;
+    if(null !=identity) {
+		String empId = identity.getStringAttribute("employeeId");
+		String uName = identity.getName();
+		if(Util.isNotNullOrEmpty(empId) && Util.isNotNullOrEmpty(uName)) {
+			if(!uName.contains("_old")){
+				disableUser = true;   //User is not a conversion user
+			}
+		}
+	}
+    log.debug("Proceed with Leaver Disable process for the user? :"+disableUser);
+    log.debug("Exiting CMH-Leaver-Disable-User-Selection-Rule");
+    return disableUser;
+  ]]></Source>
+</Rule>

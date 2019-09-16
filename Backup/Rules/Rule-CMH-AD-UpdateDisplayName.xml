@@ -1,0 +1,66 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE sailpoint PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<sailpoint><Rule language="beanshell" name="CMH-AD-UpdateDisplayName-Rule" type="IdentityAttributeTarget">
+  <Description>Identity attribute target rules are used to tranform identity attribute values that are being pushed to targets.</Description>
+<Signature returnType="Object">
+<Inputs>
+<Argument type="value">
+<Description>
+The value of the identity attribute.  Note that this could be single value or a list of values.
+</Description>
+</Argument><Argument type="sourceIdentityAttribute">
+<Description>
+The sailpoint.object.ObjectAttribute for this target.
+</Description>
+</Argument><Argument type="sourceIdentityAttributeName">
+<Description>
+The name of the identity attribute for this target.
+</Description>
+</Argument><Argument type="sourceAttributeRequest">
+<Description>
+The sailpoint.object.ProvisioningPlan.AttributeRequest that is
+           setting the attribute on the identity.
+</Description>
+</Argument><Argument type="target">
+<Description>
+The sailpoint.object.AttributeTarget that is being processed.
+</Description>
+</Argument><Argument type="identity">
+<Description>
+The sailpoint.object.Identity that is being processed.
+</Description>
+</Argument><Argument type="project">
+<Description>
+The sailpoint.object.ProvisioningProject that has the changes that
+           are being requested.
+</Description>
+</Argument></Inputs>
+<Returns>
+<Argument type="attributeValue">
+<Description>
+The transformed value that will be pushed to the target.
+</Description>
+</Argument></Returns>
+</Signature>
+<ReferencedRules>
+  <Reference class="sailpoint.object.Rule" name="CMH-AD-Generic-Rulelibrary"/>
+</ReferencedRules>
+  <Source><![CDATA[
+      import org.apache.log4j.Logger; 
+      import sailpoint.tools.Util;
+      
+      Logger log = Logger.getLogger("Rule.CMH-AD-UpdateDisplayName-Rule");
+      log.debug("Entering rule for identity:"+identity!=null?identity.getName():"");
+	  String displayName = null;
+	  if(identity!=null){
+	  	String lastName = identity.getLastname();
+		String firstName = identity.getFirstname();
+		String initials = identity.getStringAttribute("middleInitial");
+	    String credential = identity.getStringAttribute("credential");
+	    attributeValue = getDisplayName(firstName,lastName,initials,credential);
+	  }
+	  log.debug("Exiting rule for identity:"+identity!=null?identity.getName():"");
+	  return attributeValue;	
+  ]]></Source>
+</Rule>
+</sailpoint>
