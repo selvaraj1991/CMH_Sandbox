@@ -79,28 +79,6 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   		]]></Source>
     </Script>
   </Variable>
-  <Variable name="assignmentType">
-    <Script>
-      <Source><![CDATA[
-
-  			import sailpoint.object.Identity;
-  			import sailpoint.tools.Util;
-  			String assignmentType = null;
-  			if(identityName != null){
-  				Identity iden = context.getObjectByName(Identity.class,identityName);
-  				if(null != iden) {
-  				   assignmentType = iden.getStringAttribute("assignmentType");
-  				}
-  			}
-  			if(Util.isNotNullOrEmpty(assignmentType)) {
-               return assignmentType;
-            }else {
-               return null;
-  			}
-
-  		]]></Source>
-    </Script>
-  </Variable>
   <Variable name="hasEmail" type="boolean">
     <Script>
       <Source><![CDATA[
@@ -308,11 +286,11 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 				}
 				context.saveObject(iden);
 				context.commitTransaction();
-				ObjectUtil.unlockIdentity(context,iden);
-			}
-			if(isDebugEnabled){
-				log.debug("Identity status "+identityName+" disabled succesfully");
-			}
+        ObjectUtil.unlockIdentity(context,iden);
+        }
+  				if(isDebugEnabled){
+  			    log.debug("Identity status "+identityName+" disabled succesfully");
+  				}
 
       ]]></Source>
     </Script>
@@ -350,10 +328,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 										accrq.setOperation(ProvisioningPlan.AccountRequest.Operation.Disable);
 										accrq.setNativeIdentity(adLink.getNativeIdentity());
 										accrq.add(new AttributeRequest("IIQDisabled", ProvisioningPlan.Operation.Set,true));
-										accrq.add(new AttributeRequest("AC_NewParent",disabledOU));
-										if (Util.nullSafeCaseInsensitiveEq(assignmentType, "EMPLOYEE")) {
-											//Exchange code change employee to has email yes or no;
-									    }
+										accrq.add(new AttributeRequest("AC_NewParent",disabledOU));										
 									} else {
 									    accrq.setApplication(appName);
 										accrq.setOperation(ProvisioningPlan.AccountRequest.Operation.Disable);

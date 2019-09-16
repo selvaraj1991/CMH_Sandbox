@@ -329,17 +329,6 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   <Step icon="Undo" name="Wait for next Retry" posX="320" posY="431" wait="ref:retryTime">
     <Transition to="Check AD Application"/>
   </Step>
-  <Step icon="Task" name="o365 Provisioning Plan" posX="52" posY="20" resultVariable="plan">
-    <Description>Process the user who has been provsioned to AD</Description>
-    <Script>
-      <Source><![CDATA[  
-	  
-        //o365 yet to be implemented
-       		 
-      ]]></Source>
-    </Script>
-    <Transition to="Compile Project"/>
-  </Step>
   <Step action="call:compileProvisioningProject" name="Compile Project" posX="172" posY="20" resultVariable="project">
     <Arg name="identityName" value="ref:identityName"/>
     <Arg name="plan" value="ref:plan"/>

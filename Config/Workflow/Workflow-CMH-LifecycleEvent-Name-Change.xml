@@ -214,29 +214,6 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 		]]></Source>
     </Script>
   </Variable>
-  <Variable name="assignmentType">
-    <Script>
-      <Source><![CDATA[
-  		
-  			import sailpoint.object.Identity;
-  			import sailpoint.tools.Util;
-  			
-  			String assignmentType = null;
-  			if(identityName!=null){
-  			   Identity iden = context.getObjectByName(Identity.class,identityName);
-  			   if( null != iden) {
-  				  assignmentType = iden.getStringAttribute("assignmentType");
-  			   }
-  			}
-  			if(Util.isNotNullOrEmpty(assignmentType)) {
-               return assignmentType;
-            }
-            return null;
- 
-  		
-  		]]></Source>
-    </Script>
-  </Variable>
   <Variable initializer="User Name Change Manager-Email" input="true" name="managerTemForUserHasEmail">
     <Description>
     The email template to use for manager notification for using having email.
@@ -521,10 +498,6 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 								 	if(Util.isNotNullOrEmpty(displayName)) {
 								 	   accModify.add(new AttributeRequest("displayName",ProvisioningPlan.Operation.Set,displayName ));
 								 	}	
-								 	if(hasEmail) {
-								 	   accModify.add(new AttributeRequest("mail",ProvisioningPlan.Operation.Set,newIdentityName + "%%CMH-Mail-Domain%%"));
-								 	   accModify.add(new AttributeRequest("userPrincipalName",ProvisioningPlan.Operation.Set,newIdentityName + "%%CMH-Mail-Domain%%"));								 	  
-								 	}
 								 	accountRequests.add(accModify);											 
 							 }
 						 }

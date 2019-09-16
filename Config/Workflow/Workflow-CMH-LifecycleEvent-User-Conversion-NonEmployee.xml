@@ -334,10 +334,6 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 									accModify.setNativeIdentity(adLink.getNativeIdentity());
 								 	accModify.add(new AttributeRequest("AC_NewParent",newUserOU));
 								 	accModify.add(new AttributeRequest("employeeType",assignmentType));
-								 	
-								    //if (mailRequired && null != mail) {
-									//Exchange code change employee to has email yes or no and o365 code
-								    //}
 								    if(Util.isNotNullOrEmpty(homeDirectory)){
 								 	   accModify.add(new AttributeRequest("homeDirectory",ProvisioningPlan.Operation.Set, homeDirectory));
 								 	}

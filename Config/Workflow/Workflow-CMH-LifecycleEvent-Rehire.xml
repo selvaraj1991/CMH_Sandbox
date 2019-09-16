@@ -512,10 +512,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 					                pwdAttrReq.setName("password");
 					                pwdAttrReq.setOperation(ProvisioningPlan.Operation.Set);
 					                pwdAttrReq.setValue(password);
-								 	accModify.add(pwdAttrReq);
-								 	if (Util.nullSafeCaseInsensitiveEq(assignmentType, "EMPLOYEE")) {
-									//Exchange code change employee to has email yes or no and o365 code
-								    }
+								 	accModify.add(pwdAttrReq);								 	
 								    accountRequests.add(accModify);
 								 }else {
 								     validationErrors.add("Old OU and New OU cannot be: RUN AD Aggregation");
@@ -603,11 +600,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 					                pwdAttrReq.setName("password");
 					                pwdAttrReq.setOperation(ProvisioningPlan.Operation.Set);
 					                pwdAttrReq.setValue(password);
-					                accModify.add(pwdAttrReq);
-								 
-								 	if (Util.nullSafeCaseInsensitiveEq(assignmentType, "EMPLOYEE")) {
-									//Exchange code change employee to has email yes or no and o365 code
-								    }
+					                accModify.add(pwdAttrReq);								 
 								    accountRequests.add(accModify);
 								 }	else {
 								     validationErrors.add("Old OU and New OU cannot be: RUN AD Aggregation");
