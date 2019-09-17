@@ -66,15 +66,15 @@ public String generatePrimaryGroupDN(String userType) {
 
 public String generateAccountDN(String username, String userType) {
 	log.debug("Entering generateAccountDN method");
-	String finalCn = null;
+	String finalDN = null;
 	if (Util.isNotNullOrEmpty(username)) {
 		String userOU = generatePrimaryGroupDN(userType);
 		if (Util.isNotNullOrEmpty(userOU)) {
-			finalCn = "cn=" + username + "," + userOU;
+			finalDN = "CN=" + username + "," + userOU;
 		}
 	}
 	log.debug("Exiting generateAccountDN method");
-	return finalCn;
+	return finalDN;
 }
 
 /**

@@ -31,7 +31,7 @@
     </Description>
     <Signature>
         <Inputs>
-            <Argument name="Manager" type="string">
+            <Argument name="managername" type="string">
                 <Description>The manager display name.</Description>
             </Argument>
             <Argument name="identityName" type="string">
