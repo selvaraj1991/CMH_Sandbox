@@ -180,7 +180,6 @@ if($resultObject.Errors.count -eq 0){
 		Add-Content -path $logFile -value "$(get-date -f 'MM-dd-yyy HH:mm:ss') : [ERROR] Error in setting email address in mailbox=====> $ErrorMessage";
 		$ErrorActionPreference="Stop";
 	}  
-	$ErrorActionPreference="Continue";
 }
 </Source>
 </Rule>
