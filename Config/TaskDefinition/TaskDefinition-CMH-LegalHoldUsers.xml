@@ -4,7 +4,7 @@
   <Attributes>
     <Map>
       <entry key="TaskSchedule.host"/>
-      <entry key="ruleName" value="LegalHoldUsers"/>
+      <entry key="ruleName" value="CMH-LegalHold-Users-Report-Generation-Rule"/>
       <entry key="taskCompletionEmailNotify" value="Disabled"/>
       <entry key="taskCompletionEmailRecipients"/>
       <entry key="taskCompletionEmailTemplate"/>

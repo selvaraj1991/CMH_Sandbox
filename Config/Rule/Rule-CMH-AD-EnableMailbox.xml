@@ -59,7 +59,7 @@ $xmlReader_Result = [System.xml.XmlTextReader]([sailpoint.utils.xml.XmlUtil]::ge
 $requestObject = New-Object Sailpoint.Utils.objects.AccountRequest($xmlReader);
 $resultObject = New-Object Sailpoint.Utils.objects.ServiceResult($xmlReader_Result);
 
-
+#List of O365 groups which needs to be assigned when user requires an email
 $O365Grps = New-Object Collections.Generic.List[String];
 $O365Grps.add("%%CMH-AD-O365E5Lic%%");
 $O365Grps.add("%%CMH-AD-O365EMSLic%%");
@@ -102,8 +102,22 @@ if($requestObject -and ($resultObject.Errors.count -eq 0))
 
 #Check if it is a Rehire Process
 if($dn -and $oper -and (($oper -eq "Enable") -or ($oper -eq "Modify"))){
+	$upperCaseDN = $dn.ToUpper();
+	$usrName = $upperCaseDN.Substring($upperCaseDN.IndexOf("CN=")+3,$upperCaseDN.IndexOf("OU=")-4);
+	if($usrName){
+		if($oper -eq "Enable"){
+			$logFile = $logRootDirectory+$usrName+"Enable-$(get-date -f 'MMddyyyy-hhmmss').log";
+		}else{
+			$logFile = $logRootDirectory+$usrName+"Modify-$(get-date -f 'MMddyyyy-hhmmss').log";
+		}
+	}else{
+		if($oper -eq "Enable"){
 	$logFile = $logRootDirectory+"Enable-$(get-date -f 'MMddyyyy-hhmmss').log";
-	Add-Content -path $logFile -value "$(get-date -f 'MM-dd-yyy HH:mm:ss') : [DEBUG] adAfterCreatePowerShell: Entering the script";
+		}else{
+			$logFile = $logRootDirectory+"Modify-$(get-date -f 'MMddyyyy-hhmmss').log";
+		}
+	}
+	Add-Content -path $logFile -value "$(get-date -f 'MM-dd-yyy HH:mm:ss') : [DEBUG] ConnectorAfterModify Powershell: Entering the script";
 	Try
 	{
 		$EXOSession = New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri %%CONNECTIONURI%% -Authentication Kerberos
@@ -150,12 +164,12 @@ if($dn -and $oper -and (($oper -eq "Enable") -or ($oper -eq "Modify"))){
 	
 	if($userSAM)
 	{
+		Add-Content -path $logFile -value "$(get-date -f 'MM-dd-yyy HH:mm:ss') : [DEBUG] User's AD Object found";
 		$sam = $userSAM.SamAccountName
 		$dispName = $userSAM.DisplayName
 		$email = $userSAM.EmailAddress
 		$temp = $userSAM.UserPrincipalName.Split("@")
 		$externaladdress = $($temp[0])+"%%CMH-OnMicrosoft-Domain%%";
-		Add-Content -path $logFile -value "$(get-date -f 'MM-dd-yyy HH:mm:ss') : [DEBUG] User's AD Object found";
 		$userGrps = Get-ADUser $sam -Property memberof | Select-Object -Expandproperty memberof
 		if($email -And (Get-RemoteMailbox -Identity "$sam"))
 		{			
@@ -168,7 +182,7 @@ if($dn -and $oper -and (($oper -eq "Enable") -or ($oper -eq "Modify"))){
 						$oldDispName = $oldDispName.Trim()
 						#set the display name on the mailbox through the Hybrid Exchange server
 						Set-RemoteMailbox -Identity $sam -DisplayName $oldDispName
-						Add-Content -path $logFile -value "$(get-date -f 'MM-dd-yyy HH:mm:ss') : [DEBUG] Remote Mailbox Renamed successfully";
+						Add-Content -path $logFile -value "$(get-date -f 'MM-dd-yyy HH:mm:ss') : [DEBUG] DisplayName updated successfully";
 					}
 				}
 				if($isNameChange -eq "YES"){
@@ -176,7 +190,7 @@ if($dn -and $oper -and (($oper -eq "Enable") -or ($oper -eq "Modify"))){
 					Set-remotemailbox $($userSAM.DistinguishedName) -alias $($userSAM.SamAccountName)
 					Set-remotemailbox $($userSAM.DistinguishedName) -RemoteRoutingAddress $externaladdress -confirm:$false
 					Set-remotemailbox $($userSAM.DistinguishedName) -primarysmtpaddress $($userSAM.UserPrincipalName) -EmailAddressPolicyEnabled $False
-					Add-Content -path $logFile -value "$(get-date -f 'MM-dd-yyy HH:mm:ss') : [DEBUG] Remote Mailbox updated successfully with the new smtp address";
+					Add-Content -path $logFile -value "$(get-date -f 'MM-dd-yyy HH:mm:ss') : [DEBUG] Name Change : Remote Mailbox updated successfully with the new SMTP address";
 				}
 				
 				if($userSAM.msExchHideFromAddressLists){
@@ -189,6 +203,7 @@ if($dn -and $oper -and (($oper -eq "Enable") -or ($oper -eq "Modify"))){
 			{
 				#Set the display name for hte user and hide from the GAL in AD
 				Set-ADUser -Identity $sam -Displayname $oldDispName -Add @{msExchHideFromAddressLists="FALSE"}
+				Add-Content -path $logFile -value "$(get-date -f 'MM-dd-yyy HH:mm:ss') : [DEBUG] Setting DisplayName and unhiding the mailbox through AD";
 			}
 		}#append TERM to the display name, and hide the address from the GAL
 		elseif($email -And -Not(Get-RemoteMailbox -Identity "$sam")){
@@ -196,7 +211,7 @@ if($dn -and $oper -and (($oper -eq "Enable") -or ($oper -eq "Modify"))){
 			Try
 			{
 				Enable-remotemailbox  $($userSAM.DistinguishedName) -alias $($userSAM.SamAccountName) -RemoteRoutingAddress $externaladdress -confirm:$false
-				Add-Content -path $logFile -value "$(get-date -f 'MM-dd-yyy HH:mm:ss') : [DEBUG] Mailbox created successfully";
+				Add-Content -path $logFile -value "$(get-date -f 'MM-dd-yyy HH:mm:ss') : [DEBUG] User is not having Mailbox, created Mailbox successfully";
 			}
 			Catch
 			{
@@ -208,6 +223,7 @@ if($dn -and $oper -and (($oper -eq "Enable") -or ($oper -eq "Modify"))){
 			{
 				if(Get-remotemailbox  $($userSAM.UserPrincipalName)){
 					Set-remotemailbox  $($userSAM.UserPrincipalName) -primarysmtpaddress $($userSAM.UserPrincipalName) -EmailAddressPolicyEnabled $False
+					Add-Content -path $logFile -value "$(get-date -f 'MM-dd-yyy HH:mm:ss') : [DEBUG] Assigning O365 groups for the user";
 					ForEach ($grp in $O365Grps) {
 						if(!$userGrps.contains($grp)){
 							Add-AdGroupMember -Identity $grp -Members $sam -confirm:$false
@@ -222,8 +238,8 @@ if($dn -and $oper -and (($oper -eq "Enable") -or ($oper -eq "Modify"))){
 				Add-Content -path $logFile -value "$(get-date -f 'MM-dd-yyy HH:mm:ss') : [ERROR] Error in Set-remotemailbox=====> $ErrorMessage";
 			}
 		}
-		elseif(!$email -And (Get-RemoteMailbox -Identity "$sam")){
-			#Remove Mailbox
+		elseif(!$email -And (Get-RemoteMailbox -Identity "$sam")){#Remove Mailbox
+			#Remove O365 groups
 			ForEach ($grp in $O365Grps) {
 				if($userGrps.contains($grp)){
 					Remove-ADGroupMember -Identity $grp -Members $sam -confirm:$false
@@ -232,7 +248,7 @@ if($dn -and $oper -and (($oper -eq "Enable") -or ($oper -eq "Modify"))){
 			Try
 			{
 				Disable-RemoteMailbox $sam -confirm:$false
-				Add-Content -path $logFile -value "$(get-date -f 'MM-dd-yyy HH:mm:ss') : [DEBUG] Mailbox disabled successfully";
+				Add-Content -path $logFile -value "$(get-date -f 'MM-dd-yyy HH:mm:ss') : [DEBUG] User not required Mailbox, Mailbox disabled successfully";
 			}
 			Catch
 			{

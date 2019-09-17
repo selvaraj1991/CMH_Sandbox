@@ -720,7 +720,7 @@ public List doTargetedAggregation(String nativeId, String appName, String identi
 
 /**
 				 * Start date check.
-				 * Description: this method checks if startdate is <= %%CMH-THRESHOLDDAYS%% days of current day
+				 * Description: this method checks if startdate is <= %%CMH-Prehire-ThresholdDays%% days of current day
 				 * @param startDate
 				 * @return true, if successful
 				 */
@@ -732,7 +732,7 @@ public boolean dateCheck(Date startDate) {
 		
 		Date currentDate = new Date();
 		int days = Util.getDaysDifference(startDate, currentDate);
-		if (days <= %%CMH-THRESHOLDDAYS%%) {
+		if (days <= %%CMH-Prehire-ThresholdDays%%) {
 			flag = true;
 		} else {
 			flag = false;

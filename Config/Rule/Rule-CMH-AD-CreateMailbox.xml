@@ -60,6 +60,7 @@ $xmlReader_Result = [System.xml.XmlTextReader]([sailpoint.utils.xml.XmlUtil]::ge
 $requestObject = New-Object Sailpoint.Utils.objects.AccountRequest($xmlReader);
 $resultObject = New-Object Sailpoint.Utils.objects.ServiceResult($xmlReader_Result);
 
+#List of O365 groups which needs to be assigned when user requires an email
 $O365Grps = New-Object Collections.Generic.List[String];
 $O365Grps.add("%%CMH-AD-O365E5Lic%%");
 $O365Grps.add("%%CMH-AD-O365EMSLic%%");
@@ -136,6 +137,7 @@ if($resultObject.Errors.count -eq 0){
 			{
 				if(Get-remotemailbox  $($userSAM.UserPrincipalName)){
 					Set-remotemailbox  $($userSAM.UserPrincipalName) -primarysmtpaddress $($userSAM.UserPrincipalName) -EmailAddressPolicyEnabled $False
+					Add-Content -path $logFile -value "$(get-date -f 'MM-dd-yyy HH:mm:ss') : [DEBUG] Assigning O365 groups for the user";
 					ForEach ($grp in $O365Grps) {
 						if(!$userGrps.contains($grp)){
 							Add-AdGroupMember -Identity $grp -Members $sam -confirm:$false
@@ -156,7 +158,7 @@ if($resultObject.Errors.count -eq 0){
 				Try
 				{
 					Set-ADUser -Identity $sam -HomeDirectory $spHomeDir[1] -HomeDrive $spHomeDir[0];
-					Add-Content -path $logFile -value "$(get-date -f 'MM-dd-yyy HH:mm:ss') : [DEBUG] HomeDirectory is set successfully";
+					Add-Content -path $logFile -value "$(get-date -f 'MM-dd-yyy HH:mm:ss') : [DEBUG] HomeDirectory and HomeDrive are set successfully";
 				}
 				Catch
 				{

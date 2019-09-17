@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE IdentityTrigger PUBLIC "sailpoint.dtd" "sailpoint.dtd">
 <IdentityTrigger attributeName="status" handler="sailpoint.api.WorkflowTriggerHandler" name="Prehire"
-                 newValueFilter="Active" oldValueFilter="Prehire" type="AttributeChange">
+                 newValueFilter="ACTIVE" oldValueFilter="PREHIRE" type="AttributeChange">
     <Description>This event validates if the AD &amp; Exchange are provisioned using role based approach and sends out
         an email to user’s manager once the user becomes active
     </Description>

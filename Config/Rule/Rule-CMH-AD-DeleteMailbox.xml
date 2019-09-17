@@ -64,8 +64,14 @@ if($requestObject)
 }
 
 if($dn -and $requestedOperation -and ($requestedOperation -eq "Delete")){
+	$upperCaseDN = $dn.ToUpper();
+	$usrName = $upperCaseDN.Substring($upperCaseDN.IndexOf("CN=")+3,$upperCaseDN.IndexOf("OU=")-4);
+	if($usrName){
+		$logFile = $logRootDirectory+$usrName+"Delete-$(get-date -f 'MMddyyyy-hhmmss').log";
+	}else{
 	$logFile = $logRootDirectory+"Delete-$(get-date -f 'MMddyyyy-hhmmss').log";
-	Add-Content -path $logFile -value "$(get-date -f 'MM-dd-yyy HH:mm:ss') : [DEBUG] adAfterCreatePowerShell: Entering the script";
+	}
+	Add-Content -path $logFile -value "$(get-date -f 'MM-dd-yyy HH:mm:ss') : [DEBUG] ConnectorAfterDelete Script: Entering the script";
 	Try
 	{
 		$EXOSession = New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri %%CONNECTIONURI%% -Authentication Kerberos
@@ -84,11 +90,13 @@ if($dn -and $requestedOperation -and ($requestedOperation -eq "Delete")){
 		Try
 		{
 			Remove-RemoteMailbox -Identity $dn -confirm:$false
-			Add-Content -path $logFile -value "$(get-date -f 'MM-dd-yyy HH:mm:ss') : [DEBUG] Remote Mailbox Renamed and Hidden successfully";
+			Add-Content -path $logFile -value "$(get-date -f 'MM-dd-yyy HH:mm:ss') : [DEBUG] Remote Mailbox Deleted Successfully";
 		}
 		Catch
 		{
-			Add-Content -path $logFile -value "$(get-date -f 'MM-dd-yyy HH:mm:ss') : [DEBUG] Remote Mailbox Renamed and Hidden successfully";
+			$ErrorMessage = $_.Exception.Message;
+			$ErrorActionPreference="Continue";
+			Add-Content -path $logFile -value "$(get-date -f 'MM-dd-yyy HH:mm:ss') : [ERROR] Remote Mailobox Deletion Failed : $ErrorMessage";
 		}
 	}
 	

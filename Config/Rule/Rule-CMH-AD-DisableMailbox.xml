@@ -75,7 +75,13 @@ if($requestObject)
 }
 
 if($dn -and $oper -and ($oper -eq "Leaver")){
+	$upperCaseDN = $dn.ToUpper();
+	$usrName = $upperCaseDN.Substring($upperCaseDN.IndexOf("CN=")+3,$upperCaseDN.IndexOf("OU=")-4);
+	if($usrName){
+		$logFile = $logRootDirectory+$usrName+"Disable-$(get-date -f 'MMddyyyy-hhmmss').log";
+	}else{
 	$logFile = $logRootDirectory+"Disable-$(get-date -f 'MMddyyyy-hhmmss').log";
+	}
 	Add-Content -path $logFile -value "$(get-date -f 'MM-dd-yyy HH:mm:ss') : [DEBUG] adAfterCreatePowerShell: Entering the script";
 	Try
 	{
@@ -127,12 +133,13 @@ if($dn -and $oper -and ($oper -eq "Leaver")){
 				#set the address to hidden for the mailbox through the Hybrid Exchange
 				Set-RemoteMailbox -Identity $sam -HiddenFromAddressListsEnabled $true
 				
-				Add-Content -path $logFile -value "$(get-date -f 'MM-dd-yyy HH:mm:ss') : [DEBUG] Remote Mailbox Renamed and Hidden successfully";
+				Add-Content -path $logFile -value "$(get-date -f 'MM-dd-yyy HH:mm:ss') : [DEBUG] DisplayName updated and Hidden successfully";
 			}
 			Catch
 			{
 				#Set the display name for hte user and hide from the GAL in AD
 				Set-ADUser -Identity $sam -Displayname $mailboxName -Add @{msExchHideFromAddressLists="TRUE"}
+				Add-Content -path $logFile -value "$(get-date -f 'MM-dd-yyy HH:mm:ss') : [DEBUG] Updating DisplayName and Hiding the mailbox through AD";
 			}
 		}#append TERM to the display name, and hide the address from the GAL
 	}
