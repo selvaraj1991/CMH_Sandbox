@@ -51,9 +51,9 @@
 
   			import org.apache.log4j.Logger;
 
-  			Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-User-Conversion");
+  			Logger cmhLogger = Logger.getLogger("Workflow.CMH-LifecycleEvent-User-Conversion");
 
-  			if(log.isDebugEnabled()){
+  			if(cmhLogger.isDebugEnabled()){
   				return true;
   			}
   			return false;
@@ -307,9 +307,9 @@
 
   			import org.apache.log4j.Logger;
 
-  			Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-User-Conversion");
+  			Logger cmhLogger = Logger.getLogger("Workflow.CMH-LifecycleEvent-User-Conversion");
   			if(isDebugEnabled){
-  				log.debug("Starting the User Conversion Workflow for the user "+identityName);
+  				cmhLogger.debug("Starting the User Conversion Workflow for the user "+identityName);
   			}
 
   		]]></Source>
@@ -323,7 +323,7 @@
   			import org.apache.log4j.Logger;
   			import sailpoint.tools.Util;
 
-  			Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-User-Conversion");
+  			Logger cmhLogger = Logger.getLogger("Workflow.CMH-LifecycleEvent-User-Conversion");
 
   			List errorList = new ArrayList();
   			if(Util.isNullOrEmpty(oldEmployeeId)){
@@ -349,9 +349,9 @@
 
   			if(!Util.isEmpty(errorList))
   			{
-  				log.error("Errors Found :"+Util.listToCsv(errorList));
+  				cmhLogger.error("Errors Found :"+Util.listToCsv(errorList));
   			}else if(isDebugEnabled){
-  				log.debug("Validation Successful");
+  				cmhLogger.debug("Validation Successful");
   			}
 
   			return errorList;
@@ -401,9 +401,9 @@
   			import sailpoint.object.Identity;
   			import sailpoint.object.Link;
 
-  			Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-User-Conversion");
+  			Logger cmhLogger = Logger.getLogger("Workflow.CMH-LifecycleEvent-User-Conversion");
 
-  			log.debug("Check if the AD account of previous user is disabled");
+  			cmhLogger.debug("Check if the AD account of previous user is disabled");
   			boolean isADdisabled = false;
   			if(oldEmpName!=null){
   				Identity iden = context.getObjectByName(Identity.class,oldEmpName);
@@ -651,10 +651,10 @@
   			import sailpoint.tools.Message;
   			import sailpoint.tools.Util;
 
-  			Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-User-Conversion");
+  			Logger cmhLogger = Logger.getLogger("Workflow.CMH-LifecycleEvent-User-Conversion");
 
   			if(isDebugEnabled){
-  				log.debug("Check Status step : Checking for errors");
+  				cmhLogger.debug("Check Status step : Checking for errors");
   			}
 
   			if(wfcontext.getRootWorkflowCase().getMessages()!=null && wfcontext.getRootWorkflowCase().getMessagesByType(Message.Type.Error)!=null){
@@ -666,7 +666,7 @@
   				validationErrors.add(errorMessage);
 
   				if(isDebugEnabled){
-	  				log.debug("Check Status step : Errors Found : "+Util.listToCsv(validationErrors));
+	  				cmhLogger.debug("Check Status step : Errors Found : "+Util.listToCsv(validationErrors));
 	  			}
   			}
 
@@ -695,7 +695,7 @@
   			}
   			auditWrite(action,source,target,attrName,attrVal,strMap);
             if(isDebugEnabled){
-  				log.debug("Ending the User Conversion Workflow for the user "+identityName);
+  				cmhLogger.debug("Ending the User Conversion Workflow for the user "+identityName);
   			}
 
   		]]></Source>

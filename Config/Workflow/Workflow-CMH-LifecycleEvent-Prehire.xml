@@ -51,9 +51,9 @@
   		<![CDATA[
   			import org.apache.log4j.Logger;
   			
-  			Logger log = Logger.getLogger("Workflow.CMH_LifecycleEvent_Prehire");
+  			Logger cmhLogger = Logger.getLogger("Workflow.CMH_LifecycleEvent_Prehire");
   			
-  			if(log.isDebugEnabled()){
+  			if(cmhLogger.isDebugEnabled()){
   				return true;
   			}
   			return false;
@@ -205,9 +205,9 @@
   		<![CDATA[
   			import org.apache.log4j.Logger;
   			
-  			Logger log = Logger.getLogger("Workflow.CMH_LifecycleEvent_Prehire");
+  			Logger cmhLogger = Logger.getLogger("Workflow.CMH_LifecycleEvent_Prehire");
   			if(isDebugEnabled){
-  				log.debug("Starting the Prehire Workflow for the user "+identityName);
+  				cmhLogger.debug("Starting the Prehire Workflow for the user "+identityName);
   			}
   		]]>
   		</Source>
@@ -221,7 +221,7 @@
   			import org.apache.log4j.Logger;
   			import sailpoint.tools.Util;
   			
-  			Logger log = Logger.getLogger("Workflow.CMH_LifecycleEvent_Prehire");
+  			Logger cmhLogger = Logger.getLogger("Workflow.CMH_LifecycleEvent_Prehire");
   			
   			List errorList = new ArrayList();
   			if(Util.isNullOrEmpty(adAppName)){
@@ -234,9 +234,9 @@
   			
   			if(!Util.isEmpty(errorList))
   			{
-  				log.error("Errors Found :"+Util.listToCsv(errorList));
+  				cmhLogger.error("Errors Found :"+Util.listToCsv(errorList));
   			}else if(isDebugEnabled){
-  				log.debug("Validation Successful");
+  				cmhLogger.debug("Validation Successful");
   			}
   			
   			return errorList;
@@ -266,7 +266,7 @@
   			import sailpoint.api.ObjectUtil;
   			import sailpoint.object.Identity;
   			
-  			Logger log = Logger.getLogger("Workflow.CMH_LifecycleEvent_Prehire");
+  			Logger cmhLogger = Logger.getLogger("Workflow.CMH_LifecycleEvent_Prehire");
   			
   			Identity iden = acquireLockOnIdentity(identityName);
   			if(iden!=null){
@@ -276,7 +276,7 @@
   				context.commitTransaction();
   				
   				if(isDebugEnabled){
-  					log.debug("CMH-LifeycycleEvent-Prehire: Identity "+identityName+" enabled succesfully");
+  					cmhLogger.debug("CMH-LifeycycleEvent-Prehire: Identity "+identityName+" enabled succesfully");
   				}
   				ObjectUtil.unlockIdentity(context,iden);
   			}
@@ -300,10 +300,10 @@
   			import sailpoint.object.ProvisioningPlan.AttributeRequest;
   			import sailpoint.tools.Util;
   			
-  			Logger log = Logger.getLogger("Workflow.CMH_LifecycleEvent_Prehire");
+  			Logger cmhLogger = Logger.getLogger("Workflow.CMH_LifecycleEvent_Prehire");
   			
   			if(isDebugEnabled){
-  				log.debug("Building Provisioning Plan for enabling the AD account of User: "+identityName);
+  				cmhLogger.debug("Building Provisioning Plan for enabling the AD account of User: "+identityName);
   			}
   			
   			ProvisioningPlan adPlan = new ProvisioningPlan();
@@ -326,7 +326,7 @@
   			}
   			adPlan.setAccountRequests(accountRequests);
   			if(isDebugEnabled){
-  				log.debug("AD Plan to disable the AD account for the Prehire User Created : "+identityName);
+  				cmhLogger.debug("AD Plan to disable the AD account for the Prehire User Created : "+identityName);
   			}
   			
   			return adPlan;
@@ -408,14 +408,14 @@
   </Step>
   <Step action="call:addMessage" name="Add Error Message">
 	<Arg name="message">
-		<Script>
-			<Source>
-			<![CDATA[
-				import sailpoint.tools.Util;
-				return Util.listToCsv(validationErrors);
-			]]>
-			</Source>
-		</Script>
+			<Script>
+				<Source>
+				<![CDATA[
+					import sailpoint.tools.Util;
+					return Util.listToCsv(validationErrors);
+				]]>
+				</Source>
+			</Script>
 	</Arg>
 	<Arg name="type" value="Error"/>
 	<Transition to="Stop"/>
@@ -431,10 +431,10 @@
   			import sailpoint.tools.Message;
   			import sailpoint.tools.Util;
   			
-  			Logger log = Logger.getLogger("Workflow.CMH_LifecycleEvent_Prehire");
+  			Logger cmhLogger = Logger.getLogger("Workflow.CMH_LifecycleEvent_Prehire");
   			
   			if(isDebugEnabled){
-  				log.debug("Check Status step : Checking for errors");
+  				cmhLogger.debug("Check Status step : Checking for errors");
   			}
   			
   			if(wfcontext.getRootWorkflowCase().getMessages()!=null && wfcontext.getRootWorkflowCase().getMessagesByType(Message.Type.Error)!=null){
@@ -446,7 +446,7 @@
   				validationErrors.add(errorMessage);
   				
   				if(isDebugEnabled){
-	  				log.debug("Check Status step : Errors Found : "+Util.listToCsv(validationErrors));
+	  				cmhLogger.debug("Check Status step : Errors Found : "+Util.listToCsv(validationErrors));
 	  			}
   			}
   			  			
@@ -467,7 +467,7 @@
   			auditWrite(action,source,target,attrName,attrVal,strMap);
   			
   			if(isDebugEnabled){
-  				log.debug("Check Status step : Audit Event Generated");
+  				cmhLogger.debug("Check Status step : Audit Event Generated");
   			}
   			  			
   			
@@ -487,12 +487,12 @@
   				try{
   					context.sendEmailNotification(template,options);
   				}catch(EmailException e){
-  					log.error("Error in Sending email : "+e.getMessage());
+  					cmhLogger.error("Error in Sending email : "+e.getMessage());
   				}
   			}  
   			
   			if(isDebugEnabled){
-  				log.debug("Ending the Prehire Workflow for the user "+identityName);
+  				cmhLogger.debug("Ending the Prehire Workflow for the user "+identityName);
   			}		
   		]]>
   		</Source>

@@ -73,7 +73,7 @@
                             </entry>
                             <entry key="useSSL">
                                 <value>
-                                    <Boolean/>
+                                    <Boolean>true</Boolean>
                                 </value>
                             </entry>
                             <entry key="user" value="%%CMH-AD-Username%%"/>
@@ -103,7 +103,7 @@
                             <entry key="useGroupMembershipPreloading"/>
                             <entry key="useSSL">
                                 <value>
-                                    <Boolean/>
+                                    <Boolean>true</Boolean>
                                 </value>
                             </entry>
                             <entry key="user" value="%%CMH-AD-Username%%"/>
@@ -235,41 +235,87 @@
                         <Source><![CDATA[return identity.getStringAttribute("usertype");]]></Source>
                     </Script>
                 </Field>
-        <Field displayName="Employee ID" name="employeeID" type="string">
-                    <Script>
-                        <Source><![CDATA[return identity.getStringAttribute("employeeId");]]></Source>
-                    </Script>
-                </Field>
-        <Field displayName="co" name="co" type="string" value="United States"/>
-        <Field displayName="c" name="c" type="string" value="US"/>
-        <Field displayName="countryCode" name="countryCode" type="string" value="840"/>
-        <Field displayName="displayName" name="displayName" type="string">
-          <RuleRef>
-            <Reference class="sailpoint.object.Rule" name="CMH-AD-Displayname-Rule"/>
-          </RuleRef>
-        </Field>
-        <Field displayName="displayNamePrintable" name="displayNamePrintable" type="string">
-          <Script>
-            <Source><![CDATA[return identity.getName();]]></Source>
-          </Script>
-        </Field>
-        <Field displayName="homeDirectory" name="homeDirectory" type="string">
-          <RuleRef>
-            <Reference class="sailpoint.object.Rule" name="CMH-AD-HomeDirectory-Rule"/>
-          </RuleRef>
-        </Field>
-        <Field displayName="Manager" name="manager" type="string">
-          <RuleRef>
-            <Reference class="sailpoint.object.Rule" name="CMH-Manager-DN"/>
-          </RuleRef>
-        </Field>
-                <Field displayName="primaryGroupID" name="primaryGroupID" type="string"/>
-        <Field displayName="userPrincipalName" name="userPrincipalName" type="string">
-          <Script>
-            <Source><![CDATA[return identity.getName()+"%%CMH-Mail-Domain%%";]]></Source>
-          </Script>
-        </Field>
-            </Section>
+				<Field displayName="Employee ID" name="employeeID" type="string">
+							<Script>
+								<Source><![CDATA[return identity.getStringAttribute("employeeId");]]></Source>
+							</Script>
+						</Field>
+				<Field displayName="co" name="co" type="string" value="United States"/>
+				<Field displayName="c" name="c" type="string" value="US"/>
+				<Field displayName="countryCode" name="countryCode" type="string" value="840"/>
+				<Field displayName="displayName" name="displayName" type="string">
+				  <RuleRef>
+					<Reference class="sailpoint.object.Rule" name="CMH-AD-Displayname-Rule"/>
+				  </RuleRef>
+				</Field>
+				<Field displayName="displayNamePrintable" name="displayNamePrintable" type="string">
+				  <Script>
+					<Source><![CDATA[return identity.getName();]]></Source>
+				  </Script>
+				</Field>
+				<Field displayName="homeDirectory" name="homeDirectory" type="string">
+				  <RuleRef>
+					<Reference class="sailpoint.object.Rule" name="CMH-AD-HomeDirectory-Rule"/>
+				  </RuleRef>
+				</Field>
+				<Field displayName="Manager" name="manager" type="string">
+				  <RuleRef>
+					<Reference class="sailpoint.object.Rule" name="CMH-Manager-DN"/>
+				  </RuleRef>
+				</Field>
+						<Field displayName="primaryGroupID" name="primaryGroupID" type="string"/>
+				<Field displayName="userPrincipalName" name="userPrincipalName" type="string">
+				  <Script>
+					<Source><![CDATA[return identity.getName()+"%%CMH-Mail-Domain%%";]]></Source>
+				  </Script>
+				</Field>
+				<Field displayName="Title" name="title" type="string">
+				  <Script>
+					<Source><![CDATA[return identity.getStringAttribute("jobTitle");]]></Source>
+				  </Script>
+				</Field>
+				<Field displayName="Department" name="department" type="string">
+				  <Script>
+					<Source>
+					<![CDATA[
+						import sailpoint.tools.Util;
+						String department = null;
+						if(identity!=null){
+							String deptNo = identity.getStringAttribute("departmentNumber");
+							String divisionDesc = identity.getStringAttribute("divisionDesc");
+							if(Util.isNotNullOrEmpty(deptNo) && Util.isNotNullOrEmpty(divisionDesc)) { 
+							  department = deptNo.concat("-").concat(divisionDesc);
+							}
+						}
+						return department;
+					]]>
+					</Source>
+				  </Script>
+				</Field>
+				<Field displayName="Account Expires" name="accountExpires" type="string">
+				  <RuleRef>
+					<Reference class="sailpoint.object.Rule" name="CMH-AD-Set-AccountExpires-Rule"/>
+				  </RuleRef>
+				</Field>
+		        <Field displayName="physicalDeliveryOfficeName" name="physicalDeliveryOfficeName" type="string">
+		          <Script>
+		            <Source><![CDATA[
+						String physicalDeliveryOfficeName = "";
+						String divisionDesc = identity.getStringAttribute("divisionDesc");
+						if(divisionDesc!=null){
+							physicalDeliveryOfficeName = physicalDeliveryOfficeName.concat(divisionDesc);
+						}
+						if(physicalDeliveryOfficeName!=null && !physicalDeliveryOfficeName.isEmpty()){
+							physicalDeliveryOfficeName = physicalDeliveryOfficeName.concat("-");
+						}
+						String location = identity.getStringAttribute("location");
+						if(location!=null){
+							physicalDeliveryOfficeName = physicalDeliveryOfficeName.concat(location);
+						}
+						return physicalDeliveryOfficeName;]]></Source>
+		          </Script>
+		        </Field>
+			</Section>
             <Section label="General" name="General">
                 <Field displayName="con_prov_policy_ad_givenName" helpKey="help_con_prov_policy_ad_givenName"
                        name="givenName" required="true" section="General" type="string">
@@ -290,11 +336,14 @@
             import sailpoint.object.Identity;
             
             String userType = identity.getStringAttribute("userType");
-			String description = identity.getStringAttribute("employeeId");
+			String description = null;
 			String displayName = "";
-			if(userType.equalsIgnoreCase("NONEMPLOYEE")){
+			if(userType.equalsIgnoreCase("EMPLOYEE")){
+				description = identity.getStringAttribute("employeeId");
+			}else if(userType.equalsIgnoreCase("NONEMPLOYEE")){
 				Identity mangerIden = identity.getManager();
 				if(mangerIden!=null){
+					description = identity.getStringAttribute("employeeId");
 					String initials = mangerIden.getStringAttribute("middleInitial");
 					String lastName = mangerIden.getLastname();
 				    if(lastName!=null){

@@ -51,9 +51,9 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   		
   			import org.apache.log4j.Logger;
   			
-  			Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-User-Conversion-Non-Employee");
+  			Logger cmhLogger = Logger.getLogger("Workflow.CMH-LifecycleEvent-User-Conversion-Non-Employee");
   			
-  			if(log.isDebugEnabled()){
+  			if(cmhLogger.isDebugEnabled()){
   				return true;
   			}
   			return false;
@@ -188,9 +188,9 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   		
   			import org.apache.log4j.Logger;
   			
-  			Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-User-Conversion-Non-Employee");
+  			Logger cmhLogger = Logger.getLogger("Workflow.CMH-LifecycleEvent-User-Conversion-Non-Employee");
   			if(isDebugEnabled){
-  				log.debug("Starting the LifecycleEvent-User-Conversion-Non-Employee for the user "+identityName);
+  				cmhLogger.debug("Starting the LifecycleEvent-User-Conversion-Non-Employee for the user "+identityName);
   			}
   		
   		]]></Source>
@@ -204,7 +204,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
             import org.apache.log4j.Logger;
   			import sailpoint.tools.Util;
   			
-  			Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-User-Conversion-Non-Employee");
+  			Logger cmhLogger = Logger.getLogger("Workflow.CMH-LifecycleEvent-User-Conversion-Non-Employee");
   			
   			List errorList = new ArrayList();
   			if(Util.isNullOrEmpty(adAppName)) {
@@ -217,9 +217,9 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   			   "user OU in custom object is missing");
   			}
   			if(!Util.isEmpty(errorList)) {
-  			  log.error("Errors Found :"+Util.listToCsv(errorList));
+  			  cmhLogger.error("Errors Found :"+Util.listToCsv(errorList));
   			}else if(isDebugEnabled){
-  				log.debug("Validation Successful");
+  				cmhLogger.debug("Validation Successful");
   			}
   			return errorList;
 			  
@@ -249,13 +249,13 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
                 import sailpoint.object.Identity;
                 import sailpoint.tools.GeneralException;
                 
-				Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-User-Conversion-Non-Employee");
+				Logger cmhLogger = Logger.getLogger("Workflow.CMH-LifecycleEvent-User-Conversion-Non-Employee");
                 Identity identity = context.getObjectByName(Identity.class, identityName);
                 Application app= null;  
                     try {
                        app = context.getObjectByName(Application.class, adAppName);
                     } catch (GeneralException e) {
-                    log.error(e.getMessage());
+                    cmhLogger.error(e.getMessage());
                     }
                     if (null != app && null != identity) {
                       IdentityService ids = new IdentityService(context);
@@ -267,10 +267,10 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
                             adExists = false;
                         }
                       } catch (GeneralException e) {
-                        log.error(e.getMessage());
+                        cmhLogger.error(e.getMessage());
                     }
                     } else {
-                      log.error("Application is not found or Identity is null");
+                      cmhLogger.error("Application is not found or Identity is null");
                     }
                 wfcontext.getWorkflowCase().put("adExists",adExists);
 			  
@@ -307,7 +307,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 	  			import sailpoint.object.ProvisioningPlan.AttributeRequest;
 	  			import sailpoint.tools.Util;
 			  	
-			  	Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-User-Conversion-Non-Employee");
+			  	Logger cmhLogger = Logger.getLogger("Workflow.CMH-LifecycleEvent-User-Conversion-Non-Employee");
 			  	
 			  	 if (validationErrors == null) {
 		          validationErrors = new ArrayList();
@@ -350,7 +350,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 		          }
 			      adPlan.setIdentity(identity);
 			      if(isDebugEnabled){
-	  				log.debug("Plan created to update OU and other information as per new assignmentType for the User: "+identityName);
+	  				cmhLogger.debug("Plan created to update OU and other information as per new assignmentType for the User: "+identityName);
 	  			  }
   			    wfcontext.getWorkflowCase().put("validationErrors",validationErrors);
   			    return adPlan;
@@ -433,10 +433,10 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 	  			import sailpoint.object.Link;
 	  			import sailpoint.tools.Util;
 			  	
-			  	Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-User-Conversion-Non-Employee");
+			  	Logger cmhLogger = Logger.getLogger("Workflow.CMH-LifecycleEvent-User-Conversion-Non-Employee");
 			  	
 			  	if (isDebugEnabled) {
-		          log.debug("Single Account Aggregation");
+		          cmhLogger.debug("Single Account Aggregation");
 		        }
 	
 		        if (validationErrors == null) {
@@ -465,7 +465,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 					}
 				 }
 			    if(isDebugEnabled){
-	  				log.debug("Exiting Single Account Aggregation");
+	  				cmhLogger.debug("Exiting Single Account Aggregation");
 	  			 }
   			 return validationErrors;
       ]]></Source>
@@ -525,7 +525,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 			import sailpoint.tools.Util;
 			import org.apache.log4j.Logger;
 			
-			Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-User-Conversion-Non-Employee");
+			Logger cmhLogger = Logger.getLogger("Workflow.CMH-LifecycleEvent-User-Conversion-Non-Employee");
 			if(validationErrors==null){
 				validationErrors = new ArrayList();
 			}
@@ -533,13 +533,13 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 			   validationErrors.add("AD Link does exists");
 			}
 			if(wfcontext.getRootWorkflowCase().getMessages() != null && null != wfcontext.getRootWorkflowCase().getMessagesByType(Message.Type.Error)){
-				log.error("Error occured in leaver process: "+wfcontext.getRootWorkflowCase().getMessagesByType(Message.Type.Error));
+				cmhLogger.error("Error occured in leaver process: "+wfcontext.getRootWorkflowCase().getMessagesByType(Message.Type.Error));
 				List errorMessagesList = wfcontext.getRootWorkflowCase().getMessagesByType(Message.Type.Error);
 				String errorMessagesFromWfc = Util.listToCsv(errorMessagesList);
 				validationErrors.add(errorMessagesFromWfc);
 			}
 			if(isDebugEnabled){
-				log.debug("CMH-LifecycleEvent-User-Conversion-Non-Employee : Errors recorded in Leaver process: "+validationErrors.toString());
+				cmhLogger.debug("CMH-LifecycleEvent-User-Conversion-Non-Employee : Errors recorded in Leaver process: "+validationErrors.toString());
 			}
 			if(Util.isEmpty(validationErrors) && adExists == true){
 			    Map map = new HashMap();
@@ -555,8 +555,8 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   			
   			
   			if(isDebugEnabled){
-  			    log.debug("Check Status step : Audit Event Generated");
-  			    log.debug("Ending the LifecycleEvent-User-Conversion-Non-Employee for the user "+identityName);
+  			    cmhLogger.debug("Check Status step : Audit Event Generated");
+  			    cmhLogger.debug("Ending the LifecycleEvent-User-Conversion-Non-Employee for the user "+identityName);
   			}
  
 		]]></Source>

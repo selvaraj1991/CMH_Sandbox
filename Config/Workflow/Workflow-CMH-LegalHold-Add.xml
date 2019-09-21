@@ -27,8 +27,8 @@
     	<Source>
 		<![CDATA[
   			import org.apache.log4j.Logger;
-  			Logger log = Logger.getLogger("Workflow.CMH-LegalHold-Add");
-  			if(log.isDebugEnabled()){
+  			Logger cmhLogger = Logger.getLogger("Workflow.CMH-LegalHold-Add");
+  			if(cmhLogger.isDebugEnabled()){
   				return true;
   			}
   			return false;
@@ -80,6 +80,15 @@
 	<Reference class="sailpoint.object.Rule" name="CMH-AD-Generic-Rulelibrary"/>
   </RuleLibraries>
   <Step icon="Start" name="Start" posX="154" posY="126">
+	<Script>
+		<Source>
+			<![CDATA[
+				if(wfcontext.getWorkflowCase().getTaskResult()!=null){
+					wfcontext.getWorkflowCase().getTaskResult().setName("Legal Hold - Add");
+				}
+			]]>
+		</Source>
+	</Script>
     <Transition to="Legal Hold Form"/>
   </Step>
   <Step icon="Provision" name="Legal Hold Form" posX="262" posY="126">
@@ -91,8 +100,10 @@
 	<Transition to="Stop">
       <Script>
         <Source>
+		<![CDATA[
           wfcontext.getWorkflowCase().put("isSubmitted","NO");
           return true;
+		]]>
         </Source>
       </Script>
     </Transition>
@@ -105,7 +116,7 @@
   			import sailpoint.object.Identity;
 			import sailpoint.tools.Util;
   			
-  			Logger log = Logger.getLogger("Workflow.CMH-LegalHold-Add");
+  			Logger cmhLogger = Logger.getLogger("Workflow.CMH-LegalHold-Add");
   			String identityName = null;
   			String userType = null;
   			String status = null;
@@ -115,6 +126,9 @@
   				identityName = iden.getName();
   				if(Util.isNotNullOrEmpty(identityName)){
   					wfcontext.getRootWorkflowCase().put("identityName",identityName);
+					if(wfcontext.getWorkflowCase().getTaskResult()!=null){
+						wfcontext.getWorkflowCase().getTaskResult().setName("Legal Hold - Add : "+identityName);
+					}
   				}
   				userType = iden.getStringAttribute("userType");
 				if(Util.isNotNullOrEmpty(userType)){
@@ -130,7 +144,7 @@
 				}
   			}
   			if (isDebugEnabled) {
-				log.debug("Legal Hold user's username "+identityName);
+				cmhLogger.debug("Legal Hold user's username "+identityName);
 			}
   		]]>
   		</Source>
@@ -143,27 +157,27 @@
   		<![CDATA[
   			import org.apache.log4j.Logger;
   			import sailpoint.tools.Util;
-  			Logger log = Logger.getLogger("Workflow.CMH-LegalHold-Add");
+  			Logger cmhLogger = Logger.getLogger("Workflow.CMH-LegalHold-Add");
   			
   			List errorMessages = new ArrayList();
 			if(Util.isNullOrEmpty(identityName)){
-				log.error("identityName is NULL");
+				cmhLogger.error("identityName is NULL");
 				errorMessages.add("identityName is NULL");
 			}
 			if(Util.isNullOrEmpty(userType)){
-				log.error("userType is NULL");
+				cmhLogger.error("userType is NULL");
 				errorMessages.add("userType is NULL");
 			}
 			if(Util.isNullOrEmpty(userStatus)){
-				log.error("userStatus is NULL");
+				cmhLogger.error("userStatus is NULL");
 				errorMessages.add("userStatus is NULL");
 			}
 			if(Util.isNullOrEmpty(employeeId)){
-				log.error("employeeId is NULL");
+				cmhLogger.error("employeeId is NULL");
 				errorMessages.add("employeeId is NULL");
 			}
 			if(Util.isNullOrEmpty(LegalHold_Group)){
-				log.error("Custom object is not configured properly-Unable to get the LegalHold group");
+				cmhLogger.error("Custom object is not configured properly-Unable to get the LegalHold group");
 				errorMessages.add("Custom object is not configured properly-Unable to get the LegalHold group");
 			}
 			return errorMessages;
@@ -193,7 +207,7 @@
   			import sailpoint.object.Application;
   			import sailpoint.object.Identity;
   			
-  			Logger log = Logger.getLogger("Workflow.CMH-LegalHold-Add");
+  			Logger cmhLogger = Logger.getLogger("Workflow.CMH-LegalHold-Add");
   			Identity iden = context.getObjectByName(Identity.class, identityName);
   			Application app = context.getObjectByName(Application.class,adAppName);
   			if(iden!=null && app!=null){
@@ -268,9 +282,9 @@
 			import sailpoint.object.ProvisioningPlan.AccountRequest;
 			import sailpoint.object.ProvisioningPlan.AttributeRequest;
 			
-			Logger log = Logger.getLogger("Workflow.CMH-LegalHold-Add");
+			Logger cmhLogger = Logger.getLogger("Workflow.CMH-LegalHold-Add");
 			if (isDebugEnabled) {
-				log.debug("Generating plan to move the user AD account to appropriate OU");
+				cmhLogger.debug("Generating plan to move the user AD account to appropriate OU");
 			}
 			ProvisioningPlan plan = new ProvisioningPlan();
 			Identity iden = context.getObjectByName(Identity.class,identityName);
@@ -331,7 +345,7 @@
     <Transition to="Provision"/>
   </Step>
   <Step action="call:provisionProject" icon="Provision" name="Provision" posX="1123" posY="318">
-    <Arg name="background" value="false"/>
+    <Arg name="background" value="true"/>
     <Arg name="project" value="ref:project"/>
     <Transition to="Complete Identity Request"/>
   </Step>
@@ -400,14 +414,14 @@
   </Step>
   <Step action="call:addMessage" name="Add Error Message">
 	<Arg name="message">
-		<Script>
-			<Source>
-			<![CDATA[
-				import sailpoint.tools.Util;
-				return Util.listToCsv(validationErrors);
-			]]>
-			</Source>
-		</Script>
+			<Script>
+				<Source>
+				<![CDATA[
+					import sailpoint.tools.Util;
+					return Util.listToCsv(validationErrors);
+				]]>
+				</Source>
+			</Script>
 	</Arg>
 	<Arg name="type" value="Error"/>
 	<Transition to="Stop"/>
@@ -421,21 +435,21 @@
   			import sailpoint.object.Identity;
   			import sailpoint.tools.Message;
   			import sailpoint.tools.Util;
-			
+  			
 			if(Util.nullSafeCaseInsensitiveEq(isSubmitted,"YES")){
 				
-				Logger log = Logger.getLogger("Workflow.CMH-LegalHold-Add");
-				if (isDebugEnabled) {
-					log.debug("Check Status step : Checking for errors");
-				}
-				
-				
-				if(wfcontext.getRootWorkflowCase().getMessages()!=null && wfcontext.getRootWorkflowCase().getMessagesByType(Message.Type.Error)!=null){
-					List errorMessagesList = wfcontext.getRootWorkflowCase().getMessagesByType(Message.Type.Error);
-					String errorMessage = Util.listToCsv(errorMessagesList);
-					log.error("Check Status step : Errors Found : "+errorMessage);	
-				}else{
-					if(identityName!=null){
+	  			Logger cmhLogger = Logger.getLogger("Workflow.CMH-LegalHold-Add");
+					if (isDebugEnabled) {
+	  			cmhLogger.debug("Check Status step : Checking for errors");
+					}
+	  			
+	  			
+	  			if(wfcontext.getRootWorkflowCase().getMessages()!=null && wfcontext.getRootWorkflowCase().getMessagesByType(Message.Type.Error)!=null){
+	  				List errorMessagesList = wfcontext.getRootWorkflowCase().getMessagesByType(Message.Type.Error);
+	  				String errorMessage = Util.listToCsv(errorMessagesList);
+	  				cmhLogger.error("Check Status step : Errors Found : "+errorMessage);	
+	  			}else{
+	  				if(identityName!=null){
 						Identity iden = acquireLockOnIdentity(identityName);
 						if(iden!=null){					
 							iden.setAttribute("identityRetention","YES");
@@ -445,23 +459,23 @@
 						}
 						
 					}
-				}
+	  			}
 
 				String action = null;
-				String source = "UI";
-				String target = identityName;
-				String attrName = "Employee ID";
-				String attrVal = employeeId;
-				Map strMap = new HashMap();
-				if(Util.isEmpty(validationErrors)){
-					action = "Legal-Hold-Success";
-					strMap.put("setString1","Legal Hold Completed succesfully");
-				}else{
-					action = "Legal-Hold-Failure";
-					strMap.put("setString1","Legal Hold failed due to errors");
-					strMap.put("setString2",Util.listToCsv(validationErrors));
-				}
-				auditWrite(action,source,target,attrName,attrVal,strMap);
+	  			String source = "UI";
+	  			String target = identityName;
+	  			String attrName = "Employee ID";
+	  			String attrVal = employeeId;
+	  			Map strMap = new HashMap();
+	  			if(Util.isEmpty(validationErrors)){
+	  				action = "Legal-Hold-Success";
+	  				strMap.put("setString1","Legal Hold Completed succesfully");
+	  			}else{
+	  				action = "Legal-Hold-Failure";
+	  				strMap.put("setString1","Legal Hold failed due to errors");
+	  				strMap.put("setString2",Util.listToCsv(validationErrors));
+	  			}
+	  			auditWrite(action,source,target,attrName,attrVal,strMap);
 			}
     ]]>    
     </Source>

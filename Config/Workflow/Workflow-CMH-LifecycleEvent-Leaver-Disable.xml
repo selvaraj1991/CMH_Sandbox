@@ -51,9 +51,9 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 
   			import org.apache.log4j.Logger;
 
-  			Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-Leaver-Disable");
+  			Logger cmhLogger = Logger.getLogger("Workflow.CMH-LifecycleEvent-Leaver-Disable");
 
-  			if(log.isDebugEnabled()){
+  			if(cmhLogger.isDebugEnabled()){
   				return true;
   			}
   			return false;
@@ -181,9 +181,9 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 
   			import org.apache.log4j.Logger;
 
-  			Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-Leaver-Disable");
+  			Logger cmhLogger = Logger.getLogger("Workflow.CMH-LifecycleEvent-Leaver-Disable");
   			if(isDebugEnabled){
-  				log.debug("Starting the LifecycleEvent-Leaver-Disable Workflow for the user "+identityName);
+  				cmhLogger.debug("Starting the LifecycleEvent-Leaver-Disable Workflow for the user "+identityName);
   			}
 
   		]]></Source>
@@ -197,7 +197,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
             import org.apache.log4j.Logger;
   			import sailpoint.tools.Util;
 
-  			Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-Leaver-Disable");
+  			Logger cmhLogger = Logger.getLogger("Workflow.CMH-LifecycleEvent-Leaver-Disable");
 
   			List errorList = new ArrayList();
   			if(Util.isNullOrEmpty(adAppName)) {
@@ -210,9 +210,9 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   			   "disabled user OU in custom object is missing");
   			}
   			if(!Util.isEmpty(errorList)) {
-  			  log.error("Errors Found :"+Util.listToCsv(errorList));
+  			  cmhLogger.error("Errors Found :"+Util.listToCsv(errorList));
   			}else if(isDebugEnabled){
-  				log.debug("Validation Successful");
+  				cmhLogger.debug("Validation Successful");
   			}
   			return errorList;
 
@@ -239,13 +239,13 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 
   			import org.apache.log4j.Logger;
 
-  			Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-Leaver-Disable");
+  			Logger cmhLogger = Logger.getLogger("Workflow.CMH-LifecycleEvent-Leaver-Disable");
   			List connectedApps = getAppsToProcess(identityName,"CMH-Leaver-Custom-Object","connectedApplications");
   			if(connectedApps==null || connectedApps.size()<=0){
-  				log.info("There are no connected Apps associated with the user");
+  				cmhLogger.info("There are no connected Apps associated with the user");
   			}
   			else if(isDebugEnabled){
-  				log.debug("List of Connected Apps to be deleted: "+connectedApps.toString());
+  				cmhLogger.debug("List of Connected Apps to be deleted: "+connectedApps.toString());
   			}
   			return connectedApps;
 
@@ -263,7 +263,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   			import sailpoint.api.ObjectUtil;
   			import sailpoint.tools.Util;
 
-  			Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-Leaver-Disable");
+  			Logger cmhLogger = Logger.getLogger("Workflow.CMH-LifecycleEvent-Leaver-Disable");
 
   			Identity iden = acquireLockOnIdentity(identityName);
   			if(iden != null){
@@ -289,7 +289,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
         ObjectUtil.unlockIdentity(context,iden);
         }
   				if(isDebugEnabled){
-  			    log.debug("Identity status "+identityName+" disabled succesfully");
+  			    cmhLogger.debug("Identity status "+identityName+" disabled succesfully");
   				}
 
       ]]></Source>
@@ -309,7 +309,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 	  			import sailpoint.object.ProvisioningPlan.AttributeRequest;
 	  			import sailpoint.tools.Util;
 
-			  	Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-Leaver-Disable");
+			  	Logger cmhLogger = Logger.getLogger("Workflow.CMH-LifecycleEvent-Leaver-Disable");
                 ProvisioningPlan adPlan = new ProvisioningPlan();
 				List accountRequests = new ArrayList();
 				Identity identity = context.getObjectByName(Identity.class, identityName);
@@ -342,7 +342,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 				adPlan.setAccountRequests(accountRequests);
 			    adPlan.setIdentity(identity);
 			    if(isDebugEnabled){
-	  				log.debug("Plan created to Disable the AD account for the user : "+identityName);
+	  				cmhLogger.debug("Plan created to Disable the AD account for the user : "+identityName);
 	  			}
 
   			   return adPlan;
@@ -419,10 +419,10 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
     <Script>
       <Source><![CDATA[
 
-				Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-Leaver-Disable");
+				Logger cmhLogger = Logger.getLogger("Workflow.CMH-LifecycleEvent-Leaver-Disable");
 
 		        if (isDebugEnabled) {
-		          log.debug("Creating ServiceNow Ticket on disablement of user");
+		          cmhLogger.debug("Creating ServiceNow Ticket on disablement of user");
 		        }
 				if(validationErrors==null){
 				validationErrors = new ArrayList();
@@ -435,7 +435,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 					  validationErrors.add(errList);
 				   }else if(ticketObj instanceof String) {
 		              snowTicketId = (String) ticketObj;
-					  log.debug("ServiceNow Ticket Created:"+snowTicketId);
+					  cmhLogger.debug("ServiceNow Ticket Created:"+snowTicketId);
 		           }
     	        }
 				wfcontext.getWorkflowCase().put("validationErrors",validationErrors);
@@ -454,10 +454,10 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 	  			import sailpoint.object.Link;
 	  			import sailpoint.tools.Util;
 
-			  	Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-Leaver-Disable");
+			  	Logger cmhLogger = Logger.getLogger("Workflow.CMH-LifecycleEvent-Leaver-Disable");
 
 			  	if (isDebugEnabled) {
-		          log.debug("Single Account Aggregation");
+		          cmhLogger.debug("Single Account Aggregation");
 		        }
 
 		        if (validationErrors == null) {
@@ -486,7 +486,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 					}
 				 }
 			    if(isDebugEnabled){
-	  				log.debug("Exiting Single Account Aggregation");
+	  				cmhLogger.debug("Exiting Single Account Aggregation");
 	  			 }
   			 return validationErrors;
       ]]></Source>
@@ -541,18 +541,18 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 			import sailpoint.tools.Util;
 			import org.apache.log4j.Logger;
 
-			Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-Leaver-Disable");
+			Logger cmhLogger = Logger.getLogger("Workflow.CMH-LifecycleEvent-Leaver-Disable");
 			if(validationErrors==null){
 				validationErrors = new ArrayList();
 			}
 			if(wfcontext.getRootWorkflowCase().getMessages() != null && null != wfcontext.getRootWorkflowCase().getMessagesByType(Message.Type.Error)){
-				log.error("Error occured in leaver process: "+wfcontext.getRootWorkflowCase().getMessagesByType(Message.Type.Error));
+				cmhLogger.error("Error occured in leaver process: "+wfcontext.getRootWorkflowCase().getMessagesByType(Message.Type.Error));
 				List errorMessagesList = wfcontext.getRootWorkflowCase().getMessagesByType(Message.Type.Error);
 				String errorMessagesFromWfc = Util.listToCsv(errorMessagesList);
 				validationErrors.add(errorMessagesFromWfc);
 			}
 			if(isDebugEnabled){
-				log.debug("Errors recorded in Leaver process: "+validationErrors.toString());
+				cmhLogger.debug("Errors recorded in Leaver process: "+validationErrors.toString());
 			}
 			if(Util.isEmpty(validationErrors)){
 			    Map map = new HashMap();
@@ -569,8 +569,8 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   			}
 
   			if(isDebugEnabled){
-  			    log.debug("Check Status step : Audit Event Generated");
-				log.debug("Ending the LifecycleEvent-Leaver-Disable Workflow for the user "+identityName);
+  			    cmhLogger.debug("Check Status step : Audit Event Generated");
+				cmhLogger.debug("Ending the LifecycleEvent-Leaver-Disable Workflow for the user "+identityName);
   			}
 
 		]]></Source>

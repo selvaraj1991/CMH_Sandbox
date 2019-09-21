@@ -12,10 +12,10 @@
 		import sailpoint.object.Custom;
 		import sailpoint.tools.Util;
 		import sailpoint.object.Application;
-
-        Logger log = Logger.getLogger("Rule.CMH-Infor-Full-Pre-Iteration-Rule");
-		log.debug("Entering CMH-Infor-Full-Pre-Iteration-Rule");
-
+		
+        Logger cmhLogger = Logger.getLogger("Rule.CMH-Infor-Full-Pre-Iteration-Rule");
+		cmhLogger.debug("Entering CMH-Infor-Full-Pre-Iteration-Rule");
+		
 		//updates the timestamp of the task in custom object
 		Custom custom = context.getObjectByName(Custom.class,"CMH-Infor-Aggregation-Custom-Object");
 		String format = getCustomObject("preIterationTimestamp","CMH-DateFormat");
@@ -40,11 +40,11 @@
 					context.commitTransaction();
 			    }
 			}
-			log.debug("Updated Custom object and Application object successfully");
+			cmhLogger.debug("Updated Custom object and Application object successfully");
 		}catch (GeneralException e) {
-			log.error("ERROR:"+e.getMessage());
+			cmhLogger.error("ERROR:"+e.getMessage());
 		}
-		log.debug("Exiting CMH-Infor-Full-Pre-Iteration-Rule");
+		cmhLogger.debug("Exiting CMH-Infor-Full-Pre-Iteration-Rule");
   ]]></Source>
     </Rule>
 </sailpoint>

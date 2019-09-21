@@ -31,7 +31,7 @@
         <Filter operation="CONTAINS_ALL" property="memberOf">
           <Value>
             <List>
-              <String>%%CMH-Email-Enabled-Group%%</String>
+              <String>%%CMH-Email-Enabled-Group%%</String>            
             </List>
           </Value>
         </Filter>

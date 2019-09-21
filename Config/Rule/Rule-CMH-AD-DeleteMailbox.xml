@@ -69,7 +69,7 @@ if($dn -and $requestedOperation -and ($requestedOperation -eq "Delete")){
 	if($usrName){
 		$logFile = $logRootDirectory+$usrName+"Delete-$(get-date -f 'MMddyyyy-hhmmss').log";
 	}else{
-	$logFile = $logRootDirectory+"Delete-$(get-date -f 'MMddyyyy-hhmmss').log";
+		$logFile = $logRootDirectory+"Delete-$(get-date -f 'MMddyyyy-hhmmss').log";
 	}
 	Add-Content -path $logFile -value "$(get-date -f 'MM-dd-yyy HH:mm:ss') : [DEBUG] ConnectorAfterDelete Script: Entering the script";
 	Try

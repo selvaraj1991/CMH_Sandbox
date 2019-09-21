@@ -49,8 +49,8 @@
     	<Source>
 		<![CDATA[
   			import org.apache.log4j.Logger;
-  			Logger log = Logger.getLogger("Workflow.CMH-LifeycycleEvent-LOA");
-  			if(log.isDebugEnabled()){
+  			Logger cmhLogger = Logger.getLogger("Workflow.CMH-LifeycycleEvent-LOA");
+  			if(cmhLogger.isDebugEnabled()){
   				return true;
   			}
   			return false;
@@ -119,7 +119,7 @@
   			import sailpoint.object.Identity;
   			import sailpoint.tools.Util;
   			
-  			Logger log = Logger.getLogger("Workflow.CMH-LifeycycleEvent-LOA");
+  			Logger cmhLogger = Logger.getLogger("Workflow.CMH-LifeycycleEvent-LOA");
   			if(Util.isNotNullOrEmpty(identityName) && Util.isNotNullOrEmpty(adAppName)){
 	  			Identity iden = context.getObjectByName(Identity.class, identityName);
 	  			Application app = context.getObjectByName(Application.class,adAppName);
@@ -166,9 +166,9 @@
   		<![CDATA[
   			import org.apache.log4j.Logger;
   			
-  			Logger log = Logger.getLogger("Workflow.CMH-LifeycycleEvent-LOA");
+  			Logger cmhLogger = Logger.getLogger("Workflow.CMH-LifeycycleEvent-LOA");
   			if(isDebugEnabled){
-  				log.debug("Starting the CMH-LifecycleEvent-LOA-Workflow for the user "+identityName);
+  				cmhLogger.debug("Starting the CMH-LifecycleEvent-LOA-Workflow for the user "+identityName);
   			}
   		]]>
   		</Source>
@@ -182,23 +182,23 @@
   			import org.apache.log4j.Logger;
   			import sailpoint.tools.Util;
   			
-  			Logger log = Logger.getLogger("Workflow.CMH-LifeycycleEvent-LOA");
+  			Logger cmhLogger = Logger.getLogger("Workflow.CMH-LifeycycleEvent-LOA");
   			
   			List errorMessages = new ArrayList();
 			if(Util.isNullOrEmpty(userType)){
-				log.error("userType is NULL");
+				cmhLogger.error("userType is NULL");
 				errorMessages.add("userType is NULL");
 			}
 			if(Util.isNullOrEmpty(LOA_Group)){
-				log.error("LOA_Group is NULL : Custom object is not configured properly");
+				cmhLogger.error("LOA_Group is NULL : Custom object is not configured properly");
 				errorMessages.add("LOA_Group is NULL : Custom object is not configured properly");
 			}
 			if(Util.isNullOrEmpty(adAppName)){
-				log.error("adAppName is NULL : Custom object is not configured properly");
+				cmhLogger.error("adAppName is NULL : Custom object is not configured properly");
 				errorMessages.add("adAppName is NULL : Custom object is not configured properly");
 			}
 			if(Util.isNullOrEmpty(employeeId)){
-				log.error("employeeId is NULL");
+				cmhLogger.error("employeeId is NULL");
 				errorMessages.add("employeeId is NULL");
 			}
 			return errorMessages;
@@ -245,13 +245,13 @@
   			import org.apache.log4j.Logger;
   			import sailpoint.tools.Util;
   			
-  			Logger log = Logger.getLogger("Workflow.CMH-LifeycycleEvent-LOA");
+  			Logger cmhLogger = Logger.getLogger("Workflow.CMH-LifeycycleEvent-LOA");
   			List connectedApps = getAppsToProcess(identityName,"CMH-Leaver-Custom-Object","connectedApplications");
   			if(Util.isEmpty(connectedApps)){
-  				log.info("There are no connected Apps associated with the user");
+  				cmhLogger.info("There are no connected Apps associated with the user");
   			}
   			else if(isDebugEnabled){
-  				log.debug("List of Connected Apps associated with the user: "+connectedApps.toString());
+  				cmhLogger.debug("List of Connected Apps associated with the user: "+connectedApps.toString());
   			}
   			return connectedApps;
   		]]>
@@ -287,9 +287,9 @@
 			import sailpoint.object.ProvisioningPlan.AttributeRequest;
 			import sailpoint.tools.Util;
 			
-			Logger log = Logger.getLogger("Workflow.CMH-LifeycycleEvent-LOA");
+			Logger cmhLogger = Logger.getLogger("Workflow.CMH-LifeycycleEvent-LOA");
 			if (isDebugEnabled) {
-				log.debug("Generating plan to move the user AD account to appropriate OU");
+				cmhLogger.debug("Generating plan to move the user AD account to appropriate OU");
 			}
 			ProvisioningPlan plan = new ProvisioningPlan();
 			List accountRequests = new ArrayList();
@@ -399,10 +399,10 @@
   			import org.apache.log4j.Logger;
   			
   			//method to generate service now ticket
-  			Logger log = Logger.getLogger("Workflow.CMH-LifeycycleEvent-LOA");
+  			Logger cmhLogger = Logger.getLogger("Workflow.CMH-LifeycycleEvent-LOA");
   			
   			if(isDebugEnabled){
-  				log.debug("Generating service now ticket");
+  				cmhLogger.debug("Generating service now ticket");
   			}
   			
   			Object ticketObj = generateSnowTicket(identityName, "CMH-Service-Ticket-Configuration-Object", "DISABLE");
@@ -414,7 +414,7 @@
 				}else if(ticketObj instanceof String) {
 					snowId = (String) ticketObj;	
 					if(isDebugEnabled)	{
-						log.debug("Service Now ID :  "+snowId);
+						cmhLogger.debug("Service Now ID :  "+snowId);
 					}
 		            wfcontext.getWorkflowCase().put("snowTicketId",snowId);					  
 		      	}else {
@@ -444,14 +444,14 @@
   </Step>
   <Step action="call:addMessage" name="Add Error Message">
 	<Arg name="message">
-		<Script>
-			<Source>
-			<![CDATA[
-				import sailpoint.tools.Util;
-				return Util.listToCsv(validationErrors);
-			]]>
-			</Source>
-		</Script>
+			<Script>
+				<Source>
+				<![CDATA[
+					import sailpoint.tools.Util;
+					return Util.listToCsv(validationErrors);
+				]]>
+				</Source>
+			</Script>
 	</Arg>
 	<Arg name="type" value="Error"/>
 	<Transition to="Stop"/>
@@ -464,9 +464,9 @@
   			import sailpoint.tools.Message;
   			import sailpoint.tools.Util;
   			
-  			Logger log = Logger.getLogger("Workflow.CMH-LifeycycleEvent-LOA");
+  			Logger cmhLogger = Logger.getLogger("Workflow.CMH-LifeycycleEvent-LOA");
   		
-  			log.debug("Check Status step : Checking for errors");
+  			cmhLogger.debug("Check Status step : Checking for errors");
   			
   			if(validationErrors==null){
   				validationErrors = new ArrayList();
@@ -475,10 +475,10 @@
   			if(wfcontext.getRootWorkflowCase().getMessages()!=null && wfcontext.getRootWorkflowCase().getMessagesByType(Message.Type.Error)!=null){
   				List errorMessagesList = wfcontext.getRootWorkflowCase().getMessagesByType(Message.Type.Error);
   				String errorMessage = Util.listToCsv(errorMessagesList);
-  				log.error("CMH_ImmediateTermination: Check Status step : Errors Found : "+errorMessage);
+  				cmhLogger.error("CMH_ImmediateTermination: Check Status step : Errors Found : "+errorMessage);
   				validationErrors.add(errorMessage);	
   			}else if(!Util.isEmpty(validationErrors)){
-  				log.error("Check Status step : Errors Found : "+Util.listToCsv(validationErrors));
+  				cmhLogger.error("Check Status step : Errors Found : "+Util.listToCsv(validationErrors));
   			}
 			
 			String action = null;
@@ -497,7 +497,7 @@
   			auditWrite(action,source,target,attrName,attrVal,strMap);
 			
 			if(isDebugEnabled){
-  				log.debug("Ending the CMH-LifecycleEvent-LOA-Workflow for the user "+identityName);  				
+  				cmhLogger.debug("Ending the CMH-LifecycleEvent-LOA-Workflow for the user "+identityName);  				
   			}
     	]]>    
     	</Source>

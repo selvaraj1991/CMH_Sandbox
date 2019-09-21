@@ -42,9 +42,9 @@
   import org.apache.log4j.Logger;
   import sailpoint.tools.Util;
 
-  Logger logger = Logger.getLogger("Rule.CMH-Everyone-Role-Assignment-Rule");
+  Logger cmhLogger = Logger.getLogger("Rule.CMH-Everyone-Role-Assignment-Rule");
 
-  logger.debug("Entering CMH-Everyone-Role-Assignment-Rule:To Assign Everyone Role for the user "+identity!=null?identity.getName():"");
+  cmhLogger.debug("Entering CMH-Everyone-Role-Assignment-Rule:To Assign Everyone Role for the user "+identity!=null?identity.getName():"");
   
   boolean assignRole = false;
   String identityName = null;
@@ -53,7 +53,8 @@
   	identityName = identity.getName();
   	String email = identity.getEmail();
     String status = identity.getStringAttribute("status");
-    if(!Util.nullSafeCaseInsensitiveEq(status,"Terminated")){
+	String legalHold = identity.getStringAttribute("identityRetention");
+    if (Util.nullSafeCaseInsensitiveEq(legalHold, "YES") || !Util.nullSafeCaseInsensitiveEq(status, "Terminated")) {
       String oldEmpId = identity.getStringAttribute("otherEmpId");
       String isConversionProcessed = identity.getStringAttribute("isConversionProcessed");
       if (Util.isNullOrEmpty(oldEmpId) || !isConversionCase(oldEmpId,identityName) || Util.nullSafeCaseInsensitiveEq(isConversionProcessed,"YES")) {
@@ -82,9 +83,9 @@
   }
 
   if(assignRole){
-  	logger.debug("Everyone role assigned for the User: "+identityName);
+  	cmhLogger.debug("Everyone role assigned for the User: "+identityName);
   }
-  logger.debug("Exiting CMH-Everyone-Role-Assignment-Rule");
+  cmhLogger.debug("Exiting CMH-Everyone-Role-Assignment-Rule");
   return assignRole;
   ]]></Source>
 </Rule>

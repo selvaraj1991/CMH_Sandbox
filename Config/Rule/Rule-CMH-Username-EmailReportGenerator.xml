@@ -23,53 +23,56 @@
 		import sailpoint.tools.GeneralException;
 		import sailpoint.tools.Util;
 
-		Logger log = Logger.getLogger("Rule.CMH-Username-Email-Report-Generator-Rule");
-		String nameCustomObjName = "CMH-NameChange-UsernameAndEmail";
+		Logger cmhLogger = Logger.getLogger("Rule.CMH-Username-Email-Report-Generator-Rule");
+		String NAME_CUSTOM_OBJECT = "CMH-NameChange-UsernameAndEmail";
+		String FILE_NAME_PREFIX="SailPointADGHRInbound_";
+		String SFTP_DIR="%%CMH-SFTP-DESTDIR%%";
+		String FILE_EXTENSION=".csv";
 		String filename = null;
 		String filepath = null;
 		
         
         //This method fetches the last timestamp of the this task 
 		public Date getCustomObjectTimestamp(String customObjectName, String customName) {
-			log.debug("Entering getCustomObjectTimestamp method");
+			cmhLogger.debug("Entering getCustomObjectTimestamp method");
 			Date date = null;
 			List uList = null;
 			Custom custom = getCustom(customName);
 			if (null != custom) {
 				date = (Date) custom.get(customObjectName);
 			}
-			log.debug("Exiting getCustomObjectTimestamp method");
+			cmhLogger.debug("Exiting getCustomObjectTimestamp method");
 			return date;
 		}
 		
         //Gets the list of usernames under nonexported tag from custom object
 		public List getCustomNameChangeData(String customName) {
-			log.debug("Entering getCustomNameChangeData method");
+			cmhLogger.debug("Entering getCustomNameChangeData method");
 			List uList = null;
 			Custom custom = getCustom(customName);
 			if (null != custom) {
 				uList = custom.getAttributes().getList("NOTEXPORTED");
 			}
 
-			log.debug("Exiting getCustomNameChangeData method");
+			cmhLogger.debug("Exiting getCustomNameChangeData method");
 			return uList;
 		}
 		
 		public Custom getCustom(String customName) {
-			log.debug("Entering getCustom method");
+			cmhLogger.debug("Entering getCustom method");
 			Custom customObj = null;
 			try {
 				customObj = context.getObject(Custom.class, customName);
 			} catch(GeneralException e) {
-				log.error("Error in getCustom method " + e.getMessage());
+				cmhLogger.error("Error in getCustom method " + e.getMessage());
 				throw new sailpoint.tools.GeneralException("Error in searching custom object:"+e.getMessage());				
 			}
-			log.debug("Exiting getCustom method");
+			cmhLogger.debug("Exiting getCustom method");
 			return customObj;
 		}
 		//Using Identity Object getting the user attributes and putting then in Map
 		public Map userMapGeneration(Identity user, String action) {
-		   log.debug("Entering userMapGeneration()");
+		   cmhLogger.debug("Entering userMapGeneration()");
 		   Map map = new HashMap();
            if(user != null  && user.isCorrelated() && Util.isNotNullOrEmpty(action)) {
               map.put("Username", user.getName());
@@ -78,12 +81,12 @@
 			  map.put("Supervisor",user.getStringAttribute("personIsSupv"));
 			  map.put("Action",action);		  
            }
-           log.debug("Exiting userMapGeneration()");
+           cmhLogger.debug("Exiting userMapGeneration()");
            return map;
         }
 		//Generated the list of user mapped records
 		public List customUserDetail(String customName) {
-			log.debug("Entering customUserDetail method");
+			cmhLogger.debug("Entering customUserDetail method");
 			List arrList = getCustomNameChangeData(customName);
 			List dataList = null;
 			if (null != arrList && arrList.size() > 0) {
@@ -96,15 +99,15 @@
 					}
 				}
 			} else {
-				log.debug("There are no users which needs to be exported");
+				cmhLogger.debug("There are no users which needs to be exported");
 			}
-			log.debug(" Exiting CustomUserDetail method");
+			cmhLogger.debug(" Exiting CustomUserDetail method");
 			return dataList;
 		}
 		
 		//Gets the user list from nonexported tag,puts under exported and deletes list from nonexported
 		public void updateCustomNameChangeData(List dataList, String customName) {
-			log.debug("Entering updateCustomNameChangeData method");
+			cmhLogger.debug("Entering updateCustomNameChangeData method");
 
 			if (null != dataList && dataList.size() > 0) {
 				List finalList = null;
@@ -130,18 +133,18 @@
 					}
 
 				} catch(GeneralException e) {
-					log.error("Error in updateCustomNameChangeData method"+e.getMessage());
+					cmhLogger.error("Error in updateCustomNameChangeData method"+e.getMessage());
 					throw new sailpoint.tools.GeneralException("Error in updateCustomNameChangeData method"+e.getMessage());
 				}
 			} else {
-				log.debug("Custom dataList does not have any value");
+				cmhLogger.debug("Custom dataList does not have any value");
 			}
-			log.debug("Exiting updateCustomNameChangeData method");
+			cmhLogger.debug("Exiting updateCustomNameChangeData method");
 		}
 
         //Updating the last run timestamp to custom object
 		public void updateCustomTimeStamp(Date lastTimeStamp, String customName) {
-			log.debug("Entering updateCustomTimeStamp method");
+			cmhLogger.debug("Entering updateCustomTimeStamp method");
 			if (null != lastTimeStamp) {
 				try {
 					Custom custom = getCustom(customName);
@@ -154,16 +157,16 @@
 						custom.remove(lock);
 					}
 				} catch(GeneralException e) {
-					log.error("ERROR in updateCustomTimeStamp" + e.getMessage());
+					cmhLogger.error("ERROR in updateCustomTimeStamp" + e.getMessage());
 					throw new sailpoint.tools.GeneralException("Error in updateCustomNameChangeData method"+e.getMessage());
 				}
 			} else {
-				log.debug("lastTimeStamp is null");
+				cmhLogger.debug("lastTimeStamp is null");
 			}
-			log.debug("Exiting updateCustomTimeStamp method");
+			cmhLogger.debug("Exiting updateCustomTimeStamp method");
 		}
 		public Date getDateTime() {
-			log.debug("Entering getDateTime method");
+			cmhLogger.debug("Entering getDateTime method");
 			String format = getCustomObject("userNameGenerationTimestamp","CMH-DateFormat");
 			Date today = null;
 			if(Util.isNotNullOrEmpty(format)) {
@@ -171,18 +174,18 @@
 				try {
 					today = sdf.parse(sdf.format(new Date()));
 				} catch(ParseException e) {
-					log.error(" Error in getDateTime method" + e.getMessage());
+					cmhLogger.error(" Error in getDateTime method" + e.getMessage());
 				}
 			}
-			log.debug("Exiting getDateTime method");
+			cmhLogger.debug("Exiting getDateTime method");
 			return today;
 		}
         //searching the users created within specified timestamp , appending custom data and writing to data to csv file
 		public boolean generateReport(Date startTime, Date endTime) {
-			log.debug("Entering generateReport method");
+			cmhLogger.debug("Entering generateReport method");
 			Date today = null;
 			List list = new ArrayList();
-			List customDataList = customUserDetail(nameCustomObjName);
+			List customDataList = customUserDetail(NAME_CUSTOM_OBJECT);
 			List finalList = new ArrayList();
 			FileWriter fileWriter = null;
 			String NEW_LINE_SEPARATOR = "\n";
@@ -210,12 +213,12 @@
 				} else {
 					if (null == customDataList) {
 						isSuccess = true;
-						log.debug(" Exiting generateReport method");
+						cmhLogger.debug(" Exiting generateReport method");
 						return isSuccess;
 					}
 				}
 			} catch(GeneralException e) {
-				log.error("Error in generateReport method " + e.getMessage());
+				cmhLogger.error("Error in generateReport method " + e.getMessage());
 			} finally {
 				if (null != itr) {
 					sailpoint.tools.Util.flushIterator(itr);
@@ -232,7 +235,9 @@
 			    if(Util.isNotNullOrEmpty(format)) {
 					DateFormat currentDateFormatWithTime = new SimpleDateFormat(format);
 					String strCurrentDateTime = currentDateFormatWithTime.format(endTime);
-					filename = "SailPointADGHRInbound_" + strCurrentDateTime + ".csv";
+					String tempFilename = FILE_NAME_PREFIX + strCurrentDateTime + "_1"+FILE_EXTENSION;
+					filename = filenameGeneration(tempFilename,strCurrentDateTime);
+					if(Util.isNotNullOrEmpty(filename)) {
 					String FILE_HEADER = "EmployeeID,Username,UseForWorkEmail,Action,Supervisor";
 					Map map = null;
 					filepath = getCustomObject("filepath", "CMH-Custom-Generic-Filepath");
@@ -267,10 +272,10 @@
 								fileWriter.append(NEW_LINE_SEPARATOR);
 	
 							}
-							log.debug("CSV file was created successfully !!!");
+							cmhLogger.debug("CSV file was created successfully !!!");
 							isSuccess = true;
 						} catch(IOException e) {
-							log.error("IOException in generateReport method" + e.getMessage());
+							cmhLogger.error("IOException in generateReport method" + e.getMessage());
 						}
 						try {
 							if (null != fileWriter) {
@@ -278,93 +283,148 @@
 								fileWriter.close();
 							}
 						} catch(IOException e) {
-							log.error("IOException in closing fileWriter of generateReport method " + e.getMessage());
+							cmhLogger.error("IOException in closing fileWriter of generateReport method " + e.getMessage());
 						}
 					} else {
-						log.error("Filepath is not present in custom object or is NULL");
+						cmhLogger.error("Filepath is not present in custom object or is NULL");
 						throw new sailpoint.tools.GeneralException("CMH-Username-Email-Report-Generator-Rule :ERROR : Given file location is not proper");
+						}
+				    }else {
+				        cmhLogger.error("Error occoured in generating filename, filename is null");
+					    throw new sailpoint.tools.GeneralException("CMH-Username-Email-Report-Generator-Rule :ERROR : unable to generate filename");
 					}
 			    }
 			} else {
 				isSuccess = false;
 			}
-			log.debug("Exiting generateReport method");
+			cmhLogger.debug("Exiting generateReport method");
 			return isSuccess;
 		}
 		//Checking whether the generated file exists in that location
 		public boolean ifFileExists(String filepath, String filename) {
-		log.debug("Entering ifFileExists");
+		cmhLogger.debug("Entering ifFileExists");
 		boolean exists = false;
 		if(Util.isNotNullOrEmpty(filepath) && Util.isNotNullOrEmpty(filename)) {
 			File tempFile = new File(filepath+filename);
-			log.debug(filepath+filename);
+			cmhLogger.debug(filepath+filename);
 			exists = tempFile.exists();
 		}
-		log.debug("Exiting ifFileExists exists ?:"+exists);
+		cmhLogger.debug("Exiting ifFileExists exists ?:"+exists);
 		return exists;
 	    }
-	    //Uploading using SFTP
-		public boolean uploadFileUsingSFTP(String filepath,String filename) {
-		    log.debug("Entering uploadFileUsingSFTP");
-		    boolean isUploadSuccess = false;
-		   
+	   //Creating ssh client connection
+	   public SSHClient createConnection() {
+	    cmhLogger.debug("Entering createConnection");
 				SSHClient sshc = new SSHClient();
 				try {
 				    sshc.addHostKeyVerifier(new PromiscuousVerifier());
 				    sshc.setConnectTimeout(1000);			
-					sshc.connect("%%CMH-SFTP-HOST%%", 22);
+			sshc.connect("%%CMH-SFTP-HOST%%", 22);
+			cmhLogger.debug("createConnection:Connection client initialized");
+		} catch (IOException e) {
+			cmhLogger.error("IOException in creating the connection "+e.getMessage());
+		}
+		cmhLogger.debug("Exiting createConnection");
+		return sshc;
+	}
+    //Disconnecting the ssh session 
+	public void disconnect(SSHClient sshc) {
+	    cmhLogger.debug("Entering disconnect");
+		if (sshc != null && sshc.isConnected()) {
+			try {				
+				sshc.disconnect();
+				sshc.close();
+				cmhLogger.debug("SFTP Session disconnected");
+			} catch (IOException e) {
+				cmhLogger.error("IOException in disconnecting the session "+e.getMessage());
+			}
+		}
+	   cmhLogger.debug("Exiting disconnect");
+	}
+    //Authenticated the session 
+	public SFTPClient authentication(SSHClient sshc) {
+	    cmhLogger.debug("Entering  authentication");
+		SFTPClient sftp = null;
+		try {
 					if (sshc != null && sshc.isConnected()) {
-						log.debug("SFTP Connection established successfully");
-						sshc.authPassword("%%CMH-SFTP-USER%%", (String)context.decrypt("%%CMH-SFTP-PASSWORD%%"));
+						cmhLogger.debug("SFTP Connection established successfully");
+						sshc.authPassword("%%CMH-SFTP-USER%%", (String)context.decrypt("%%CMH-SFTP-PASSWORD%%"));	
 						if(sshc.isAuthenticated()) {
-							log.debug("SFTP authentication is established successfully");
-							final SFTPClient sftp = sshc.newSFTPClient();
-							sftp.put(filepath+filename, "%%CMH-SFTP-DESTDIR%%");
-							isUploadSuccess =true;
-						}
+					cmhLogger.debug("SFTP authentication is established successfully");
+					sftp = sshc.newSFTPClient();
+				}
+			}
+		} catch (IOException e) {
+			cmhLogger.error("IOException while trying to authenticate the session "+e.getMessage());
+		}
+		cmhLogger.debug("Exiting authentication");
+		return sftp;
+	}
+	public String filenameGeneration(String tempFilename, String strCurrentDateTime) {
+	    cmhLogger.debug("Entering filenameGeneration");
+		String finalFilename = null;
+		SSHClient sshc = createConnection();
+		SFTPClient sftp = authentication(sshc);
+		try {
+			if (null != sftp) {
+				if(Util.isNotNullOrEmpty(tempFilename) && Util.isNotNullOrEmpty(strCurrentDateTime)) {
+					finalFilename = tempFilename;
+					boolean filePresent = sftp.statExistence(SFTP_DIR + finalFilename) != null;
+					System.out.println(filePresent);
+					int count = 1;
+					if (filePresent) {
+						do {
+							count++;
+							String tempName = FILE_NAME_PREFIX +strCurrentDateTime+ "_" + Integer.toString(count) + FILE_EXTENSION;
+							finalFilename = tempName;
+						} while (sftp.statExistence(SFTP_DIR + finalFilename) != null);
+						cmhLogger.debug("filenameGeneration:FinalUsername:" + finalFilename);
+					} else {
+						cmhLogger.debug("filenameGeneration:FinalUsername:" + finalFilename);
+					}
+			    }
+			}
+		} catch (IOException e) {
+			cmhLogger.error("IOException while generating new filename "+e.getMessage());
+		} finally {
+			disconnect(sshc);
+		}
+		return finalFilename;
+	}
+	    //Uploading using SFTP
+		public boolean uploadFileUsingSFTP(String filepath,String filename) {
+		    cmhLogger.debug("Entering uploadFileUsingSFTP");
+		    boolean isUploadSuccess = false;
+		    SSHClient sshc = createConnection();
+		    SFTPClient sftp = authentication(sshc);
+				try {
+				     if (sftp != null) {
+						  sftp.put(filepath+filename, filename);
+						  isUploadSuccess =true;						
 					}
 		
 				} catch (IOException e) {
-					log.error("IOException in uploading the file "+e.getMessage());
+					cmhLogger.error("IOException in uploading the file "+e.getMessage());
 				} finally {
-					if (sshc != null && sshc.isConnected()) {
-						try {
-							 log.debug("Disconnecting and Closing SSH Session");
-							 sshc.disconnect();
-							 sshc.close();
-						} catch (IOException e) {
-							log.error("IOException in uploading the file "+e.getMessage());
-						}
-					}
+					disconnect(sshc);
 				}
 		
-			log.debug("Exiting uploadFileUsingSFTP,isUploadSuccess ?:"+isUploadSuccess);
+			cmhLogger.debug("Exiting uploadFileUsingSFTP,isUploadSuccess ?:"+isUploadSuccess);
 			return isUploadSuccess;
 		}
-		public void deleteFile(String filepath,String filename) {
-			log.debug("Entering deleteFile");
-			boolean isDeleted= false;
-			ifFileExists(filepath,filename) {
-				File file = new File(filepath+filename);
-				if(file.delete()) {
-					log.debug("File Deleted Successfully from drive");
-				}
-			}
-		    log.debug("Exiting deleteFile");
-		}
-		public void postFileGenerationOperation(Date lastTimeStamp,Date endTime,String filepath,String filename) {
-		    log.debug("Entering postFileGenerationOperation");
-			deleteFile(filepath,filename);
+
+		public void postFileGenerationOperation(Date lastTimeStamp,Date endTime) {
+		    cmhLogger.debug("Entering postFileGenerationOperation");
 		    lastTimeStamp = endTime;
 		    updateCustomTimeStamp(lastTimeStamp, "CMH-Last-Generated-Timestamp-Report");
-			List dataList = getCustomNameChangeData(nameCustomObjName);
+			List dataList = getCustomNameChangeData(NAME_CUSTOM_OBJECT);
 			if (null != dataList && dataList.size() > 0) {
-				updateCustomNameChangeData(dataList, nameCustomObjName);
+				updateCustomNameChangeData(dataList, NAME_CUSTOM_OBJECT);
 			}		
-			log.debug("Exiting postFileGenerationOperation");   
+			cmhLogger.debug("Exiting postFileGenerationOperation");   
 		}
 		//Rule starts from here
-		log.debug("Entering CMH-Username-Email-Report-Generator-Rule");
+		cmhLogger.debug("Entering CMH-Username-Email-Report-Generator-Rule");
 		Date lastTimeStamp = getCustomObjectTimestamp("Timestamp", "CMH-Last-Generated-Timestamp-Report");
 		Date startTime = null;
 		Date endTime = null;
@@ -389,11 +449,11 @@
 			    if(fileExists) {
 			       boolean isUploadToServer = uploadFileUsingSFTP(filepath,filename);
 			       if(isUploadToServer) {
-					    postFileGenerationOperation(lastTimeStamp,endTime,filepath,filename);
+					    postFileGenerationOperation(lastTimeStamp,endTime);
 						flag = true;
 				    }			       
 			    }else {
-			        postFileGenerationOperation(lastTimeStamp,endTime,filepath,filename);
+			        postFileGenerationOperation(lastTimeStamp,endTime);
 					flag = true;
 			   }
 			} else {
@@ -401,11 +461,11 @@
 			}
 		}
 		if (flag) {
-			log.debug("Exiting CMH-Username-Email-Report-Generator-Rule");
+			cmhLogger.debug("Exiting CMH-Username-Email-Report-Generator-Rule");
 			return "success";
 		}
 		
-		log.debug("Exiting CMH-Username-Email-Report-Generator-Rule");
+		cmhLogger.debug("Exiting CMH-Username-Email-Report-Generator-Rule");
 		throw new sailpoint.tools.GeneralException("Report Generation Failed, please see logs for more details");
 
  ]]></Source>

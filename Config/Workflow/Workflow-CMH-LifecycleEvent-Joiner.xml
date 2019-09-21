@@ -56,9 +56,9 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   		
   			import org.apache.log4j.Logger;
   			
-  			Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-Joiner");
+  			Logger cmhLogger = Logger.getLogger("Workflow.CMH-LifecycleEvent-Joiner");
   			
-  			if(log.isDebugEnabled()){
+  			if(cmhLogger.isDebugEnabled()){
   				return true;
   			}
   			return false;
@@ -203,9 +203,9 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   		
   			import org.apache.log4j.Logger;
   			
-  			Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-Joiner");
+  			Logger cmhLogger = Logger.getLogger("Workflow.CMH-LifecycleEvent-Joiner");
   			if(isDebugEnabled){
-  				log.debug("Starting the CMH-LifecycleEvent-Joiner Workflow for the user "+identityName);
+  				cmhLogger.debug("Starting the CMH-LifecycleEvent-Joiner Workflow for the user "+identityName);
   			}
   		
   		]]></Source>
@@ -219,7 +219,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
             import org.apache.log4j.Logger;
   			import sailpoint.tools.Util;
   			
-  			Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-Joiner");
+  			Logger cmhLogger = Logger.getLogger("Workflow.CMH-LifecycleEvent-Joiner");
   			
   			List errorList = new ArrayList();
   			if(Util.isNullOrEmpty(adAppName)) {
@@ -235,9 +235,9 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   			    errorList.add("User manager must have email , Manager mail cannot be null");
   			}
   			if(!Util.isEmpty(errorList)) {
-  			  log.error("Errors Found :"+Util.listToCsv(errorList));
+  			  cmhLogger.error("Errors Found :"+Util.listToCsv(errorList));
   			}else if(isDebugEnabled){
-  				log.debug("Validation Successful");
+  				cmhLogger.debug("Validation Successful");
   			}
   			return errorList;
 			  
@@ -284,13 +284,13 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
                 import sailpoint.object.Link;
                 import sailpoint.tools.GeneralException;
                 
-				Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-Joiner");
+				Logger cmhLogger = Logger.getLogger("Workflow.CMH-LifecycleEvent-Joiner");
                 Identity identity = context.getObjectByName(Identity.class, identityName);
                 Application app = null;
                 try {
                       app = context.getObjectByName(Application.class, adAppName);
                     } catch (GeneralException e) {
-                    log.error(e.getMessage());
+                    cmhLogger.error(e.getMessage());
                     }
                 if (null != app && null != identity) {
                     IdentityService ids = new IdentityService(context);
@@ -302,10 +302,10 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
                             adLinkExist = false;
                          }
                        } catch (GeneralException e) {
-                       log.error(e.getMessage());
+                       cmhLogger.error(e.getMessage());
                     }
                  } else {
-                      log.error("Application is not found or Identity is null");
+                      cmhLogger.error("Application is not found or Identity is null");
                  }
                  wfcontext.getWorkflowCase().put("adLinkExist",adLinkExist);
 			  
@@ -442,19 +442,19 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 			import sailpoint.tools.Util;
 			import org.apache.log4j.Logger;
 			
-			Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-Joiner");
+			Logger cmhLogger = Logger.getLogger("Workflow.CMH-LifecycleEvent-Joiner");
 			if(validationErrors==null){
 				validationErrors = new ArrayList();
 			}
 			
 			if(wfcontext.getRootWorkflowCase().getMessages() != null && null != wfcontext.getRootWorkflowCase().getMessagesByType(Message.Type.Error)){
-				log.error("Error occured in joiner process: "+wfcontext.getRootWorkflowCase().getMessagesByType(Message.Type.Error));
+				cmhLogger.error("Error occured in joiner process: "+wfcontext.getRootWorkflowCase().getMessagesByType(Message.Type.Error));
 				List errorMessagesList = wfcontext.getRootWorkflowCase().getMessagesByType(Message.Type.Error);
 				String errorMessagesFromWfc = Util.listToCsv(errorMessagesList);
 				validationErrors.add(errorMessagesFromWfc);
 			}
 			if(isDebugEnabled){
-				log.debug("Errors recorded in Joiner process: "+validationErrors.toString());
+				cmhLogger.debug("Errors recorded in Joiner process: "+validationErrors.toString());
 			}
 			if(Util.isEmpty(validationErrors)){
 			    Map map = new HashMap();
@@ -470,8 +470,8 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   			
   			
   			if(isDebugEnabled){
-  			    log.debug("Check Status step : Audit Event Generated");
-  			    log.debug("Ending the CMH-LifecycleEvent-Joiner Workflow for the user "+identityName);
+  			    cmhLogger.debug("Check Status step : Audit Event Generated");
+  			    cmhLogger.debug("Ending the CMH-LifecycleEvent-Joiner Workflow for the user "+identityName);
   			}
 		
 		]]></Source>

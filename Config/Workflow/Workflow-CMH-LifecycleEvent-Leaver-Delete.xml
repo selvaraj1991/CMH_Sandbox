@@ -46,9 +46,9 @@
   		<![CDATA[
   			import org.apache.log4j.Logger;
   			
-  			Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-Leaver-Delete");
+  			Logger cmhLogger = Logger.getLogger("Workflow.CMH-LifecycleEvent-Leaver-Delete");
   			
-  			if(log.isDebugEnabled()){
+  			if(cmhLogger.isDebugEnabled()){
   				return true;
   			}
   			return false;
@@ -125,9 +125,9 @@
   		<![CDATA[
   			import org.apache.log4j.Logger;
   			
-  			Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-Leaver-Delete");
+  			Logger cmhLogger = Logger.getLogger("Workflow.CMH-LifecycleEvent-Leaver-Delete");
   			if(isDebugEnabled){
-  				log.debug("Starting the Leaver Deprovisioning Workflow for the user "+identityName);
+  				cmhLogger.debug("Starting the Leaver Deprovisioning Workflow for the user "+identityName);
   			}
   		]]>
   		</Source>
@@ -142,7 +142,7 @@
   			import sailpoint.object.Custom;
   			import sailpoint.tools.Util;
   			
-  			Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-Leaver-Delete");
+  			Logger cmhLogger = Logger.getLogger("Workflow.CMH-LifecycleEvent-Leaver-Delete");
   			
   			List errorList = new ArrayList(); 
   			Custom custom = context.getObjectByName(Custom.class,"CMH-Leaver-Custom-Object");
@@ -152,9 +152,9 @@
   			  						
   			if(!Util.isEmpty(errorList))
   			{
-  				log.error("Errors Found :"+Util.listToCsv(errorList));
+  				cmhLogger.error("Errors Found :"+Util.listToCsv(errorList));
   			}else if(isDebugEnabled){
-  				log.debug("Validation Successful");
+  				cmhLogger.debug("Validation Successful");
   			}
   			
   			return errorList;
@@ -201,13 +201,13 @@
   		<![CDATA[
   			import org.apache.log4j.Logger;
   			
-  			Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-Leaver-Delete");
+  			Logger cmhLogger = Logger.getLogger("Workflow.CMH-LifecycleEvent-Leaver-Delete");
   			List connectedApps = getAppsToProcess(identityName,"CMH-Leaver-Custom-Object","connectedApplications");
   			if(connectedApps==null || connectedApps.size()<=0){
-  				log.info("There are no connected Apps associated with the user");
+  				cmhLogger.info("There are no connected Apps associated with the user");
   			}
   			else if(isDebugEnabled){
-  				log.debug("List of Connected Apps to be deleted: "+connectedApps.toString());
+  				cmhLogger.debug("List of Connected Apps to be deleted: "+connectedApps.toString());
   			}
   			return connectedApps;
   		]]>
@@ -227,10 +227,10 @@
   			import sailpoint.object.ProvisioningPlan;
   			import sailpoint.object.ProvisioningPlan.AccountRequest;
   			
-  			Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-Leaver-Delete");
+  			Logger cmhLogger = Logger.getLogger("Workflow.CMH-LifecycleEvent-Leaver-Delete");
   			
   			if(isDebugEnabled){
-  				log.debug("Building Provisioning Plan for deleting the accounts of User: "+identityName);
+  				cmhLogger.debug("Building Provisioning Plan for deleting the accounts of User: "+identityName);
   			}
   			
   			ProvisioningPlan plan = new ProvisioningPlan();
@@ -260,7 +260,7 @@
 	  		plan.setAccountRequests(accountRequests);
   			
   			if(isDebugEnabled){
-  				log.debug("Plan created to delete the AD accounts of User : "+identityName);
+  				cmhLogger.debug("Plan created to delete the AD accounts of User : "+identityName);
   			}
   			
   			return plan;
@@ -328,10 +328,10 @@
   			import sailpoint.tools.Util;
   			
   			//method to generate service now ticket
-  			Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-Leaver-Delete");
+  			Logger cmhLogger = Logger.getLogger("Workflow.CMH-LifecycleEvent-Leaver-Delete");
   			
   			if(isDebugEnabled){
-  				log.debug("Generating service now ticket");
+  				cmhLogger.debug("Generating service now ticket");
   			}
   			
   			if(validationErrors==null){
@@ -345,12 +345,12 @@
   				if(snowResponse instanceof String){
   					snowId = (String)snowResponse;
   					if(isDebugEnabled){
-		  				log.debug("Service Now ticket generated successfully");
+		  				cmhLogger.debug("Service Now ticket generated successfully");
 		  			}
   				}else if(snowResponse instanceof List){
   					List errList = (List)snowResponse;
   					validationErrors.add(errList);
-		  			log.error("Error occured while generating the serive now ticket "+Util.listToCsv(validationErrors));
+		  			cmhLogger.error("Error occured while generating the serive now ticket "+Util.listToCsv(validationErrors));
   				}
   			}
   			wfcontext.getWorkflowCase().put("validationErrors",validationErrors);
@@ -398,10 +398,10 @@
   			import sailpoint.tools.Message;
   			import sailpoint.tools.Util;
   			
-  			Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-Leaver-Delete");
+  			Logger cmhLogger = Logger.getLogger("Workflow.CMH-LifecycleEvent-Leaver-Delete");
   			
   			if(isDebugEnabled){
-  				log.debug("Check Status step : Checking for errors");
+  				cmhLogger.debug("Check Status step : Checking for errors");
   			}
   			
   			if(wfcontext.getRootWorkflowCase().getMessages()!=null && wfcontext.getRootWorkflowCase().getMessagesByType(Message.Type.Error)!=null){
@@ -413,7 +413,7 @@
   				validationErrors.add(errorMessage);
   				
   				if(isDebugEnabled){
-	  				log.debug("Check Status step : Errors Found : "+Util.listToCsv(validationErrors));
+	  				cmhLogger.debug("Check Status step : Errors Found : "+Util.listToCsv(validationErrors));
 	  			}
   			}
   			
@@ -446,8 +446,8 @@
   			
   			
   			if(isDebugEnabled){
-  				log.debug("Check Status step : Audit Event Generated");
-  				log.debug("Ending the Leaver Deprovisioning Workflow for the user "+identityName);
+  				cmhLogger.debug("Check Status step : Audit Event Generated");
+  				cmhLogger.debug("Ending the Leaver Deprovisioning Workflow for the user "+identityName);
   			}
   			
   			context.commitTransaction();

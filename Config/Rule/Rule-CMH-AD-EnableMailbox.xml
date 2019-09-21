@@ -112,7 +112,7 @@ if($dn -and $oper -and (($oper -eq "Enable") -or ($oper -eq "Modify"))){
 		}
 	}else{
 		if($oper -eq "Enable"){
-	$logFile = $logRootDirectory+"Enable-$(get-date -f 'MMddyyyy-hhmmss').log";
+			$logFile = $logRootDirectory+"Enable-$(get-date -f 'MMddyyyy-hhmmss').log";
 		}else{
 			$logFile = $logRootDirectory+"Modify-$(get-date -f 'MMddyyyy-hhmmss').log";
 		}
@@ -152,7 +152,7 @@ if($dn -and $oper -and (($oper -eq "Enable") -or ($oper -eq "Modify"))){
 		}
 		Try
 		{
-			$userSAM = Get-ADUser -Filter { distinguishedName -Eq $dn } -properties EmailAddress,DisplayName,msExchHideFromAddressLists -server %%CMH-AD-GCServer%%
+			$userSAM = Get-ADUser -Filter { distinguishedName -Eq $dn } -properties EmailAddress,DisplayName,msExchHideFromAddressLists -server %%CMH-AD-SERVER-DEFAULT-PS%%
 		}
 		Catch
 		{

@@ -4,6 +4,7 @@
   <Attributes>
     <Map>
       <entry key="workflowName" value="CMH-LegalHold-Add-Workflow"/>
+	  <entry key="workflowSuccess" value="Request submitted successfully and it will be processed in background.."/>
     </Map>
   </Attributes>
   <QuickLinkOptions allowSelf="true">

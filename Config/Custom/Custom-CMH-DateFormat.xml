@@ -2,7 +2,7 @@
 <!DOCTYPE Custom PUBLIC "sailpoint.dtd" "sailpoint.dtd">
 <Custom name="CMH-DateFormat">
   <Attributes>
-    <Map>     
+    <Map>
       <entry key="preIterationTimestamp" value="yyyy-MM-dd hh:mm:ss"/>
       <entry key="renameUserTimestamp" value="ddMMMyyyy"/>
       <entry key="userNameFileNameTimestamp" value="yyyyMMdd"/>

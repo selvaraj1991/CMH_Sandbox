@@ -14,8 +14,8 @@
   		<Source>
   		<![CDATA[
   			import org.apache.log4j.Logger;
-  			Logger log = Logger.getLogger("Workflow.CMH-Create-AD-Account");
-  			if(log.isDebugEnabled()){
+  			Logger cmhLogger = Logger.getLogger("Workflow.CMH-Create-AD-Account");
+  			if(cmhLogger.isDebugEnabled()){
   				return true;
   			}
   			return false;
@@ -55,9 +55,9 @@
 		import sailpoint.object.ProvisioningPlan;
 		import sailpoint.object.ProvisioningPlan.AccountRequest;
 		
-		Logger log = Logger.getLogger("Workflow.CMH-Create-AD-Account");
+		Logger cmhLogger = Logger.getLogger("Workflow.CMH-Create-AD-Account");
 		
-		log.info("Building Plan to create AD account");
+		cmhLogger.info("Building Plan to create AD account");
 		
 		List acctReqs = new ArrayList();
 		Identity iden = context.getObjectByName(Identity.class, identityName);
@@ -70,7 +70,7 @@
 		adPlan.setAccountRequests(acctReqs);
 		adPlan.setIdentity(iden);
 		
-		log.info("Plan is generated to create AD account");
+		cmhLogger.info("Plan is generated to create AD account");
 		
 		return adPlan;
 		]]>

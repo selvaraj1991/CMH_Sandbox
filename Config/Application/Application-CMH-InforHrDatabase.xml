@@ -159,9 +159,9 @@
             <AttributeDefinition name="OtherEmpId" type="string"/>
             <AttributeDefinition name="AssignmentType" type="string"/>
             <AttributeDefinition name="OtherEmail" type="string"/>
-			<AttributeDefinition name="DivisionDesc" type="string"/>
+      <AttributeDefinition name="DivisionDesc" type="string"/>
 			<AttributeDefinition name="CmhDeptType" type="string"/>
-			<AttributeDefinition name="Credential" type="string"/>
+      <AttributeDefinition name="Credential" type="string"/>
 			<AttributeDefinition name="PersonIsSupv" type="string"/>
 			<AttributeDefinition name="CellPhone" type="string"/>
 			<AttributeDefinition name="JobTitle" type="string"/>

@@ -42,20 +42,21 @@
   import org.apache.log4j.Logger;
   import sailpoint.tools.Util;
 
-  Logger logger = Logger.getLogger("Rule.CMH-O365-Role-Assignment-Rule");
+  Logger cmhLogger = Logger.getLogger("Rule.CMH-O365-Role-Assignment-Rule");
 
-  logger.debug("Entering CMH-O365-Role-Assignment-Rule:Assign O365 Role for the user based on the userType and EmailRequired");
+  cmhLogger.debug("Entering CMH-O365-Role-Assignment-Rule:Assign O365 Role for the user based on the userType and EmailRequired");
 
   boolean assignRole = false;
   String identityName = null;
 
   if (identity != null && identity.isCorrelated()) {
       identityName = identity.getName();
-      log.debug("CMH-O365-Role-Assignment-Rule for identity:"+identityName);
+      cmhLogger.debug("CMH-O365-Role-Assignment-Rule for identity:"+identityName);
       String emailReqd = identity.getStringAttribute("mailReqd");
       String email = identity.getEmail();
       String status = identity.getStringAttribute("status");
-      if (!Util.nullSafeCaseInsensitiveEq(status, "Terminated")) {
+	  String legalHold = identity.getStringAttribute("identityRetention");
+      if (Util.nullSafeCaseInsensitiveEq(legalHold, "YES") || !Util.nullSafeCaseInsensitiveEq(status, "Terminated")) {
           String oldEmpId = identity.getStringAttribute("otherEmpId");
           String isConversionProcessed = identity.getStringAttribute("isConversionProcessed");
           if (Util.isNullOrEmpty(oldEmpId) || !isConversionCase(oldEmpId,identityName) || Util.nullSafeCaseInsensitiveEq(isConversionProcessed, "YES")) {
@@ -74,9 +75,9 @@
   }
 
   if (assignRole) {
-      logger.debug("O365 role assigned for the User: " + identityName);
+      cmhLogger.debug("O365 role assigned for the User: " + identityName);
   }
-  logger.debug("Exiting CMH-O365-Role-Assignment-Rule");
+  cmhLogger.debug("Exiting CMH-O365-Role-Assignment-Rule");
   return assignRole;
   ]]></Source>
 </Rule>

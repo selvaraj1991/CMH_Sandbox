@@ -39,11 +39,11 @@
 	import sailpoint.tools.Util;
 
 
-	Logger log = Logger.getLogger("Rule.CMH-LegalHold-Users-Report-Generation-Rule");
+	Logger cmhLogger = Logger.getLogger("Rule.CMH-LegalHold-Users-Report-Generation-Rule");
 	
 	//Creatng a List with details of users which are on Legal Hold.
 	public List getLegalHoldUsers() {
-		log.debug("Entering getLegalHoldUsers method");
+		cmhLogger.debug("Entering getLegalHoldUsers method");
 		List filterList = new ArrayList();
 		List userNameList = new ArrayList();
 
@@ -57,7 +57,7 @@
 		try {
 			identityIterator = context.search(Identity.class, qo);
 		} catch (Exception ex) {
-			log.error("Error in getLegalHoldUsers method :" + ex.getMessage());
+			cmhLogger.error("Error in getLegalHoldUsers method :" + ex.getMessage());
 		}
 		// The  following if loop will Iterate the list of records returned from context search and return the user list
 		if (identityIterator != null) {
@@ -78,23 +78,23 @@
 				}
 			}			
 		}
-		log.debug("Exiting getLegalHoldUsers method");
+		cmhLogger.debug("Exiting getLegalHoldUsers method");
 		return userNameList;
 	}
 	//method to return header of CSV file
 	public static List getHeader() {
-		log.debug("Entering getHeader method");
+		cmhLogger.debug("Entering getHeader method");
 		List appList = new ArrayList();
 		appList.add("Username");
 		appList.add("Employee ID");
 		appList.add("Email");
 		appList.add("Assignment Type");
-		log.debug("Exiting getHeader method");
+		cmhLogger.debug("Exiting getHeader method");
 		return appList;
 	}
 	//method to create a List with users details sorted as per Header
 	public static List getSortUsers(Map users) {
-		log.debug("Entering getSortUsers method");
+		cmhLogger.debug("Entering getSortUsers method");
 		List appList = getHeader();
 		List sortList = new ArrayList();
 
@@ -107,12 +107,12 @@
 				}
 			}
 		}
-		log.debug("Exiting getSortUsers method");
+		cmhLogger.debug("Exiting getSortUsers method");
 		return sortList;
 	}
 	//method to append "," after each value in a list
 	public String getListAsCsvString(List list) {
-		log.debug("Entering getListAsCsvString method");
+		cmhLogger.debug("Entering getListAsCsvString method");
 		StringBuilder sb = new StringBuilder();
 		for (String str: list) {
 			if (sb.length() != 0) {
@@ -120,14 +120,14 @@
 			}
 			sb.append(str);
 		}
-		log.debug("Exiting getListAsCsvString method");
+		cmhLogger.debug("Exiting getListAsCsvString method");
 		return sb.toString();
 	}
 
 
 	//method to write the Comma separated values in a CSV file
 	public static void callMethod(List users) {
-		log.debug("Entering callMethod method");
+		cmhLogger.debug("Entering callMethod method");
 		Custom custom = null;
 		FileWriter writer = null;
     Date date = null;
@@ -140,7 +140,7 @@
 				DateFormat currentDateFormatWithTime = new SimpleDateFormat(format);
 				String strCurrentDateTime = currentDateFormatWithTime.format(date); 
 				String p = custom.get("reportpath");
-				log.debug("Report path from custom obj"+p);
+				cmhLogger.debug("Report path from custom obj"+p);
 				String path=p+"LegalHoldUsers"+strCurrentDateTime+".csv";
 					try {
 						writer = new FileWriter(path);
@@ -163,14 +163,14 @@
 
 					} //end of try
 					catch (Exception e) {
-						log.error("Error in CsvFileWriter of callMethod " + e.getMessage());
+						cmhLogger.error("Error in CsvFileWriter of callMethod " + e.getMessage());
 					} //end of catch
 					finally {
 						try {
 							writer.flush();
 							writer.close();
 						} catch (IOException e) {
-							log.error("Error while flushing/closing fileWriter !!!"+e.getMessage());
+							cmhLogger.error("Error while flushing/closing fileWriter !!!"+e.getMessage());
 						}
 					} //end of finally   
 				}
@@ -178,13 +178,13 @@
 			}
 		}
     else {
-					log.debug("There are no users are on Legal Hold");
+					cmhLogger.debug("There are no users are on Legal Hold");
 				}
 	}
-	log.debug("Entering CMH-LegalHold-Users-Report-Generation-Rule");
+	cmhLogger.debug("Entering CMH-LegalHold-Users-Report-Generation-Rule");
 	private static int count = 0;
 	List list = getLegalHoldUsers();
 	callMethod(list);
-	log.debug("Exiting CMH-LegalHold-Users-Report-Generation-Rule");
+	cmhLogger.debug("Exiting CMH-LegalHold-Users-Report-Generation-Rule");
 	]]></Source>
 </Rule>

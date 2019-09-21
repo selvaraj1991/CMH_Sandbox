@@ -38,8 +38,8 @@
 		import sailpoint.object.Identity;
 		import sailpoint.tools.Util;
 
-		Logger log = Logger.getLogger("Rule.CMH-Rehire-Users-Trigger-Rule");
-		log.debug("Entering into CHM-Rehire-Users-Trigger-Rule for identity:"+newIdentity!=null?newIdentity.getName():"");
+		Logger cmhLogger = Logger.getLogger("Rule.CMH-Rehire-Users-Trigger-Rule");
+		cmhLogger.debug("Entering into CHM-Rehire-Users-Trigger-Rule for identity:"+newIdentity!=null?newIdentity.getName():"");
 		//Selecting the users for rehire based on status and rehire flag
 		boolean rehired = false;
 		if (null != previousIdentity && null != newIdentity) {
@@ -68,7 +68,7 @@
 				}											    
 		     }
 	     }
-	    log.debug("Exiting from CMH-Rehire-Users-Trigger-Rule: Proceed with Rehire?"+rehired);
+	    cmhLogger.debug("Exiting from CMH-Rehire-Users-Trigger-Rule: Proceed with Rehire?"+rehired);
 		return rehired;
   ]]></Source>
 </Rule>

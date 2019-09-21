@@ -97,16 +97,16 @@
   <Source><![CDATA[
   import org.apache.log4j.Logger;
   import sailpoint.tools.Util;
-  Logger log = Logger.getLogger("Rule.CMH-AD-HomeDirectory-Rule");
+  Logger cmhLogger = Logger.getLogger("Rule.CMH-AD-HomeDirectory-Rule");
   
   String homeDirVal = null;
   if(identity!=null){
     String identityName = identity.getName();
-    log.debug("Entering CMH-AD-HomeDirectory-Rule for identity:"+identityName);
+    cmhLogger.debug("Entering CMH-AD-HomeDirectory-Rule for identity:"+identityName);
    	if(Util.isNotNullOrEmpty(identityName)){
   		homeDirVal = getHomeDirectory(identityName);
     }
-    log.debug("Exiting CMH-AD-HomeDirectory-Rule for identity:"+identityName);
+    cmhLogger.debug("Exiting CMH-AD-HomeDirectory-Rule for identity:"+identityName);
   }
   return homeDirVal;
   ]]></Source>

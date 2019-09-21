@@ -3,7 +3,7 @@
 <TaskDefinition name="Username And Email Report Generator" resultAction="Rename" subType="task_item_type_generic" type="Generic">
   <Attributes>
     <Map>
-      <entry key="TaskSchedule.host"/>
+      <entry key="TaskSchedule.host" value="%%CMH-TASK01-HOST%%"/>
       <entry key="ruleName" value="CMH-Username-Email-Report-Generator-Rule"/>
       <entry key="taskCompletionEmailNotify" value="Disabled"/>
       <entry key="taskCompletionEmailRecipients"/>

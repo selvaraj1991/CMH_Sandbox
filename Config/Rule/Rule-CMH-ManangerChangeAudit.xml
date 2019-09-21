@@ -54,15 +54,15 @@
     	import org.apache.log4j.Logger;
     	import sailpoint.tools.Util;
     	
-    	Logger log = Logger.getLogger("Rule.CMH-Audit-ManangerChange-Rule");
+    	Logger cmhLogger = Logger.getLogger("Rule.CMH-Audit-ManangerChange-Rule");
     	if(null != identity) {
     	   String userName = identity.getName();
-    	   log.debug("Entering CMH-Audit-ManangerChange-Rule for identity:"+userName);
+    	   cmhLogger.debug("Entering CMH-Audit-ManangerChange-Rule for identity:"+userName);
     	   if(oldValue != null && newValue != null) {
 	          String oldManager = oldValue.getName();
 	          String newManager = newValue.getName();
 	          if(!Util.nullSafeCaseInsensitiveEq(oldManager,newManager)){
-	             log.debug("CMH-Audit-ManangerChange-Rule: Manager is updated , proceeding with audit");
+	             cmhLogger.debug("CMH-Audit-ManangerChange-Rule: Manager is updated , proceeding with audit");
                  String empId =identity.getStringAttribute("employeeId");
 	             Map map = new HashMap();
 		         map.put("setString1","User EmployeeID :"+empId);
@@ -70,7 +70,7 @@
 	             auditWrite("Manager-Change", "CMH-Audit-ManangerChange-Rule",userName, "Manager", newManager, map);
               }
            }
-           log.debug("Exiting CMH-Audit-ManangerChange-Rule for identity:"+userName);
+           cmhLogger.debug("Exiting CMH-Audit-ManangerChange-Rule for identity:"+userName);
         }
             
   ]]></Source>

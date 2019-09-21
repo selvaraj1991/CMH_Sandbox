@@ -28,10 +28,10 @@
                                     
 					import sailpoint.object.Filter;
 					
-					Filter filter = Filter.or(Filter.isnull("deletionStatus"),Filter.ne("deletionStatus", "deleted"));
+					Filter filter = Filter.and(Filter.or(Filter.isnull("deletionStatus"),Filter.ne("deletionStatus", "deleted")),Filter.or(Filter.isnull("identityRetention"),Filter.ne("identityRetention","YES")),Filter.eq("correlated",(Boolean)true));
 					field.setFilterString(filter.toString());
 				
-                                ]]></Source>
+                ]]></Source>
               </Script>
             </value>
           </entry>

@@ -48,29 +48,29 @@
 		import org.apache.log4j.Logger;
 		import sailpoint.tools.Util;
 		
-		Logger log = Logger.getLogger("Rule.CMH-Leaver-Deprovision-Trigger-Rule");
-		log.debug("Entering CMH-Leaver-Deprovision-Trigger-Rule for identity "+newIdentity!=null?newIdentity.getName():"");
+		Logger cmhLogger = Logger.getLogger("Rule.CMH-Leaver-Deprovision-Trigger-Rule");
+		cmhLogger.debug("Entering CMH-Leaver-Deprovision-Trigger-Rule for identity "+newIdentity!=null?newIdentity.getName():"");
 		
 		//Filtering out the users having deletion status is deleted
 		boolean triggerStatus = false;
-		if(newIdentity!=null){
-			String status = newIdentity.getStringAttribute("status");
-			String deletionStatus = newIdentity.getStringAttribute("deletionStatus");
-			String identityRetention = newIdentity.getStringAttribute("identityRetention");
-			if(Util.nullSafeCaseInsensitiveEq(status,"TERMINATED")){
+			if(newIdentity!=null){
+				String status = newIdentity.getStringAttribute("status");
+				String deletionStatus = newIdentity.getStringAttribute("deletionStatus");
+				String identityRetention = newIdentity.getStringAttribute("identityRetention");
+				if(Util.nullSafeCaseInsensitiveEq(status,"TERMINATED")){
 				String delDate = newIdentity.getAttribute("deletionDate");
 				Date deletionDate = getDate("genericViewDateFormat",delDate); 
-				if(deletionDate!=null){
-					Date currDate = new Date();
-					if(currDate.after(deletionDate) && 
-						!Util.nullSafeCaseInsensitiveEq(deletionStatus,"deleted") &&
-						!Util.nullSafeCaseInsensitiveEq(identityRetention,"YES")){
-						triggerStatus = true;
-					}				
+					if(deletionDate!=null){
+							Date currDate = new Date();
+							if(currDate.after(deletionDate) && 
+								!Util.nullSafeCaseInsensitiveEq(deletionStatus,"deleted") &&
+								!Util.nullSafeCaseInsensitiveEq(identityRetention,"YES")){
+								triggerStatus = true;
+					}
 				}
-			}
+		    }
 		}
-		log.debug("Exiting CMH-Leaver-Deprovision-Trigger-Rule: Proceed with Leaver Delete process? "+triggerStatus);
+		cmhLogger.debug("Exiting CMH-Leaver-Deprovision-Trigger-Rule: Proceed with Leaver Delete process? "+triggerStatus);
 		return triggerStatus;
 		]]>
     </Source>

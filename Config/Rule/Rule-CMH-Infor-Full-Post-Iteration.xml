@@ -11,12 +11,12 @@
             import sailpoint.object.TaskResult;
             import sailpoint.object.TaskResult.CompletionStatus;
             import sailpoint.tools.Util;
-
-		    Logger log = Logger.getLogger("Rule.CMH-Infor-Full-Post-Iteration-Rule");
-
-
+            
+		    Logger cmhLogger = Logger.getLogger("Rule.CMH-Infor-Full-Post-Iteration-Rule");
+		    
+		    
             private boolean taskSucessStatus(String taskName) {
-              log.debug("Entering taskSucessStatus method");
+              cmhLogger.debug("Entering taskSucessStatus method");
               boolean isSuccess = false;
               if(Util.isNotNullOrEmpty(taskName)) {
                   TaskResult result = context.getObjectByName(TaskResult.class,taskName);
@@ -30,16 +30,16 @@
                      }
                   }
                }
-               log.debug("Exiting taskSucessStatus method: Task Success? "+isSuccess);
+               cmhLogger.debug("Exiting taskSucessStatus method: Task Success? "+isSuccess);
                return isSuccess;
             }
-
+			
 			//Rule starts from here
-			log.debug("Entering CMH-Infor-Full-Post-Iteration-Rule");
+			cmhLogger.debug("Entering CMH-Infor-Full-Post-Iteration-Rule");
             Custom custom = context.getObjectByName(Custom.class,"CMH-Infor-Aggregation-Custom-Object");
             if(custom != null) {
                String taskName = (String) custom.get("taskName");
-               boolean istaskSuccess = taskSucessStatus(taskName);
+               boolean istaskSuccess = taskSucessStatus(taskName); 
                String timeStamp = null;
                if(istaskSuccess) {
                   timeStamp = (String) custom.get("lastFullAggregationTimeStamp");
@@ -53,20 +53,20 @@
 					 if(app != null) {
 					    String sqlQuery = (String) custom.get("sqlQueryIncremental");
 					    if(Util.isNotNullOrEmpty(sqlQuery) && sqlQuery.contains("TIME_STAMP")){
-						   sqlQuery = sqlQuery.replace("TIME_STAMP",timeStamp);
+						   sqlQuery = sqlQuery.replace("TIME_STAMP",timeStamp);						   
 					    }
 					    app.setAttribute("SQL",sqlQuery);
 					    try {
 					          context.saveObject(app);
 							  context.commitTransaction();
 							} catch (GeneralException e) {
-								 log.error("Error in CMH-Infor-Full-Post-Iteration-Rule: "+e.getMessage());
+								 cmhLogger.error("Error in CMH-Infor-Full-Post-Iteration-Rule: "+e.getMessage());
 						    }
 					   }
                    }
                }
             }
-            log.debug("Exiting CMH-Infor-Full-Post-Iteration-Rule");
+            cmhLogger.debug("Exiting CMH-Infor-Full-Post-Iteration-Rule");
             ]]>
         </Source>
     </Rule>

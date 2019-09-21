@@ -80,8 +80,9 @@ if($dn -and $oper -and ($oper -eq "Leaver")){
 	if($usrName){
 		$logFile = $logRootDirectory+$usrName+"Disable-$(get-date -f 'MMddyyyy-hhmmss').log";
 	}else{
-	$logFile = $logRootDirectory+"Disable-$(get-date -f 'MMddyyyy-hhmmss').log";
+		$logFile = $logRootDirectory+"Disable-$(get-date -f 'MMddyyyy-hhmmss').log";
 	}
+	
 	Add-Content -path $logFile -value "$(get-date -f 'MM-dd-yyy HH:mm:ss') : [DEBUG] adAfterCreatePowerShell: Entering the script";
 	Try
 	{
@@ -105,7 +106,7 @@ if($dn -and $oper -and ($oper -eq "Leaver")){
 		}
 		Try
 		{
-			$userSAM = Get-ADUser -Filter { distinguishedName -Eq $dn } -properties EmailAddress,DisplayName -server %%CMH-AD-GCServer%%
+			$userSAM = Get-ADUser -Filter { distinguishedName -Eq $dn } -properties EmailAddress,DisplayName -server %%CMH-AD-SERVER-DEFAULT-PS%%
 		}
 		Catch
 		{

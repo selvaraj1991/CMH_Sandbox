@@ -102,7 +102,7 @@ if($resultObject.Errors.count -eq 0){
 		}
 		Try
 		{
-			$userSAM = Get-ADUser -Filter { sAMAccountName -Eq $sam } -properties EmailAddress -server %%CMH-AD-GCServer%%
+			$userSAM = Get-ADUser -Filter { sAMAccountName -Eq $sam } -properties EmailAddress -server %%CMH-AD-SERVER-DEFAULT-PS%%
 		}
 		Catch
 		{
@@ -179,7 +179,7 @@ if($resultObject.Errors.count -eq 0){
 		$ErrorMessage = $_.Exception.Message;
 		Add-Content -path $logFile -value "$(get-date -f 'MM-dd-yyy HH:mm:ss') : [ERROR] Error in setting email address in mailbox=====> $ErrorMessage";
 		$ErrorActionPreference="Stop";
-	}  
+	}
 }
 </Source>
 </Rule>

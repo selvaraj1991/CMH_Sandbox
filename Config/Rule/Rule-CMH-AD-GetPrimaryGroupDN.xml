@@ -110,18 +110,18 @@
     </Signature>
     <Source><![CDATA[
 		import org.apache.log4j.Logger;
-		Logger log = Logger.getLogger("Rule.CMH-AD-GetPrimaryGroupDN-Rule");
+		Logger cmhLogger = Logger.getLogger("Rule.CMH-AD-GetPrimaryGroupDN-Rule");
 		
-		log.debug("Entering CMH-AD-GetPrimaryGroupDN-Rule for identity:"+identity.getName());
+		cmhLogger.debug("Entering CMH-AD-GetPrimaryGroupDN-Rule for identity:"+identity.getName());
 		//Generates primary group DN based on assignmentType of user
 		String usertype = identity.getStringAttribute("assignmentType").trim();
 		String value = generatePrimaryGroupDN(usertype);
 		if (value != null) {
-			log.info("Primary Group DN for the user "+identity.getName()+" is "+value);
+			cmhLogger.info("Primary Group DN for the user "+identity.getName()+" is "+value);
 		} else {
-			log.error("Primary Group DN is null for the user "+identity.getName());
+			cmhLogger.error("Primary Group DN is null for the user "+identity.getName());
 		}
-		log.debug("Exiting CMH-AD-GetPrimaryGroupDN-Rule");
+		cmhLogger.debug("Exiting CMH-AD-GetPrimaryGroupDN-Rule");
 		return value;
   ]]></Source>
 </Rule>
