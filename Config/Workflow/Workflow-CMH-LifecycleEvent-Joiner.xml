@@ -329,45 +329,6 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   <Step icon="Undo" name="Wait for next Retry" posX="320" posY="431" wait="ref:retryTime">
     <Transition to="Check AD Application"/>
   </Step>
-  <Step action="call:compileProvisioningProject" name="Compile Project" posX="172" posY="20" resultVariable="project">
-    <Arg name="identityName" value="ref:identityName"/>
-    <Arg name="plan" value="ref:plan"/>
-    <Arg name="requester" value="string:spadmin"/>
-    <Arg name="source" value="string:UI"/>
-    <Arg name="optimisticProvisioning" value="ref:optimisticProvisioning"/>
-    <Arg name="requireCreateTemplates" value="string:false"/>
-    <Arg name="noApplicationTemplates" value="string:true"/>
-    <Description>Compile the provisioning plan into a provisioning project.  
-                 If you need to pass in provisioner options like "noFiltering"  
-                 or "noRoleDeprovisioning" you must pass them as explicit  
-                 arguments to the call.  
-                 The evaluation options "requester" and "source" are commonly  
-                 set here.               
-                 You can also pass things into the Template and Field scripts by  
-                 defining Args in this step.
-	</Description>
-    <Transition to="Create Identity Request"/>
-  </Step>
-  <Step action="call:createIdentityRequest" icon="Task" name="Create Identity Request" posX="295" posY="19">
-    <Arg name="project" value="ref:project"/>
-    <Arg name="source" value="ref:source"/>
-    <Arg name="priority" value="string:Normal"/>
-    <Arg name="identityName" value="ref:identityName"/>
-    <Arg name="flow" value="ref:flow"/>
-    <Return name="identityRequestId" to="identityRequestId"/>
-    <Transition to="Provision"/>
-  </Step>
-  <Step action="call:provisionProject" icon="Provision" name="Provision" posX="427" posY="19">
-    <Arg name="background" value="false"/>
-    <Arg name="project" value="ref:project"/>
-    <Transition to="Complete Identity Request"/>
-  </Step>
-  <Step action="call:completeIdentityRequest" icon="Task" name="Complete Identity Request" posX="536" posY="18" resultVariable="identityRequest">
-    <Arg name="project" value="ref:project"/>
-    <Arg name="autoVerify" value="false"/>
-    <Arg name="identityRequestId" value="ref:identityRequestId"/>
-    <Transition to="Notify Manager"/>
-  </Step>
   <Step action="call:sendEmail" condition="script:managerEmail!=null" icon="Email" name="Notify Manager" posX="636" posY="317">
     <Arg name="to" value="ref:managerEmail"/>
     <Arg name="template" value="ref:managerEmailTemplate"/>
