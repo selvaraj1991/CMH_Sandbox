@@ -298,7 +298,7 @@
 						if(identity!=null){
 							String deptNo = identity.getStringAttribute("departmentNumber");
 							String divisionDesc = identity.getStringAttribute("divisionDesc");
-							if(Util.isNotNullOrEmpty(deptNo) && Util.isNotNullOrEmpty(divisionDesc)) { 
+							if(Util.isNotNullOrEmpty(deptNo) && Util.isNotNullOrEmpty(divisionDesc)) {
 							  department = deptNo.concat("-").concat(divisionDesc);
 							}
 						}
@@ -362,9 +362,9 @@
         <Field displayName="con_prov_policy_ad_description" helpKey="help_con_prov_policy_ad_description" name="description" section="General" type="string">
           <Script>
             <Source><![CDATA[
-            
+
             import sailpoint.object.Identity;
-            
+
             String userType = identity.getStringAttribute("userType");
 			String description = null;
 			String displayName = "";
@@ -391,7 +391,7 @@
 					}
 				}
 			}
-			
+
 			if(description!=null && displayName!=null && !displayName.isEmpty()){
 				description = description +" "+displayName;
 			}
@@ -402,7 +402,7 @@
         <Field displayName="Initials" name="initials" type="string">
           <Script>
             <Source><![CDATA[
-	            
+
 	            	return identity.getStringAttribute("middleInitial");
 	            ]]></Source>
           </Script>

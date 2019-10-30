@@ -11,33 +11,33 @@
     <Description>The name of the identity.</Description>
   </Variable>
   <Variable initializer="script:(identityDisplayName != void) ? identityDisplayName : resolveDisplayName(identityName)" input="true" name="identityDisplayName">
-    <Description>    
-       The displayName of the identity being updated.  
-       Query for this using a projection query and fall back to the name.    
+    <Description>
+       The displayName of the identity being updated.
+       Query for this using a projection query and fall back to the name.
 </Description>
   </Variable>
   <Variable initializer="string:AccountsRequest" input="true" name="flow">
     <Description>What type of LCM flow is this</Description>
   </Variable>
   <Variable name="plan" type="sailpoint.object.ProvisioningPlan">
-    <Description>The provisioning plan which is built during the workflow.  
+    <Description>The provisioning plan which is built during the workflow.
 </Description>
   </Variable>
   <Variable initializer="string:LCM" input="true" name="source">
-    <Description>  
-       String version of sailpoint.object.Source to indicate  
-       where the request originated.  Defaults to LCM.  
+    <Description>
+       String version of sailpoint.object.Source to indicate
+       where the request originated.  Defaults to LCM.
 </Description>
   </Variable>
   <Variable initializer="string:true" input="true" name="trace">
-    <Description>  
-       Used for debugging this workflow and when set to true trace  
-       will be sent to stdout.  
+    <Description>
+       Used for debugging this workflow and when set to true trace
+       will be sent to stdout.
     </Description>
   </Variable>
   <Variable name="project" type="ProvisioningProject">
-    <Description>  
-ProvisioningProject which is just a compiled version of the ProvisioningPlan.  
+    <Description>
+ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 </Description>
   </Variable>
   <Variable name="identityRequestId">
@@ -48,25 +48,25 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   <Variable name="isDebugEnabled" type="boolean">
     <Script>
       <Source><![CDATA[
-  		
+
   			import org.apache.log4j.Logger;
-  			
-  			Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-Name-Change");
-  			
-  			if(log.isDebugEnabled()){
+
+  			Logger cmhLogger = Logger.getLogger("Workflow.CMH-LifecycleEvent-Name-Change");
+
+  			if(cmhLogger.isDebugEnabled()){
   				return true;
   			}
   			return false;
-  		
+
   		]]></Source>
     </Script>
   </Variable>
   <Variable name="employeeId">
     <Script>
       <Source><![CDATA[
-  		
+
   			import sailpoint.object.Identity;
-  			
+
   			String employeeId = null;
   			if(identityName!=null){
   			   Identity iden = context.getObjectByName(Identity.class,identityName);
@@ -75,23 +75,23 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   				}
   			}
   			return employeeId;
-  		  
+
   		]]></Source>
     </Script>
   </Variable>
   <Variable name="email">
     <Script>
       <Source><![CDATA[
-  		 
+
   			import sailpoint.object.Identity;
-  			
+
   			String email = null;
   			if(identityName!=null){
   			   Identity iden = context.getObjectByName(Identity.class,identityName);
   			   if(null != iden) {
   				  email= iden.getStringAttribute("email");
-  				} 				
-  			}  						
+  				}
+  			}
   		    return email;
   		]]></Source>
     </Script>
@@ -99,7 +99,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   <Variable name="hasEmail" type="boolean">
     <Script>
       <Source><![CDATA[
-  		 
+
   			import sailpoint.object.Identity;
   			import sailpoint.tools.Util;
   			String email = null;
@@ -112,55 +112,55 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 	  				   hasMail = true;
 	  				}
   			    }
-  			} 
-  			return hasMail;			
-  		  
+  			}
+  			return hasMail;
+
   		]]></Source>
     </Script>
   </Variable>
   <Variable name="adAppName">
     <Script>
       <Source><![CDATA[
-  		
+
   			import sailpoint.object.Custom;
-  			
+
   			Custom custom = context.getObjectByName(Custom.class,"CMH-Custom-Object-AD-Application");
   			String appName = null;
   			if(custom!=null){
   			   appName = custom.getString("adApplication");
   			}
   			return appName;
-  		
+
   		]]></Source>
     </Script>
   </Variable>
   <Variable name="hrAppName">
     <Script>
       <Source><![CDATA[
-  		
+
   			import sailpoint.object.Custom;
-  			
+
   			Custom custom = context.getObjectByName(Custom.class,"CMH-Custom-Object-Infor-Application");
   			String appName = null;
   			if(custom!=null){
   				appName = custom.getString("hrApplicationName");
   			}
   			return appName;
-  		
+
   		]]></Source>
     </Script>
   </Variable>
   <Variable name="adExists" type="boolean">
     <Script>
       <Source><![CDATA[
-  		
+
   			import sailpoint.api.IdentityService;
   			import sailpoint.object.Application;
   			import sailpoint.object.Identity;
   			import sailpoint.tools.Util;
-  			
+
   			boolean isAdLinkPresent = false;
-  			
+
   			if(Util.isNotNullOrEmpty(adAppName)) {
 	  			Identity iden = context.getObjectByName(Identity.class,identityName);
 	  			Application app = context.getObjectByName(Application.class,adAppName);
@@ -174,7 +174,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 	  			 }
   			}
   			return isAdLinkPresent;
-  		
+
   		]]></Source>
     </Script>
   </Variable>
@@ -182,7 +182,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
     <Description>Manager Name</Description>
     <Script>
       <Source><![CDATA[
-		
+
         import sailpoint.object.Identity;
         Identity identityObject = context.getObject(Identity.class,identityName);
         if(identityObject != null){
@@ -192,7 +192,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
           }
         }
         return null;
-		
+
 		]]></Source>
     </Script>
   </Variable>
@@ -200,7 +200,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
     <Description>Manager Email</Description>
     <Script>
       <Source><![CDATA[
-		
+
 		import sailpoint.object.Identity;
 		Identity identityObject = context.getObject(Identity.class,identityName);
 		if(identityObject!=null){
@@ -210,17 +210,17 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 			}
 		}
 		return null;
-		
+
 		]]></Source>
     </Script>
   </Variable>
   <Variable name="assignmentType">
     <Script>
       <Source><![CDATA[
-  		
+
   			import sailpoint.object.Identity;
   			import sailpoint.tools.Util;
-  			
+
   			String assignmentType = null;
   			if(identityName!=null){
   			   Identity iden = context.getObjectByName(Identity.class,identityName);
@@ -232,8 +232,8 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
                return assignmentType;
             }
             return null;
- 
-  		
+
+
   		]]></Source>
     </Script>
   </Variable>
@@ -262,14 +262,14 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   <Step icon="Start" name="Start" posX="33" posY="128" wait="1">
     <Script>
       <Source><![CDATA[
-  		
+
   			import org.apache.log4j.Logger;
-  			
-  			Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-Name-Change");
+
+  			Logger cmhLogger = Logger.getLogger("Workflow.CMH-LifecycleEvent-Name-Change");
   			if(isDebugEnabled){
-  				log.debug("Starting the CMH-LifecycleEvent-Name-Change for the user "+identityName);
+  				cmhLogger.debug("Starting the CMH-LifecycleEvent-Name-Change for the user "+identityName);
   			}
-  		
+
   		]]></Source>
     </Script>
     <Transition to="Validate Data"/>
@@ -277,12 +277,12 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   <Step icon="Analysis" name="Validate Data" posX="165" posY="126" resultVariable="validationErrors">
     <Script>
       <Source><![CDATA[
-			  
+
             import org.apache.log4j.Logger;
   			import sailpoint.tools.Util;
-  			
-  			Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-Name-Change");
-  			
+
+  			Logger cmhLogger = Logger.getLogger("Workflow.CMH-LifecycleEvent-Name-Change");
+
   			List errorList = new ArrayList();
   			if(Util.isNullOrEmpty(adAppName)) {
   			   errorList.add("The Custom Object is not configured properly with AD app name.Either Custom object or AD" +
@@ -299,24 +299,24 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   			    errorList.add("Manager doesn't have email, the manager must have email");
   			}
   			if(!Util.isEmpty(errorList)) {
-  			  log.error("Errors Found :"+Util.listToCsv(errorList));
+  			  cmhLogger.error("Errors Found :"+Util.listToCsv(errorList));
   			}else if(isDebugEnabled){
-  				log.debug("Validation Successful");
+  				cmhLogger.debug("Validation Successful");
   			}
   			return errorList;
-			  
+
       ]]></Source>
     </Script>
     <Transition to="Generate User Name">
       <Script>
         <Source><![CDATA[
-  			  
+
   				import sailpoint.tools.Util;
   				if(Util.isEmpty(validationErrors)){
 					return true;
 				}
 				return false;
-  			   
+
   			]]></Source>
       </Script>
     </Transition>
@@ -328,7 +328,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
               import sailpoint.api.ObjectUtil;
   		      import sailpoint.object.Identity;
   		      import sailpoint.tools.Util;
-  		      
+
 		      if (validationErrors == null) {
 		          validationErrors = new ArrayList();
 		      }
@@ -337,43 +337,43 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   		      String firstName = identity.getFirstname();
   		      String lastName = identity.getLastname();
   		      String middInitial = identity.getStringAttribute("middleInitial");
-	  		     
+
   		      if(Util.isNotNullOrEmpty(middInitial)) {
   		          middInitial.trim();
   		      }
-  		      log.info("Creating a new user by generating username & email from firstname & lastname of the user");
+  		      cmhLogger.info("Creating a new user by generating username & email from firstname & lastname of the user");
 			  String finalUsername =null;
 			  String genUsername = userNameGenerator(firstName,lastName,middInitial,employeeId);	//Generate a username based on firstname,lastname, middleInitial
-		      log.debug("Generated Username "+genUsername);		
+		      cmhLogger.debug("Generated Username "+genUsername);
 			  if(Util.isNotNullOrEmpty(genUsername)) {
 				 finalUsername=finalUserName(genUsername,firstName,lastName,middInitial,employeeId);	//Validate the generated username for the uniqueness
 			   }
-			  log.debug("finalUsername : "+finalUsername);
+			  cmhLogger.debug("finalUsername : "+finalUsername);
 			  if(Util.isNotNullOrEmpty(finalUsername)) {
 			     finalUsername =finalUsername.toLowerCase();
 				 identity.setName(finalUsername);
 				 identity.setDisplayName(finalUsername);
-					 
+
 				 if(hasEmail) {
 					identity.setAttribute("email",finalUsername + "%%CMH-Mail-Domain%%");
 				  }
 				  context.saveObject(identity);
 				  context.commitTransaction();
 				}else {
-				  log.error("The username for the user is NULL");
+				  cmhLogger.error("The username for the user is NULL");
 				  validationErrors.add("The username for the user is NULL");
 				}
 				ObjectUtil.unlockIdentity(context,identity);
 				wfcontext.getWorkflowCase().put("newIdentityName",finalUsername);
 				  }
-			
+
   		]]></Source>
     </Script>
     <Transition to="update Custom object">
       <Script>
         <Source><![CDATA[
                import sailpoint.tools.Util;
-                
+
                 if(Util.isNotNullOrEmpty(newIdentityName)){
                    return true;
                 }else {
@@ -387,15 +387,15 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
   <Step icon="Default" name="update Custom object" posX="299" posY="344" resultVariable="validationErrors">
     <Script>
       <Source><![CDATA[
-                
+
                 import sailpoint.object.Custom;
                 import sailpoint.object.Attributes;
                 import sailpoint.object.Identity;
                 import sailpoint.tools.GeneralException;
                 import sailpoint.tools.Util;
-                
+
                 if (isDebugEnabled) {
-		          log.debug("Updating custom Object");
+		          cmhLogger.debug("Updating custom Object");
 		        }
 		        if (validationErrors == null) {
 		          validationErrors = new ArrayList();
@@ -413,31 +413,31 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 							if(list == null) {
 								list = new ArrayList();
 							}
-							
+
 							list.add(identity.getName());
 							if(list != null) {
 								custom.setLock(lock);
 								custom.put("NOTEXPORTED",list );
 								context.saveObject(custom);
 								context.commitTransaction();
-								custom.remove(lock);	
+								custom.remove(lock);
 								}
 						} else {
 						   validationErrors.add("Custom Object is not configured properly");
 						}
 					} catch (GeneralException e) {
-					    log.error("ERROR: "+e.getMessage());
+					    cmhLogger.error("ERROR: "+e.getMessage());
 						validationErrors.add(e.getMessage());
 				    }
 				}else {
 				   validationErrors.add("ERROR : Unable to search the the user with newIdentityName");
-				}  
+				}
 		        if (isDebugEnabled) {
-		          log.debug("Exiting custom Object");
+		          cmhLogger.debug("Exiting custom Object");
 		        }
 		        wfcontext.getWorkflowCase().put("newEmail",email);
 		        return validationErrors;
-          
+
         ]]></Source>
     </Script>
     <Transition to="update Name and Email in Infor"/>
@@ -451,9 +451,9 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 		  			import sailpoint.object.Identity;
 		  			import sailpoint.object.Link;
 		  			import sailpoint.tools.Util;
-  		           
-  		            Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-Name-Change");
-  		            
+
+  		            Logger cmhLogger = Logger.getLogger("Workflow.CMH-LifecycleEvent-Name-Change");
+
   		            Application application = context.getObjectByName(Application.class, hrAppName);
   		            Identity identity = context.getObjectByName(Identity.class, newIdentityName);
   		            if(null != application && null != identity) {
@@ -462,7 +462,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 						if(links!=null && links.size()>0){
 							Link hrLink = links.get(0);
 							if(hrLink!=null){
-								log.debug("Updating infor details");
+								cmhLogger.debug("Updating infor details");
 								hrLink.setNativeIdentity(newIdentityName);
 								hrLink.setDisplayName(newIdentityName);
 								hrLink.setAttribute("Username",newIdentityName);
@@ -491,9 +491,9 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 	  			import sailpoint.object.ProvisioningPlan.AccountRequest;
 	  			import sailpoint.object.ProvisioningPlan.AttributeRequest;
 	  			import sailpoint.tools.Util;
-			  	
-			  	Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-Name-Change");
-			  	
+
+			  	Logger cmhLogger = Logger.getLogger("Workflow.CMH-LifecycleEvent-Name-Change");
+
 			  	if (validationErrors == null) {
 		          validationErrors = new ArrayList();
 		        }
@@ -520,23 +520,23 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 								 	accModify.add(new AttributeRequest("displayNamePrintable",ProvisioningPlan.Operation.Set, newIdentityName));
 								 	if(Util.isNotNullOrEmpty(displayName)) {
 								 	   accModify.add(new AttributeRequest("displayName",ProvisioningPlan.Operation.Set,displayName ));
-								 	}	
-								 	if(hasEmail) {
-								 	   accModify.add(new AttributeRequest("mail",ProvisioningPlan.Operation.Set,newIdentityName + "%%CMH-Mail-Domain%%"));
-								 	   accModify.add(new AttributeRequest("userPrincipalName",ProvisioningPlan.Operation.Set,newIdentityName + "%%CMH-Mail-Domain%%"));								 	  
 								 	}
-								 	accountRequests.add(accModify);											 
+									if(hasEmail) {
+								 	   accModify.add(new AttributeRequest("mail",ProvisioningPlan.Operation.Set,newIdentityName + "%%CMH-Mail-Domain%%"));
+								 	   accModify.add(new AttributeRequest("userPrincipalName",ProvisioningPlan.Operation.Set,newIdentityName + "%%CMH-Mail-Domain%%"));
+								 	}
+								 	accountRequests.add(accModify);
 							 }
 						 }
-					  }					
-					adPlan.setAccountRequests(accountRequests);				 
+					  }
+					adPlan.setAccountRequests(accountRequests);
 		          }
 			      adPlan.setIdentity(identity);
 			      if(isDebugEnabled){
-	  				log.debug("Name change Plan created for the user : "+identityName);
+	  				cmhLogger.debug("Name change Plan created for the user : "+identityName);
 	  			  }
   			    wfcontext.getWorkflowCase().put("validationErrors",validationErrors);
-  			    return adPlan;	
+  			    return adPlan;
   		]]></Source>
     </Script>
     <Transition to="Compile Project"/>
@@ -550,13 +550,13 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
     <Arg name="source" value="ref:source"/>
     <Arg name="optimisticProvisioning" value="string:false"/>
     <Arg name="plan" value="ref:plan"/>
-    <Description>Compile the provisioning plan into a provisioning project.  
-                 If you need to pass in provisioner options like "noFiltering"  
-                 or "noRoleDeprovisioning" you must pass them as explicit  
-                 arguments to the call.  
-                 The evaluation options "requester" and "source" are commonly  
-                 set here.               
-                 You can also pass things into the Template and Field scripts by  
+    <Description>Compile the provisioning plan into a provisioning project.
+                 If you need to pass in provisioner options like "noFiltering"
+                 or "noRoleDeprovisioning" you must pass them as explicit
+                 arguments to the call.
+                 The evaluation options "requester" and "source" are commonly
+                 set here.
+                 You can also pass things into the Template and Field scripts by
                  defining Args in this step.</Description>
     <Transition to="Create Identity Request"/>
   </Step>
@@ -581,13 +581,13 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
     <Transition to="Notify Manager">
       <Script>
         <Source><![CDATA[
-  			  
+
   				import sailpoint.tools.Message;
   				if(wfcontext.getRootWorkflowCase().getMessages()== null && null == wfcontext.getRootWorkflowCase().getMessagesByType(Message.Type.Error)) {
 					return true;
 				}
 				return false;
-  			   
+
   			]]></Source>
       </Script>
     </Transition>
@@ -615,7 +615,7 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
          <Source><![CDATA[
     		     if(hasEmail==true) {
   			        return newEmail;
-  			     }	
+  			     }
   			     ]]>
          </Source>
        </Script>
@@ -642,14 +642,14 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
                import sailpoint.object.RoleAssignment;
 			   import sailpoint.tools.Util;
 			   import sailpoint.object.RoleTarget;
-			   
-			   Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-Name-Change");
-			   
+
+			   Logger cmhLogger = Logger.getLogger("Workflow.CMH-LifecycleEvent-Name-Change");
+
 			   if (isDebugEnabled) {
-		          log.debug("Update Role Account Name");
+		          cmhLogger.debug("Update Role Account Name");
 		        }
 	            Identity iden = context.getObjectByName(Identity.class, newIdentityName);
-					
+
 		       List userRole = iden.getActiveRoleAssignments();
 		       if(!Util.isEmpty(userRole)) {
 			      for(RoleAssignment role : userRole) {
@@ -658,12 +658,12 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 						 for(RoleTarget roleTarget : targets) {
 							 roleTarget.setDisplayName(newIdentityName);
 							 context.commitTransaction();
-							 log.debug("New display Name :"+roleTarget.getDisplayName());
+							 cmhLogger.debug("New display Name :"+roleTarget.getDisplayName());
 						 }
 					  }
 			      }
 		       }
-		     log.debug("Update Role Account Name");
+		     cmhLogger.debug("Update Role Account Name");
       ]]>
       </Source>
    </Script>
@@ -678,17 +678,17 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 	  			import sailpoint.object.Identity;
 	  			import sailpoint.object.Link;
 	  			import sailpoint.tools.Util;
-			  	
-			  	Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-Name-Change");
-			  	
+
+			  	Logger cmhLogger = Logger.getLogger("Workflow.CMH-LifecycleEvent-Name-Change");
+
 			  	if (isDebugEnabled) {
-		          log.debug("Single Account Aggregation");
+		          cmhLogger.debug("Single Account Aggregation");
 		        }
-	
+
 		        if (validationErrors == null) {
 		          validationErrors = new ArrayList();
 		        }
-		        
+
 				List accountRequests = new ArrayList();
 				Identity identity = context.getObjectByName(Identity.class, newIdentityName);
 				Application application = context.getObjectByName(Application.class, adAppName);
@@ -704,11 +704,11 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
 					            validationErrors.addAll(doTargetedAggregation(newNativeIdentity,adAppName,newIdentityName));
 					         }
 					     }
-					 }         
+					 }
 				}
-				
+
 			    if(isDebugEnabled){
-	  				log.debug("Exiting Single Account Aggregation");
+	  				cmhLogger.debug("Exiting Single Account Aggregation");
 	  			 }
   			 return validationErrors;
       ]]></Source>
@@ -769,43 +769,43 @@ ProvisioningProject which is just a compiled version of the ProvisioningPlan.
     <Arg name="target" value="ref:identityName"/>
     <Script>
       <Source><![CDATA[
-  		
-			  
+
+
 	      	import sailpoint.tools.Message;
 			import sailpoint.tools.Util;
 			import org.apache.log4j.Logger;
-			
-			Logger log = Logger.getLogger("Workflow.CMH-LifecycleEvent-Name-Change");
+
+			Logger cmhLogger = Logger.getLogger("Workflow.CMH-LifecycleEvent-Name-Change");
 			if(validationErrors==null){
 				validationErrors = new ArrayList();
 			}
 			if(wfcontext.getRootWorkflowCase().getMessages()!=null && null!=wfcontext.getRootWorkflowCase().getMessagesByType(Message.Type.Error)){
-				log.error("Error occured in Name Change process: "+wfcontext.getRootWorkflowCase().getMessagesByType(Message.Type.Error));
+				cmhLogger.error("Error occured in Name Change process: "+wfcontext.getRootWorkflowCase().getMessagesByType(Message.Type.Error));
 				List errorMessagesList = wfcontext.getRootWorkflowCase().getMessagesByType(Message.Type.Error);
 				String errorMessagesFromWfc = Util.listToCsv(errorMessagesList);
 				validationErrors.add(errorMessagesFromWfc);
 			}
 			if(isDebugEnabled){
-				log.debug("CMH-LifecycleEvent-Name-Change : Errors recorded in Name Change process: "+validationErrors.toString());
+				cmhLogger.debug("CMH-LifecycleEvent-Name-Change : Errors recorded in Name Change process: "+validationErrors.toString());
 			}
 			if(Util.isEmpty(validationErrors)){
 			    Map map = new HashMap();
 			    map.put("setString1","Name Change is successfully completed" );
   				auditWrite("Name Change Success",source,target,attributeName,attributeValue,map);
-				
+
   			}else{
   			    Map map = new HashMap();
   			    map.put("setString1","Name Change Process failed due to errors");
   				map.put("setString2",Util.listToCsv(validationErrors));
 		  		auditWrite("Name Change Failure",source,target,attributeName,attributeValue,map);
   			}
-  			
+
   			if(isDebugEnabled){
-  			    log.debug("Check Status step : Audit Event Generated");
-  			    log.debug("Ending the CMH-LifecycleEvent-Name-Change for the user "+identityName);
+  			    cmhLogger.debug("Check Status step : Audit Event Generated");
+  			    cmhLogger.debug("Ending the CMH-LifecycleEvent-Name-Change for the user "+identityName);
   			}
-  			
-		
+
+
 		]]></Source>
     </Script>
     <Transition to="end"/>

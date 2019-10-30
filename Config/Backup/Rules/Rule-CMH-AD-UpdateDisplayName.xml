@@ -49,8 +49,8 @@ The transformed value that will be pushed to the target.
       import org.apache.log4j.Logger; 
       import sailpoint.tools.Util;
       
-      Logger log = Logger.getLogger("Rule.CMH-AD-UpdateDisplayName-Rule");
-      log.debug("Entering rule for identity:"+identity!=null?identity.getName():"");
+      Logger cmhLogger = Logger.getLogger("Rule.CMH-AD-UpdateDisplayName-Rule");
+      cmhLogger.debug("Entering rule for identity:"+identity!=null?identity.getName():"");
 	  String displayName = null;
 	  if(identity!=null){
 	  	String lastName = identity.getLastname();
@@ -59,7 +59,7 @@ The transformed value that will be pushed to the target.
 	    String credential = identity.getStringAttribute("credential");
 	    attributeValue = getDisplayName(firstName,lastName,initials,credential);
 	  }
-	  log.debug("Exiting rule for identity:"+identity!=null?identity.getName():"");
+	  cmhLogger.debug("Exiting rule for identity:"+identity!=null?identity.getName():"");
 	  return attributeValue;	
   ]]></Source>
 </Rule>

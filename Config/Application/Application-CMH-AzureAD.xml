@@ -1,0 +1,684 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE Application PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<Application connector="sailpoint.connector.AzureADConnector" featuresString="AUTHENTICATE, PROVISIONING, SYNC_PROVISIONING, PASSWORD, ENABLE, SEARCH" icon="internetIcon" name="Azure AD" profileClass="" type="Azure Active Directory">
+  <AccountCorrelationConfig>
+    <Reference class="sailpoint.object.CorrelationConfig" name="CMH-Azure-AD-Correlation"/>
+  </AccountCorrelationConfig>
+  <Attributes>
+    <Map>
+      <entry key="IQServiceHost"/>
+      <entry key="IQServicePort"/>
+      <entry key="accountDeltaLink" value="MaXG6Ss9kads8oa_eNY0oSEWOHhsD39xmwcJeb521xEcaVVkZACMqDPuoWpxvKgYjdtp3PkIoYe1rIMjOaBiNYKS1sYgiJ9B1dlSPYtUphfe3bHThyPHKC_rSA623o96RwT5OMcZ335lKt5dHdjQZhqmZd4IeI_MH1WPPlkBA-ixkNNAgrFFkTptOga0Fw-w7rK5Hml33ijaDUb_ljfPpH6CTBhmrjdE15TwH0TdI7MfceFl3ks-1OHahZKBsojpRh_poldWXSpr-fIh1uU8xf5Ns4aT5PAkfwsxU7Hu2pH6vO2CwKeb416l0ZLrPRo675_ah-xZbxANugwI3oOIcw65AjH1qbGBQN3eNm8Mz70NqjFuJ9V2QfNVfCNX9LwnsF2SYDD6OiE0gmFeSQ6v8y44PCZkEtpx34224WTKQp2soxRFwknF689pbDWYYoL64MpCGagXtrkf-e6jRAi-qKcEgR15Jo7XRZM2Syj3-4N2F_jBUO20a1pOMLFZpTgyc4JoFGLsL-06Tkj_lKXpBNd0EzqREtENSUDso8HHI6BfKV4jMR2MJFg_Lhle2PSgTMhCYk0hwuAVREY6ghubPOmWl9_slRwZgDom3_H63DME3i2-Y9HVXd35F_wtmdJj8iFaRYG-Em9J6xrgjEq0lDepBVbT25y5IaXfg0ggT1skwUN1j5wHquI1bE0fPtJDbX38g29_Q1igMMK_w03XKU4O0XI6LB4RUxkNm1lPZvT3P48xDmspF6AXbHCeupveF9xGKKcVpVcpQCUORe3ubL_wIGyUbvm5Dgl1oF1_RpbYpCOxJrLYkGoPWo1cfhdBdIFMZtw_lrBnDqLxpeImHbtKgy5GRyQDcaTKf01jABTmlOZohgLstWBbE7EuJhTYpWBrpGfupCAKSznYeOR5EX5GEAzKN6ilJ13bsUl8g4piWGhwEs09oGHAep6n0zOfONTd59ZglVt7znt6OEksHKOyqHv7JojY683tv8zR_XAfagP419PeUUynNgBC7MUb_aIMRWpnupID8EdyltPOvPfUxbLqbnnWznsFikttinqzrGz_FIb6S0zzMiy4Vx4f66j7HU6B0Maw7jZYaSdDlFYEM1h-M80T0NNIazApygcJmg1zQ0ftIDZoO9HClGMa_99LF5dpEM6jcLlTG8gnW5TEjrW-7SXscSsvERtu0sk4smOLvVT_gA08E2Hc6ySOxjC0FZhPPggyIAdYsgbi5p_L-84OToEFL9khA-6V3tw1NlkDRnOMAemN4YuUKmEjz0RdQFiiEH8v12II3yhiXRWfKdAp7bOlXsV31I5knOoJKecGjtFeVlW6PFJkXZIkqqWQ3f4j6HwGD4ifgo7RNPeN937rbVU9fnZXDjTxTNjfpJz0Ppttl2unKSmSpgtUhnR-TB748_zg-Mstj_eKhjLQJx51xDWIdjSepp2w947ncCI1Bo2whMMVNsMy8bPU3CxRSf-Cx7HrIvzUF_U5iQo1u7pB-lZGzJIWlNouFA0zsz05OtPwNthWlRAJrAQCaVLtz12s2AQNPlzm2BmD6sjh1qo69UqbO20W-x7NshSu3s9gABFP5C_F19uKC2b0-gEndX9FR29KxVhXNvw6DAWZe-9CDZDe0mFcy7N7yt48JoBnD0kL0I749MA8vL9RD7-MrpNUfOfyMicPTUGoKgdZUK0ukekXBZWWlXXtEP2VfksWebfQ2AFDPtW8sGnHSn9w5wxViFMjxk1tyQClftT_yaTQLmd1jM_eIYu3ENM-Trpc61PaAtnTfQiKFle9KgRDxKLYDlSTmCNVRvOsWNHw4gtQxwceA3yYYOhETtBd-P5D6YhsYV9mbxBPw5XbPsH4q_HGSPWglWdG1h0fjSBn06ArHjKUD7H4tQcwB8_Nw0UlCawORu2z8caWNW7drrW0MPf1jc3vp6GkFUan7DOcQQsztMyhfTVxU6PtL9niBJZ50P-qc0M1nB3KyrWzEIij2I0lWU6x_lGbNXHfYIPA6TPrckHe9-pHMjzOSOnDNArQ0hmMrfLuwNxzV-YXH4D-sp8v3qOwNa53nL0NnbUnyhYpGUqHRl_kcPqoik3DBFtqPPPaoLncXoNgo8NR.Z6OES4-jOU5MnVxvPe6iF6PWphaG8ZFuk35kkSVSd7g"/>
+      <entry key="acctAggregationEnd">
+        <value>
+          <Date>1568877467761</Date>
+        </value>
+      </entry>
+      <entry key="acctAggregationStart">
+        <value>
+          <Date>1568877110250</Date>
+        </value>
+      </entry>
+      <entry key="afterProvisioningRule"/>
+      <entry key="authSearchAttributes">
+        <value>
+          <List>
+            <String>userPrincipalName</String>
+          </List>
+        </value>
+      </entry>
+      <entry key="beforeProvisioningRule"/>
+      <entry key="clientID" value="%%CMH-AZUREAD-CLIENTID%%"/>
+      <entry key="clientSecret" value="%%CMH-AZUREAD-PASSWORD%%"/>
+      <entry key="compositeDefinition"/>
+      <entry key="domainName" value="%%CMH-AZUREAD-DomainName%%"/>
+      <entry key="encrypted" value="clientSecret"/>
+      <entry key="groupDeltaLink" value="XEjszk2rC9sP1AOG2_2V1iFfte_XcVJ9DG46yyGqMFD-Hw62Gtajfp_zQ0pYQMWSl_A6JA3M3HMCczGsDCYMVkPnSJprP5fA8BR1ev7iWsa5unJbXIqvNIZ_aLiy5skQE4vxLaCJrA_W5VXGJ8v9g1QhcOslunT54Ved-RxX1GM-vBvsOOZXzEfCO19x_vswY4exkltLOnF09KKPz2jBolIDp1U4d1bqXALyxIhZwKIRZhezLAI5QY4YFXP77_742nMKtxkycpvy0m9JhmxzSqZ9YfAAAPMFsK_vzrI7uAbKkl6nf634kVlZwKXoiTLmZRWyuqUADZ-hwobU7HJpDV4m06wnRQ1q4oHsvMT7utMsT7YhpfNj0VJljjSy1qLfj9zmd_3cX0hZOmZps9tkxVJxBoFqOmblMd6hWYVHfayOpYZ1k01bOJ8SylpfloF8bef9TW5dBsshuetd2M_oyhk27XAGEN_3tHzclIwM-KlanetWEn2SonrH8cKQa0DZKQyUapEWHKPT1LGPAoJZ1Sj2tFNp6BpsiAo0UreC8_ky1j0cglJq4WCJ7Ya5pP-qrPMZVkpgUX-TaXy02Fxs8MItndvY6OiSkhsTYnDKdkmX1_fUQGJ5lG6HA0f5QDoaGXqy-6-NbiPSlW1IsjaIVmNfJghBZrui1kybGf81sQRTJ-xhPdpkDzWUNn1yX8PIZB9aJGof_LoPNPpIwffjDuR8oHdlma70iisGondi4aQ8KOUBwjOtGeGv0W963BnpcGAhN6eXB2F6ONk6x6Grf8a8pquo81FAP8bwE8LwtvVonFTCwSnhtIZZKD4S_z3y2odtuPsLsAo8vpBrADCQSqry-vX88frSiUsRutObfP_oBkaYdqGetMp0uE4k0SrI_AUrziHI-qPII34-FEN-SaaR5AOliO7exRG4oaS7g44NHB__INg84I4SZgvNlbFc-jjo538XsfuzoKI1NWkCrdyYT5_oEbWppQ0xSJ6-lAByNFuK3HVkJTD1yTqQoxyfd_0_pKKwG0z7tJ-2aA3io1qg9eLpA06JgMWyWKHoeR4qj_V82sI-qsZJF2kxFQQ5E_k6ZMQCEMwVbHGhSC57jglPL_KMBDgw-4NY387gY9kNRbS3DdnuK0-MFAWB_x7EBBQBCIdFG91m50OO3cKxxUmf6mu49BMNfSU0TpTwW9SbPqBd10TeZgVvSm4U5UH_vMmyJp6Eptjewzkma_o3kTSThqogEc8nwLTJBlsbocKw2XuNx1Nxug5fRvXDT65bdVbnx_InsyUl4xvwnCNo18e-u25DrXCerJJE1mRRsqhImIl7ctjldOO-eVgJLW_WNwwfz2J_dkeXmheegoemXEmIJdXaE9VY004xFKY5tfMg51wEZKPv1gbypXTQ_Pc9qFHx74z80XVvj7IfEh9LeQly_e_RVQLBuRZPYJeJuzevz76P2lv8JKGoKjNbffjABswQjD_mv8z54sFTQdxi9qoEFDRA02KPsrzwngGIdqmL1g4aXLSJfkuN2Fzgacyr3wtrqL6oB1WXCkdwrpPZbVO3JelEVrE2OR8VUP4RtM-RzBLsEua1ZkjYxYCpON0xi-e2lR55kJnp2N9S42D9gcPCgv7dpZTxm5tmznLdfJ_s7dqHbCFqcotmx2tClFx31stQPaCjXZUQ-tzUB4LhLIj6IZixsCOu7F4WDdzG8rDNmf3u80L8Mb1QiVZflsu4sciiVZha2fe9jOM00TxPQqgASxuCRqDtDpnmo78rSsps3vOyjD1qk84SDA4Y8mzKtNDODnnqzufpejJC80Sipm2GZu-WFYlX9hNdMWF72K5eAVLqQBD0sYDZQTvTrI2QjXKuAhPH2_ggm89PO4s1ZEQRfjBhhBo80ix0BhpoPoTWWBb7OEKYq9yh0xDKxKSQHPogyOqMELYt68jO4TcY8J_w14aO_OP5rV8EkNugsupaqXCxveg2Kw7ekJUagHZqTuKlASv_2k0a4ELfOxte-qdZfI6idvDfqwuoXpf0v06BV8uKE-9LJCuky1SithbNs3oEQevJOzcgfFgeBXmPPNjHmH0HpPHUeYC8ubmbSzDQu8WHtIQjVFBipwpHCwH4.hkh2bkiFmUCxVyJ_oFInFi7QKkIFOAlOeZIlV0Oqut4"/>
+      <entry key="nativeChangeDetectionAttributeScope" value="entitlements"/>
+      <entry key="nativeChangeDetectionAttributes"/>
+      <entry key="nativeChangeDetectionEnabled">
+        <value>
+          <Boolean/>
+        </value>
+      </entry>
+      <entry key="nativeChangeDetectionOperations"/>
+      <entry key="pageSize"/>
+      <entry key="subscribedSkus">
+        <value>
+          <List>
+            <Map>
+              <entry key="capabilityStatus" value="Enabled"/>
+              <entry key="consumedUnits">
+                <value>
+                  <Long>0</Long>
+                </value>
+              </entry>
+              <entry key="objectId" value="3ccad69d-7411-44ad-b3dd-16e361ad0248_b05e124f-c7cc-45a0-a6aa-8cf78c946968"/>
+              <entry key="prepaidUnits">
+                <value>
+                  <Map>
+                    <entry key="enabled">
+                      <value>
+                        <Long>250</Long>
+                      </value>
+                    </entry>
+                    <entry key="suspended">
+                      <value>
+                        <Long>0</Long>
+                      </value>
+                    </entry>
+                    <entry key="warning">
+                      <value>
+                        <Long>0</Long>
+                      </value>
+                    </entry>
+                  </Map>
+                </value>
+              </entry>
+              <entry key="servicePlans">
+                <value>
+                  <List>
+                    <Map>
+                      <entry key="servicePlanId" value="113feb6c-3fe4-4440-bddc-54d774bf0318"/>
+                      <entry key="servicePlanName" value="EXCHANGE_S_FOUNDATION"/>
+                    </Map>
+                    <Map>
+                      <entry key="servicePlanId" value="14ab5db5-e6c4-4b20-b4bc-13e36fd2227f"/>
+                      <entry key="servicePlanName" value="ATA"/>
+                    </Map>
+                    <Map>
+                      <entry key="servicePlanId" value="2e2ddb96-6af9-4b1d-a3f0-d6ecfd22edb2"/>
+                      <entry key="servicePlanName" value="ADALLOM_S_STANDALONE"/>
+                    </Map>
+                    <Map>
+                      <entry key="servicePlanId" value="5689bec4-755d-4753-8b61-40975025187c"/>
+                      <entry key="servicePlanName" value="RMS_S_PREMIUM2"/>
+                    </Map>
+                    <Map>
+                      <entry key="servicePlanId" value="6c57d4b6-3b23-47a5-9bc9-69f17b4947b3"/>
+                      <entry key="servicePlanName" value="RMS_S_PREMIUM"/>
+                    </Map>
+                    <Map>
+                      <entry key="servicePlanId" value="bea4c11e-220a-4e6d-8eb8-8ea15d019f90"/>
+                      <entry key="servicePlanName" value="RMS_S_ENTERPRISE"/>
+                    </Map>
+                    <Map>
+                      <entry key="servicePlanId" value="c1ec4a95-1f05-45b3-a911-aa3fa01094f5"/>
+                      <entry key="servicePlanName" value="INTUNE_A"/>
+                    </Map>
+                    <Map>
+                      <entry key="servicePlanId" value="eec0eb4f-6444-4f95-aba0-50c24d67f998"/>
+                      <entry key="servicePlanName" value="AAD_PREMIUM_P2"/>
+                    </Map>
+                    <Map>
+                      <entry key="servicePlanId" value="8a256a2b-b617-496d-b51b-e76466e88db0"/>
+                      <entry key="servicePlanName" value="MFA_PREMIUM"/>
+                    </Map>
+                    <Map>
+                      <entry key="servicePlanId" value="41781fb2-bc02-4b7c-bd55-b576c07bb09d"/>
+                      <entry key="servicePlanName" value="AAD_PREMIUM"/>
+                    </Map>
+                  </List>
+                </value>
+              </entry>
+              <entry key="skuId" value="b05e124f-c7cc-45a0-a6aa-8cf78c946968"/>
+              <entry key="skuPartNumber" value="EMSPREMIUM"/>
+            </Map>
+            <Map>
+              <entry key="capabilityStatus" value="Suspended"/>
+              <entry key="consumedUnits">
+                <value>
+                  <Long>8</Long>
+                </value>
+              </entry>
+              <entry key="objectId" value="3ccad69d-7411-44ad-b3dd-16e361ad0248_6fd2c87f-b296-42f0-b197-1e91e994b900"/>
+              <entry key="prepaidUnits">
+                <value>
+                  <Map>
+                    <entry key="enabled">
+                      <value>
+                        <Long>0</Long>
+                      </value>
+                    </entry>
+                    <entry key="suspended">
+                      <value>
+                        <Long>25</Long>
+                      </value>
+                    </entry>
+                    <entry key="warning">
+                      <value>
+                        <Long>0</Long>
+                      </value>
+                    </entry>
+                  </Map>
+                </value>
+              </entry>
+              <entry key="servicePlans">
+                <value>
+                  <List>
+                    <Map>
+                      <entry key="servicePlanId" value="aebd3021-9f8f-4bf8-bbe3-0ed2f4f047a1"/>
+                      <entry key="servicePlanName" value="KAIZALA_O365_P3"/>
+                    </Map>
+                    <Map>
+                      <entry key="servicePlanId" value="94065c59-bc8e-4e8b-89e5-5138d471eaff"/>
+                      <entry key="servicePlanName" value="MICROSOFT_SEARCH"/>
+                    </Map>
+                    <Map>
+                      <entry key="servicePlanId" value="94a54592-cd8b-425e-87c6-97868b000b91"/>
+                      <entry key="servicePlanName" value="WHITEBOARD_PLAN2"/>
+                    </Map>
+                    <Map>
+                      <entry key="servicePlanId" value="5136a095-5cf0-4aff-bec3-e84448b38ea5"/>
+                      <entry key="servicePlanName" value="MIP_S_CLP1"/>
+                    </Map>
+                    <Map>
+                      <entry key="servicePlanId" value="33c4f319-9bdd-48d6-9c4d-410b750a4a5a"/>
+                      <entry key="servicePlanName" value="MYANALYTICS_P2"/>
+                    </Map>
+                    <Map>
+                      <entry key="servicePlanId" value="c87f142c-d1e9-4363-8630-aaea9c4d9ae5"/>
+                      <entry key="servicePlanName" value="BPOS_S_TODO_2"/>
+                    </Map>
+                    <Map>
+                      <entry key="servicePlanId" value="2789c901-c14e-48ab-a76a-be334d9d793a"/>
+                      <entry key="servicePlanName" value="FORMS_PLAN_E3"/>
+                    </Map>
+                    <Map>
+                      <entry key="servicePlanId" value="9e700747-8b1d-45e5-ab8d-ef187ceec156"/>
+                      <entry key="servicePlanName" value="STREAM_O365_E3"/>
+                    </Map>
+                    <Map>
+                      <entry key="servicePlanId" value="8c7d2df8-86f0-4902-b2ed-a0458298f3b3"/>
+                      <entry key="servicePlanName" value="Deskless"/>
+                    </Map>
+                    <Map>
+                      <entry key="servicePlanId" value="76846ad7-7776-4c40-a281-a386362dd1b9"/>
+                      <entry key="servicePlanName" value="FLOW_O365_P2"/>
+                    </Map>
+                    <Map>
+                      <entry key="servicePlanId" value="c68f8d98-5534-41c8-bf36-22fa496fa792"/>
+                      <entry key="servicePlanName" value="POWERAPPS_O365_P2"/>
+                    </Map>
+                    <Map>
+                      <entry key="servicePlanId" value="57ff2da0-773e-42df-b2af-ffb7a2317929"/>
+                      <entry key="servicePlanName" value="TEAMS1"/>
+                    </Map>
+                    <Map>
+                      <entry key="servicePlanId" value="b737dad2-2f6c-4c65-90e3-ca563267e8b9"/>
+                      <entry key="servicePlanName" value="PROJECTWORKMANAGEMENT"/>
+                    </Map>
+                    <Map>
+                      <entry key="servicePlanId" value="a23b959c-7ce8-4e57-9140-b90eb88a9e97"/>
+                      <entry key="servicePlanName" value="SWAY"/>
+                    </Map>
+                    <Map>
+                      <entry key="servicePlanId" value="882e1d05-acd1-4ccb-8708-6ee03664b117"/>
+                      <entry key="servicePlanName" value="INTUNE_O365"/>
+                    </Map>
+                    <Map>
+                      <entry key="servicePlanId" value="7547a3fe-08ee-4ccb-b430-5077c5041653"/>
+                      <entry key="servicePlanName" value="YAMMER_ENTERPRISE"/>
+                    </Map>
+                    <Map>
+                      <entry key="servicePlanId" value="bea4c11e-220a-4e6d-8eb8-8ea15d019f90"/>
+                      <entry key="servicePlanName" value="RMS_S_ENTERPRISE"/>
+                    </Map>
+                    <Map>
+                      <entry key="servicePlanId" value="43de0ff5-c92c-492b-9116-175376d08c38"/>
+                      <entry key="servicePlanName" value="OFFICESUBSCRIPTION"/>
+                    </Map>
+                    <Map>
+                      <entry key="servicePlanId" value="0feaeb32-d00e-4d66-bd5a-43b5b83db82c"/>
+                      <entry key="servicePlanName" value="MCOSTANDARD"/>
+                    </Map>
+                    <Map>
+                      <entry key="servicePlanId" value="e95bec33-7c88-4a70-8e19-b10bd9d0c014"/>
+                      <entry key="servicePlanName" value="SHAREPOINTWAC"/>
+                    </Map>
+                    <Map>
+                      <entry key="servicePlanId" value="5dbe027f-2339-4123-9542-606e4d348a72"/>
+                      <entry key="servicePlanName" value="SHAREPOINTENTERPRISE"/>
+                    </Map>
+                    <Map>
+                      <entry key="servicePlanId" value="efb87545-963c-4e0d-99df-69c6916d9eb0"/>
+                      <entry key="servicePlanName" value="EXCHANGE_S_ENTERPRISE"/>
+                    </Map>
+                  </List>
+                </value>
+              </entry>
+              <entry key="skuId" value="6fd2c87f-b296-42f0-b197-1e91e994b900"/>
+              <entry key="skuPartNumber" value="ENTERPRISEPACK"/>
+            </Map>
+            <Map>
+              <entry key="capabilityStatus" value="LockedOut"/>
+              <entry key="consumedUnits">
+                <value>
+                  <Long>0</Long>
+                </value>
+              </entry>
+              <entry key="objectId" value="3ccad69d-7411-44ad-b3dd-16e361ad0248_84a661c4-e949-4bd2-a560-ed7766fcaf2b"/>
+              <entry key="prepaidUnits">
+                <value>
+                  <Map>
+                    <entry key="enabled">
+                      <value>
+                        <Long>0</Long>
+                      </value>
+                    </entry>
+                    <entry key="suspended">
+                      <value>
+                        <Long>0</Long>
+                      </value>
+                    </entry>
+                    <entry key="warning">
+                      <value>
+                        <Long>0</Long>
+                      </value>
+                    </entry>
+                  </Map>
+                </value>
+              </entry>
+              <entry key="servicePlans">
+                <value>
+                  <List>
+                    <Map>
+                      <entry key="servicePlanId" value="113feb6c-3fe4-4440-bddc-54d774bf0318"/>
+                      <entry key="servicePlanName" value="EXCHANGE_S_FOUNDATION"/>
+                    </Map>
+                    <Map>
+                      <entry key="servicePlanId" value="932ad362-64a8-4783-9106-97849a1a30b9"/>
+                      <entry key="servicePlanName" value="ADALLOM_S_DISCOVERY"/>
+                    </Map>
+                    <Map>
+                      <entry key="servicePlanId" value="8a256a2b-b617-496d-b51b-e76466e88db0"/>
+                      <entry key="servicePlanName" value="MFA_PREMIUM"/>
+                    </Map>
+                    <Map>
+                      <entry key="servicePlanId" value="41781fb2-bc02-4b7c-bd55-b576c07bb09d"/>
+                      <entry key="servicePlanName" value="AAD_PREMIUM"/>
+                    </Map>
+                    <Map>
+                      <entry key="servicePlanId" value="eec0eb4f-6444-4f95-aba0-50c24d67f998"/>
+                      <entry key="servicePlanName" value="AAD_PREMIUM_P2"/>
+                    </Map>
+                  </List>
+                </value>
+              </entry>
+              <entry key="skuId" value="84a661c4-e949-4bd2-a560-ed7766fcaf2b"/>
+              <entry key="skuPartNumber" value="AAD_PREMIUM_P2"/>
+            </Map>
+            <Map>
+              <entry key="capabilityStatus" value="Enabled"/>
+              <entry key="consumedUnits">
+                <value>
+                  <Long>2</Long>
+                </value>
+              </entry>
+              <entry key="objectId" value="3ccad69d-7411-44ad-b3dd-16e361ad0248_29a2f828-8f39-4837-b8ff-c957e86abe3c"/>
+              <entry key="prepaidUnits">
+                <value>
+                  <Map>
+                    <entry key="enabled">
+                      <value>
+                        <Long>500000</Long>
+                      </value>
+                    </entry>
+                    <entry key="suspended">
+                      <value>
+                        <Long>0</Long>
+                      </value>
+                    </entry>
+                    <entry key="warning">
+                      <value>
+                        <Long>0</Long>
+                      </value>
+                    </entry>
+                  </Map>
+                </value>
+              </entry>
+              <entry key="servicePlans">
+                <value>
+                  <List>
+                    <Map>
+                      <entry key="servicePlanId" value="7547a3fe-08ee-4ccb-b430-5077c5041653"/>
+                      <entry key="servicePlanName" value="YAMMER_ENTERPRISE"/>
+                    </Map>
+                    <Map>
+                      <entry key="servicePlanId" value="b8afc642-032e-4de5-8c0a-507a7bba7e5d"/>
+                      <entry key="servicePlanName" value="WHITEBOARD_PLAN1"/>
+                    </Map>
+                    <Map>
+                      <entry key="servicePlanId" value="a23b959c-7ce8-4e57-9140-b90eb88a9e97"/>
+                      <entry key="servicePlanName" value="SWAY"/>
+                    </Map>
+                    <Map>
+                      <entry key="servicePlanId" value="902b47e5-dcb2-4fdc-858b-c63a90a2bdb9"/>
+                      <entry key="servicePlanName" value="SHAREPOINTDESKLESS"/>
+                    </Map>
+                    <Map>
+                      <entry key="servicePlanId" value="92f7a6f3-b89b-4bbd-8c30-809e6da5ad1c"/>
+                      <entry key="servicePlanName" value="POWERAPPS_O365_P1"/>
+                    </Map>
+                    <Map>
+                      <entry key="servicePlanId" value="e95bec33-7c88-4a70-8e19-b10bd9d0c014"/>
+                      <entry key="servicePlanName" value="SHAREPOINTWAC"/>
+                    </Map>
+                    <Map>
+                      <entry key="servicePlanId" value="57ff2da0-773e-42df-b2af-ffb7a2317929"/>
+                      <entry key="servicePlanName" value="TEAMS1"/>
+                    </Map>
+                    <Map>
+                      <entry key="servicePlanId" value="42a3ec34-28ba-46b6-992f-db53a675ac5b"/>
+                      <entry key="servicePlanName" value="MCO_TEAMS_IW"/>
+                    </Map>
+                    <Map>
+                      <entry key="servicePlanId" value="743dd19e-1ce3-4c62-a3ad-49ba8f63a2f6"/>
+                      <entry key="servicePlanName" value="STREAM_O365_E1"/>
+                    </Map>
+                    <Map>
+                      <entry key="servicePlanId" value="b737dad2-2f6c-4c65-90e3-ca563267e8b9"/>
+                      <entry key="servicePlanName" value="PROJECTWORKMANAGEMENT"/>
+                    </Map>
+                    <Map>
+                      <entry key="servicePlanId" value="159f4cd6-e380-449f-a816-af1a9ef76344"/>
+                      <entry key="servicePlanName" value="FORMS_PLAN_E1"/>
+                    </Map>
+                    <Map>
+                      <entry key="servicePlanId" value="0f9b09cb-62d1-4ff4-9129-43f4996f83f4"/>
+                      <entry key="servicePlanName" value="FLOW_O365_P1"/>
+                    </Map>
+                    <Map>
+                      <entry key="servicePlanId" value="113feb6c-3fe4-4440-bddc-54d774bf0318"/>
+                      <entry key="servicePlanName" value="EXCHANGE_S_FOUNDATION"/>
+                    </Map>
+                  </List>
+                </value>
+              </entry>
+              <entry key="skuId" value="29a2f828-8f39-4837-b8ff-c957e86abe3c"/>
+              <entry key="skuPartNumber" value="TEAMS_COMMERCIAL_TRIAL"/>
+            </Map>
+          </List>
+        </value>
+      </entry>
+      <entry key="sysDescriptions">
+        <value>
+          <Map>
+            <entry key="en_US"/>
+          </Map>
+        </value>
+      </entry>
+      <entry key="templateApplication" value="Azure Active Directory"/>
+    </Map>
+  </Attributes>
+  <Owner>
+    <Reference class="sailpoint.object.Identity" name="spadmin"/>
+  </Owner>
+  <ProvisioningForms>
+    <Form name="Create account" objectType="account" type="Create">
+      <Attributes>
+        <Map>
+          <entry key="pageTitle" value="Create account"/>
+        </Map>
+      </Attributes>
+      <Section>
+        <Field displayName="con_prov_policy_azure_ad_userPrincipalName" helpKey="help_con_prov_policy_azure_ad_userPrincipalName" name="userPrincipalName" required="true" reviewRequired="true" type="string"/>
+        <Field displayName="con_prov_policy_azure_ad_password" helpKey="help_con_prov_policy_azure_ad_password" name="password" required="true" type="secret"/>
+        <Field displayName="con_prov_policy_azure_ad_displayName" helpKey="help_con_prov_policy_azure_ad_displayName" name="displayName" required="true" reviewRequired="true" type="string"/>
+        <Field displayName="con_prov_policy_azure_ad_mailNickname" helpKey="help_con_prov_policy_azure_ad_mailNickname" name="mailNickname" required="true" reviewRequired="true" type="string"/>
+        <Field displayName="con_prov_policy_azure_ad_accountEnabled" helpKey="help_con_prov_policy_azure_ad_accountEnabled" name="accountEnabled" reviewRequired="true" type="boolean" value="true"/>
+        <Field displayName="con_prov_policy_azure_ad_forceChangePassword" helpKey="help_con_prov_policy_azure_ad_forceChangePassword" name="forceChangePasswordNextLogin" reviewRequired="true" type="boolean" value="true"/>
+        <Field displayName="con_prov_policy_azure_ad_department" helpKey="help_con_prov_policy_azure_ad_department" name="department" reviewRequired="true" type="string"/>
+        <Field displayName="con_prov_policy_azure_ad_jobTitle" helpKey="help_con_prov_policy_azure_ad_jobTitle" name="jobTitle" reviewRequired="true" type="string"/>
+        <Field displayName="con_prov_policy_azure_ad_isFederatedDomain" helpKey="help_con_prov_policy_azure_ad_isFederatedDomain" name="isFederatedDomain" reviewRequired="true" type="boolean"/>
+        <Field displayName="con_prov_policy_azure_ad_immutableId" helpKey="help_con_prov_policy_azure_ad_immutableId" name="immutableId" reviewRequired="true" type="string"/>
+        <Field displayName="con_prov_policy_azure_ad_passwordPolicies" helpKey="help_con_prov_policy_azure_ad_passwordPolicies" name="passwordPolicies" reviewRequired="true" type="string">
+          <AllowedValuesDefinition>
+            <Value>
+              <List>
+                <String>DisablePasswordExpiration</String>
+                <String>DisableStrongPassword</String>
+                <String>DisablePasswordExpiration, DisableStrongPassword</String>
+              </List>
+            </Value>
+          </AllowedValuesDefinition>
+        </Field>
+        <Field displayName="con_prov_policy_azure_ad_otherMails" helpKey="help_con_prov_policy_azure_ad_otherMails" multi="true" name="otherMails" reviewRequired="true" type="string"/>
+        <Field displayName="con_prov_policy_azure_ad_givenName" helpKey="help_con_prov_policy_azure_ad_givenName" name="givenName" reviewRequired="true" type="string"/>
+        <Field displayName="con_prov_policy_azure_ad_surname" helpKey="help_con_prov_policy_azure_ad_surname" name="surname" reviewRequired="true" type="string"/>
+        <Field displayName="con_prov_policy_azure_ad_usageLocation" helpKey="help_con_prov_policy_azure_ad_usageLocation" name="usageLocation" reviewRequired="true" type="string" value="United States;US">
+          <AllowedValuesDefinition>
+            <Value>
+              <List>
+                <String>Australia;AU</String>
+                <String>Canada;CA</String>
+                <String>France;FR</String>
+                <String>Germany;DE</String>
+                <String>Greece;GR</String>
+                <String>Hong Kong;HK</String>
+                <String>Hungary;HU</String>
+                <String>Iceland;IS</String>
+                <String>India;IN</String>
+                <String>Israel;IL</String>
+                <String>Italy;IT</String>
+                <String>NetherLands;NL</String>
+                <String>New Zealand;NZ</String>
+                <String>Peru;PE</String>
+                <String>Philippines;PH</String>
+                <String>Poland;PL</String>
+                <String>Russian federation;RU</String>
+                <String>South Africa;ZA</String>
+                <String>Switzerland;CH</String>
+                <String>Ukrain;UA</String>
+                <String>United Kingdom;GB</String>
+                <String>United States;US</String>
+              </List>
+            </Value>
+          </AllowedValuesDefinition>
+        </Field>
+        <Field displayName="con_prov_policy_azure_ad_country" helpKey="help_con_prov_policy_azure_ad_country" name="country" reviewRequired="true" type="string"/>
+        <Field displayName="con_prov_policy_azure_ad_state" helpKey="help_con_prov_policy_azure_ad_state" name="state" reviewRequired="true" type="string"/>
+        <Field displayName="con_prov_policy_azure_ad_city" helpKey="help_con_prov_policy_azure_ad_city" name="city" reviewRequired="true" type="string"/>
+        <Field displayName="con_prov_policy_azure_ad_streetAddress" helpKey="help_con_prov_policy_azure_ad_streetAddress" name="streetAddress" reviewRequired="true" type="string"/>
+        <Field displayName="con_prov_policy_azure_ad_postalCode" helpKey="help_con_prov_policy_azure_ad_postalCode" name="postalCode" reviewRequired="true" type="string"/>
+        <Field displayName="con_prov_policy_azure_ad_physicalDeliveryOfficeName" helpKey="help_con_prov_policy_azure_ad_physicalDeliveryOfficeName" name="physicalDeliveryOfficeName" reviewRequired="true" type="string"/>
+        <Field displayName="con_prov_policy_azure_ad_preferredLanguage" helpKey="help_con_prov_policy_azure_ad_preferredLanguage" name="preferredLanguage" reviewRequired="true" type="string"/>
+        <Field displayName="con_prov_policy_azure_ad_telephoneNumber" helpKey="help_con_prov_policy_azure_ad_telephoneNumber" name="telephoneNumber" reviewRequired="true" type="string"/>
+        <Field displayName="con_prov_policy_azure_ad_mobile" helpKey="help_con_prov_policy_azure_ad_mobile" name="mobile" reviewRequired="true" type="string"/>
+        <Field displayName="con_prov_policy_azure_ad_faxNumber" helpKey="help_con_prov_policy_azure_ad_faxNumber" name="facsimileTelephoneNumber" reviewRequired="true" type="string"/>
+        <Field displayName="con_prov_policy_azure_ad_userType" helpKey="help_con_prov_policy_azure_ad_userType" name="userType" reviewRequired="true" type="string" value="Member">
+          <AllowedValuesDefinition>
+            <Value>
+              <List>
+                <String>Member</String>
+              </List>
+            </Value>
+          </AllowedValuesDefinition>
+        </Field>
+      </Section>
+    </Form>
+    <Form name="Create group" objectType="group" type="Create">
+      <Attributes>
+        <Map>
+          <entry key="pageTitle" value="Create group"/>
+        </Map>
+      </Attributes>
+      <Section>
+        <Field displayName="con_prov_policy_azure_ad_displayName" helpKey="help_con_prov_policy_azure_ad_groupDisplayName" name="displayName" required="true" reviewRequired="true" type="string"/>
+        <Field displayName="con_prov_policy_azure_ad_mailNickname" helpKey="help_con_prov_policy_azure_ad_groupMailNickname" name="mailNickname" required="true" reviewRequired="true" type="string"/>
+        <Field displayName="con_prov_policy_azure_ad_description" helpKey="help_con_prov_policy_azure_ad_description" name="description" reviewRequired="true" type="string"/>
+      </Section>
+    </Form>
+    <Form name="Update group" objectType="group" type="Update">
+      <Attributes>
+        <Map>
+          <entry key="pageTitle" value="Update group"/>
+        </Map>
+      </Attributes>
+      <Section>
+        <Field displayName="con_prov_policy_azure_ad_displayName" helpKey="help_con_prov_policy_azure_ad_groupDisplayName" name="displayName" reviewRequired="true" type="string"/>
+        <Field displayName="con_prov_policy_azure_ad_mailNickname" helpKey="help_con_prov_policy_azure_ad_groupMailNickname" name="mailNickname" reviewRequired="true" type="string"/>
+        <Field displayName="con_prov_policy_azure_ad_description" helpKey="help_con_prov_policy_azure_ad_description" name="description" reviewRequired="true" type="string"/>
+        <Field displayName="con_prov_policy_azure_ad_groupOwners" helpKey="help_con_prov_policy_azure_ad_groupOwners" multi="true" name="owners" type="string">
+          <Attributes>
+            <Map>
+              <entry key="readOnly" value="true"/>
+            </Map>
+          </Attributes>
+        </Field>
+        <Field displayName="con_prov_policy_azure_ad_mailEnabled" helpKey="help_con_prov_policy_azure_ad_mailEnabled" multi="true" name="mailEnabled" type="boolean">
+          <Attributes>
+            <Map>
+              <entry key="readOnly" value="true"/>
+            </Map>
+          </Attributes>
+        </Field>
+      </Section>
+    </Form>
+  </ProvisioningForms>
+  <Schemas>
+    <Schema displayAttribute="displayName" identityAttribute="objectId" instanceAttribute="" nativeObjectType="account" objectType="account">
+      <AttributeDefinition name="accountEnabled" type="boolean">
+        <Description>True if the account is enabled; otherwise, false</Description>
+      </AttributeDefinition>
+      <AttributeDefinition multi="true" name="assignedLicenses" type="string">
+        <Description>The licenses that are assigned to the user</Description>
+      </AttributeDefinition>
+      <AttributeDefinition entitlement="true" managed="true" multi="true" name="assignedPlans" type="string">
+        <Description>The plans that are assigned to the user</Description>
+      </AttributeDefinition>
+      <AttributeDefinition name="city" type="string">
+        <Description>The city in which the user is located</Description>
+      </AttributeDefinition>
+      <AttributeDefinition name="country" type="string">
+        <Description>The country/region in which the user is located</Description>
+      </AttributeDefinition>
+      <AttributeDefinition name="department" type="string">
+        <Description>The name for the department in which the user works</Description>
+      </AttributeDefinition>
+      <AttributeDefinition name="dirSyncEnabled" type="string">
+        <Description>Indicates whether this object was synced from the on-premises directory</Description>
+      </AttributeDefinition>
+      <AttributeDefinition multi="true" name="disabledPlans" type="string">
+        <Description>The plans that are not assigned to user</Description>
+      </AttributeDefinition>
+      <AttributeDefinition name="displayName" type="string">
+        <Description>The name displayed in the address book for the user</Description>
+      </AttributeDefinition>
+      <AttributeDefinition name="facsimileTelephoneNumber" type="string">
+        <Description>The telephone number of the user's business fax machine</Description>
+      </AttributeDefinition>
+      <AttributeDefinition name="givenName" type="string">
+        <Description>First name of user</Description>
+      </AttributeDefinition>
+      <AttributeDefinition entitlement="true" managed="true" multi="true" name="groups" schemaObjectType="group" type="string">
+        <Description>Groups assigned to a user</Description>
+      </AttributeDefinition>
+      <AttributeDefinition name="immutableId" type="string">
+        <Description>This property is used to associate an on-premises ActiveDirectory user account to their Azure AD user object</Description>
+      </AttributeDefinition>
+      <AttributeDefinition name="jobTitle" type="string">
+        <Description>The user's job title</Description>
+      </AttributeDefinition>
+      <AttributeDefinition name="lastDirSyncTime" type="string">
+        <Description>Indicates the last time at which the object was synced with the on-premises directory</Description>
+      </AttributeDefinition>
+      <AttributeDefinition name="mail" type="string">
+        <Description>The SMTP address for the user, for example, "john@contoso.onmicrosoft.com"</Description>
+      </AttributeDefinition>
+      <AttributeDefinition name="mailNickname" type="string">
+        <Description>The mail alias for the user</Description>
+      </AttributeDefinition>
+      <AttributeDefinition name="mobile" type="string">
+        <Description>The primary cellular telephone number for the user</Description>
+      </AttributeDefinition>
+      <AttributeDefinition name="objectId" type="string">
+        <Description>The unique identifier for the user</Description>
+      </AttributeDefinition>
+      <AttributeDefinition name="onPremisesSecurityIdentifier" type="string">
+        <Description>Contains the on-premises security identifier (SID) for the user that was synchronized from on-premises to the cloud</Description>
+      </AttributeDefinition>
+      <AttributeDefinition multi="true" name="otherMails" type="string">
+        <Description>A list of additional email addresses for the user</Description>
+      </AttributeDefinition>
+      <AttributeDefinition name="passwordPolicies" type="string">
+        <Description>Specifies password policies for the user</Description>
+      </AttributeDefinition>
+      <AttributeDefinition name="physicalDeliveryOfficeName" type="string">
+        <Description>The office location in the user's place of business</Description>
+      </AttributeDefinition>
+      <AttributeDefinition name="postalCode" type="string">
+        <Description>The ZIP OR postal code for the user's postal address</Description>
+      </AttributeDefinition>
+      <AttributeDefinition name="preferredLanguage" type="string">
+        <Description>Preferred written or spoken language for a person</Description>
+      </AttributeDefinition>
+      <AttributeDefinition multi="true" name="proxyAddresses" type="string">
+        <Description>Proxy addresses, for example: ["SMTP: bob@contoso.com", "smtp: bob@sales.contoso.com"]</Description>
+      </AttributeDefinition>
+      <AttributeDefinition entitlement="true" managed="true" multi="true" name="roles" type="string">
+        <Description>Administrator Role assigned to user</Description>
+      </AttributeDefinition>
+      <AttributeDefinition name="sipProxyAddress" type="string">
+        <Description>Specifies the voice over IP (VOIP) session initiation protocol (SIP) address for the user</Description>
+      </AttributeDefinition>
+      <AttributeDefinition name="state" type="string">
+        <Description>The state or province in the user's address</Description>
+      </AttributeDefinition>
+      <AttributeDefinition name="streetAddress" type="string">
+        <Description>The street address of the user's place of business</Description>
+      </AttributeDefinition>
+      <AttributeDefinition name="surname" type="string">
+        <Description>Last name of the user</Description>
+      </AttributeDefinition>
+      <AttributeDefinition name="telephoneNumber" type="string">
+        <Description>The primary telephone number of the user's place of business</Description>
+      </AttributeDefinition>
+      <AttributeDefinition name="usageLocation" type="string">
+        <Description>A two letter country code indicating usage location</Description>
+      </AttributeDefinition>
+      <AttributeDefinition name="userPrincipalName" type="string">
+        <Description>The user principal name (UPN) of the user</Description>
+      </AttributeDefinition>
+      <AttributeDefinition name="userType" type="string">
+        <Description>Type of the user</Description>
+      </AttributeDefinition>
+    </Schema>
+    <Schema displayAttribute="displayName" featuresString="PROVISIONING" identityAttribute="objectId" instanceAttribute="" nativeObjectType="group" objectType="group">
+      <AttributeDefinition name="description" type="string">
+        <Description>Description for the group</Description>
+      </AttributeDefinition>
+      <AttributeDefinition name="dirSyncEnabled" type="string">
+        <Description>Indicates whether this object was synced from the on-premises directory.</Description>
+      </AttributeDefinition>
+      <AttributeDefinition name="displayName" type="string">
+        <Description>The display name for the group</Description>
+      </AttributeDefinition>
+      <AttributeDefinition name="lastDirSyncTime" type="string">
+        <Description>Indicates the last time at which the object was synced with theon-premises directory</Description>
+      </AttributeDefinition>
+      <AttributeDefinition name="mail" type="string">
+        <Description>The SMTP address for the group</Description>
+      </AttributeDefinition>
+      <AttributeDefinition name="mailEnabled" type="string">
+        <Description>Specifies whether the group is mail-enabled</Description>
+      </AttributeDefinition>
+      <AttributeDefinition name="mailNickname" type="string">
+        <Description>The mail alias for the group</Description>
+      </AttributeDefinition>
+      <AttributeDefinition name="objectId" type="string">
+        <Description>Group ID</Description>
+      </AttributeDefinition>
+      <AttributeDefinition name="onPremisesSecurityIdentifier" type="string">
+        <Description>Contains the on-premises security identifier (SID) for the group that was synchronized from on-premises to the cloud</Description>
+      </AttributeDefinition>
+      <AttributeDefinition multi="true" name="proxyAddresses" type="string">
+        <Description>Proxy addresses of the group</Description>
+      </AttributeDefinition>
+      <AttributeDefinition name="securityEnabled" type="string">
+        <Description>Specifies whether the group is a security group</Description>
+      </AttributeDefinition>
+    </Schema>
+  </Schemas>
+  <ApplicationScorecard/>
+</Application>

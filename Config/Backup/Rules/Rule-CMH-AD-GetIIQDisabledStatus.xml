@@ -99,8 +99,8 @@
   
         import org.apache.log4j.Logger;
         
-        Logger log = Logger.getLogger("Rule.CMH-AD-GetIIQDisabledStatus");
-        log.info("Entering CMH-AD-GetIIQDisabledStatus rule for identity: "+identity.getName());
+        Logger cmhLogger = Logger.getLogger("Rule.CMH-AD-GetIIQDisabledStatus");
+        cmhLogger.info("Entering CMH-AD-GetIIQDisabledStatus rule for identity: "+identity.getName());
         //Generating IIQDisabled status based on user status
 		String status = identity.getStringAttribute("status");
 		boolean flag = false;
@@ -109,7 +109,7 @@
 		} else if (null != status && status.equalsIgnoreCase("Prehire")) {
 			flag = true;
 		} 
-		log.info("Exiting CMH-AD-GetIIQDisabledStatus rule");
+		cmhLogger.info("Exiting CMH-AD-GetIIQDisabledStatus rule");
 		return flag;
   ]]></Source>
 </Rule>

@@ -82,7 +82,7 @@ if($dn -and $oper -and ($oper -eq "Leaver")){
 	}else{
 		$logFile = $logRootDirectory+"Disable-$(get-date -f 'MMddyyyy-hhmmss').log";
 	}
-	
+
 	Add-Content -path $logFile -value "$(get-date -f 'MM-dd-yyy HH:mm:ss') : [DEBUG] adAfterCreatePowerShell: Entering the script";
 	Try
 	{
@@ -115,7 +115,7 @@ if($dn -and $oper -and ($oper -eq "Leaver")){
 		}
 		$count=$count+1
 	}
-	
+
 	if($userSAM)
 	{
 		$sam = $userSAM.SamAccountName
@@ -124,16 +124,16 @@ if($dn -and $oper -and ($oper -eq "Leaver")){
 		if([bool](Get-RemoteMailbox -Identity "$sam"))
 		{
 			Set-ADServerSettings -RecipientViewRoot $($userSAM.OrganizationalUnit)
-			
+
 			$mailboxName = "TERM - $dispName"
 			Try
 			{
 				#set the display name on the mailbox through the Hybrid Exchange server
 				Set-RemoteMailbox -Identity $sam -DisplayName $mailboxName
-				
+
 				#set the address to hidden for the mailbox through the Hybrid Exchange
 				Set-RemoteMailbox -Identity $sam -HiddenFromAddressListsEnabled $true
-				
+
 				Add-Content -path $logFile -value "$(get-date -f 'MM-dd-yyy HH:mm:ss') : [DEBUG] DisplayName updated and Hidden successfully";
 			}
 			Catch
@@ -156,6 +156,6 @@ if($dn -and $oper -and ($oper -eq "Leaver")){
 		$ErrorActionPreference="Stop";
 	}
 }
-  
+
 </Source>
 </Rule>

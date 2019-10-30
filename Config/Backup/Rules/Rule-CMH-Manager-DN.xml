@@ -99,8 +99,8 @@
 	import sailpoint.object.Identity;
 	import sailpoint.object.Link;
 	
-	Logger log = Logger.getLogger("Rule.CMH-Manager-DN");
-	log.debug("Entering CMH-Manager-DN for identity "+identity!=null?identity.getName():"");
+	Logger cmhLogger = Logger.getLogger("Rule.CMH-Manager-DN");
+	cmhLogger.debug("Entering CMH-Manager-DN for identity "+identity!=null?identity.getName():"");
 	
 	String nativeIdentity = null;
 	if(identity!=null && identity.getManager()!=null){
@@ -123,7 +123,7 @@
 			}
 		}
 	}
-	log.debug("Exiting CMH-LegalHold-Users-Report-Generation-Rule");
+	cmhLogger.debug("Exiting CMH-LegalHold-Users-Report-Generation-Rule");
 	return nativeIdentity;
   
 ]]></Source>

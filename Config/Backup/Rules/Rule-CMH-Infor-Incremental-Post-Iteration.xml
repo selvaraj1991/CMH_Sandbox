@@ -9,9 +9,9 @@
             import sailpoint.object.Application;
             import sailpoint.object.Custom;
 			import sailpoint.tools.Util;
-            
-		    Logger log = Logger.getLogger("Rule.CMH-Infor-Incremental-Post-Iteration-Rule");
-		    log.debug("Entering CMH-Infor-Post-Iteration-Rule");
+
+		    Logger cmhLogger = Logger.getLogger("Rule.CMH-Infor-Incremental-Post-Iteration-Rule");
+		    cmhLogger.debug("Entering CMH-Infor-Post-Iteration-Rule");
             //Updates the last run timestamp of the task in custom object
             Custom custom = context.getObjectByName(Custom.class,"CMH-Infor-Aggregation-Custom-Object");
             String lastRunTimeStamp = null;
@@ -37,7 +37,7 @@
 					}
 				}
 			}
-            log.debug("Exiting CMH-Infor-Post-Iteration-Rule");
+            cmhLogger.debug("Exiting CMH-Infor-Post-Iteration-Rule");
             ]]>
         </Source>
     </Rule>

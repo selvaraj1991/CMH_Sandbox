@@ -23,8 +23,8 @@
       <Source>
       <![CDATA[
   			import org.apache.log4j.Logger;
-  			Logger log = Logger.getLogger("Workflow.CMH-Immediate-Termination");
-  			if(log.isDebugEnabled()){
+  			Logger cmhLogger = Logger.getLogger("Workflow.CMH-Immediate-Termination");
+  			if(cmhLogger.isDebugEnabled()){
   				return true;
   			}
   			return false;
@@ -88,6 +88,15 @@
 	<Reference class="sailpoint.object.Rule" name="CMH-AD-Generic-Rulelibrary"/>
   </RuleLibraries>
   <Step icon="Start" name="Start" posX="154" posY="126">
+	<Script>
+		<Source>
+			<![CDATA[
+				if(wfcontext.getWorkflowCase().getTaskResult()!=null){
+					wfcontext.getWorkflowCase().getTaskResult().setName("Immediate Termination");
+				}
+			]]>
+		</Source>
+	</Script>
     <Transition to="Get Identity for Termination"/>
   </Step>
   <Step icon="Default" name="Get Identity for Termination" posX="274" posY="126">
@@ -113,7 +122,7 @@
   			import sailpoint.object.Identity;
 			import sailpoint.tools.Util;
 
-  			Logger log = Logger.getLogger("Workflow.CMH-Immediate-Termination");
+  			Logger cmhLogger = Logger.getLogger("Workflow.CMH-Immediate-Termination");
   			String userName = null;
   			String employeeId = null;
   			String userOnLegalHold = null;
@@ -122,10 +131,13 @@
 				if(iden!=null){
 					userName = iden.getName();
 					if(isDebugEnabled)	{
-						log.debug("User selected :"+userName);
+						cmhLogger.debug("User selected :"+userName);
 					}
 					if(Util.isNotNullOrEmpty(userName)){
 						wfcontext.getRootWorkflowCase().put("identityName",userName);
+						if(wfcontext.getWorkflowCase().getTaskResult()!=null){
+							wfcontext.getWorkflowCase().getTaskResult().setName("Immediate Termination : "+userName);
+						}
 					}
 					employeeId = iden.getStringAttribute("employeeId");
 					if(Util.isNotNullOrEmpty(employeeId)){
@@ -147,21 +159,21 @@
   			import org.apache.log4j.Logger;
   			import sailpoint.tools.Util;
 
-  			Logger log = Logger.getLogger("Workflow.CMH-Immediate-Termination");
+  			Logger cmhLogger = Logger.getLogger("Workflow.CMH-Immediate-Termination");
 			if(isDebugEnabled)	{
-				log.debug("Validating the Data");
+				cmhLogger.debug("Validating the Data");
 			}
   			List errorList = new ArrayList();
   			if(Util.isNullOrEmpty(adAppName) || Util.isNullOrEmpty(terminatedOU)){
-  				log.error("Custom object not configured properly");
+  				cmhLogger.error("Custom object not configured properly");
   				errorList.add("Custom object not configured properly");
   			}
   			if(Util.isNullOrEmpty(identityName)){
-  				log.error("identityName is null");
+  				cmhLogger.error("identityName is null");
   				errorList.add("identityName is null");
   			}
   			if(Util.isNullOrEmpty(employeeId)){
-  				log.error("employeeId is null");
+  				cmhLogger.error("employeeId is null");
   				errorList.add("employeeId is null");
   			}
   			return errorList;
@@ -173,15 +185,15 @@
   			<Source>
   			<![CDATA[
   				import org.apache.log4j.Logger;
-  				Logger log = Logger.getLogger("Workflow.CMH-Immediate-Termination");
+  				Logger cmhLogger = Logger.getLogger("Workflow.CMH-Immediate-Termination");
   				if(validationErrors==null || validationErrors.size()<=0){
 					if(isDebugEnabled)	{
-						log.debug("No Validation Errors");
+						cmhLogger.debug("No Validation Errors");
 					}
   					return true;
   				}
 				if(isDebugEnabled)	{
-					log.debug("There is a Validation Errors");
+					cmhLogger.debug("There is a Validation Errors");
 				}
   				return false;
   			]]>
@@ -197,7 +209,7 @@
         import org.apache.log4j.Logger;
         import sailpoint.object.Identity;
 
-       	Logger log = Logger.getLogger("Workflow.CMH-Immediate-Termination");
+       	Logger cmhLogger = Logger.getLogger("Workflow.CMH-Immediate-Termination");
 
 		Identity user = acquireLockOnIdentity(identityName);
 	    if (user != null) {
@@ -205,7 +217,7 @@
 			context.saveObject(user);
 			context.commitTransaction();
 			if (isDebugEnabled) {
-				log.debug("Updated immediateOffboarder status for the user: "+ identityName);
+				cmhLogger.debug("Updated immediateOffboarder status for the user: "+ identityName);
 			}
 			ObjectUtil.unlockIdentity(context,user);
 		}
@@ -228,10 +240,10 @@
         import sailpoint.object.ProvisioningPlan.AttributeRequest;
 		    import sailpoint.tools.Util;
 
-        Logger log = Logger.getLogger("Workflow.CMH-Immediate-Termination");
+        Logger cmhLogger = Logger.getLogger("Workflow.CMH-Immediate-Termination");
 
         if (isDebugEnabled) {
-        	log.debug("Building Plan to disable the AD account for the User "+identityName);
+        	cmhLogger.debug("Building Plan to disable the AD account for the User "+identityName);
         }
 
         ProvisioningPlan adPlan = new ProvisioningPlan();
@@ -262,7 +274,7 @@
   		}
 
         if (isDebugEnabled) {
-          log.debug("Plan for disabling the AD account is generated for the user : "+identityName);
+          cmhLogger.debug("Plan for disabling the AD account is generated for the user : "+identityName);
         }
         return adPlan;
     ]]>
@@ -346,10 +358,10 @@
 			import sailpoint.object.Link;
 			import sailpoint.tools.Util;
 
-			Logger log = Logger.getLogger("Workflow.CMH-Immediate-Termination");
+			Logger cmhLogger = Logger.getLogger("Workflow.CMH-Immediate-Termination");
 
 			if (isDebugEnabled) {
-				log.debug("Invoking Single Account Aggregation method to update the OU information in IIQ");
+				cmhLogger.debug("Invoking Single Account Aggregation method to update the OU information in IIQ");
 			}
 			if(validationErrors==null){
 				validationErrors = new ArrayList();
@@ -418,11 +430,12 @@
   			import sailpoint.tools.Util;
 
 			if(Util.nullSafeCaseInsensitiveEq(isSubmitted,"YES")){
-			
-				Logger log = Logger.getLogger("Workflow.CMH-Immediate-Termination");
+
+				Logger cmhLogger = Logger.getLogger("Workflow.CMH-Immediate-Termination");
+
 
 				if(isDebugEnabled)	{
-					log.debug("CMH_ImmediateTermination: Check Status step : Checking for errors");
+					cmhLogger.debug("CMH_ImmediateTermination: Check Status step : Checking for errors");
 				}
 
 	  			if(wfcontext.getRootWorkflowCase().getMessages()!=null && wfcontext.getRootWorkflowCase().getMessagesByType(Message.Type.Error)!=null){
@@ -432,7 +445,8 @@
 	  					validationErrors = new ArrayList();
 	  				}
 	  				validationErrors.add(errorMessage);
-	  				log.error("Check Status step : Errors Found : "+Util.listToCsv(validationErrors));
+
+	  				cmhLogger.error("Check Status step : Errors Found : "+Util.listToCsv(validationErrors));
 	  			}
 
 	  			String action = null;
@@ -453,8 +467,8 @@
 	  			auditWrite(action,source,target,attrName,attrVal,strMap);
 
 				if(isDebugEnabled)	{
-					log.debug("Check Status step : Audit Event Generated");
-					log.debug("Ending the CMH_ImmediateTermination Workflow for the user "+identityName);
+					cmhLogger.debug("Check Status step : Audit Event Generated");
+					cmhLogger.debug("Ending the CMH_ImmediateTermination Workflow for the user "+identityName);
 				}
   				context.commitTransaction();
 			}

@@ -2,7 +2,7 @@
 <!DOCTYPE Rule PUBLIC "sailpoint.dtd" "sailpoint.dtd">
 <Rule language="beanshell" name="CMH-User-Conversion-Trigger-Rule" type="IdentityTrigger">
   <Description>This rule can be used for Certification Events that use rule triggers. The previousIdentity and newIdentity hold snapshots of the identity before the update has occurred and the state of the identity after the update, respectively.
-  
+
   This rule is used to trigger the User conversion workflow when there is a new user with same name(as existing user in IIQ) and otherEmpId is being set to the user in IIQ</Description>
   <ReferencedRules>
     <Reference class="sailpoint.object.Rule" name="CMH-AD-Generic-Rulelibrary"/>
@@ -45,8 +45,8 @@
     import sailpoint.object.Identity;
     import sailpoint.tools.Util;
 
-    Logger log = Logger.getLogger("Rule.CMH-User-Conversion-Trigger-Rule");
-    log.debug("Entering CMH-User-Conversion-Trigger-Rule for identity "+newIdentity!=null?newIdentity.getName():"");
+    Logger cmhLogger = Logger.getLogger("Rule.CMH-User-Conversion-Trigger-Rule");
+    cmhLogger.debug("Entering CMH-User-Conversion-Trigger-Rule for identity "+newIdentity!=null?newIdentity.getName():"");
 	boolean triggerConversion = false;
         if (newIdentity != null) {
             String oldEmpId = newIdentity.getStringAttribute("otherEmpId");
@@ -60,7 +60,7 @@
                             triggerConversion = true;
                         } else if (Util.nullSafeCaseInsensitiveEq(userStatus, "PREHIRE")) {
 						String stDate = newIdentity.getAttribute("startDate");
-						Date startDate = getDate("genericViewDateFormat",stDate); 
+						Date startDate = getDate("genericViewDateFormat",stDate);
                                 if (startDate!=null) {
                                     Date currDate = new Date();
                                     int daysDiff = Util.getDaysDifference(startDate, currDate);
@@ -73,7 +73,7 @@
             }
         }
     }
-	log.debug("Exiting CMH-User-Conversion-Trigger-Rule: Proceed with Conversion?"+triggerConversion);
+	cmhLogger.debug("Exiting CMH-User-Conversion-Trigger-Rule: Proceed with Conversion?"+triggerConversion);
     return triggerConversion;
     ]]>
     </Source>

@@ -47,7 +47,7 @@
 		import sailpoint.tools.Util;
 
 		public boolean checkOldEmployeeIdUserStatus(String oldEmployeeId) {
-			log.debug("Entering checkOldEmployeeIdUserStatus method");
+			cmhLogger.debug("Entering checkOldEmployeeIdUserStatus method");
 			boolean isStatus = false;
 			if (!StringUtils.isBlank(oldEmployeeId)) {
 				Filter f = Filter.eq("employeeId", oldEmployeeId);
@@ -64,13 +64,13 @@
 					}
 				}
 			}
-			log.debug("Exiting checkOldEmployeeIdUserStatus method");
+			cmhLogger.debug("Exiting checkOldEmployeeIdUserStatus method");
 			return isStatus;
 		}
 		
 		//Rule starts from here
-		Logger log = Logger.getLogger("Rule.CMH-Joiner-Users-Selection-Rule");
-		log.debug("Entering CMH-Joiner-Users-Selection-Rule for user "+identity!=null?identity.getName():"");
+		Logger cmhLogger = Logger.getLogger("Rule.CMH-Joiner-Users-Selection-Rule");
+		cmhLogger.debug("Entering CMH-Joiner-Users-Selection-Rule for user "+identity!=null?identity.getName():"");
 		boolean success = false;
 		if (null != identity) {
 		    String assignmentType = identity.getStringAttribute("assignmentType");
@@ -93,8 +93,8 @@
 			}
 		}
 		}
-		log.debug("Proceed with Joiner? " + success);
-		log.debug("Exiting Joiner-Users-Selection-Rule");
+		cmhLogger.debug("Proceed with Joiner? " + success);
+		cmhLogger.debug("Exiting Joiner-Users-Selection-Rule");
 		return success;
   ]]></Source>
 </Rule>

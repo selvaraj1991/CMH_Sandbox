@@ -63,7 +63,7 @@
     import sailpoint.tools.Util;
 
 	public void createNewUser(String firstName, String lastName, String middInitial, String employeeId, String userType, String mailRequired, String status){
-		log.debug("Entering createNewUser method");
+		cmhLogger.debug("Entering createNewUser method");
 		String finalUsername =null;
 		String genUsername = userNameGenerator(firstName,lastName,middInitial,employeeId);	//Generate a username based on firstname,lastname, middleInitial
 		if(null !=genUsername) {
@@ -82,7 +82,7 @@
 				account.setAttribute(WORK_EMAIL, finalUsername + DOMAIN);
 			}
 		}
-		log.debug("Exiting createNewUser method");
+		cmhLogger.debug("Exiting createNewUser method");
 	}
 	
 	
@@ -97,8 +97,8 @@
 	}
 
 	//Rule starts from here
-	Logger log = Logger.getLogger("Rule.CMH-User-Creation-Rule");
-    log.debug("Entering CMH-User-Creation-Rule");
+	Logger cmhLogger = Logger.getLogger("Rule.CMH-User-Creation-Rule");
+    cmhLogger.debug("Entering CMH-User-Creation-Rule");
 	
 	String WORK_EMAIL = "WorkEmail";
 	String USER_NAME = "Username";
@@ -149,7 +149,7 @@
 	
     if (!StringUtils.isBlank(oldemployeeId) && !StringUtils.isBlank(username)) {	//User conversion Case, Update the existing user's name to _old+timestamp and create the new user with same
 
-    	log.debug("OtherEmpId and username is not null. Check if it is a conversion case for the user :"+employeeId);
+    	cmhLogger.debug("OtherEmpId and username is not null. Check if it is a conversion case for the user :"+employeeId);
 		QueryOptions ops = new QueryOptions();
 		Filter filter = Filter.eq("employeeId", oldemployeeId);
 		ops.addFilter(filter);
@@ -184,7 +184,7 @@
 						}
 						context.saveObject(oldIden);
 						context.commitTransaction();
-						log.debug("Old User object name updated to _old+timestamp for user : "+oldemployeeId);
+						cmhLogger.debug("Old User object name updated to _old+timestamp for user : "+oldemployeeId);
 						identity.setName(oldIdentityName);//Creating new user with same user name
 						identity.setDisplayName(oldIdentityName);
 						if(Util.nullSafeCaseInsensitiveEq(userType,"NonEmployee") && Util.nullSafeCaseInsensitiveEq(mailRequired,"Yes")){
@@ -204,15 +204,15 @@
 						account.setDisplayName(oldIdentityName);
 						account.setIdentity(oldIdentityName);
 					}else{
-						log.debug("Username & OtherEmpId is not null and user with OtherEmpId Status is not Terminated, so creating user with unique name for identity "+employeeId);
+						cmhLogger.debug("Username & OtherEmpId is not null and user with OtherEmpId Status is not Terminated, so creating user with unique name for identity "+employeeId);
 						createNewUser(firstName,lastName,middInitial,employeeId,userType,mailRequired,status);
 					}
 				}else{
 					if(checkIfUserExistsWithUsername(username)){
-						log.debug("User already exists with the same username "+username+", so creating new username for the user "+employeeId);
+						cmhLogger.debug("User already exists with the same username "+username+", so creating new username for the user "+employeeId);
 						createNewUser(firstName,lastName,middInitial,employeeId,userType,mailRequired,status);
 					}else{
-						log.debug("Username & OtherEmpId is not null and user with OtherEmpId is having different username, so creating user with infor username for identity "+employeeId);
+						cmhLogger.debug("Username & OtherEmpId is not null and user with OtherEmpId is having different username, so creating user with infor username for identity "+employeeId);
 						identity.setName(username);//Creating new user with same name from infor
 						identity.setDisplayName(username);
 						account.setDisplayName(username);
@@ -228,10 +228,10 @@
 				}
 			}else{
 				if(checkIfUserExistsWithUsername(username)){
-					log.debug("User already exists with the same username "+username+", so creating new username for the user "+employeeId);
+					cmhLogger.debug("User already exists with the same username "+username+", so creating new username for the user "+employeeId);
 					createNewUser(firstName,lastName,middInitial,employeeId,userType,mailRequired,status);
 				}else{
-					log.debug("Username & OtherEmpId is not null and user with OtherEmpId is not present in IIQ, so creating user with infor username for identity "+employeeId);
+					cmhLogger.debug("Username & OtherEmpId is not null and user with OtherEmpId is not present in IIQ, so creating user with infor username for identity "+employeeId);
 					identity.setName(username);//Creating new user with same name from infor
 					identity.setDisplayName(username);
 					account.setDisplayName(username);
@@ -246,7 +246,7 @@
 				}
 			}
 		} catch (GeneralException e) {
-			log.error("Exception occured while searching for the existing user with EmployeeID: "+oldemployeeId+" in IIQ :"+e.getMessage());
+			cmhLogger.error("Exception occured while searching for the existing user with EmployeeID: "+oldemployeeId+" in IIQ :"+e.getMessage());
       		throw new GeneralException("CMH-User-Creation-Rule:Exception occured while searching for the existing user with EmployeeID: "+oldemployeeId+" in IIQ :"+e.getMessage());
 		} finally {
 			if(userItr!=null){
@@ -255,10 +255,10 @@
 		}
 	}else if (!StringUtils.isBlank(username)) {
 		if(checkIfUserExistsWithUsername(username)){
-			log.debug("User already exists with the same username "+username+", so creating new username for the user "+employeeId);
+			cmhLogger.debug("User already exists with the same username "+username+", so creating new username for the user "+employeeId);
 			createNewUser(firstName,lastName,middInitial,employeeId,userType,mailRequired,status);
 		}else{
-			log.debug("Username is not null from infor, so creating user with infor username for identity "+employeeId);
+			cmhLogger.debug("Username is not null from infor, so creating user with infor username for identity "+employeeId);
 			identity.setName(username);//Creating new user with same name from infor
 			identity.setDisplayName(username);
 			account.setDisplayName(username);
@@ -272,14 +272,14 @@
 			}
 		}
 	} else {
-		log.debug("Username is null from Infor, so creating user with unique name");
+		cmhLogger.debug("Username is null from Infor, so creating user with unique name");
 		createNewUser(firstName,lastName,middInitial,employeeId,userType,mailRequired,status);
 	}
 
 	if (status.equalsIgnoreCase("PreHire")) {
-		log.info("Creating a new prehire user with inactive status");
+		cmhLogger.info("Creating a new prehire user with inactive status");
 		identity.setInactive(true);
 	}
-	log.debug("Exiting CMH-User-Creation-Rule");
+	cmhLogger.debug("Exiting CMH-User-Creation-Rule");
 	]]></Source>
 </Rule>

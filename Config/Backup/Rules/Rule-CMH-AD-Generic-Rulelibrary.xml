@@ -38,7 +38,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import sailpoint.integration.JsonUtil;
 
-Logger log = Logger.getLogger("Rule.CMH-AD-Generic-Rulelibrary");
+Logger cmhLogger = Logger.getLogger("Rule.CMH-AD-Generic-Rulelibrary");
 
 /**
 				* Generate primary group DN.
@@ -47,12 +47,12 @@ Logger log = Logger.getLogger("Rule.CMH-AD-Generic-Rulelibrary");
 				* @return string
 				*/
 public String generatePrimaryGroupDN(String userType) {
-	log.debug("Entering generatePrimaryGroupDN method");
+	cmhLogger.debug("Entering generatePrimaryGroupDN method");
 	String finalDn = null;
 	if (Util.isNotNullOrEmpty(userType)) {
 		finalDn = getCustomObject(userType.toUpperCase(), "CMH-User-OU-Mapping-Custom-Object");
 	}
-	log.debug("Exiting generatePrimaryGroupDN method");
+	cmhLogger.debug("Exiting generatePrimaryGroupDN method");
 	return finalDn;
 }
 
@@ -65,16 +65,16 @@ public String generatePrimaryGroupDN(String userType) {
 				 */
 
 public String generateAccountDN(String username, String userType) {
-	log.debug("Entering generateAccountDN method");
-	String finalCn = null;
+	cmhLogger.debug("Entering generateAccountDN method");
+	String finalDN = null;
 	if (Util.isNotNullOrEmpty(username)) {
 		String userOU = generatePrimaryGroupDN(userType);
 		if (Util.isNotNullOrEmpty(userOU)) {
-			finalCn = "cn=" + username + "," + userOU;
+			finalDN = "cn=" + username + "," + userOU;
 		}
 	}
-	log.debug("Exiting generateAccountDN method");
-	return finalCn;
+	cmhLogger.debug("Exiting generateAccountDN method");
+	return finalDN;
 }
 
 /**
@@ -86,20 +86,20 @@ public String generateAccountDN(String username, String userType) {
 				 */
 
 public String getCustomObject(String customAttrName, String customObjectName) {
-	log.debug("Entering getCustomObject method");
+	cmhLogger.debug("Entering getCustomObject method");
 	String customAttrValue = null;
 	if (Util.isNotNullOrEmpty(customAttrName) && Util.isNotNullOrEmpty(customObjectName)) {
 		Custom custom = null;
 		try {
 			custom = context.getObject(Custom.class, customObjectName);
 		} catch(GeneralException e) {
-			log.error("Error occured while retrieving cusotm object: " + e.getMessage());
+			cmhLogger.error("Error occured while retrieving cusotm object: " + e.getMessage());
 		}
 		if (null != custom) {
 			customAttrValue = custom.get(customAttrName);
 		}
 	}
-	log.debug("Exiting getCustomObject method");
+	cmhLogger.debug("Exiting getCustomObject method");
 	return customAttrValue;
 }
 
@@ -114,7 +114,7 @@ public String getCustomObject(String customAttrName, String customObjectName) {
 				 */
 
 public char[] generateUserPassword(String firstName, String lastName, String dob, String employeeId) {
-	log.debug("Entering generateUserPassword method");
+	cmhLogger.debug("Entering generateUserPassword method");
 	char[] userPassword = null;
 	if (Util.isNotNullOrEmpty(firstName)) {
 		firstName = firstName.toLowerCase();
@@ -144,7 +144,7 @@ public char[] generateUserPassword(String firstName, String lastName, String dob
 		}
 	}
 
-	log.debug("Exiting generateUserPassword method");
+	cmhLogger.debug("Exiting generateUserPassword method");
 	return userPassword;
 }
 
@@ -156,12 +156,12 @@ public char[] generateUserPassword(String firstName, String lastName, String dob
 				 */
 
 public boolean checkLength(String username) {
-	log.debug("Entering checkLength method");
+	cmhLogger.debug("Entering checkLength method");
 	boolean isValid = true;
 	if (username.length() > 20) {
 		isValid = false;
-	} 
-	log.debug("Exiting checkLength method");
+	}
+	cmhLogger.debug("Exiting checkLength method");
 	return isValid;
 }
 
@@ -177,7 +177,7 @@ public boolean checkLength(String username) {
 				 */
 
 public int checkUnique(String username, String lastName, String empId) {
-	log.debug("Entering checkUnique method");
+	cmhLogger.debug("Entering checkUnique method");
 	int count = 0;
 	List userList = null;
 	Filter lNameFilter = Filter.eq("lastname", lastName);
@@ -192,7 +192,7 @@ public int checkUnique(String username, String lastName, String empId) {
 	try {
 		itr = context.search(Identity.class, qOps);
 	} catch(GeneralException e) {
-		log.error("Error Occured in checkUnique method "+e.getMessage());
+		cmhLogger.error("Error Occured in checkUnique method "+e.getMessage());
 	}
 	if (!Util.isEmpty(itr)) {
 		userList = new ArrayList();
@@ -220,7 +220,7 @@ public int checkUnique(String username, String lastName, String empId) {
 			}
 		}
 	}
-	log.debug("Exiting checkUnique method");
+	cmhLogger.debug("Exiting checkUnique method");
 	return count;
 }
 
@@ -233,9 +233,9 @@ public int checkUnique(String username, String lastName, String empId) {
 				 */
 
 public String userNameConcat(String username, int count) {
-	log.debug("Entering userNameConcat method");
+	cmhLogger.debug("Entering userNameConcat method");
 	String userName = username.concat(Integer.toString(count));
-	log.debug("Exiting userNameConcat method");
+	cmhLogger.debug("Exiting userNameConcat method");
 	return userName;
 }
 
@@ -246,7 +246,7 @@ public String userNameConcat(String username, int count) {
 				 */
 
 public String generateTimeStamp() {
-	log.debug("Entering generateTimeStamp method");
+	cmhLogger.debug("Entering generateTimeStamp method");
 	String strDate = null;
 	String format = getCustomObject("renameUserTimestamp", "CMH-DateFormat");
 	if (Util.isNotNullOrEmpty(format)) {
@@ -254,7 +254,7 @@ public String generateTimeStamp() {
 		Date date = new Date();
 		strDate = formatter.format(date);
 	}
-	log.debug("Exiting generateTimeStamp method");
+	cmhLogger.debug("Exiting generateTimeStamp method");
 	return strDate;
 }
 
@@ -269,7 +269,7 @@ public String generateTimeStamp() {
 				 */
 
 public String userNameGenerator(String firstName, String lastName, String middInitial, String empId) {
-	log.debug("Entering userNameGenerator method");
+	cmhLogger.debug("Entering userNameGenerator method");
 	String uname = null;
 	String temp = null;
 	String finalUsername = null;
@@ -301,7 +301,7 @@ public String userNameGenerator(String firstName, String lastName, String middIn
 		}
 		finalUsername = userNameCreationValidationCheck(uname, lastName, empId);
 	}
-	log.debug("Exiting userNameGenerator method");
+	cmhLogger.debug("Exiting userNameGenerator method");
 	return finalUsername;
 }
 
@@ -318,7 +318,7 @@ public String userNameGenerator(String firstName, String lastName, String middIn
 				 */
 
 public String userNameCreationValidationCheck(String username, String lastName, String empId) {
-	log.debug("Entering userNameCreationValidationCheck method");
+	cmhLogger.debug("Entering userNameCreationValidationCheck method");
 	String uname = username;
 	String temp = null;
 	String finalUsername = null;
@@ -355,7 +355,7 @@ public String userNameCreationValidationCheck(String username, String lastName, 
 	} else {
 		finalUsername = uname;
 	}
-	log.debug("Exiting userNameCreationValidationCheck method");
+	cmhLogger.debug("Exiting userNameCreationValidationCheck method");
 	return finalUsername;
 }
 
@@ -367,13 +367,13 @@ public String userNameCreationValidationCheck(String username, String lastName, 
 				 * @return true
 				 */
 public boolean checkUsernameInCustomObject(String username, String customName,String token) {
-	log.debug("Entering checkUsernameInCustomObject method");
+	cmhLogger.debug("Entering checkUsernameInCustomObject method");
 	boolean userNameExists = false;
 	Custom custom = null;
 	try {
 		custom = context.getObject(Custom.class, customName);
 	} catch(GeneralException e) {
-		log.error("Error checking cerner username in custom object : " + e.getMessage());
+		cmhLogger.error("Error checking cerner username in custom object : " + e.getMessage());
 	}
 	if (custom != null) {
 		List arr = custom.getList(token);
@@ -383,7 +383,7 @@ public boolean checkUsernameInCustomObject(String username, String customName,St
 			}
 		}
 	}
-	log.debug("Exiting checkUsernameInCustomObject method");
+	cmhLogger.debug("Exiting checkUsernameInCustomObject method");
 	return userNameExists;
 }
 
@@ -399,7 +399,7 @@ public boolean checkUsernameInCustomObject(String username, String customName,St
 				 */
 
 public String finalUserName(String username, String firstname, String lastname, String middleInitial, String empId) {
-	log.debug("Entering finalUserName method");
+	cmhLogger.debug("Entering finalUserName method");
 	String uname = null;
 	if (Util.isNotNullOrEmpty(username)) {
 		uname = username;
@@ -428,7 +428,7 @@ public String finalUserName(String username, String firstname, String lastname, 
 		}
 
 	}
-	log.debug("Exiting finalUserName method");
+	cmhLogger.debug("Exiting finalUserName method");
 	return uname;
 }
 
@@ -444,7 +444,7 @@ public String finalUserName(String username, String firstname, String lastname, 
 				 */
 
 public void auditWrite(String action, String source, String target, String attributeName, String attributeValue, Map map) {
-	log.debug("Entering auditWrite method");
+	cmhLogger.debug("Entering auditWrite method");
 	if (!StringUtils.isBlank(action) && !StringUtils.isBlank(source) && !StringUtils.isBlank(target) && !StringUtils.isBlank(attributeName) && null != map) {
 
 		AuditEvent event = new AuditEvent();
@@ -469,11 +469,11 @@ public void auditWrite(String action, String source, String target, String attri
 		}
 		Auditor.log(event);
 		context.commitTransaction();
-		log.debug("Audit event is generated successfully");
+		cmhLogger.debug("Audit event is generated successfully");
 	} else {
-		log.error("One of the required attribute is null [action,source,target,attributeName,attributeValue, setStringMap]");
+		cmhLogger.error("One of the required attribute is null [action,source,target,attributeName,attributeValue, setStringMap]");
 	}
-	log.debug("Exiting auditWrite method");
+	cmhLogger.debug("Exiting auditWrite method");
 }
 
 /**
@@ -484,7 +484,7 @@ public void auditWrite(String action, String source, String target, String attri
 				 * @return list
 				 */
 public List getAppsToProcess(String identityName, String customName, String keyWord) {
-	log.debug("Entering getAppsToProcess method");
+	cmhLogger.debug("Entering getAppsToProcess method");
 	Identity iden = context.getObjectByName(Identity.class, identityName);
 	Custom custom = context.getObjectByName(Custom.class, customName);
 	List appsToDelete = new ArrayList();
@@ -504,7 +504,7 @@ public List getAppsToProcess(String identityName, String customName, String keyW
 			}
 		}
 	}
-	log.debug("Exiting getAppsToProcess method");
+	cmhLogger.debug("Exiting getAppsToProcess method");
 	return appsToDelete;
 }
 
@@ -517,7 +517,7 @@ public List getAppsToProcess(String identityName, String customName, String keyW
 				 */
 
 private HttpPost setHeader(String endPointURL, String encoding) {
-	log.debug("Entering setHeader method");
+	cmhLogger.debug("Entering setHeader method");
 	HttpPost httpAddCartPost = null;
 	if (Util.isNotNullOrEmpty(endPointURL) && Util.isNotNullOrEmpty(encoding)) {
 		httpAddCartPost = new HttpPost(endPointURL);
@@ -525,7 +525,7 @@ private HttpPost setHeader(String endPointURL, String encoding) {
 		httpAddCartPost.setHeader("Content-Type", "application/json");
 		httpAddCartPost.setHeader("Authorization", "Basic " + encoding);
 	}
-	log.debug("Exiting setHeader method");
+	cmhLogger.debug("Exiting setHeader method");
 	return httpAddCartPost;
 
 }
@@ -537,7 +537,7 @@ private HttpPost setHeader(String endPointURL, String encoding) {
 				 * @return map
 				 */
 private Map responseMap(CloseableHttpClient httpclient, HttpPost httpPostRequest) {
-	log.debug("Entering responseMap method");
+	cmhLogger.debug("Entering responseMap method");
 	String responseValidate = null;
 	CloseableHttpResponse response = null;
 	Map map = null;
@@ -554,18 +554,18 @@ private Map responseMap(CloseableHttpClient httpclient, HttpPost httpPostRequest
 				}
 			}
 		} else {
-			log.error("responseMap :Client or Post request is empty");
+			cmhLogger.error("responseMap :Client or Post request is empty");
 		}
 	} catch(Exception e) {
-		log.error("responseMap Error: " + e.getMessage());
+		cmhLogger.error("responseMap Error: " + e.getMessage());
 	} finally {
 		try {
 			response.close();
 		} catch(IOException e) {
-			log.error("responseMap Error: " + e.getMessage());
+			cmhLogger.error("responseMap Error: " + e.getMessage());
 		}
 	}
-	log.debug("Exiting responseMap method");
+	cmhLogger.debug("Exiting responseMap method");
 	return map;
 }
 
@@ -573,13 +573,13 @@ private Map responseMap(CloseableHttpClient httpclient, HttpPost httpPostRequest
 				 * Generate snow ticket.
 				 * Description: this method used for service now ticket generation using catalog items
 				 * @param identityName the identity name
-				 * @param customName the custom name				 
+				 * @param customName the custom name
 				 * @param operation the operation
 				 * @return  string
 				 */
 
 public Object generateSnowTicket(String identityName, String customName, String operation) {
-	log.debug("Entering generateSnowTicket method for identity:"+identityName);
+	cmhLogger.debug("Entering generateSnowTicket method for identity:"+identityName);
 	String ticketNo = null;
 	List errorList = new ArrayList();
 	if (Util.isNotNullOrEmpty(identityName) && Util.isNotNullOrEmpty(operation) && Util.isNotNullOrEmpty(customName)) {
@@ -598,7 +598,7 @@ public Object generateSnowTicket(String identityName, String customName, String 
 		Map jsonMap = new HashMap();
 		jsonMap.put("sysparm_quantity", "1");
 		Map varMap = new HashMap();
-		varMap.put("username", identityName); 
+		varMap.put("username", identityName);
 		varMap.put("description", "User "+operation);
 		jsonMap.put("variables", varMap);
 		JsonUtil jUtil = new JsonUtil();
@@ -660,7 +660,7 @@ public Object generateSnowTicket(String identityName, String customName, String 
 				errorList.add("Error:ServiceNow-Custom object is NULL or empty");
 			}
 		} catch(Exception e) {
-			log.error("Error in generateSnowTicket method: " + e.getMessage());
+			cmhLogger.error("Error in generateSnowTicket method: " + e.getMessage());
 			errorList.add("Error:ServiceNow-" + e.getMessage());
 		} finally {
 			httpclient.close();
@@ -668,7 +668,7 @@ public Object generateSnowTicket(String identityName, String customName, String 
 	} else {
 		errorList.add("identityName or custom object name cannot be cannot be empty");
 	}
-	log.debug("Exiting generateSnowTicket method");
+	cmhLogger.debug("Exiting generateSnowTicket method");
 	return errorList;
 }
 /**
@@ -681,8 +681,8 @@ public Object generateSnowTicket(String identityName, String customName, String 
 				 */
 
 public List doTargetedAggregation(String nativeId, String appName, String identityName) {
-	Logger log = Logger.getLogger("SingleAccountAggregation");
-	log.debug("Entering doTargetedAggregation method for identity: " + identityName);
+	Logger cmhLogger = Logger.getLogger("SingleAccountAggregation");
+	cmhLogger.debug("Entering doTargetedAggregation method for identity: " + identityName);
 	Identity identity = null;
 	List errorMessages = new ArrayList();
 	try {
@@ -700,20 +700,20 @@ public List doTargetedAggregation(String nativeId, String appName, String identi
 			}
 			TaskResult taskResult = agg.aggregate(app, rObj);
 			if (taskResult.getErrors() != null && taskResult.getErrors().size() > 0) {
-				log.error("Single account Aggregation task failed in doTargetedAggregation method");
+				cmhLogger.error("Single account Aggregation task failed in doTargetedAggregation method");
 			} else {
-				log.debug("Single Account Aggregation is completed successfully for User : "+identityName);
+				cmhLogger.debug("Single Account Aggregation is completed successfully for User : "+identityName);
 			}
 		}
 		else {
-			log.error("Resource Object is null in doTargetedAggregation method");
+			cmhLogger.error("Resource Object is null in doTargetedAggregation method");
 			errorMessages.add("User object is not found");
 		}
 	} catch(Exception e) {
-		log.error("Exception during targeted aggregation: " + e.getMessage());
+		cmhLogger.error("Exception during targeted aggregation: " + e.getMessage());
 		errorMessages.add(e.getMessage());
 	}
-	log.debug("Exit doTargetedAggregation method");
+	cmhLogger.debug("Exit doTargetedAggregation method");
 	return errorMessages;
 }
 
@@ -725,10 +725,10 @@ public List doTargetedAggregation(String nativeId, String appName, String identi
 				 */
 
 public boolean dateCheck(Date startDate) {
-	log.debug("Entering dateCheck method");
+	cmhLogger.debug("Entering dateCheck method");
 	boolean flag = false;
 	if (null != startDate) {
-		
+
 		Date currentDate = new Date();
 		int days = Util.getDaysDifference(startDate, currentDate);
 		if (days <= %%CMH-THRESHOLDDAYS%%) {
@@ -737,7 +737,7 @@ public boolean dateCheck(Date startDate) {
 			flag = false;
 		}
 	}
-	log.debug("Exiting dateCheck method: Start date is within 30 days from now? " + flag);
+	cmhLogger.debug("Exiting dateCheck method: Start date is within 30 days from now? " + flag);
 	return flag;
 }
 /**
@@ -748,7 +748,7 @@ public boolean dateCheck(Date startDate) {
 				 */
 
 public List readFromCsv(String filePath) {
-	log.debug("Entering readFromCsv method");
+	cmhLogger.debug("Entering readFromCsv method");
 	List list = new ArrayList();
 	int count = 0;
 	int index = 0;
@@ -776,17 +776,17 @@ public List readFromCsv(String filePath) {
 				list.add(cols[index]);
 			}
 		} catch(FileNotFoundException e) {
-			log.error("FileNotFoundException in readFromCsv method:" + e.getMessage());
+			cmhLogger.error("FileNotFoundException in readFromCsv method:" + e.getMessage());
 		} catch(IOException e) {
-			log.error("IOException in readFromCsv method:" + e.getMessage());
+			cmhLogger.error("IOException in readFromCsv method:" + e.getMessage());
 		} catch(Exception e) {
-			log.error("ERROR in readFromCsv method:" + e.getMessage());
+			cmhLogger.error("ERROR in readFromCsv method:" + e.getMessage());
 		} finally {
 			if (br != null) {
 				try {
 					br.close();
 				} catch(IOException e) {
-					log.error("IOException in finally block of readFromCsv method :" + e.getMessage());
+					cmhLogger.error("IOException in finally block of readFromCsv method :" + e.getMessage());
 				}
 			}
 		}
@@ -794,7 +794,7 @@ public List readFromCsv(String filePath) {
 	} else {
 		throw new sailpoint.tools.GeneralException("ERROR : File is not present on given location or file location is not proper");
 	}
-	log.debug("Exiting readFromCsv method");
+	cmhLogger.debug("Exiting readFromCsv method");
 	return list;
 }
 /**
@@ -805,7 +805,7 @@ public List readFromCsv(String filePath) {
 				 * @return true, if successfull
 				 */
 public boolean writeToCustomObject(List unameList, String customName) {
-	log.debug("Entering writeToCustomObject method");
+	cmhLogger.debug("Entering writeToCustomObject method");
 	Custom custom = null;
 	boolean flag = false;
 	if (null != unameList && Util.isNotNullOrEmpty(customName)) {
@@ -827,7 +827,7 @@ public boolean writeToCustomObject(List unameList, String customName) {
 					flag = true;
 				}
 			} else {
-			    log.debug("CMH-AD-Generic-Rulelibrary : writeToCustomObject(): Creating custom Object");
+			    cmhLogger.debug("CMH-AD-Generic-Rulelibrary : writeToCustomObject(): Creating custom Object");
 				custom = new Custom();
 				custom.setName(customName);
 				custom.put("USERNAMES", unameList);
@@ -835,21 +835,21 @@ public boolean writeToCustomObject(List unameList, String customName) {
 				context.commitTransaction();
 				flag = true;
 			}
-		
+
 		} catch(GeneralException e) {
-			log.error("ERROR in writeToCustomObject method: " + e.getMessage());
+			cmhLogger.error("ERROR in writeToCustomObject method: " + e.getMessage());
 		}
 	}
-	log.debug("Exiting writeToCustomObject method");
+	cmhLogger.debug("Exiting writeToCustomObject method");
 	return flag;
 }
 
 /***Method checks if the user is for the conversion case***/
 public boolean isConversionCase(String oldEmpId, String newUserName) {
-	log.debug("Entering isConversionCase method");
+	cmhLogger.debug("Entering isConversionCase method");
 	boolean isConverted = false;
 	if (Util.isNotNullOrEmpty(oldEmpId) && Util.isNotNullOrEmpty(newUserName)) {
-		log.debug("Check if the old user is having the name appended with _old "+oldEmpId);
+		cmhLogger.debug("Check if the old user is having the name appended with _old "+oldEmpId);
 		QueryOptions ops = new QueryOptions();
 		Filter filter = Filter.eq("employeeId", oldEmpId);
 		ops.addFilter(filter);
@@ -862,24 +862,24 @@ public boolean isConversionCase(String oldEmpId, String newUserName) {
 				String status = iden.getStringAttribute("status");
 				if (Util.isNotNullOrEmpty(uName) && uName.contains("_old")){
 					String oldUserName = uName.substring(0, uName.indexOf("_old")).trim();
-					if(Util.nullSafeCaseInsensitiveEq(oldUserName,newUserName) && Util.nullSafeCaseInsensitiveEq(status, "TERMINATED")){ 
+					if(Util.nullSafeCaseInsensitiveEq(oldUserName,newUserName) && Util.nullSafeCaseInsensitiveEq(status, "TERMINATED")){
 						isConverted = true;
 					}
 				}
 			}
 		} catch(GeneralException e) {
-			log.error("Error occured in isConversionCase method while searching for the user :" +oldEmpId+"  Error: "+ e.getMessage());
+			cmhLogger.error("Error occured in isConversionCase method while searching for the user :" +oldEmpId+"  Error: "+ e.getMessage());
 		} finally {
 			sailpoint.tools.Util.flushIterator(existingUsers);
 		}
 	}
-	log.debug("Exiting isConversionCase method: Is it Conversion Case? " + isConverted);
+	cmhLogger.debug("Exiting isConversionCase method: Is it Conversion Case? " + isConverted);
 	return isConverted;
 }
 
 /***Method checks if the role for the assignmentType valid or not***/
 public boolean isRoleMatching(String assignmentType, String roleName) {
-	log.debug("Entering isRoleMatching method");
+	cmhLogger.debug("Entering isRoleMatching method");
 	boolean roleStatus = false;
 	if (Util.isNotNullOrEmpty(assignmentType)) {
 		assignmentType = assignmentType.trim();
@@ -890,26 +890,26 @@ public boolean isRoleMatching(String assignmentType, String roleName) {
 			}
 		}
 	} else {
-		log.error("assignmentType is NULL in isRoleMatching method");
+		cmhLogger.error("assignmentType is NULL in isRoleMatching method");
 	}
-	log.debug("Exiting isRoleMatching method");
+	cmhLogger.debug("Exiting isRoleMatching method");
 	return roleStatus;
 }
 /***Method to retrive the homeDirectory path stored in the custom object***/
 public String getHomeDirectoryPath() {
-	log.debug("Entering getHomeDirectoryPath method");
+	cmhLogger.debug("Entering getHomeDirectoryPath method");
 	String homeDirectoryPath = null;
 	Custom custom = context.getObjectByName(Custom.class, "CMH-Custom-Object-AD-Application");
 	if (custom != null) {
 		homeDirectoryPath = custom.getString("homeDirPath");
 	}
-	log.debug("Exiting getHomeDirectoryPath method");
+	cmhLogger.debug("Exiting getHomeDirectoryPath method");
 	return homeDirectoryPath;
 }
 
 /***Method to check if the user required homedirectory***/
 public boolean isHomeDirectoryReq(String assignType,String email) {
-	log.debug("Entering isHomeDirectoryReq method");
+	cmhLogger.debug("Entering isHomeDirectoryReq method");
 	boolean homeDirReq = false;
 	Custom custom = context.getObjectByName(Custom.class, "CMH-Custom-HomeDirectory-UserTypes");
 	if (custom != null && custom.get("UserTypes") != null) {
@@ -924,13 +924,13 @@ public boolean isHomeDirectoryReq(String assignType,String email) {
 			}
 		}
 	}
-	log.debug("Exiting isHomeDirectoryReq method");
+	cmhLogger.debug("Exiting isHomeDirectoryReq method");
 	return homeDirReq;
 }
 
 /***Method to retrieve the homeDirectory value***/
 public String getHomeDirectory(String identityName) {
-	log.debug("Entering getHomeDirectory method");
+	cmhLogger.debug("Entering getHomeDirectory method");
 	String homeDirVal = null;
 	if (Util.isNotNullOrEmpty(identityName)) {
 		Identity identity = context.getObjectByName(Identity.class, identityName);
@@ -947,13 +947,13 @@ public String getHomeDirectory(String identityName) {
 			}
 		}
 	}
-	log.debug("Exiting getHomeDirectory method");
+	cmhLogger.debug("Exiting getHomeDirectory method");
 	return homeDirVal;
 }
 
 /*** Method to retrieve the displayName for AD***/
 public String getDisplayName(String firstName, String lastName, String initial, String credential) {
-	log.debug("Entering getDisplayName method");
+	cmhLogger.debug("Entering getDisplayName method");
 	String displayName = null;
 	String COMMA_SEPARATE = ", ";
 	if (Util.isNotNullOrEmpty(firstName) && Util.isNotNullOrEmpty(lastName)) {
@@ -969,7 +969,7 @@ public String getDisplayName(String firstName, String lastName, String initial, 
 			}
 		}
 	}
-	log.debug("Exiting getDisplayName method");
+	cmhLogger.debug("Exiting getDisplayName method");
 	return displayName;
 }
 /**
@@ -981,14 +981,14 @@ public String getDisplayName(String firstName, String lastName, String initial, 
 				 * @return true
 				 */
 public boolean checkDataInCustomObject(String jobData, String customName, String entryKey) {
-	log.debug("Entering checkDataInCustomObject method");
+	cmhLogger.debug("Entering checkDataInCustomObject method");
 	boolean isSuccess = false;
 	if (Util.isNotNullOrEmpty(jobData) && Util.isNotNullOrEmpty(customName) && Util.isNotNullOrEmpty(entryKey)) {
 		Custom custom = null;
 		try {
 			custom = context.getObject(Custom.class, customName);
 		} catch(GeneralException e) {
-			log.error("Error in checkDataInCustomObject method : " + e.getMessage());
+			cmhLogger.error("Error in checkDataInCustomObject method : " + e.getMessage());
 		}
 		if (custom != null) {
 			List arr = custom.getList(entryKey);
@@ -999,41 +999,41 @@ public boolean checkDataInCustomObject(String jobData, String customName, String
 			}
 		}
 	}
-	log.debug("Exiting checkDataInCustomObject method");
+	cmhLogger.debug("Exiting checkDataInCustomObject method");
 	return isSuccess;
 }
 
 
 /**Method is used to pull the Primary Group DN from the nativeIdentity of the user**/
 public String getPrimaryGrpDN(String nativeIdentity) {
-	log.debug("Entering getPrimaryGrpDN method");
+	cmhLogger.debug("Entering getPrimaryGrpDN method");
 	String primaryDN = null;
 	if (Util.isNotNullOrEmpty(nativeIdentity)) {
 		if (nativeIdentity.contains("OU")) {
 			primaryDN = nativeIdentity.substring(nativeIdentity.indexOf("OU"));
 		}
 	}
-	log.debug("Exiting getPrimaryGrpDN method");
+	cmhLogger.debug("Exiting getPrimaryGrpDN method");
 	return primaryDN;
 }
 
 /**Method is used to pull the CN from the nativeIdentity of the user**/
 public String calculateCN(String nativeIdentity) {
-	log.debug("Entering calculateCN method");
+	cmhLogger.debug("Entering calculateCN method");
 	String cn = null;
 	if (Util.isNotNullOrEmpty(nativeIdentity)) {
 		if (nativeIdentity.contains("OU")) {
 			cn = nativeIdentity.substring(0, (nativeIdentity.indexOf("OU") - 1));
 		}
 	}
-	log.debug("Exiting calculateCN method");
+	cmhLogger.debug("Exiting calculateCN method");
 	return cn;
 }
 
 
 /**Method is replace all the special characters , hypen and space from the string**/
 public String filterSpecialCharacter(String attrValue) {
-	log.debug("Entering filterSpecialCharacter method");
+	cmhLogger.debug("Entering filterSpecialCharacter method");
 	String filterString = null;
 	if (Util.isNotNullOrEmpty(attrValue)) {
 		Pattern pattern = Pattern.compile("[a-zA-Z0-9]*");
@@ -1044,31 +1044,31 @@ public String filterSpecialCharacter(String attrValue) {
 			filterString = attrValue;
 		}
 	}
-	log.debug("Exiting filterSpecialCharacter method");
+	cmhLogger.debug("Exiting filterSpecialCharacter method");
 	return filterString;
 }
 
 /**Method acquires lock on identity object to update the identity attributes**/
 public Identity acquireLockOnIdentity(String identityName) {
-	log.debug("Entering acquireLockOnIdentity method");
+	cmhLogger.debug("Entering acquireLockOnIdentity method");
 	int WAIT_TIMEOUT = 5;
 	Identity lockedIden = null;
 	if(Util.isNotNullOrEmpty(identityName)) {
 		try {
 			ObjectUtil.unlockIfNecessary(context,context.getObjectByName(Identity.class, identityName));
 			lockedIden = ObjectUtil.lockIdentityByName(context, identityName, WAIT_TIMEOUT);
-			log.debug("Successfully acquired lock on the identity object");
+			cmhLogger.debug("Successfully acquired lock on the identity object");
 		}catch(Exception e) {
-			log.error("Error occured while trying to acquire the lock on the user object: "+identityName);
+			cmhLogger.error("Error occured while trying to acquire the lock on the user object: "+identityName);
 		}
 	}
-	log.debug("Exiting acquireLockOnIdentity method");
+	cmhLogger.debug("Exiting acquireLockOnIdentity method");
 	return lockedIden;
 }
 
 /**Method is used to convert the Date from String type to Date type**/
 public Date getDate(String customAttrName, String existingDate){
-	log.debug("Entering getDate method");
+	cmhLogger.debug("Entering getDate method");
 	Date newDate = null;
 	if(Util.isNotNullOrEmpty(customAttrName) && Util.isNotNullOrEmpty(existingDate)){
 		String dateFormat = getCustomObject(customAttrName, "CMH-DateFormat");
@@ -1077,22 +1077,22 @@ public Date getDate(String customAttrName, String existingDate){
 			newDate = sdf.parse(existingDate);
 		}
 	}
-	log.debug("Exiting getDate method");
+	cmhLogger.debug("Exiting getDate method");
 	return newDate;
 }
 public String dateFormatted(String customAttrName, String existingDate) {
-   log.debug("Entering dateFormatted method");
+   cmhLogger.debug("Entering dateFormatted method");
    String formattedDate= null;
    if(Util.isNotNullOrEmpty(customAttrName)) {
       String dateFormat = getCustomObject(customAttrName, "CMH-DateFormat");
       Date convertedDate = getDate("genericDateFormat",existingDate);
       if(null != convertedDate && Util.isNotNullOrEmpty(dateFormat)){
          formattedDate = new SimpleDateFormat(dateFormat).format(convertedDate);
-         log.debug("formattedDate:"+formattedDate);
+         cmhLogger.debug("formattedDate:"+formattedDate);
       }
    }
    return formattedDate;
-   log.debug("Exiting dateFormatted method");
+   cmhLogger.debug("Exiting dateFormatted method");
 }
   ]]></Source>
 </Rule>

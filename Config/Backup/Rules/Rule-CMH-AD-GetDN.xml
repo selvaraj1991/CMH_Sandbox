@@ -96,18 +96,18 @@
     <Source>
 	<![CDATA[
         import org.apache.log4j.Logger;
-		Logger log = Logger.getLogger("Rule.CMH-AD-GetDN-Rule");
-		log.debug("Entering CMH-AD-GetDN-Rule for identity:"+identity.getName());
+		Logger cmhLogger = Logger.getLogger("Rule.CMH-AD-GetDN-Rule");
+		cmhLogger.debug("Entering CMH-AD-GetDN-Rule for identity:"+identity.getName());
 		//Generates account dn value 
 		String username = identity.getName();
 		String usertype = identity.getStringAttribute("assignmentType").trim();
 		String value = generateAccountDN(username, usertype);
 		if (value != null) {
-			log.info("DN Value for the user "+username+" is " + value);
+			cmhLogger.info("DN Value for the user "+username+" is " + value);
 		} else {
-			log.error("DN is null");
+			cmhLogger.error("DN is null");
 		}
-		log.debug("Exiting CMH-AD-GetDN-Rule for identity:"+username);
+		cmhLogger.debug("Exiting CMH-AD-GetDN-Rule for identity:"+username);
 		return value; 
 	]]>
 	</Source>

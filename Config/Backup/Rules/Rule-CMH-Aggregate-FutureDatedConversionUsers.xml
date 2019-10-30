@@ -7,11 +7,11 @@
   	import sailpoint.api.TaskManager;
   	import sailpoint.object.Attributes;
   	import sailpoint.object.Application;
-  	import sailpoint.object.Custom; 
+  	import sailpoint.object.Custom;
   	import sailpoint.tools.Util;
-  	
+
   	public boolean runAggregation(String usersStr){
-		log.debug("Entering runAggregation method");
+		cmhLogger.debug("Entering runAggregation method");
   		boolean status = false;
   		String whereClause = "where Employee in ("+usersStr+")";
   		String sqlQuery = null;
@@ -30,24 +30,24 @@
 			      		inforApp.setAttribute("SQL",sqlQuery);
 						context.saveObject(inforApp);
 						context.commitTransaction();
-						
-						try {  
-							TaskManager tm = new TaskManager(context);  
+
+						try {
+							TaskManager tm = new TaskManager(context);
 							tm.run ("Infor HR Database Aggregation", new Attributes());
-							status = true;  
-						} catch (Exception e) {  
-							log.error("CMH-Aggregate-FutureDated-Conversion-Users-Rule: Error occured while running infor aggregation");   
+							status = true;
+						} catch (Exception e) {
+							cmhLogger.error("CMH-Aggregate-FutureDated-Conversion-Users-Rule: Error occured while running infor aggregation");
 						}
 					}
 	  			}
 	  		}
   		}
-		log.debug("Exiting runAggregation method");
+		cmhLogger.debug("Exiting runAggregation method");
   		return status;
   	}
-  	
+
   	public void updateCustomObject(String customObjName, List usersList){
-		log.debug("Entering updateCustomObject method");
+		cmhLogger.debug("Entering updateCustomObject method");
   		if(Util.isNotNullOrEmpty(customObjName)){
   			Custom customObj = context.getObjectByName(Custom.class,customObjName);
   			if(customObj!=null && !Util.isEmpty(usersList)){
@@ -58,10 +58,10 @@
   				context.commitTransaction();
   			}
   		}
-		log.debug("Exiting updateCustomObject method");
+		cmhLogger.debug("Exiting updateCustomObject method");
   	}
-  	Logger log = Logger.getLogger("Rule.CMH-Aggregate-FutureDated-Conversion-Users-Rule");
-  	log.debug("Entering CMH-Aggregate-FutureDated-Conversion-Users-Rule");
+  	Logger cmhLogger = Logger.getLogger("Rule.CMH-Aggregate-FutureDated-Conversion-Users-Rule");
+  	cmhLogger.debug("Entering CMH-Aggregate-FutureDated-Conversion-Users-Rule");
   	Custom stCustomObj = context.getObjectByName(Custom.class,"CMH-DateFormat");
   	List usersList = null;
   	String CUSTOM_OBJ_NAME = "CMH-Custom-Future-Conversion-Users";
@@ -87,15 +87,15 @@
 			  				boolean status = runAggregation(usersStr);
 			  				if(status){
 							updateCustomObject(CUSTOM_OBJ_NAME,usersList);
-						}	  				 
+						}
 			  		}
 		  		}
 		  	}
   		}
   	}
-  	log.debug("Exiting CMH-Aggregate-FutureDated-Conversion-Users-Rule");
+  	cmhLogger.debug("Exiting CMH-Aggregate-FutureDated-Conversion-Users-Rule");
   	return "Success";
 
-  	
+
   ]]></Source>
 </Rule>

@@ -75,7 +75,7 @@ if($requestObject -and ($resultObject.Errors.count -eq 0))
 	if(($requestedOperation -eq "Enable"))
 	{
 		foreach( $attribute in $requestObject.AttributeRequests )
-		{		
+		{
 			if($attribute.name -eq "AC_NewParent"){
 				$newOU = $attribute.value;
 				$oper = "Enable";
@@ -85,7 +85,7 @@ if($requestObject -and ($resultObject.Errors.count -eq 0))
 	}elseif(($requestedOperation -eq "Modify"))
 	{
 		foreach( $attribute in $requestObject.AttributeRequests )
-		{		
+		{
 			if($attribute.name -eq "AC_NewParent"){
 				$newOU = $attribute.value;
 				$oper = "Modify";
@@ -132,7 +132,7 @@ if($dn -and $oper -and (($oper -eq "Enable") -or ($oper -eq "Modify"))){
 	}
 	$userSAM = $null
 	$count=0
-	
+
 	if($newOU){
 		$cn = $dn.Substring(0,$dn.IndexOf("OU="));
 		if($cn){
@@ -161,7 +161,7 @@ if($dn -and $oper -and (($oper -eq "Enable") -or ($oper -eq "Modify"))){
 		}
 		$count=$count+1
 	}
-	
+
 	if($userSAM)
 	{
 		Add-Content -path $logFile -value "$(get-date -f 'MM-dd-yyy HH:mm:ss') : [DEBUG] User's AD Object found";
@@ -172,7 +172,7 @@ if($dn -and $oper -and (($oper -eq "Enable") -or ($oper -eq "Modify"))){
 		$externaladdress = $($temp[0])+"%%CMH-OnMicrosoft-Domain%%";
 		$userGrps = Get-ADUser $sam -Property memberof | Select-Object -Expandproperty memberof
 		if($email -And (Get-RemoteMailbox -Identity "$sam"))
-		{			
+		{
 			Try
 			{
 				if($dispName.StartsWith("TERM -")){
@@ -192,7 +192,7 @@ if($dn -and $oper -and (($oper -eq "Enable") -or ($oper -eq "Modify"))){
 					Set-remotemailbox $($userSAM.DistinguishedName) -primarysmtpaddress $($userSAM.UserPrincipalName) -EmailAddressPolicyEnabled $False
 					Add-Content -path $logFile -value "$(get-date -f 'MM-dd-yyy HH:mm:ss') : [DEBUG] Name Change : Remote Mailbox updated successfully with the new SMTP address";
 				}
-				
+
 				if($userSAM.msExchHideFromAddressLists){
 					#set the address to unhidden for the mailbox through the Hybrid Exchange
 					Set-RemoteMailbox -Identity $sam -HiddenFromAddressListsEnabled $false
@@ -270,6 +270,6 @@ if($dn -and $oper -and (($oper -eq "Enable") -or ($oper -eq "Modify"))){
 		$ErrorActionPreference="Stop";
 	}
 }
-  
+
 </Source>
 </Rule>

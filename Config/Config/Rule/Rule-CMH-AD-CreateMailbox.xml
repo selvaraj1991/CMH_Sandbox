@@ -72,13 +72,13 @@ if($resultObject.Errors.count -eq 0){
 		{
 			$sam = $attribute.value;
 		}
-		  
+
 		if($attribute.name -eq "homeDirectory")
 		{
 			$homeDir = $attribute.value;
 		}
 	}
-	$logFile = "$logRootDirectory$sam-CREATE-$(get-date -f 'MMddyyyy-hhmmss').log";	
+	$logFile = "$logRootDirectory$sam-CREATE-$(get-date -f 'MMddyyyy-hhmmss').log";
 	Add-Content -path $logFile -value "$(get-date -f 'MM-dd-yyy HH:mm:ss') : [DEBUG] Entering the Script: Creating mailbox for $sam";
 	Try
 	{
@@ -114,9 +114,9 @@ if($resultObject.Errors.count -eq 0){
 	if($userSAM)
 	{
 		Add-Content -path $logFile -value "$(get-date -f 'MM-dd-yyy HH:mm:ss') : [DEBUG] User's AD Object found";
-		
+
 		$userGrps = Get-ADUser $sam -Property memberof | Select-Object -Expandproperty memberof
-		
+
 		if(-Not (Get-Recipient -Identity "$userSAM") -And $($userSAM.EmailAddress))
 		{
 			Set-ADServerSettings -RecipientViewRoot $($userSAM.OrganizationalUnit)
@@ -168,7 +168,7 @@ if($resultObject.Errors.count -eq 0){
 				}
 			}
 		}
-	}  
+	}
 	Try
 	{
 		Remove-PSSession $EXOSession;

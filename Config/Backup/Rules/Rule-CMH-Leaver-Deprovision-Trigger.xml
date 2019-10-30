@@ -48,8 +48,8 @@
 		import org.apache.log4j.Logger;
 		import sailpoint.tools.Util;
 		
-		Logger log = Logger.getLogger("Rule.CMH-Leaver-Deprovision-Trigger-Rule");
-		log.debug("Entering CMH-Leaver-Deprovision-Trigger-Rule for identity "+newIdentity!=null?newIdentity.getName():"");
+		Logger cmhLogger = Logger.getLogger("Rule.CMH-Leaver-Deprovision-Trigger-Rule");
+		cmhLogger.debug("Entering CMH-Leaver-Deprovision-Trigger-Rule for identity "+newIdentity!=null?newIdentity.getName():"");
 		
 		//Filtering out the users having deletion status is deleted
 		boolean triggerStatus = false;
@@ -70,7 +70,7 @@
 				}
 		    }
 		}
-		log.debug("Exiting CMH-Leaver-Deprovision-Trigger-Rule: Proceed with Leaver Delete process? "+triggerStatus);
+		cmhLogger.debug("Exiting CMH-Leaver-Deprovision-Trigger-Rule: Proceed with Leaver Delete process? "+triggerStatus);
 		return triggerStatus;
 		]]>
     </Source>
