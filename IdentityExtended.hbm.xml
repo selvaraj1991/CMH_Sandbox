@@ -73,7 +73,7 @@ so generated ddl will have mysql indexes substringed to 255 by default.
 				access="sailpoint.persistence.ExtendedPropertyAccessor"/>
 	<property name="cellphone" type="string" length="32" 
 				access="sailpoint.persistence.ExtendedPropertyAccessor"/>
-	<property name="credential" type="string" length="6" 
+	<property name="credential" type="string" length="32" 
 				access="sailpoint.persistence.ExtendedPropertyAccessor"/>
 	
     <property name="extended1" type="string" length="450"

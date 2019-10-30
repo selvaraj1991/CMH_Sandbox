@@ -1,0 +1,259 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE Rule PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<Rule language="beanshell" name="CMH-AD-EnableMailbox-Rule" type="ConnectorAfterModify">
+  <Attributes>
+    <Map>
+      <entry key="ObjectOrientedScript" value="true"/>
+      <entry key="disabled" value="false"/>
+      <entry key="extension" value=".ps1"/>
+      <entry key="program" value="powershell.exe"/>
+      <entry key="timeout" value="4000"/>
+    </Map>
+  </Attributes>
+  <Description>This rule assign ACL to user’s home folder and perform DF Map</Description>
+  <Signature>
+    <Inputs>
+      <Argument name="log">
+        <Description>
+                    The log object associated with the SailPointContext.
+                </Description>
+      </Argument>
+      <Argument name="context">
+        <Description>
+                    A sailpoint.api.SailPointContext object that can be used to query the database if necessary.
+                </Description>
+      </Argument>
+      <Argument name="plan">
+        <Description>
+                    The ProvisioningPlan object on its way to the Connector.
+                </Description>
+      </Argument>
+      <Argument name="application">
+        <Description>
+                    The application object that references this before/after script.
+                </Description>
+      </Argument>
+      <Argument name="result">
+        <Description>
+                    The ProvisioningResult object returned by the connectors provision method. This can be null and in
+                    many cases the connector will not return a result and instead will annotate the plans
+                    ProvisioningResult either at the plan or account level.
+                </Description>
+      </Argument>
+    </Inputs>
+  </Signature>
+  <Source>
+Import-Module ActiveDirectory
+Add-type -path  C:\\Software\\IQService\\Utils.dll
+
+$logRootDirectory = "C:\Software\Log\";
+
+$sReader = New-Object System.IO.StringReader([System.String]$env:Request);
+$sResult = New-Object System.IO.StringReader([System.String]$env:Result);
+
+#Form the xml reader objects
+$xmlReader = [System.xml.XmlTextReader]([sailpoint.utils.xml.XmlUtil]::getReader($sReader));
+$xmlReader_Result = [System.xml.XmlTextReader]([sailpoint.utils.xml.XmlUtil]::getReader($sResult));
+
+#Create SailPoint objects
+$requestObject = New-Object Sailpoint.Utils.objects.AccountRequest($xmlReader);
+$resultObject = New-Object Sailpoint.Utils.objects.ServiceResult($xmlReader_Result);
+
+
+$O365Grps = New-Object Collections.Generic.List[String];
+$O365Grps.add("%%CMH-AD-O365E5Lic%%");
+$O365Grps.add("%%CMH-AD-O365EMSLic%%");
+
+if($requestObject -and ($resultObject.Errors.count -eq 0))
+{
+	$newOU=$null
+	$oper=$null
+	$isNameChange=$null
+	$newName=$null
+	$dn=$requestObject.NativeIdentity
+	$requestedOperation=$requestObject.Operation
+	if(($requestedOperation -eq "Enable"))
+	{
+		foreach( $attribute in $requestObject.AttributeRequests )
+		{		
+			if($attribute.name -eq "AC_NewParent"){
+				$newOU = $attribute.value;
+				$oper = "Enable";
+				break
+			}
+		}
+	}elseif(($requestedOperation -eq "Modify"))
+	{
+		foreach( $attribute in $requestObject.AttributeRequests )
+		{		
+			if($attribute.name -eq "AC_NewParent"){
+				$newOU = $attribute.value;
+				$oper = "Modify";
+				break
+			}elseif($attribute.name -eq "AC_NewName"){
+				$newName = $attribute.value;
+				$oper = "Modify";
+				$isNameChange = "YES";
+				break
+			}
+		}
+	}
+}
+
+#Check if it is a Rehire Process
+if($dn -and $oper -and (($oper -eq "Enable") -or ($oper -eq "Modify"))){
+	$logFile = $logRootDirectory+"Enable-$(get-date -f 'MMddyyyy-hhmmss').log";
+	Add-Content -path $logFile -value "$(get-date -f 'MM-dd-yyy HH:mm:ss') : [DEBUG] adAfterCreatePowerShell: Entering the script";
+	Try
+	{
+		$EXOSession = New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri %%CONNECTIONURI%% -Authentication Kerberos
+		Import-PSSession $EXOSession -DisableNameChecking;
+		Add-Content -path $logFile -value "$(get-date -f 'MM-dd-yyy HH:mm:ss') : [DEBUG] Session created and import is complete";
+	}
+	Catch
+	{
+		$ErrorMessage = $_.Exception.Message;
+		$ErrorActionPreference="Continue";
+		Add-Content -path $logFile -value "$(get-date -f 'MM-dd-yyy HH:mm:ss') : [ERROR] Error in creating Session=====> $ErrorMessage";
+	}
+	$userSAM = $null
+	$count=0
+	
+	if($newOU){
+		$cn = $dn.Substring(0,$dn.IndexOf("OU="));
+		if($cn){
+			$dn = $cn+$newOU;
+		}
+	}elseif($newName){
+		$userOU = $dn.Substring($dn.IndexOf("OU="));
+		if($userOU){
+			$dn = $newName+","+$userOU;
+		}
+	}
+	while (!$userSAM -and $count -lt 5)
+	{
+		if($count -gt 0){
+			Add-Content -path $logFile -value "$(get-date -f 'MM-dd-yyy HH:mm:ss') : [DEBUG] User's AD Object not found: Retrying count $count";
+			sleep -s 10
+		}
+		Try
+		{
+			$userSAM = Get-ADUser -Filter { distinguishedName -Eq $dn } -properties EmailAddress,DisplayName,msExchHideFromAddressLists -server %%CMH-AD-GCServer%%
+		}
+		Catch
+		{
+			$ErrorMessage = $_.Exception.Message;
+			Add-Content -path $logFile -value "$(get-date -f 'MM-dd-yyy HH:mm:ss') : [ERROR] Error While retrieving the AD object of User  =====> $ErrorMessage";
+		}
+		$count=$count+1
+	}
+	
+	if($userSAM)
+	{
+		$sam = $userSAM.SamAccountName
+		$dispName = $userSAM.DisplayName
+		$email = $userSAM.EmailAddress
+		$temp = $userSAM.UserPrincipalName.Split("@")
+		$externaladdress = $($temp[0])+"%%CMH-OnMicrosoft-Domain%%";
+		Add-Content -path $logFile -value "$(get-date -f 'MM-dd-yyy HH:mm:ss') : [DEBUG] User's AD Object found";
+		$userGrps = Get-ADUser $sam -Property memberof | Select-Object -Expandproperty memberof
+		if($email -And (Get-RemoteMailbox -Identity "$sam"))
+		{			
+			Try
+			{
+				if($dispName.StartsWith("TERM -")){
+					$termStr = "TERM -";
+					$oldDispName = $dispName.Substring($termStr.Length,$dispName.Length-$termStr.Length)
+					if($oldDispName){
+						$oldDispName = $oldDispName.Trim()
+						#set the display name on the mailbox through the Hybrid Exchange server
+						Set-RemoteMailbox -Identity $sam -DisplayName $oldDispName
+						Add-Content -path $logFile -value "$(get-date -f 'MM-dd-yyy HH:mm:ss') : [DEBUG] Remote Mailbox Renamed successfully";
+					}
+				}
+				if($isNameChange -eq "YES"){
+					#It could be name change, so update the smtp address and alias and externaladdress
+					Set-remotemailbox $($userSAM.DistinguishedName) -alias $($userSAM.SamAccountName)
+					Set-remotemailbox $($userSAM.DistinguishedName) -RemoteRoutingAddress $externaladdress -confirm:$false
+					Set-remotemailbox $($userSAM.DistinguishedName) -primarysmtpaddress $($userSAM.UserPrincipalName) -EmailAddressPolicyEnabled $False
+					Add-Content -path $logFile -value "$(get-date -f 'MM-dd-yyy HH:mm:ss') : [DEBUG] Remote Mailbox updated successfully with the new smtp address";
+				}
+				
+				if($userSAM.msExchHideFromAddressLists){
+					#set the address to unhidden for the mailbox through the Hybrid Exchange
+					Set-RemoteMailbox -Identity $sam -HiddenFromAddressListsEnabled $false
+					Add-Content -path $logFile -value "$(get-date -f 'MM-dd-yyy HH:mm:ss') : [DEBUG] Remote Mailbox Unhidden successfully";
+				}
+			}
+			Catch
+			{
+				#Set the display name for hte user and hide from the GAL in AD
+				Set-ADUser -Identity $sam -Displayname $oldDispName -Add @{msExchHideFromAddressLists="FALSE"}
+			}
+		}#append TERM to the display name, and hide the address from the GAL
+		elseif($email -And -Not(Get-RemoteMailbox -Identity "$sam")){
+			#Create Mailbox
+			Try
+			{
+				Enable-remotemailbox  $($userSAM.DistinguishedName) -alias $($userSAM.SamAccountName) -RemoteRoutingAddress $externaladdress -confirm:$false
+				Add-Content -path $logFile -value "$(get-date -f 'MM-dd-yyy HH:mm:ss') : [DEBUG] Mailbox created successfully";
+			}
+			Catch
+			{
+				$ErrorMessage = $_.Exception.Message;
+				$ErrorActionPreference="Continue";
+				Add-Content -path $logFile -value "$(get-date -f 'MM-dd-yyy HH:mm:ss') : [ERROR] Error in Creating mailbox=====> $ErrorMessage";
+			}
+			Try
+			{
+				if(Get-remotemailbox  $($userSAM.UserPrincipalName)){
+					Set-remotemailbox  $($userSAM.UserPrincipalName) -primarysmtpaddress $($userSAM.UserPrincipalName) -EmailAddressPolicyEnabled $False
+					ForEach ($grp in $O365Grps) {
+						if(!$userGrps.contains($grp)){
+							Add-AdGroupMember -Identity $grp -Members $sam -confirm:$false
+						}
+					}
+				}
+			}
+			Catch
+			{
+				$ErrorMessage = $_.Exception.Message;
+				$ErrorActionPreference="Continue";
+				Add-Content -path $logFile -value "$(get-date -f 'MM-dd-yyy HH:mm:ss') : [ERROR] Error in Set-remotemailbox=====> $ErrorMessage";
+			}
+		}
+		elseif(!$email -And (Get-RemoteMailbox -Identity "$sam")){
+			#Remove Mailbox
+			ForEach ($grp in $O365Grps) {
+				if($userGrps.contains($grp)){
+					Remove-ADGroupMember -Identity $grp -Members $sam -confirm:$false
+				}
+			}
+			Try
+			{
+				Disable-RemoteMailbox $sam -confirm:$false
+				Add-Content -path $logFile -value "$(get-date -f 'MM-dd-yyy HH:mm:ss') : [DEBUG] Mailbox disabled successfully";
+			}
+			Catch
+			{
+				$ErrorMessage = $_.Exception.Message;
+				$ErrorActionPreference="Continue";
+				Add-Content -path $logFile -value "$(get-date -f 'MM-dd-yyy HH:mm:ss') : [ERROR] Error in Creating mailbox=====> $ErrorMessage";
+			}
+		}
+	}
+	Try
+	{
+		Remove-PSSession $EXOSession;
+		Add-Content -path $logFile -value "$(get-date -f 'MM-dd-yyy HH:mm:ss') : [DEBUG] Removed PS Session";
+	}
+	Catch
+	{
+		$ErrorMessage = $_.Exception.Message;
+		Add-Content -path $logFile -value "$(get-date -f 'MM-dd-yyy HH:mm:ss') : [ERROR] Error while Removing PS Session=====> $ErrorMessage";
+		$ErrorActionPreference="Stop";
+	}
+}
+  
+</Source>
+</Rule>

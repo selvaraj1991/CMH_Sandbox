@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE sailpoint PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<sailpoint>
+    <ImportAction name="merge">
+        <Configuration name="SystemConfiguration">
+            <Attributes>
+                <Map>
+                    <entry key="emailNotifierType" value="redirectToFile"/>
+					<entry key="provisioningTransactionLogLevel" value="Success"/>
+                    <entry key="quickLinkCategories">
+                        <value>
+                            <List>
+                                <QuickLinkCategory cssClass="quickLinkCategoryCustom" enabled="true"
+                                                   messageKey="quicklink_category_custom" name="Custom" ordering="4"/>
+                            </List>
+                        </value>
+                    </entry>
+                    <entry key="redirectingEmailNotifierAddress" value="admin@example.com"/>
+                    <entry key="redirectingEmailNotifierFilename" value="%%Email-Log-Path%%"/>
+				   <entry key="identitySnapshotMaxAge" value="365"/>
+				   <entry key="taskResultMaxAge" value="15"/>
+				   <entry key="loginPassThrough">
+                      <value>
+                          <List>
+                            <Reference class="sailpoint.object.Application" name="%%CMH-AD-ApplicationName%%"/>
+                          </List>
+                      </value>
+                   </entry>
+                </Map>
+            </Attributes>
+        </Configuration>
+    </ImportAction>
+</sailpoint>

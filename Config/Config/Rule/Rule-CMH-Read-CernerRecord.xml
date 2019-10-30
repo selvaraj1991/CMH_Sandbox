@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Rule PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<Rule language="beanshell" name="CMH-Read-Cerner-Record-Rule">
+    <Description>This rule reads the cerner records provided in the CSV file and those records are used for validation purpose during username generation.</Description>
+    <ReferencedRules>
+        <Reference class="sailpoint.object.Rule" name="CMH-AD-Generic-Rulelibrary"/>
+    </ReferencedRules>
+    <Source><![CDATA[
+
+    
+    import org.apache.log4j.Logger;
+    import sailpoint.object.TaskDefinition;
+    import sailpoint.tools.Util;
+    
+    Logger cmhLogger = Logger.getLogger("Rule.CMH-Read-Cerner-Record-Rule");
+    cmhLogger.debug("Entering CMH-Read-Cerner-Record-Rule");
+    //Reads csv file and writes to custom object
+    List list = null;
+    boolean isSuccess = false;
+    TaskDefinition taskDef = context.getObjectByName(TaskDefinition.class,"CMH Read Cerner Username");
+    String ruleInput = taskDef.getString("ruleConfig");
+    if(Util.isNotNullOrEmpty(ruleInput)) {
+        String filePath = ruleInput.substring(ruleInput.indexOf(",")+1);
+         if(Util.isNotNullOrEmpty(filePath)) {
+	        list = new ArrayList();
+	        list =  readFromCsv(filePath);
+	        if(null != list && list.size() > 1) {
+	           if(Util.nullSafeCaseInsensitiveEq("USERNAME",list.get(0).toString())) {
+	               list.remove(0);
+		           if(writeToCustomObject(list ,"CMH-Cerner-Usernames")) {
+		              isSuccess = true;
+		           }
+		        }
+	        }else {
+	           cmhLogger.error("The file only contains header username , the file is null or does not have any values");          
+	        }
+	     }
+    }else {
+        throw new sailpoint.tools.GeneralException("CMH-Read-Cerner-Record-Rule :Rule Config must contain complete CSV filepath with token as [path] like 'path,<Complete filepath>'");
+    }
+	cmhLogger.debug("Exiting CMH-Read-Cerner-Record-Rule");
+    if(isSuccess){
+       return "success";
+    }
+	return "Failed";
+  
+ ]]></Source>
+</Rule>

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Rule PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<Rule language="beanshell" name="CMH-UIPreference-Update-Rule">
+<ReferencedRules>
+  <Reference class="sailpoint.object.Rule" name="CMH-AD-Generic-Rulelibrary"/>
+</ReferencedRules>
+  <Source><![CDATA[ 
+  import org.apache.log4j.Logger;
+  import sailpoint.api.ObjectUtil;
+  import sailpoint.object.Attributes; 
+  import sailpoint.object.Custom;
+  import sailpoint.object.Identity;
+  import sailpoint.object.UIPreferences;
+  import sailpoint.tools.Util;
+  
+  public List getWrkGrpMembers(String wrkGrp){
+  	List wgMembers = new ArrayList();
+  	Identity wgrp = context.getObjectByName(Identity.class, wrkGrp);
+  	if(wgrp!=null){
+  		Iterator members = ObjectUtil.getWorkgroupMembers(context, wgrp, null);
+  		if(members!=null && members.hasNext()){
+  			while(members.hasNext()){
+  				Identity identityCube = (Identity)(members.next()[0]);
+  				String qlink = identityCube.getUIPreference("userQuickLinkCards");
+  				wgMembers.add(identityCube.getName());
+  			}
+  		}
+  	}
+	if(wgMembers.size()<=0){
+		cmhLogger.debug("There are no members in the workgroup : "+wrkGrp);
+  	}
+  	return wgMembers;
+  }
+  
+  public String getUpdatedQlinkCards(String qlinkCards,Object homeTiles){
+  	if(homeTiles instanceof List){
+		List hmTiles = (List)homeTiles;
+		if(Util.isNotNullOrEmpty(qlinkCards)){
+			for(String hmTile:hmTiles){
+				if(!qlinkCards.contains(hmTile)){
+					qlinkCards = qlinkCards.concat(",").concat(hmTile);
+				}
+			}
+		}else{
+			qlinkCards="";
+			for(String hmTile:hmTiles){
+				if(qlinkCards.isEmpty()){
+					qlinkCards = hmTile;
+				}else{
+					qlinkCards = qlinkCards.concat(",").concat(hmTile);
+				}
+			}
+		}
+	}else if(homeTiles instanceof String){
+		String hmTile = (String)homeTiles;
+		if(Util.isNotNullOrEmpty(qlinkCards)){
+			if(!qlinkCards.contains(hmTile)){
+				qlinkCards = qlinkCards.concat(",").concat(hmTile);
+			}
+		}else{
+			qlinkCards = hmTile;
+		}
+	}
+	return qlinkCards;
+  }
+  
+  public void setHomeTiles(List members, Object homeTiles){
+  	for(String usrName:members){
+  		Identity usrObj = acquireLockOnIdentity(usrName);
+  		if(usrObj!=null){
+  			UIPreferences uiPref = usrObj.getUIPreferences();
+  			String qlinkCards = uiPref!=null?(String)uiPref.get("userQuickLinkCards"):"";
+ 			String newQlinkCards = getUpdatedQlinkCards(qlinkCards,homeTiles);
+ 			if(Util.isNotNullOrEmpty(newQlinkCards) && !Util.nullSafeCaseInsensitiveEq(qlinkCards,newQlinkCards)){
+	  			usrObj.setUIPreference("userQuickLinkCards",newQlinkCards);
+	  			context.saveObject(usrObj);
+	  			context.commitTransaction();
+				cmhLogger.debug("HomeTiles for the user "+usrObj.getName()+" has been set successfully");
+	  		}
+  		}
+  		ObjectUtil.unlockIdentity(context,usrObj);
+  	}
+  }
+  
+  Logger cmhLogger = Logger.getLogger("Rule.CMH-UIPreference-Update-Rule");
+  cmhLogger.debug("Entering CMH-UIPreference-Update-Rule to set Hometiles for the users in all the workgroups configured in IIQ");
+  
+  Custom custom = context.getObjectByName(Custom.class,"CMH-WorkGroup-HomeTiles-Mapping-Object");
+  if(custom!=null){
+  	Attributes attr = custom.getAttributes();
+  	if(attr!=null && attr.size()>0){
+  		for(Map.Entry entry:attr.entrySet()){
+  			String key = entry.getKey();
+  			Object val = entry.getValue();
+  			if(Util.isNotNullOrEmpty(key) && val!=null){
+  				List members = getWrkGrpMembers(key);
+  				if(!Util.isEmpty(members)){
+  					setHomeTiles(members,val);
+  				}
+  			}
+  		}
+  	}
+  }
+  cmhLogger.debug("Exiting CMH-UIPreference-Update-Rule");
+  return "Success";
+  
+  ]]></Source>
+</Rule>

@@ -1,0 +1,185 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE Rule PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<Rule language="beanshell" name="CMH-AD-CreateMailbox-Rule" type="ConnectorAfterCreate">
+  <Attributes>
+    <Map>
+      <entry key="ObjectOrientedScript" value="true"/>
+      <entry key="disabled" value="false"/>
+      <entry key="extension" value=".ps1"/>
+      <entry key="program" value="powershell.exe"/>
+      <entry key="timeout" value="4000"/>
+    </Map>
+  </Attributes>
+  <Description>This rule assign ACL to users home folder and perform DF Map</Description>
+  <Signature>
+    <Inputs>
+      <Argument name="log">
+        <Description>
+                    The log object associated with the SailPointContext.
+                </Description>
+      </Argument>
+      <Argument name="context">
+        <Description>
+                    A sailpoint.api.SailPointContext object that can be used to query the database if necessary.
+                </Description>
+      </Argument>
+      <Argument name="plan">
+        <Description>
+                    The ProvisioningPlan object on its way to the Connector.
+                </Description>
+      </Argument>
+      <Argument name="application">
+        <Description>
+                    The application object that references this before/after script.
+                </Description>
+      </Argument>
+      <Argument name="result">
+        <Description>
+                    The ProvisioningResult object returned by the connectors provision method. This can be null and in
+                    many cases the connector will not return a result and instead will annotate the plans
+                    ProvisioningResult either at the plan or account level.
+                </Description>
+      </Argument>
+    </Inputs>
+  </Signature>
+  <Source>
+Import-Module ActiveDirectory
+Add-type -path  C:\\Software\\IQService\\Utils.dll
+
+$logRootDirectory = "C:\Software\Log\";
+
+$sReader = New-Object System.IO.StringReader([System.String]$env:Request);
+$sResult = New-Object System.IO.StringReader([System.String]$env:Result);
+
+#Form the xml reader objects
+$xmlReader = [System.xml.XmlTextReader]([sailpoint.utils.xml.XmlUtil]::getReader($sReader));
+$xmlReader_Result = [System.xml.XmlTextReader]([sailpoint.utils.xml.XmlUtil]::getReader($sResult));
+
+
+#Create SailPoint objects
+$requestObject = New-Object Sailpoint.Utils.objects.AccountRequest($xmlReader);
+$resultObject = New-Object Sailpoint.Utils.objects.ServiceResult($xmlReader_Result);
+
+#List of O365 groups which needs to be assigned when user requires an email
+$O365Grps = New-Object Collections.Generic.List[String];
+$O365Grps.add("%%CMH-AD-O365E5Lic%%");
+$O365Grps.add("%%CMH-AD-O365EMSLic%%");
+
+if($resultObject.Errors.count -eq 0){
+	foreach( $attribute in $requestObject.AttributeRequests )
+	{
+		if($attribute.name -eq "sAMAccountName")
+		{
+			$sam = $attribute.value;
+		}
+		  
+		if($attribute.name -eq "homeDirectory")
+		{
+			$homeDir = $attribute.value;
+		}
+	}
+	$logFile = "$logRootDirectory$sam-CREATE-$(get-date -f 'MMddyyyy-hhmmss').log";	
+	Add-Content -path $logFile -value "$(get-date -f 'MM-dd-yyy HH:mm:ss') : [DEBUG] Entering the Script: Creating mailbox for $sam";
+	Try
+	{
+		$EXOSession = New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri %%CONNECTIONURI%% -Authentication Kerberos
+		Import-PSSession $EXOSession -DisableNameChecking;
+		Add-Content -path $logFile -value "$(get-date -f 'MM-dd-yyy HH:mm:ss') : [DEBUG] Session created and import is complete";
+	}
+	Catch
+	{
+		$ErrorMessage = $_.Exception.Message;
+		$ErrorActionPreference="Continue";
+		Add-Content -path $logFile -value "$(get-date -f 'MM-dd-yyy HH:mm:ss') : [ERROR] Error in creating Session=====> $ErrorMessage";
+	}
+	$userSAM = $null
+	$count=0
+	while (!$userSAM -and $count -lt 5)
+	{
+		if($count -gt 0){
+			Add-Content -path $logFile -value "$(get-date -f 'MM-dd-yyy HH:mm:ss') : [DEBUG] User's AD Object not found: Retrying count $count";
+			sleep -s 10
+		}
+		Try
+		{
+			$userSAM = Get-ADUser -Filter { sAMAccountName -Eq $sam } -properties EmailAddress
+		}
+		Catch
+		{
+			$ErrorMessage = $_.Exception.Message;
+			Add-Content -path $logFile -value "$(get-date -f 'MM-dd-yyy HH:mm:ss') : [ERROR] Error While retrieving the AD object of User  =====> $ErrorMessage";
+		}
+		$count=$count+1
+	}
+	if($userSAM)
+	{
+		Add-Content -path $logFile -value "$(get-date -f 'MM-dd-yyy HH:mm:ss') : [DEBUG] User's AD Object found";
+		
+		$userGrps = Get-ADUser $sam -Property memberof | Select-Object -Expandproperty memberof
+		
+		if(-Not (Get-Recipient -Identity "$userSAM") -And $($userSAM.EmailAddress))
+		{
+			Set-ADServerSettings -RecipientViewRoot $($userSAM.OrganizationalUnit)
+			$temp=$userSAM.UserPrincipalName.Split("@")
+			$externaladdress = $($temp[0])+"%%CMH-OnMicrosoft-Domain%%"
+			Try
+			{
+				Enable-remotemailbox  $($userSAM.DistinguishedName) -alias $($userSAM.SamAccountName) -RemoteRoutingAddress $externaladdress -confirm:$false
+				Add-Content -path $logFile -value "$(get-date -f 'MM-dd-yyy HH:mm:ss') : [DEBUG] Mailbox created successfully";
+			}
+			Catch
+			{
+				$ErrorMessage = $_.Exception.Message;
+				$ErrorActionPreference="Continue";
+				Add-Content -path $logFile -value "$(get-date -f 'MM-dd-yyy HH:mm:ss') : [ERROR] Error in Creating mailbox=====> $ErrorMessage";
+			}
+			Try
+			{
+				if(Get-remotemailbox  $($userSAM.UserPrincipalName)){
+					Set-remotemailbox  $($userSAM.UserPrincipalName) -primarysmtpaddress $($userSAM.UserPrincipalName) -EmailAddressPolicyEnabled $False
+					Add-Content -path $logFile -value "$(get-date -f 'MM-dd-yyy HH:mm:ss') : [DEBUG] Assigning O365 groups for the user";
+					ForEach ($grp in $O365Grps) {
+						if(!$userGrps.contains($grp)){
+							Add-AdGroupMember -Identity $grp -Members $sam -confirm:$false
+						}
+					}
+				}
+			}
+			Catch
+			{
+				$ErrorMessage = $_.Exception.Message;
+				$ErrorActionPreference="Continue";
+				Add-Content -path $logFile -value "$(get-date -f 'MM-dd-yyy HH:mm:ss') : [ERROR] Error in Set-remotemailbox=====> $ErrorMessage";
+			}
+		}
+		if($homeDir){
+			$spHomeDir = $homeDir.split(":")
+			if($spHomeDir[0] -AND $spHomeDir[1]){
+				Try
+				{
+					Set-ADUser -Identity $sam -HomeDirectory $spHomeDir[1] -HomeDrive $spHomeDir[0];
+					Add-Content -path $logFile -value "$(get-date -f 'MM-dd-yyy HH:mm:ss') : [DEBUG] HomeDirectory and HomeDrive are set successfully";
+				}
+				Catch
+				{
+					$ErrorMessage = $_.Exception.Message;
+					$ErrorActionPreference="Continue";
+					Add-Content -path $logFile -value "$(get-date -f 'MM-dd-yyy HH:mm:ss') : [ERROR] Error while setting the HomeDirectory =====> $ErrorMessage";
+				}
+			}
+		}
+	}  
+	Try
+	{
+		Remove-PSSession $EXOSession;
+		Add-Content -path $logFile -value "$(get-date -f 'MM-dd-yyy HH:mm:ss') : [DEBUG] Removed PS Session";
+	}
+	Catch
+	{
+		$ErrorMessage = $_.Exception.Message;
+		Add-Content -path $logFile -value "$(get-date -f 'MM-dd-yyy HH:mm:ss') : [ERROR] Error in setting email address in mailbox=====> $ErrorMessage";
+		$ErrorActionPreference="Stop";
+	}
+}
+</Source>
+</Rule>

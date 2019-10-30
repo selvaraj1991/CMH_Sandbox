@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE QuickLink PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<QuickLink action="workflow" category="Custom" messageKey="quicklink_view_add_legal_hold" name="CMH-Quicklink-Legal-Hold">
+  <Attributes>
+    <Map>
+      <entry key="workflowName" value="CMH-LegalHold-Add-Workflow"/>
+	  <entry key="workflowSuccess" value="Request submitted successfully and it will be processed in background.."/>
+    </Map>
+  </Attributes>
+  <QuickLinkOptions allowSelf="true">
+    <DynamicScopeRef>
+      <Reference class="sailpoint.object.DynamicScope" name="CMH-LegalHoldAdmin-Scope"/>
+    </DynamicScopeRef>
+  </QuickLinkOptions>
+  <QuickLinkOptions allowSelf="true">
+    <DynamicScopeRef>
+      <Reference class="sailpoint.object.DynamicScope" name="CMH-IAMAdmin-Scope"/>
+    </DynamicScopeRef>
+  </QuickLinkOptions>
+</QuickLink>
